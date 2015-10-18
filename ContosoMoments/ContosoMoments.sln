@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{33782237-97DF-416D-B1D1-7F8D7E870EAA}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ContosoMomentsWebAPI", "src\ContosoMomentsWebAPI\ContosoMomentsWebAPI.xproj", "{2319A3DF-7025-4A47-A501-12CC0A4CB3C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE} = {C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{001D206C-86CB-4F44-BD09-B9EEE1207BC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{94A82226-A745-412E-8642-966C34425695}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Scripts\Deploy-AzureResourceGroup-2.ps1 = PublishScripts\Scripts\Deploy-AzureResourceGroup-2.ps1
+		PublishScripts\Scripts\Deploy-AzureResourceGroup.ps1 = PublishScripts\Scripts\Deploy-AzureResourceGroup.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{F78A366C-1452-4973-B879-80B33BAAA61D}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Templates\ContosoMomentsWeb.json = PublishScripts\Templates\ContosoMomentsWeb.json
+		PublishScripts\Templates\ContosoMomentsWeb.param.dev.json = PublishScripts\Templates\ContosoMomentsWeb.param.dev.json
+		PublishScripts\Templates\ContosoMomentsWebAPI.json = PublishScripts\Templates\ContosoMomentsWebAPI.json
+		PublishScripts\Templates\ContosoMomentsWebAPI.param.dev.json = PublishScripts\Templates\ContosoMomentsWebAPI.param.dev.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ContosoMomentsWeb", "src\ContosoMomentsWeb\ContosoMomentsWeb.xproj", "{AC7030CB-8F8D-4228-A1DD-7A7399FC89FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMomentsCommon", "ContosoMomentsCommon\ContosoMomentsCommon.csproj", "{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2319A3DF-7025-4A47-A501-12CC0A4CB3C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2319A3DF-7025-4A47-A501-12CC0A4CB3C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2319A3DF-7025-4A47-A501-12CC0A4CB3C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2319A3DF-7025-4A47-A501-12CC0A4CB3C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC7030CB-8F8D-4228-A1DD-7A7399FC89FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC7030CB-8F8D-4228-A1DD-7A7399FC89FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC7030CB-8F8D-4228-A1DD-7A7399FC89FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC7030CB-8F8D-4228-A1DD-7A7399FC89FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2319A3DF-7025-4A47-A501-12CC0A4CB3C1} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
+		{94A82226-A745-412E-8642-966C34425695} = {001D206C-86CB-4F44-BD09-B9EEE1207BC8}
+		{F78A366C-1452-4973-B879-80B33BAAA61D} = {001D206C-86CB-4F44-BD09-B9EEE1207BC8}
+		{AC7030CB-8F8D-4228-A1DD-7A7399FC89FB} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
+	EndGlobalSection
+EndGlobal
