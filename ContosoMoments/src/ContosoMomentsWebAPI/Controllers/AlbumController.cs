@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using ContosoMomentsCommon.Models;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,36 +12,44 @@ namespace ContosoMomentsWebAPI.Controllers
     [Route("api/[controller]")]
     public class AlbumController : Controller
     {
-        // GET: api/values
+        // GET: api/album
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<AlbumInfo> Get()
         {
-            return new string[] { "value1", "value2" };
+            var albums = new List<AlbumInfo>();
+            albums.Add(new AlbumInfo() { AlbumId = Guid.Empty, AlbumName = "Default" });
+            return albums;
         }
 
-        // GET api/values/5
+        // GET api/album/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public AlbumInfo Get(int id)
         {
-            return "value";
+            return new AlbumInfo() { AlbumId = Guid.Empty, AlbumName = "Default" };
         }
 
-        // POST api/values
+        // POST api/album
         [HttpPost]
-        public void Post([FromBody]string value)
+        public bool Post()
         {
+            var album = new AlbumInfo();
+            //...
+
+            return true;
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //// PUT api/album/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]AlbumInfo metadata)
+        //{
+        //    //UNSUPPORTED for P1
+        //}
 
-        // DELETE api/values/5
+        // DELETE api/album/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public bool Delete(int id)
         {
+            return true;
         }
     }
 }

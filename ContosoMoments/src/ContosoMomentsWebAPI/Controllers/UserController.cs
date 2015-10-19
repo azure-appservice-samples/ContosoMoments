@@ -3,39 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using ContosoMomentsCommon.Models;
 
 namespace ContosoMomentsWebAPI.Controllers
 {
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/values/5
+        // GET api/user/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IEnumerable<AlbumInfo> Get(int id)
         {
-            return "value";
+            var albums = new List<AlbumInfo>();
+            albums.Add(new AlbumInfo() { AlbumId = Guid.Empty, AlbumName = "Default" });
+            return albums;
         }
 
-        // POST api/values
+        // POST api/user
         [HttpPost]
-        public void Post([FromBody]string value)
+        public bool Post([FromBody]string UserName)
         {
+            return true;
         }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
+        
+        // DELETE api/user/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

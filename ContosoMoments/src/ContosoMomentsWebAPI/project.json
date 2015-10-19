@@ -1,27 +1,27 @@
 {
-    "webroot": "wwwroot",
-    "version": "1.0.0-*",
+  "webroot": "wwwroot",
+  "version": "1.0.0-*",
 
-    "dependencies": {
-        "Microsoft.AspNet.Mvc": "6.0.0-beta5",
-        "Microsoft.AspNet.Server.IIS": "1.0.0-beta5",
-        "Microsoft.AspNet.Server.WebListener": "1.0.0-beta5",
-        "Microsoft.AspNet.StaticFiles": "1.0.0-beta5",
-        "WindowsAzure.Storage": "6.0.0"
-    },
+  "dependencies": {
+    "Microsoft.AspNet.Mvc": "6.0.0-beta5",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta5",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta5",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta5",
+    "WindowsAzure.Storage": "6.0.0",
+    "Microsoft.Framework.Configuration.Json": "1.0.0-beta5"
+  },
 
-    "commands": {
-        "web": "Microsoft.AspNet.Hosting --config hosting.ini",
-    },
+  "commands": {
+    "web": "Microsoft.AspNet.Hosting --config hosting.ini",
+  },
 
-    "frameworks": {
-        "dnx451": {
-            "dependencies": {
-                "ContosoMomentsCommon": "1.0.0-*"
-            }
-        },
-        "dnxcore50": { }
-    },
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+        "ContosoMomentsCommon": "1.0.0-*"
+      }
+    }
+  },
 
     "exclude": [
         "wwwroot",

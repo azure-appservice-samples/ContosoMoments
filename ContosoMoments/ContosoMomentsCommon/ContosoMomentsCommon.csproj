@@ -43,6 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlobInformation.cs" />
+    <Compile Include="ImageFormats.cs" />
+    <Compile Include="ImageSizes.cs" />
+    <Compile Include="Models\AlbumInfo.cs" />
+    <Compile Include="Models\ImageInfo.cs" />
+    <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
