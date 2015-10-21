@@ -9,6 +9,7 @@ using ContosoMomentsCommon;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Diagnostics;
 
 namespace ContosoMomentsImagesResizerWebJob
 {
@@ -21,15 +22,27 @@ namespace ContosoMomentsImagesResizerWebJob
             [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
             [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
         {
+            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
+            bool res = await scaleImage(blobInput, blobOutputMedium, ImageSizes.Medium);
+            TraceInfo(blobInfo.ImageId, "MEDIUM", res);
 
-            System.Diagnostics.Debug.WriteLine("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            await scaleImage(blobInput, blobOutputMedium, ImageSizes.Medium);
-            System.Diagnostics.Debug.WriteLine("Scaling " + blobInfo.ImageId + " to SMALL size");
-            await scaleImage(blobInput, blobOutputSmall, ImageSizes.Small);
-            System.Diagnostics.Debug.WriteLine("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            await scaleImage(blobInput, blobOutputExtraSmall, ImageSizes.ExtraSmall);
+            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
+            res = await scaleImage(blobInput, blobOutputSmall, ImageSizes.Small);
+            TraceInfo(blobInfo.ImageId, "SMALL", res);
 
-            System.Diagnostics.Debug.WriteLine("Done processing 'resizerequest' message");
+            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
+            res = await scaleImage(blobInput, blobOutputExtraSmall, ImageSizes.ExtraSmall);
+            TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
+
+            Trace.TraceInformation("Done processing 'resizerequest' message");
+        }
+
+        private static void TraceInfo(string imageId, string size, bool res)
+        {
+            if (res)
+                Trace.TraceInformation("Scaling " + imageId + " to " + size + " size completed successfully");
+            else
+                Trace.TraceWarning("Scaling " + imageId + " to " + size + " size failed. Please see previous errors in log");
         }
 
         public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
@@ -38,66 +51,99 @@ namespace ContosoMomentsImagesResizerWebJob
             [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobSmall,
             [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobMedium)
         {
-            System.Diagnostics.Debug.WriteLine("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
-            await blobLarge.DeleteAsync();
-            System.Diagnostics.Debug.WriteLine("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
-            await blobExtraSmall.DeleteAsync();
-            System.Diagnostics.Debug.WriteLine("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
-            await blobSmall.DeleteAsync();
-            System.Diagnostics.Debug.WriteLine("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
-            await blobMedium.DeleteAsync();
+            try
+            {
+                Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
+                await blobLarge.DeleteAsync();
+                Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
+                await blobExtraSmall.DeleteAsync();
+                Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
+                await blobSmall.DeleteAsync();
+                Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
+                await blobMedium.DeleteAsync();
 
-            System.Diagnostics.Debug.WriteLine("Done processing 'deleterequest' message");
+                Trace.TraceInformation("Done processing 'deleterequest' message");
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while deleting images: " + ex.Message);
+            }
         }
 
         public async static Task SendPushNotificationAsync([QueueTrigger("pushnotificationrequest")] BlobInformation blobInfo)
         {
-            System.Diagnostics.Debug.WriteLine("Sending likes for ImageId = " + blobInfo.ImageId);
+            Trace.TraceInformation("Sending likes for ImageId = " + blobInfo.ImageId);
             //TODO: use Mobile SDK to send push notification about blobInfo.ImageId
         }
         #endregion
 
         #region Private functionality
-        private async static Task scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize)
+        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize)
         {
-            using (Stream output = blobOutput.OpenWrite())
-            {
-                doScaling(blobInput, output, imageSize);
-                blobOutput.Properties.ContentType = "image/jpeg";
-            }
-        }
+            bool retVal = true; //Assume success
 
-        private static void doScaling(Stream blobInput, Stream output, ImageSizes imageSize)
-        {
-            int width = 0, height = 0;
-
-            switch (imageSize)
+            try
             {
-                case ImageSizes.Large:
-                    width = 800;
-                    height = 480;
-                    break;
-                case ImageSizes.Medium:
-                    width = 1024;
-                    height = 768;
-                    break;
-                case ImageSizes.ExtraSmall:
-                    width = 320;
-                    height = 200;
-                    break;
-                case ImageSizes.Small:
-                    width = 640;
-                    height = 400;
-                    break;
-            }
-
-            using (Image img = Image.FromStream(blobInput))
-            {
-                using (Bitmap bitmap = new Bitmap(img, width, height))
+                using (Stream output = blobOutput.OpenWrite())
                 {
-                    bitmap.Save(output, ImageFormat.Jpeg);
+                    if (doScaling(blobInput, output, imageSize))
+                        blobOutput.Properties.ContentType = "image/jpeg";
+                    else
+                        retVal = false;
                 }
             }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while scaling image: " + ex.Message);
+                retVal = false;
+            }
+
+            return retVal;
+        }
+
+        private static bool doScaling(Stream blobInput, Stream output, ImageSizes imageSize)
+        {
+            bool retVal = true; //Assume success
+
+            try
+            {
+                int width = 0, height = 0;
+
+                switch (imageSize)
+                {
+                    case ImageSizes.Large:
+                        width = 800;
+                        height = 480;
+                        break;
+                    case ImageSizes.Medium:
+                        width = 1024;
+                        height = 768;
+                        break;
+                    case ImageSizes.ExtraSmall:
+                        width = 320;
+                        height = 200;
+                        break;
+                    case ImageSizes.Small:
+                        width = 640;
+                        height = 400;
+                        break;
+                }
+
+                using (Image img = Image.FromStream(blobInput))
+                {
+                    using (Bitmap bitmap = new Bitmap(img, width, height))
+                    {
+                        bitmap.Save(output, ImageFormat.Jpeg);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while saving scaled image: " + ex.Message);
+                retVal = false;
+            }
+
+            return retVal;
         }
         #endregion
     }

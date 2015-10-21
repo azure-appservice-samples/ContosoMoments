@@ -8,6 +8,7 @@ using ContosoMomentsWebAPI.Model;
 using Microsoft.Framework.OptionsModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Data.Entity;
+using System.Diagnostics;
 
 namespace ContosoMomentsWebAPI.Controllers
 {
@@ -44,13 +45,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[GET] /api/user/{id}: Database not exists");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [GET] /api/user/{id} => " + ex.Message);
                 return null;
             }
         }
@@ -72,13 +73,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[POST] /api/user/: Database not exists");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [POST] /api/user/ => " + ex.Message);
                 return false;
             }
         }
@@ -102,12 +103,12 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[DELETE] /api/user/{id}: Database not exists");
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [DELETE] /api/user/{id} => " + ex.Message);
             }
         }
         #endregion

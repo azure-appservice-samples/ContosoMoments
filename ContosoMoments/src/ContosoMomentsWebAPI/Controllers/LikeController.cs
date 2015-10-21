@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using ContosoMomentsCommon;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -56,7 +57,7 @@ namespace ContosoMomentsWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                //LOG queue exception
+                Trace.TraceError("Exception in LikeController.QueueDeleteRequests => " + ex.Message);
             }
         }
         #endregion

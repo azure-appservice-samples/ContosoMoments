@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using ContosoMomentsCommon;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -48,13 +49,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[GET] /api/album/: Database not exists");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [GET] /api/album/ => " + ex.Message);
                 return null;
             }
         }
@@ -74,13 +75,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[GET] /api/album/{id}: Database not exists");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [GET] /api/album/{id} => " + ex.Message);
                 return null;
             }
         }
@@ -102,13 +103,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[POST] /api/album/: Database not exists");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [POST] /api/album/ => " + ex.Message);
                 return false;
             }
         }
@@ -118,6 +119,8 @@ namespace ContosoMomentsWebAPI.Controllers
         public void Put(int id, [FromBody]Album metadata)
         {
             //UNSUPPORTED for P1
+            Trace.TraceWarning("[PUT] /api/album/{id} is not implemented in Phase1");
+
         }
 
         // DELETE api/album/5
@@ -143,12 +146,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[DELETE] /api/album/{id}: Database not exists");
                 }
             }
             catch (Exception ex)
             {
                 //TODO: Log exception
+                Trace.TraceError("Exception in [DELETE] /api/album/{id} => " + ex.Message);
             }
         }
         #endregion
@@ -175,7 +179,7 @@ namespace ContosoMomentsWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                //LOG queue exception
+                Trace.TraceError("Exception in AlbumController.QueueDeleteRequests => " + ex.Message);
             }
         }
 
@@ -191,12 +195,12 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log DB not exists...
+                    Trace.TraceWarning("AlbumController.DeleteImagesFromDB: Database not exists");
                 }
             }
             catch (Exception ex)
             {
-                //LOG db exception
+                Trace.TraceError("Exception in AlbumController.DeleteImagesFromDB => " + ex.Message);
             }
         }
 
@@ -216,12 +220,12 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log DB not exists...
+                    Trace.TraceWarning("AlbumController.DeleteAlbumFromDB: Database not exists");
                 }
             }
             catch (Exception ex)
             {
-                //LOG db exception
+                Trace.TraceError("Exception in AlbumController.DeleteAlbumFromDB => " + ex.Message);
             }
         }
         #endregion

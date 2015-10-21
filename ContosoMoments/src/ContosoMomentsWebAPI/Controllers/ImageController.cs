@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNet.Http;
 using Microsoft.Data.Entity;
 using Microsoft.Framework.DependencyInjection;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -63,13 +64,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[GET] /api/image/: Database not exists");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [GET] /api/image/ => " + ex.Message);
                 return null;
             }
 
@@ -90,13 +91,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log database not exists
+                    Trace.TraceWarning("[GET] /api/image/{id}: Database not exists");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                //TODO: Log exception
+                Trace.TraceError("Exception in [GET] /api/image/{id} => " + ex.Message);
                 return null;
             }
         }
@@ -133,31 +134,31 @@ namespace ContosoMomentsWebAPI.Controllers
                             }
                             else
                             {
-                                //TODO: Log DB update failed
+                                Trace.TraceWarning("[POST] /api/image/: Database update failed, removing uploaded image from blob");
                                 await RemoveImageFromBlob(imageId, account);
                                 return false;
                             }
                         }
                         else
                         {
-                            //TODO: Log blob was not created
+                            Trace.TraceWarning("[POST] /api/image/: Blob update failed");
                             return false;
                         }
                     }
                     else
                     {
-                        //TODO: Log not supported image type or format
+                        Trace.TraceWarning("[POST] /api/image/: Storage account connection failed");
                         return false;
                     }
                 }
                 else
                 {
-                    //TODO: Log multiple images uploaded or wrong content type images
+                    Trace.TraceWarning("[POST] /api/image/: Not supported image format or multiple images uploaded");
                     return false;
                 }
             }
 
-            //TODO: Log request has no image in the body
+            Trace.TraceWarning("[POST] /api/image/: Request has no image in the FormBody");
             return false;
         }
 
@@ -190,13 +191,13 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log DB not exists...
+                    Trace.TraceWarning("ImageController.DeleteFromDB: Database not exists");
                 }
 
             }
             catch (Exception ex)
             {
-                //LOG db exception
+                Trace.TraceError("Exception in ImageController.DeleteFromDB => " + ex.Message);
             }
 
             return retVal;
@@ -220,7 +221,7 @@ namespace ContosoMomentsWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                //TODO: Log queue exception
+                Trace.TraceError("Exception in ImageController.QueueDeleteRequest => " + ex.Message);
             }
         }
 
@@ -238,7 +239,7 @@ namespace ContosoMomentsWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                //TODO: Log queue exception
+                Trace.TraceError("Exception in ImageController.QueueResizeRequest => " + ex.Message);
             }
         }
 
@@ -256,7 +257,7 @@ namespace ContosoMomentsWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                //LOG storage exception + ex
+                Trace.TraceError("Exception in ImageController.UplodImageToBlob => " + ex.Message);
                 return null;
             }
         }
@@ -286,14 +287,14 @@ namespace ContosoMomentsWebAPI.Controllers
                 }
                 else
                 {
-                    //TODO: Log DB not exists...
+                    Trace.TraceWarning("ImageController.UpdateDB: Database not exists");
                     return false;
                 }
 
             }
             catch (Exception ex)
             {
-                //LOG db exception
+                Trace.TraceError("Exception in ImageController.UpdateDB => " + ex.Message);
                 return false;
             }
         }
@@ -309,7 +310,7 @@ namespace ContosoMomentsWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                //LOG storage exception + ex
+                Trace.TraceError("Exception in ImageController.RemoveImageFromBlob => " + ex.Message);
             }
         }
         #endregion
