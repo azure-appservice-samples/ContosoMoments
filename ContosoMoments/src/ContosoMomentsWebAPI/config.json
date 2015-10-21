@@ -1,5 +1,17 @@
 {
   "AppSettings": {
-        "PageSize": "25"
+    "PageSize": "5",
+    "DefaultId" : "11111111-1111-1111-1111-111111111111",
+    "BaseContainer" : "images",
+    "LargeImages": "lg",
+    "SmallImages": "sm",
+    "ExtraSmallImages": "xs",
+    "MediumImages": "md",
+    "StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=contosomomentsstorage;AccountKey=4/3HkQaWRsmwDHxZAwLulfpUfy0irYIJ6yrHKcaGocjpkhyOBxTH86LcbSZWozRmZ0cI54umJn/+cEzcM7npZQ==",
+  },
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Server=tcp:q2mit7lj2e.database.windows.net,1433;Database=ContosoMomentsDb;User ID=alexgolesh@q2mit7lj2e;Password=GetDarky1$;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;"
     }
+  }
 }

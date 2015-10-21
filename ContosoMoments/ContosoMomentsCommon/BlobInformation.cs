@@ -14,10 +14,57 @@ namespace ContosoMomentsCommon
         {
             get
             {
-                return BlobUri.Segments[BlobUri.Segments.Length - 1];
+                if (null != BlobUri)
+                    return BlobUri.Segments[BlobUri.Segments.Length - 1];
+                else
+                    return string.Empty;
             }
         }
 
-        public Guid ImageId { get; set; }
+        public string BlobNameXS
+        {
+            get
+            {
+                if (null != BlobUri)
+                    return string.Format("xs/{0}.jpg", ImageId);
+                else
+                    return string.Empty;
+            }
+        }
+
+        public string BlobNameSM
+        {
+            get
+            {
+                if (null != BlobUri)
+                    return string.Format("sm/{0}.jpg", ImageId);
+                else
+                    return string.Empty;
+            }
+        }
+
+        public string BlobNameMD
+        {
+            get
+            {
+                if (null != BlobUri)
+                    return string.Format("md/{0}.jpg", ImageId);
+                else
+                    return string.Empty;
+            }
+        }
+
+        public string BlobNameLG
+        {
+            get
+            {
+                if (null != BlobUri)
+                    return string.Format("lg/{0}.jpg", ImageId);
+                else
+                    return string.Empty;
+            }
+        }
+
+        public string ImageId { get; set; }
     }
 }

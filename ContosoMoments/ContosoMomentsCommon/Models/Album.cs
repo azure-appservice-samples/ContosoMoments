@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ContosoMomentsCommon.Models
 {
-    public class UserInfo
+    public class Album
     {
-        public Guid UserId { get; set; }
-        public string UserName { get; set; }
+        public Guid AlbumId { get; set; }
+
+        public string AlbumName { get; set; }
     }
 }

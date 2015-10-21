@@ -9,6 +9,7 @@ using Microsoft.AspNet.Routing;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.Runtime;
+using Microsoft.Data.Entity;
 using ContosoMomentsWebAPI.Model;
 
 namespace ContosoMomentsWebAPI
@@ -30,13 +31,15 @@ namespace ContosoMomentsWebAPI
         // Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddEntityFramework()
+                .AddSqlServer()
+                .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+
             services.Configure<AppSettings>(Configuration.GetConfigurationSection("AppSettings"));
             services.AddMvc();
             // Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
             // You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
             // services.AddWebApiConventions();
-
-            //var s = Configuration.Get("AppSettings:PageSize");
         }
 
         // Configure is called after ConfigureServices is called.

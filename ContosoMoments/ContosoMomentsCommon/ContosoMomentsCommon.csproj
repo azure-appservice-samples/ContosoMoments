@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
@@ -45,9 +46,9 @@
     <Compile Include="BlobInformation.cs" />
     <Compile Include="ImageFormats.cs" />
     <Compile Include="ImageSizes.cs" />
-    <Compile Include="Models\AlbumInfo.cs" />
-    <Compile Include="Models\ImageInfo.cs" />
-    <Compile Include="Models\UserInfo.cs" />
+    <Compile Include="Models\Album.cs" />
+    <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
