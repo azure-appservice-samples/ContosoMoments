@@ -1,0 +1,199 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serverLocation": {
+      "type": "string"
+    },
+    "dbAdminUser": {
+      "type": "string"
+    },
+    "dbAdminPassword": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "dbServerName": "contosomomentssqlserver",
+    "dbName": "ContosoMomentsDbQA",
+    "storgeAccountName": "contosomomentsstorageqa",
+    "storageAccountType": "Standard_GRS",
+    "hostPlanName": "ContosoMomentsHostPlan",
+    "webName": "ContosoMomentsWebQA",
+    "webApiName": "ContosoMomentsWebApiQA",
+    "webJobSiteName": "ContosoMomentsWebJobsQA",
+    "webJobCollectionName": "ContosoMomentsWebJobsCollectionQA",
+    "webJobName": "ContosoMomentsWebJobsCollectionQA"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storgeAccountName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('serverLocation')]",
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
+      }
+    },
+
+    {
+      "apiVersion": "2014-04-01-preview",
+      "name": "[variables('dbServerName')]",
+      "type": "Microsoft.Sql/servers",
+      "location": "[parameters('serverLocation')]",
+      "properties": {
+        "administratorLogin": "[parameters('dbAdminUser')]",
+        "administratorLoginPassword": "[parameters('dbAdminPassword')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01-preview",
+          "name": "[variables('dbName')]",
+          "type": "databases",
+          "location": "[parameters('serverLocation')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers/', variables('dbServerName'))]"
+          ],
+          "properties": {
+            "edition": "Basic",
+            "maxSizeBytes": "2147483648"
+          }
+        }
+      ]
+    },
+
+    {
+      "apiVersion": "2014-06-01",
+      "type": "Microsoft.Web/serverfarms",
+      "name": "[variables('hostPlanName')]",
+      "location": "[parameters('serverLocation')]",
+      "properties": {
+        "name": "[variables('hostPlanName')]",
+        "sku": "Free"
+      }
+    },
+
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('webName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]"
+      ],
+      "properties": {
+        "name": "[variables('webName')]",
+        "serverFarm": "[variables('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', variables('webName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('dbName'), ';User Id=', parameters('dbAdminUser'), '@', variables('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "DefaultConnection",
+                "Type": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('webApiName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]",
+        "[resourceId('Microsoft.Sql/servers/', variables('dbServerName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storgeAccountName'))]"
+      ],
+      "properties": {
+        "name": "[variables('webApiName')]",
+        "serverFarm": "[variables('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('dbName'), ';User Id=', parameters('dbAdminUser'), '@', variables('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "DefaultConnection",
+                "Type": 2
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
+          ],
+          "properties": {
+            "StorageConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storgeAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storgeAccountName')), '2015-05-01-preview').key1)]"
+          }
+        }
+      ]
+    },
+
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('webJobSiteName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storgeAccountName'))]"
+      ],
+      "properties": {
+        "name": "[variables('webJobSiteName')]",
+        "serverFarm": "[variables('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01-preview",
+          "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('webJobSiteName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storgeAccountName'), ';AccountKey=', listKeys(concat('Microsoft.Storage/storageAccounts/', variables('storgeAccountName')), '2015-05-01-preview').key1)]",
+                "Name": "AzureWebJobsDashboard",
+                "Type": 2
+              },
+              {
+                "ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storgeAccountName'), ';AccountKey=', listKeys(concat('Microsoft.Storage/storageAccounts/', variables('storgeAccountName')), '2015-05-01-preview').key1)]",
+                "Name": "AzureWebJobsStorage",
+                "Type": 2
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "exampleOutput": {
+      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storgeAccountName')), '2015-05-01-preview').key1]",
+      "type": "string"
+    }
+  }
+}
