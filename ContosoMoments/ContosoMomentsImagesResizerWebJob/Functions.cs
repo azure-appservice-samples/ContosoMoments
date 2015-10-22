@@ -10,6 +10,10 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Diagnostics;
+using Microsoft.Azure.NotificationHubs;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace ContosoMomentsImagesResizerWebJob
 {
@@ -72,8 +76,63 @@ namespace ContosoMomentsImagesResizerWebJob
 
         public async static Task SendPushNotificationAsync([QueueTrigger("pushnotificationrequest")] BlobInformation blobInfo)
         {
-            Trace.TraceInformation("Sending likes for ImageId = " + blobInfo.ImageId);
-            //TODO: use Mobile SDK to send push notification about blobInfo.ImageId
+            //TODO: use Mobile SDK to send push notification to owner user about blobInfo.ImageId
+            Trace.TraceInformation("Sending push notficiations for ImageId = " + blobInfo.ImageId);
+
+            string notificationHubConnectionString = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.ConnectionString"];
+            string notificationHubPath = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.Path"];
+            string dataConnection = ConfigurationManager.ConnectionStrings["DataConnection"].ConnectionString;
+
+            try
+            {
+                string userName, containerName, userId, imageId;
+                userName = containerName = userId = imageId = null;
+
+                if (getInforFroDB(blobInfo, dataConnection, ref userName, ref containerName, ref userId, ref imageId))
+                {
+                    //Prepare the notification and sent
+                    NotificationHubClient hub = NotificationHubClient.CreateClientFromConnectionString(notificationHubConnectionString, notificationHubPath);
+
+                    string imageUrl = string.Format("{0}/lg/{1}.jpg", containerName, imageId);
+                    string messgae = string.Format("{0}! Someone likes your image at {1}", userName, imageUrl);
+
+                    var registrations = await hub.GetRegistrationsByTagAsync(userId, 0);
+
+                    foreach (var registration in registrations)
+                    {
+                        if (registration is WindowsRegistrationDescription)
+                        {
+                            await sendWindowsStoreNotification(hub, messgae, registration);
+                        }
+                        else if (registration is MpnsRegistrationDescription)
+                        {
+                            await sendWPNotification(hub, messgae, registration);
+                        }
+                        else if (registration is AppleRegistrationDescription)
+                        {
+                            await sendIOSNotification(hub, messgae, registration);
+                        }
+                        else if (registration is GcmRegistrationDescription)
+                        {
+                            await sendGCMNotification(hub, messgae, registration);
+                        }
+                        else
+                        {
+                            Trace.TraceWarning("Cannot send push notification to UNSUPPORTED device type with RegistrationId " + registration.RegistrationId);
+                        }
+                    }
+                }
+                else
+                {
+                    Trace.TraceInformation("No registered push notification users found for ImageId = " + blobInfo.ImageId);
+                }
+
+                Trace.TraceInformation("Done processing 'pushnotificationrequest' message");
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while sending push notifications: " + ex.Message);
+            }
         }
         #endregion
 
@@ -144,6 +203,118 @@ namespace ContosoMomentsImagesResizerWebJob
             }
 
             return retVal;
+        }
+
+        private static bool getInforFroDB(BlobInformation blobInfo, string dataConnection, ref string userName, ref string containerName, ref string userId, ref string imageId)
+        {
+            bool retVal = false; //Assume no data in DB
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(dataConnection))
+                {
+                    // Formulate the command.
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+
+                    // Specify the query to be executed.
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"
+                    SELECT [Image].ImageId, [Image].ContainerName, [Image].UserId, [User].UserName
+                    FROM [Image]
+                    INNER JOIN [User] 
+                    ON [Image].UserId = [User].UserId
+                    WHERE [Image].ImageId = '" + blobInfo.ImageId + "'";
+
+                    // Open a connection to database.
+                    connection.Open();
+
+                    // Read data returned for the query.
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        imageId = blobInfo.ImageId; //reader["ImageId"];
+                        userName = (string)reader["UserName"];
+                        userId = ((Guid)reader["UserId"]).ToString();
+                        containerName = (string)reader["ContainerName"];
+                        retVal = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while getting info from DB: " + ex.Message);
+            }
+
+            return retVal;
+        }
+
+        private static async Task sendGCMNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        {
+            try
+            {
+                Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
+                // Define an Android notification.
+                var notification = "{\"data\":{\"msg\":\"" + messgae + "\"}}";
+                await hub.SendGcmNativeNotificationAsync(notification);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while sending Google notification: " + ex.Message);
+            }
+        }
+
+        private static async Task sendIOSNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        {
+            try
+            {
+                Trace.TraceInformation("Sending iOS alert to RegistrationId " + registration.RegistrationId);
+                // Define an iOS alert.
+                var alert = "{\"aps\":{\"alert\":\"" + messgae + "\"}}";
+                await hub.SendAppleNativeNotificationAsync(alert);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while sending iOS alert: " + ex.Message);
+            }
+        }
+
+        private static async Task sendWPNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        {
+            try
+            {
+                Trace.TraceInformation("Sending Windows Phone toast to RegistrationId " + registration.RegistrationId);
+                // Define a Windows Phone toast.
+                var mpnsToast =
+                    "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                    "<wp:Notification xmlns:wp=\"WPNotification\">" +
+                        "<wp:Toast>" +
+                            "<wp:Text1>" + messgae + "</wp:Text1>" +
+                        "</wp:Toast> " +
+                    "</wp:Notification>";
+                await hub.SendMpnsNativeNotificationAsync(mpnsToast);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while sending Windows Phone toast: " + ex.Message);
+            }
+        }
+
+        private static async Task sendWindowsStoreNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        {
+            try
+            {
+                Trace.TraceInformation("Sending Windows Store toast to RegistrationId " + registration.RegistrationId);
+                // Define a Windows Store toast.
+                var wnsToast = "<toast><visual><binding template=\"ToastText01\">"
+                    + "<text id=\"1\">" + messgae
+                    + "</text></binding></visual></toast>";
+                await hub.SendWindowsNativeNotificationAsync(wnsToast);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while sending Windows Store toast: " + ex.Message);
+            }
         }
         #endregion
     }
