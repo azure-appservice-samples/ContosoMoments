@@ -251,9 +251,17 @@ namespace ContosoMomentsWebAPI.Controllers
                 CloudBlobContainer imagesContainer = client.GetContainerReference(_appSettings.Options.BaseContainer + "/" + _appSettings.Options.LargeImages);
                 CloudBlockBlob blob = imagesContainer.GetBlockBlobReference(imageId.ToString() + FILE_EXT);
                 blob.Properties.ContentType = formFile.ContentType;
-                await blob.UploadFromStreamAsync(formFile.OpenReadStream(), formFile.Length);
+                System.IO.Stream stream = formFile.OpenReadStream();
+                if (null != stream)
+                {
+                    await blob.UploadFromStreamAsync(stream, stream.Length);
 
-                return client.GetContainerReference(_appSettings.Options.BaseContainer).Uri;
+                    return client.GetContainerReference(_appSettings.Options.BaseContainer).Uri;
+                }
+                else
+                {
+                    throw new Exception("Cannot open incoming file stream");
+                }
             }
             catch (Exception ex)
             {
