@@ -17,6 +17,7 @@
     "dbName": "ContosoMomentsDbQA",
     "storageAccountName": "contosomomentsstorageqa",
     "storageAccountType": "Standard_GRS",
+    "storageContainerName": "images",
     "hostPlanName": "ContosoMomentsHostPlan",
     "webName": "ContosoMomentsWebQA",
     "webApiName": "ContosoMomentsWebApiQA",
@@ -32,7 +33,21 @@
       "location": "[parameters('serverLocation')]",
       "properties": {
         "accountType": "[variables('storageAccountType')]"
-      }
+      },
+      //"resources": [
+      //  {
+      //    "apiVersion": "2015-05-01-preview",
+      //    "name": "[variables('storageContainerName')]",
+      //    "type": "container",
+      //    "location": "[parameters('serverLocation')]",
+      //    "dependsOn": [
+      //      "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      //    ],
+      //    "properties": {
+      //      "permission" :  "Container"
+      //    }
+      //  }
+      //]
     },
 
     {
@@ -100,6 +115,20 @@
                 "Type": 2
               }
             ]
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', variables('webName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
+            "setParameters": { }
           }
         }
       ]
