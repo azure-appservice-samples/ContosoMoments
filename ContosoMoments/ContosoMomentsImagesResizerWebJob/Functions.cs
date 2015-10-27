@@ -168,13 +168,14 @@ namespace ContosoMomentsImagesResizerWebJob
             {
                 int width = 0, height = 0;
 
+                //TODO: get original image aspect ratio, get "priority property" (width) and calculate new height...
                 switch (imageSize)
                 {
-                    case ImageSizes.Large:
+                    case ImageSizes.Medium:
                         width = 800;
                         height = 480;
                         break;
-                    case ImageSizes.Medium:
+                    case ImageSizes.Large:
                         width = 1024;
                         height = 768;
                         break;
@@ -190,6 +191,21 @@ namespace ContosoMomentsImagesResizerWebJob
 
                 using (Image img = Image.FromStream(blobInput))
                 {
+                    //Calculate aspect ratio and new heights of scaled image
+                    var widthRatio = (double)width / (double)img.Width;
+                    var heightRatio = (double)height / (double)img.Height;
+                    var minAspectRatio = Math.Min(widthRatio, heightRatio);
+                    if (minAspectRatio > 1)
+                    {
+                        width = img.Width;
+                        height = img.Height;
+                    }
+                    else
+                    {
+                        width = (int)(img.Width * minAspectRatio);
+                        height = (int)(img.Height * minAspectRatio);
+                    }
+
                     using (Bitmap bitmap = new Bitmap(img, width, height))
                     {
                         bitmap.Save(output, ImageFormat.Jpeg);
