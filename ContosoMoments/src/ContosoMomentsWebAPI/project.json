@@ -12,12 +12,14 @@
         "EntityFramework.SqlServer": "7.0.0-beta5",
         "EntityFramework.Commands": "7.0.0-beta5",
         "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-beta5",
-        "EntityFramework.Core": "7.0.0-beta5"
+        "EntityFramework.Core": "7.0.0-beta5",
+        "Microsoft.AspNet.Mvc.WebApiCompatShim": "6.0.0-beta5",
+        "Microsoft.AspNet.WebApi.OData": "5.7.0"
     },
 
     "commands": {
-      "web": "Microsoft.AspNet.Hosting --config hosting.ini",
-      "ef": "EntityFramework.Commands",
+        "web": "Microsoft.AspNet.Hosting --config hosting.ini",
+        "ef": "EntityFramework.Commands",
     },
 
     "frameworks": {
