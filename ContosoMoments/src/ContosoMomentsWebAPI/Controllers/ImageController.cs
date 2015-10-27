@@ -249,7 +249,7 @@ namespace ContosoMomentsWebAPI.Controllers
             {
                 CloudBlobClient client = account.CreateCloudBlobClient();
                 CloudBlobContainer imagesContainer = client.GetContainerReference(_appSettings.Options.BaseContainer + "/" + _appSettings.Options.LargeImages);
-                if (imagesContainer.GetPermissions().PublicAccess != BlobContainerPublicAccessType.Container) //Check and fix permissions for new container
+                if (client.GetContainerReference(_appSettings.Options.BaseContainer).GetPermissions().PublicAccess != BlobContainerPublicAccessType.Container) //Check and fix permissions for new container
                     imagesContainer.SetPermissions(new BlobContainerPermissions() { PublicAccess = BlobContainerPublicAccessType.Container });
                 CloudBlockBlob blob = imagesContainer.GetBlockBlobReference(imageId.ToString() + FILE_EXT);
                 blob.Properties.ContentType = formFile.ContentType;
