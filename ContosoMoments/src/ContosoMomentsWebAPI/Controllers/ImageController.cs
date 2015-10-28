@@ -44,7 +44,7 @@ namespace ContosoMomentsWebAPI.Controllers
         // GET: api/image?page=5
         [HttpGet]
         //[EnableQuery(PageSize=5)]
-        public /*IQueryable*/IEnumerable<Image> Get([FromQuery] int? page, [FromQuery] int pageSize = 5)
+        public /*IQueryable*/IEnumerable<Image> Get([FromQuery] int? page, [FromQuery] int pageSize = 25)
         {
             try
             {
