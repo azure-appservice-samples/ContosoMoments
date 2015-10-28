@@ -115,6 +115,8 @@ namespace ContosoMomentsWebAPI.Controllers
             //Check that request has form content with single JPEG file attached
             if (Request.HasFormContentType)
             {
+                //var a = await Request.ReadFormAsync();
+
                 var form = Request.Form;
                 if (form.Files.Count == 1 && form.Files[0].ContentType == SUPPORTED_CONTENT_TYPE)
                 {
