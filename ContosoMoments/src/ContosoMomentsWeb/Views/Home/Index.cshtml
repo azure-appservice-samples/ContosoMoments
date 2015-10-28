@@ -1,11 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Contoso Moments";    
+    ViewData["Title"] = "Contoso Moments";
 }
 
 <script lang="ja" type="text/javascript">
 
-    //var baseUrl = 'http://localhost:21591'; // "http://contosomomentswebapi.azurewebsites.net"
-    var baseUrl = "http://contosomomentswebapi.azurewebsites.net";
+    var baseUrl = 'http://localhost:21591'; // "http://contosomomentswebapi.azurewebsites.net"
 
     $(document).ready(function () {
         var pageCount = 2;
@@ -54,7 +53,7 @@
                 cache: false,
                 contentType: false,
                 processData: false
-            });
+        });
         }
 
         function ParseResponseToTable(response) {
