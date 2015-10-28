@@ -36,16 +36,13 @@ namespace ContosoMomentsMobileWeb
         }
         protected override void Seed(MobileServiceContext context)
         {
-            //List<TodoItem> todoItems = new List<TodoItem>
-            //{
-            //    new TodoItem { Id = Guid.NewGuid().ToString(), Text = "First item", Complete = false },
-            //    new TodoItem { Id = Guid.NewGuid().ToString(), Text = "Second item", Complete = false },
-            //};
+            //Add default user and album into new DB
+            Album album = new Album() { AlbumId = Guid.Parse("11111111-1111-1111-1111-111111111111"), AlbumName = "Demo Album" };
+            context.Set<Album>().Add(album);
 
-            //foreach (TodoItem todoItem in todoItems)
-            //{
-            //    context.Set<TodoItem>().Add(todoItem);
-            //}
+            User user = new User() { UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"), UserName = "Demo User", IsEnabled = true };
+            context.Set<User>().Add(user);
+
 
             base.Seed(context);
         }
