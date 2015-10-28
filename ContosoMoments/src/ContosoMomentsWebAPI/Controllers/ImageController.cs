@@ -43,8 +43,8 @@ namespace ContosoMomentsWebAPI.Controllers
         #region Web APIs
         // GET: api/image?page=5
         [HttpGet]
-        [EnableQuery(PageSize=5)]
-        public IQueryable<Image> Get()
+        //[EnableQuery(PageSize=5)]
+        public /*IQueryable*/IEnumerable<Image> Get([FromQuery] int? page, [FromQuery] int pageSize = 5)
         {
             try
             {
@@ -53,17 +53,18 @@ namespace ContosoMomentsWebAPI.Controllers
                 {
                     IOrderedQueryable<Image> images = context.Images.OrderBy(p => p.ImageId);
 
-                    //if (!page.HasValue)
-                    //    page = 0;
-                    //else
-                    //    page -= 1;
+                    if (!page.HasValue)
+                        page = 0;
+                    else
+                        page -= 1;
 
-                    //int pageSize = int.Parse(_appSettings.Options.PageSize);
+                    //pageSize = int.Parse(_appSettings.Options.PageSize);
 
-                    //IQueryable<Image> imagesOnPage = images.Skip(page.Value * pageSize).Take(pageSize);
+                    IQueryable<Image> imagesOnPage = images.Skip(page.Value * pageSize).Take(pageSize);
 
-                    //return imagesOnPage.ToList();
-                    return images.AsQueryable();
+                    return imagesOnPage.ToList();
+
+                    //return images.AsQueryable();
                 }
                 else
                 {
