@@ -15,6 +15,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.Data.Entity;
 using Microsoft.Framework.DependencyInjection;
 using System.Diagnostics;
+using System.Web.Http.OData;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,7 +43,8 @@ namespace ContosoMomentsWebAPI.Controllers
         #region Web APIs
         // GET: api/image?page=5
         [HttpGet]
-        public IEnumerable<Image> Get([FromQuery] int? page)
+        [EnableQuery(PageSize=5)]
+        public IQueryable<Image> Get()
         {
             try
             {
@@ -51,16 +53,17 @@ namespace ContosoMomentsWebAPI.Controllers
                 {
                     IOrderedQueryable<Image> images = context.Images.OrderBy(p => p.ImageId);
 
-                    if (!page.HasValue)
-                        page = 0;
-                    else
-                        page -= 1;
+                    //if (!page.HasValue)
+                    //    page = 0;
+                    //else
+                    //    page -= 1;
 
-                    int pageSize = int.Parse(_appSettings.Options.PageSize);
+                    //int pageSize = int.Parse(_appSettings.Options.PageSize);
 
-                    IQueryable<Image> imagesOnPage = images.Skip(page.Value * pageSize).Take(pageSize);
+                    //IQueryable<Image> imagesOnPage = images.Skip(page.Value * pageSize).Take(pageSize);
 
-                    return imagesOnPage.ToList();
+                    //return imagesOnPage.ToList();
+                    return images.AsQueryable();
                 }
                 else
                 {

@@ -46,6 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ContosoMomentsDeployment", "ContosoMomentsDeployment\ContosoMomentsDeployment.deployproj", "{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMomentsMobileWeb", "ContosoMomentsMobileWeb\ContosoMomentsMobileWeb.csproj", "{85167A48-E708-4EEB-A65C-8225CD8B1F22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85167A48-E708-4EEB-A65C-8225CD8B1F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85167A48-E708-4EEB-A65C-8225CD8B1F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85167A48-E708-4EEB-A65C-8225CD8B1F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85167A48-E708-4EEB-A65C-8225CD8B1F22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,5 +96,6 @@ Global
 		{5BD5C5FB-23F4-464B-859C-A01223805C83} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
 		{3BD379FC-AFB2-4ABB-A84A-92B4B3D00EAB} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED} = {B6E02BEC-863D-43CC-AE96-E80D393746A8}
+		{85167A48-E708-4EEB-A65C-8225CD8B1F22} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
 	EndGlobalSection
 EndGlobal

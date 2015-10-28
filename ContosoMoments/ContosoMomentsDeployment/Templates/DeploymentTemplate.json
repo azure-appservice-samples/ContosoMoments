@@ -22,6 +22,7 @@
     "webName": "ContosoMomentsWebQA",
     "webApiName": "ContosoMomentsWebApiQA",
     "webJobSiteName": "ContosoMomentsWebJobsQA",
+    "mobileWebSiteName": "ContosoMomentsMobileWebQA",
     "webJobCollectionName": "ContosoMomentsWebJobsCollectionQA",
     "webJobName": "ContosoMomentsWebJobsCollectionQA",
     "notificationHubNamespace": "contosomomentsnotificationhub-ns",
@@ -254,6 +255,54 @@
             "connectionString": "",
             "dbType": "None",
             "packageUri": "https://github.com/azure-appservice-samples/ContosoMoments/archive/WebJob.zip",
+            "setParameters": { }
+          }
+        }
+      ]
+    },
+
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('mobileWebSiteName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "name": "[variables('mobileWebSiteName')]",
+        "serverFarm": "[variables('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('dbName'), ';User Id=', parameters('dbAdminUser'), '@', variables('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "DefaultConnection",
+                "Type": 2
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', variables('mobileWebSiteName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "https://github.com/azure-appservice-samples/ContosoMoments/archive/MobileWeb.zip",
             "setParameters": { }
           }
         }
