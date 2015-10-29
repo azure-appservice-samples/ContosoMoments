@@ -48,6 +48,8 @@ Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ContosoMomentsDeployment", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMomentsMobileWeb", "ContosoMomentsMobileWeb\ContosoMomentsMobileWeb.csproj", "{85167A48-E708-4EEB-A65C-8225CD8B1F22}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mobile", "Mobile", "{71D9D8A9-51F7-4B05-B9DF-C24EAF853A50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
