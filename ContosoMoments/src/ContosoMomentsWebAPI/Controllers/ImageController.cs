@@ -15,7 +15,6 @@ using Microsoft.AspNet.Http;
 using Microsoft.Data.Entity;
 using Microsoft.Framework.DependencyInjection;
 using System.Diagnostics;
-using System.Web.Http.OData;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 

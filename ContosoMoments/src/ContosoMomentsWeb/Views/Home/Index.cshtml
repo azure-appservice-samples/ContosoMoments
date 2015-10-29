@@ -4,17 +4,23 @@
 
 <script lang="ja" type="text/javascript">
 
-    var baseUrl = 'http://contosomomentswebapi.azurewebsites.net'; //'http://localhost:21591'; 
+    var baseUrl = 'http://localhost:21591'; // "http://contosomomentswebapi.azurewebsites.net"
 
     $(document).ready(function () {
-        var pageCount = 1;
+        var pageCount = 2;
+
+        // Display initial images on load
+        GetImages();
 
         $("#buttonGet").click(function () {
+            GetImages();
+        });
+
+        function GetImages()
+        {
             var path = $(this).attr("href");
 
-            var requestUrl = baseUrl + '/api/image';
-            if (pageCount > 0)
-                requestUrl += "?page=" + pageCount;
+            var requestUrl = baseUrl + '/api/image' + "?page=" + pageCount;
 
             $.ajax({
                 url: requestUrl,
@@ -29,19 +35,49 @@
                     alert("Error: " + errorThrown + ", " + textStatus);
                 }
             });
+        }
+
+        function likePhoto(imageId) {
+            $.ajax({
+                url: baseUrl + '/api/like?imageId=' + imgId,
+                type: 'POST',
+                //enctype: 'multipart/form-data',
+                //data: formData,
+                async: false,
+                success: function (data) {
+                    alert("Success")
+                },
+                failure: function (data) {
+                    alert("Failure")
+                },
+                cache: false,
+                contentType: false,
+                processData: false
         });
+        }
 
         function ParseResponseToTable(response) {
             pageCount++;
 
-            $(function () {
+            $(function (response) {
+
                 var count = -1;
                 var $tr = $('<tr>');
                 $.each(response, function (i, item) {
                     count++;
 
                     $tr.append(
-                        $('<td>').append("<img src=\"" + item.ImagePath.xs + "\" />")
+                        $('<td>').append(
+                            "<img src=\"" + item.ImagePath.xs + "\" />" 
+                            + "<a href=\"" + item.ImagePath.lg + "\">Large</a>" + "  |  "
+                            + "<a href=\"" + item.ImagePath.md + "\">Medium</a>" + "  |  "
+                            + "<a href=\"" + item.ImagePath.sm + "\">Small</a>" + "  |  "
+                            // TODO: Fix this as it does not work; click is not occuring
+                            + "<input type=\"button\" value=\"like\" onclick=\"likePhoto(\"" + item.ImageId + "\");\"/>"
+                            //+ '<a href="javascript:void(0);"' + 'onclick="likePhoto("' + 'test' + '");">like</a>'
+                            //+ '<a href="javascript:void(0);">like</a>'
+                        )
+                    //<div align=\"right\"></div>
                     );
 
                     if (count % 5 == 0 || count == response.length - 1) {
@@ -56,6 +92,8 @@
                 }
             });
         }
+
+        
 
         $('input[type = "file"]').change(function () {
             var file = this.files[0];

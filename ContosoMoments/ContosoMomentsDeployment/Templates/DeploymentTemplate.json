@@ -22,11 +22,8 @@
     "webName": "ContosoMomentsWebQA",
     "webApiName": "ContosoMomentsWebApiQA",
     "webJobSiteName": "ContosoMomentsWebJobsQA",
-    "mobileWebSiteName": "ContosoMomentsMobileWebQA",
     "webJobCollectionName": "ContosoMomentsWebJobsCollectionQA",
-    "webJobName": "ContosoMomentsWebJobsCollectionQA",
-    "notificationHubNamespace": "contosomomentsnotificationhub-ns",
-    "notificationHubName" :  "contosomomentsnotificationhub"
+    "webJobName": "ContosoMomentsWebJobsCollectionQA"
   },
   "resources": [
     {
@@ -36,7 +33,21 @@
       "location": "[parameters('serverLocation')]",
       "properties": {
         "accountType": "[variables('storageAccountType')]"
-      }
+      },
+      //"resources": [
+      //  {
+      //    "apiVersion": "2015-05-01-preview",
+      //    "name": "[variables('storageContainerName')]",
+      //    "type": "container",
+      //    "location": "[parameters('serverLocation')]",
+      //    "dependsOn": [
+      //      "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      //    ],
+      //    "properties": {
+      //      "permission" :  "Container"
+      //    }
+      //  }
+      //]
     },
 
     {
@@ -116,7 +127,7 @@
           "properties": {
             "connectionString": "",
             "dbType": "None",
-            "packageUri": "https://github.com/azure-appservice-samples/ContosoMoments/archive/WebSite.zip",
+            "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
             "setParameters": { }
           }
         }
@@ -165,45 +176,6 @@
           "properties": {
             "StorageConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1)]"
           }
-        },
-        {
-          "apiVersion": "2015-08-01",
-          "name": "MSDeploy",
-          "type": "extensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', variables('webName'))]"
-          ],
-          "properties": {
-            "connectionString": "",
-            "dbType": "None",
-            "packageUri": "https://github.com/azure-appservice-samples/ContosoMoments/archive/WebApi.zip",
-            "setParameters": { }
-          }
-        }
-      ]
-    },
-
-    {
-      "apiVersion": "2014-09-01",
-      "type": "Microsoft.NotificationHubs/namespaces",
-      "name": "[variables('notificationHubNamespace')]",
-      "location": "[parameters('serverLocation')]",
-      "properties": {
-        "region": "[parameters('serverLocation')]",
-        "namespaceType": 1
-      },
-      "resources": [
-        {
-          "apiVersion": "2014-09-01",
-          "name": "[variables('notificationHubName')]",
-          "type": "NotificationHubs",
-          "location": "[parameters('serverLocation')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.NotificationHubs/namespaces', variables('notificationHubNamespace'))]"
-          ],
-          "properties": {
-            "name": "[variables('notificationHubName')]"
-          }
         }
       ]
     },
@@ -242,68 +214,6 @@
                 "Type": 2
               }
             ]
-          }
-        },
-        {
-          "apiVersion": "2015-08-01",
-          "name": "MSDeploy",
-          "type": "extensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', variables('webName'))]"
-          ],
-          "properties": {
-            "connectionString": "",
-            "dbType": "None",
-            "packageUri": "https://github.com/azure-appservice-samples/ContosoMoments/archive/WebJob.zip",
-            "setParameters": { }
-          }
-        }
-      ]
-    },
-
-    {
-      "apiVersion": "2014-04-01",
-      "type": "Microsoft.Web/sites",
-      "name": "[variables('mobileWebSiteName')]",
-      "location": "[parameters('serverLocation')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-      ],
-      "properties": {
-        "name": "[variables('mobileWebSiteName')]",
-        "serverFarm": "[variables('hostPlanName')]"
-      },
-      "resources": [
-        {
-          "apiVersion": "2014-04-01",
-          "type": "config",
-          "name": "web",
-          "dependsOn": [
-            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
-          ],
-          "properties": {
-            "connectionStrings": [
-              {
-                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('dbName'), ';User Id=', parameters('dbAdminUser'), '@', variables('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
-                "Name": "DefaultConnection",
-                "Type": 2
-              }
-            ]
-          }
-        },
-        {
-          "apiVersion": "2015-08-01",
-          "name": "MSDeploy",
-          "type": "extensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', variables('mobileWebSiteName'))]"
-          ],
-          "properties": {
-            "connectionString": "",
-            "dbType": "None",
-            "packageUri": "https://github.com/azure-appservice-samples/ContosoMoments/archive/MobileWeb.zip",
-            "setParameters": { }
           }
         }
       ]
