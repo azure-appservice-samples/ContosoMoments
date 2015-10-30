@@ -4,10 +4,30 @@
 
 <script lang="ja" type="text/javascript">
 
-    var baseUrl = 'http://localhost:21591'; // "http://contosomomentswebapi.azurewebsites.net"
+    var baseUrl = 'http://localhost:21591'; //window.location.href;
+    //var baseUrl = "http://contosomomentswebapi.azurewebsites.net";
+
+    function likePhoto(imageId) {
+        $.ajax({
+            url: baseUrl + 'api/like?imageId=' + imageId,
+            type: 'POST',
+            //enctype: 'multipart/form-data',
+            //data: formData,
+            async: false,
+            success: function (data) {
+                alert("Success")
+            },
+            failure: function (data) {
+                alert("Failure")
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    }
 
     $(document).ready(function () {
-        var pageCount = 2;
+        var pageCount = 1;
 
         // Display initial images on load
         GetImages();
@@ -16,68 +36,40 @@
             GetImages();
         });
 
-        function GetImages()
-        {
-            var path = $(this).attr("href");
-
-            var requestUrl = baseUrl + '/api/image' + "?page=" + pageCount;
-
+        function GetImages() {
             $.ajax({
-                url: requestUrl,
-                type: 'GET',
-                datatype: 'json',
+                url: '/Home/GetImages',
+                data: { page: pageCount },
                 success: function (response) {
                     ParseResponseToTable(response);
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    //console.log('Error in Operation');
-                    console.log(path, arguments);
                     alert("Error: " + errorThrown + ", " + textStatus);
                 }
             });
         }
 
-        function likePhoto(imageId) {
-            $.ajax({
-                url: baseUrl + '/api/like?imageId=' + imgId,
-                type: 'POST',
-                //enctype: 'multipart/form-data',
-                //data: formData,
-                async: false,
-                success: function (data) {
-                    alert("Success")
-                },
-                failure: function (data) {
-                    alert("Failure")
-                },
-                cache: false,
-                contentType: false,
-                processData: false
-        });
-        }
-
         function ParseResponseToTable(response) {
             pageCount++;
 
-            $(function (response) {
+            $(function () {
 
-                var count = -1;
+                var count = 0;
                 var $tr = $('<tr>');
                 $.each(response, function (i, item) {
                     count++;
 
+                    if (count > 5 && count % 5 == 1)
+                        $tr = $('<tr>');
+
                     $tr.append(
                         $('<td>').append(
-                            "<img src=\"" + item.ImagePath.xs + "\" />" 
+                            "<img src=\"" + item.ImagePath.xs + "\" />"
                             + "<a href=\"" + item.ImagePath.lg + "\">Large</a>" + "  |  "
                             + "<a href=\"" + item.ImagePath.md + "\">Medium</a>" + "  |  "
                             + "<a href=\"" + item.ImagePath.sm + "\">Small</a>" + "  |  "
-                            // TODO: Fix this as it does not work; click is not occuring
-                            + "<input type=\"button\" value=\"like\" onclick=\"likePhoto(\"" + item.ImageId + "\");\"/>"
-                            //+ '<a href="javascript:void(0);"' + 'onclick="likePhoto("' + 'test' + '");">like</a>'
-                            //+ '<a href="javascript:void(0);">like</a>'
-                        )
-                    //<div align=\"right\"></div>
+                            + '<input type="button" value="like" onclick="javascript:likePhoto(\'' + item.ImageId + '\')"/>'
+                            )
                     );
 
                     if (count % 5 == 0 || count == response.length - 1) {
@@ -86,14 +78,11 @@
                     }
                 });
 
-                if (count < 4)
-                {
+                if (count % 5 != 0) {
                     $("#buttonGet").hide();
                 }
             });
         }
-
-        
 
         $('input[type = "file"]').change(function () {
             var file = this.files[0];
@@ -107,13 +96,13 @@
             formData.append("image", $('input[type = "file"]')[0].files[0]);
 
             $.ajax({
-                url: baseUrl + '/api/Image',
+                url: "home/PostImage", //baseUrl + 'api/Image',
                 type: 'POST',
-                enctype: 'multipart/form-data',
-                data: formData,
-                async: false,
+                //enctype: 'multipart/form-data',
+                data: { data: formData },
+                //async: true,
                 success: function (data) {
-                    alert("Success")
+                    $('#buttonGet').hide();
                 },
                 failure: function (data) {
                     alert("Failure")
@@ -129,12 +118,18 @@
 
 <div>
     <form id="data" method="post" enctype="multipart/form-data">
-        <input id="buttonGet" type="button" value="Get image" />
-        <br /><br />
         <input id="filePicker" type="file" name="filePicker" />
         <input id="upload" type="submit" value="Upload" />
     </form>
-    <table id="imagesTable" class="table-responsive">
-        @*<tr></tr>*@
-    </table>
+
+    <div class="table-responsive">
+        <table id="imagesTable" class="table">
+            @*<tr></tr>*@
+        </table>
+    </div>
+
+    <div align="center">
+        <br /><br />
+        <input id="buttonGet" type="button" value="Get more images" />
+    </div>
 </div>

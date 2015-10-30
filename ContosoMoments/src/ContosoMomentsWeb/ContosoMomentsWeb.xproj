@@ -15,5 +15,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <DevelopmentServerPort>21679</DevelopmentServerPort>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ContosoMomentsCommon\ContosoMomentsCommon.csproj" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>
