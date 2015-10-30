@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ContosoMoments.Views.ImagesList">
+  <Grid RowSpacing="0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <ActivityIndicator Grid.RowSpan="2" IsVisible="False" IsEnabled="True" x:Name="syncIndicator"/>
+
+    <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="1">
+    </ListView>
+
+  </Grid>
+</ContentPage>
