@@ -10,6 +10,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ImagePathForSizeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ImageManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoggingHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Image.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ImagesListViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\ImageDetailsView.xaml.cs">
+      <DependentUpon>ImageDetailsView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\ImagesList.xaml.cs">
       <DependentUpon>ImagesList.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -17,6 +30,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\ImagesList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\ImageDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

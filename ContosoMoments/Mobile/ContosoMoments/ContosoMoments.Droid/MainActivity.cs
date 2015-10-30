@@ -17,7 +17,10 @@ namespace ContosoMoments.Droid
 			base.OnCreate (bundle);
 
 			global::Xamarin.Forms.Forms.Init (this, bundle);
-			LoadApplication (new ContosoMoments.App ());
+
+            Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
+
+            LoadApplication(new ContosoMoments.App ());
 		}
 	}
 }

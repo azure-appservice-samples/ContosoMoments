@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ContosoMoments.Views.ImagesList">
+             x:Class="ContosoMoments.Views.ImagesList"
+             xmlns:local="clr-namespace:ContosoMoments.Converters">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
+    </ResourceDictionary>
+  </ContentPage.Resources>
+
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -9,7 +16,35 @@
     </Grid.RowDefinitions>
     <ActivityIndicator Grid.RowSpan="2" IsVisible="False" IsEnabled="True" x:Name="syncIndicator"/>
 
+    <StackLayout Grid.Row="0" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
+      <Label TextColor="#555555" Text="Contoso Moments" />
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <!--<ColumnDefinition/>-->
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <!--<Entry x:Name="newItemName"
+                  Placeholder="Item name" />-->
+        <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+          <Button Text="+" MinimumHeightRequest="30" Clicked="OnAdd" />
+          <Button Text="Sync images" x:Name="syncButton" IsVisible="False" Grid.Row="1" HeightRequest="30" Clicked="OnSyncItems" >
+          </Button>
+        </StackLayout>
+      </Grid>
+    </StackLayout>
+
     <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="1">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
+              <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}" Text="{Binding ImageId}"/>
+              </StackLayout>
+            </StackLayout>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
     </ListView>
 
   </Grid>

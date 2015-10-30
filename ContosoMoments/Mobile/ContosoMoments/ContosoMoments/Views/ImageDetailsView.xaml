@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ContosoMoments.Views.ImageDetailsView"
+             xmlns:local="clr-namespace:ContosoMoments.Converters">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
+    </ResourceDictionary>
+  </ContentPage.Resources>
+  
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+    <Label Text="Image details" Grid.Row="0" Grid.ColumnSpan="3"/>
+    <ImageCell Grid.Row="1" Grid.ColumnSpan="3" ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}" Text="{Binding ImageId}"/>
+    <HyperLinkLabel Grid.Row="2" Grid.Column="0" Text="Extra Small" NavigateUri="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"/>
+    <HyperLinkLabel Grid.Row="2" Grid.Column="1" Text="Medium" NavigateUri="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}"/>
+    <HyperLinkLabel Grid.Row="2" Grid.Column="2" Text="Large" NavigateUri="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}"/>
+  </Grid>
+
+</ContentPage>
