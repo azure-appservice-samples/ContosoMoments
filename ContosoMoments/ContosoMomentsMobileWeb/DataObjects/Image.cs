@@ -15,9 +15,15 @@ namespace ContosoMomentsMobileWeb.DataObjects
 
         public string ContainerName { get; set; }
 
-        public Guid AlbumId { get; set; }
+        //public Guid AlbumId { get; set; }
 
-        public Guid UserId { get; set; }
+        //public Guid UserId { get; set; }
+
+        [ForeignKey("Id")]
+        public virtual Album Album { get; set; }
+
+        [ForeignKey("Id")]
+        public virtual User User { get; set; }
 
         [NotMapped]
         public IDictionary<string, Uri> ImagePath

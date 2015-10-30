@@ -9,42 +9,42 @@ using ContosoMomentsMobileWeb.Models;
 
 namespace ContosoMomentsMobileWeb.Controllers
 {
-    public class AlbumController : TableController<Album>
+    public class UserController : TableController<User>
     {
         protected override void Initialize(HttpControllerContext controllerContext)
         {
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
-            DomainManager = new EntityDomainManager<Album>(context, Request, Services);
+            DomainManager = new EntityDomainManager<User>(context, Request, Services);
         }
 
-        // GET tables/Album
-        public IQueryable<Album> GetAllAlbum()
+        // GET tables/User
+        public IQueryable<User> GetAllUser()
         {
             return Query(); 
         }
 
-        // GET tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        public SingleResult<Album> GetAlbum(string id)
+        // GET tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        public SingleResult<User> GetUser(string id)
         {
             return Lookup(id);
         }
 
-        // PATCH tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        public Task<Album> PatchAlbum(string id, Delta<Album> patch)
+        // PATCH tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        public Task<User> PatchUser(string id, Delta<User> patch)
         {
              return UpdateAsync(id, patch);
         }
 
-        // POST tables/Album
-        public async Task<IHttpActionResult> PostAlbum(Album item)
+        // POST tables/User
+        public async Task<IHttpActionResult> PostUser(User item)
         {
-            Album current = await InsertAsync(item);
+            User current = await InsertAsync(item);
             return CreatedAtRoute("Tables", new { id = current.Id }, current);
         }
 
-        // DELETE tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        public Task DeleteAlbum(string id)
+        // DELETE tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        public Task DeleteUser(string id)
         {
              return DeleteAsync(id);
         }

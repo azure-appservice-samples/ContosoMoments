@@ -12,8 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImagePathForSizeConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ImageManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LoggingHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Image.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />

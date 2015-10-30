@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ContosoMoments.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,35 +11,37 @@ namespace ContosoMoments.Views
 {
 	public partial class ImagesList : ContentPage
 	{
-        EntitiesManager manager;
+        ImagesListViewModel viewModel = new ImagesListViewModel(App.MobileService);
 
         public ImagesList ()
 		{
 			InitializeComponent ();
-
-            manager = new EntitiesManager();
 
             if (Device.OS == TargetPlatform.Windows || Device.OS == TargetPlatform.WinPhone)
             {
                 syncButton.IsVisible = true;
             }
 
+            BindingContext = viewModel;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            if (imagesList.ItemsSource == null)
-            {
-                await SyncItemsAsync(true);
-                await LoadItems();
-            }
+            //if (imagesList.ItemsSource == null)
+            //{
+            //    await SyncItemsAsync(true);
+            //    await LoadItems();
+            //}
+
+            await viewModel.GetImagesAsync();
+
         }
 
         private async Task LoadItems()
         {
-            IEnumerable<Models.Image> items = await manager.GetImagesAsync();
+            //IEnumerable<Models.Image> items = await manager.GetImagesAsync();
 
             //imagesList.ItemsSource = items.Select(i => new ImagesListViewModel(i, this.manager));
         }
@@ -66,7 +69,7 @@ namespace ContosoMoments.Views
 
         public async void OnSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var todo = e.SelectedItem/* as TodoItemViewModel*/;
+            var todo = e.SelectedItem as ImagesListViewModel;
 
             if (todo != null)
             {
@@ -94,8 +97,8 @@ namespace ContosoMoments.Views
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
-                await manager.SyncImagesAsync();
-                await LoadItems();
+                //await manager.SyncImagesAsync();
+                //await LoadItems();
             }
         }
 

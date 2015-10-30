@@ -42,6 +42,9 @@ namespace ContosoMomentsMobileWeb.Models
                     "ServiceTableColumn", (property, attributes) => attributes.Single().ColumnType.ToString()));
         }
 
+        public System.Data.Entity.DbSet<ContosoMomentsMobileWeb.DataObjects.Album> Albums { get; set; }
+
+        public System.Data.Entity.DbSet<ContosoMomentsMobileWeb.DataObjects.User> Users { get; set; }
     }
 
 }
