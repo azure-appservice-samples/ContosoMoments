@@ -10,7 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>ContosoMoments.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>ContosoMomentsiOS</AssemblyName>
+    <AssemblyName>ContosoMoments</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>

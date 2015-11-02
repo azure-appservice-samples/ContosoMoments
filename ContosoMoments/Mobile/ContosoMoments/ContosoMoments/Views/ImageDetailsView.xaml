@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImageDetailsView"
-             xmlns:local="clr-namespace:ContosoMoments.Converters">
+             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments">
   <ContentPage.Resources>
     <ResourceDictionary>
       <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
@@ -21,10 +21,10 @@
       <ColumnDefinition/>
     </Grid.ColumnDefinitions>
     <Label Text="Image details" Grid.Row="0" Grid.ColumnSpan="3"/>
-    <ImageCell Grid.Row="1" Grid.ColumnSpan="3" ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}" Text="{Binding ImageId}"/>
-    <HyperLinkLabel Grid.Row="2" Grid.Column="0" Text="Extra Small" NavigateUri="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"/>
-    <HyperLinkLabel Grid.Row="2" Grid.Column="1" Text="Medium" NavigateUri="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}"/>
-    <HyperLinkLabel Grid.Row="2" Grid.Column="2" Text="Large" NavigateUri="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}"/>
+    <Image Grid.Row="1" Grid.ColumnSpan="3" Source="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}"/>
+    <Button Grid.Row="2" Grid.Column="0" Text="Extra Small" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"/>
+    <Button Grid.Row="2" Grid.Column="1" Text="Medium" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}"/>
+    <Button Grid.Row="2" Grid.Column="2" Text="Large" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}"/>
   </Grid>
 
-</ContentPage>
+</ContentPage> 

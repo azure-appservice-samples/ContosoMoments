@@ -27,7 +27,7 @@ namespace ContosoMoments
             //		}
             //	}
             //};
-            MainPage = new ImagesList();
+            MainPage = new NavigationPage(new ImagesList());
 		}
 
 		protected override void OnStart ()

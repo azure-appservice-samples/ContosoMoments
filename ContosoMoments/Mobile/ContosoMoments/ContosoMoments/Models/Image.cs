@@ -8,14 +8,21 @@ namespace ContosoMoments.Models
 {
     public class Image
     {
+        Guid id;
         Guid imageId;
         string imageFormat;
         string containerName;
         Guid albumId;
         Guid userId;
 
-
         [JsonProperty(PropertyName = "Id")]
+        public Guid Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        [JsonProperty(PropertyName = "ImageId")]
         public Guid ImageId
         {
             get { return imageId; }

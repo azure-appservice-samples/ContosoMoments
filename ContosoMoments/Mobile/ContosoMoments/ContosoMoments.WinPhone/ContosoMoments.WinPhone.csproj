@@ -11,7 +11,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ContosoMoments.WinPhone</RootNamespace>
-    <AssemblyName>ContosoMoments.WinPhone</AssemblyName>
+    <AssemblyName>ContosoMoments</AssemblyName>
     <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <SilverlightVersion>

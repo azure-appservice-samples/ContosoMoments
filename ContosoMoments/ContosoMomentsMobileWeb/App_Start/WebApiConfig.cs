@@ -34,7 +34,7 @@ namespace ContosoMomentsMobileWeb
         {
             base.InitializeDatabase(context);
         }
-        protected override void Seed(MobileServiceContext context)
+        protected async override void Seed(MobileServiceContext context)
         {
             //Add default user and album into new DB
             Album album = new Album() { AlbumId = Guid.Parse("11111111-1111-1111-1111-111111111111"), AlbumName = "Demo Album" };
@@ -43,7 +43,7 @@ namespace ContosoMomentsMobileWeb
             User user = new User() { UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"), UserName = "Demo User", IsEnabled = true };
             context.Set<User>().Add(user);
 
-
+            await context.SaveChangesAsync();
             base.Seed(context);
         }
     }

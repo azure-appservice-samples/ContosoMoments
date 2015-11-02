@@ -74,66 +74,66 @@ namespace ContosoMomentsImagesResizerWebJob
             }
         }
 
-        public async static Task SendPushNotificationAsync([QueueTrigger("pushnotificationrequest")] BlobInformation blobInfo)
-        {
-            //TODO: use Mobile SDK to send push notification to owner user about blobInfo.ImageId
-            Trace.TraceInformation("Sending push notficiations for ImageId = " + blobInfo.ImageId);
+        //public async static Task SendPushNotificationAsync([QueueTrigger("pushnotificationrequest")] BlobInformation blobInfo)
+        //{
+        //    //TODO: use Mobile SDK to send push notification to owner user about blobInfo.ImageId
+        //    Trace.TraceInformation("Sending push notficiations for ImageId = " + blobInfo.ImageId);
 
-            string notificationHubConnectionString = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.ConnectionString"];
-            string notificationHubPath = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.Path"];
-            string dataConnection = ConfigurationManager.ConnectionStrings["DataConnection"].ConnectionString;
+        //    string notificationHubConnectionString = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.ConnectionString"];
+        //    string notificationHubPath = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.Path"];
+        //    string dataConnection = ConfigurationManager.ConnectionStrings["DataConnection"].ConnectionString;
 
-            try
-            {
-                string userName, containerName, userId, imageId;
-                userName = containerName = userId = imageId = null;
+        //    try
+        //    {
+        //        string userName, containerName, userId, imageId;
+        //        userName = containerName = userId = imageId = null;
 
-                if (getInforFroDB(blobInfo, dataConnection, ref userName, ref containerName, ref userId, ref imageId))
-                {
-                    //Prepare the notification and sent
-                    NotificationHubClient hub = NotificationHubClient.CreateClientFromConnectionString(notificationHubConnectionString, notificationHubPath);
+        //        if (getInforFroDB(blobInfo, dataConnection, ref userName, ref containerName, ref userId, ref imageId))
+        //        {
+        //            //Prepare the notification and sent
+        //            NotificationHubClient hub = NotificationHubClient.CreateClientFromConnectionString(notificationHubConnectionString, notificationHubPath);
 
-                    string imageUrl = string.Format("{0}/lg/{1}.jpg", containerName, imageId);
-                    string messgae = string.Format("{0}! Someone likes your image at {1}", userName, imageUrl);
+        //            string imageUrl = string.Format("{0}/lg/{1}.jpg", containerName, imageId);
+        //            string messgae = string.Format("{0}! Someone likes your image at {1}", userName, imageUrl);
 
-                    var registrations = await hub.GetRegistrationsByTagAsync(userId, 0);
+        //            var registrations = await hub.GetRegistrationsByTagAsync(userId, 0);
 
-                    foreach (var registration in registrations)
-                    {
-                        if (registration is WindowsRegistrationDescription)
-                        {
-                            await sendWindowsStoreNotification(hub, messgae, registration);
-                        }
-                        else if (registration is MpnsRegistrationDescription)
-                        {
-                            await sendWPNotification(hub, messgae, registration);
-                        }
-                        else if (registration is AppleRegistrationDescription)
-                        {
-                            await sendIOSNotification(hub, messgae, registration);
-                        }
-                        else if (registration is GcmRegistrationDescription)
-                        {
-                            await sendGCMNotification(hub, messgae, registration);
-                        }
-                        else
-                        {
-                            Trace.TraceWarning("Cannot send push notification to UNSUPPORTED device type with RegistrationId " + registration.RegistrationId);
-                        }
-                    }
-                }
-                else
-                {
-                    Trace.TraceInformation("No registered push notification users found for ImageId = " + blobInfo.ImageId);
-                }
+        //            foreach (var registration in registrations)
+        //            {
+        //                if (registration is WindowsRegistrationDescription)
+        //                {
+        //                    await sendWindowsStoreNotification(hub, messgae, registration);
+        //                }
+        //                else if (registration is MpnsRegistrationDescription)
+        //                {
+        //                    await sendWPNotification(hub, messgae, registration);
+        //                }
+        //                else if (registration is AppleRegistrationDescription)
+        //                {
+        //                    await sendIOSNotification(hub, messgae, registration);
+        //                }
+        //                else if (registration is GcmRegistrationDescription)
+        //                {
+        //                    await sendGCMNotification(hub, messgae, registration);
+        //                }
+        //                else
+        //                {
+        //                    Trace.TraceWarning("Cannot send push notification to UNSUPPORTED device type with RegistrationId " + registration.RegistrationId);
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Trace.TraceInformation("No registered push notification users found for ImageId = " + blobInfo.ImageId);
+        //        }
 
-                Trace.TraceInformation("Done processing 'pushnotificationrequest' message");
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError("Error while sending push notifications: " + ex.Message);
-            }
-        }
+        //        Trace.TraceInformation("Done processing 'pushnotificationrequest' message");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Trace.TraceError("Error while sending push notifications: " + ex.Message);
+        //    }
+        //}
         #endregion
 
         #region Private functionality

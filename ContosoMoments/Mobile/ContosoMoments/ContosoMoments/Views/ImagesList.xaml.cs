@@ -29,21 +29,21 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
-            //if (imagesList.ItemsSource == null)
-            //{
-            //    await SyncItemsAsync(true);
-            //    await LoadItems();
-            //}
+            if (imagesList.ItemsSource == null)
+            {
+                //await SyncItemsAsync(true);
+                await LoadItems();
+            }
 
-            await viewModel.GetImagesAsync();
+            
 
         }
 
         private async Task LoadItems()
         {
-            //IEnumerable<Models.Image> items = await manager.GetImagesAsync();
+            await viewModel.GetImagesAsync();
 
-            //imagesList.ItemsSource = items.Select(i => new ImagesListViewModel(i, this.manager));
+            imagesList.ItemsSource = viewModel.Images.ToList();
         }
 
 
@@ -69,12 +69,13 @@ namespace ContosoMoments.Views
 
         public async void OnSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var todo = e.SelectedItem as ImagesListViewModel;
+            var selectedImage = e.SelectedItem as ContosoMoments.Models.Image;
 
-            if (todo != null)
+            if (selectedImage != null)
             {
                 var detailsView = new ImageDetailsView();
-                detailsView.BindingContext = todo;
+                var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
+                detailsView.BindingContext = detailsVM;
 
                 await Navigation.PushAsync(detailsView);
             }

@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImagesList"
-             xmlns:local="clr-namespace:ContosoMoments.Converters">
+             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments">
   <ContentPage.Resources>
     <ResourceDictionary>
       <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
@@ -33,17 +33,11 @@
       </Grid>
     </StackLayout>
 
-    <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="1"
-              ItemsSource="{Binding Image}">
+    <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="1">
       <ListView.ItemTemplate>
         <DataTemplate>
-          <ViewCell>
-            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
-              <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}" Text="{Binding ImageId}"/>
-              </StackLayout>
-            </StackLayout>
-          </ViewCell>
+          <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}" 
+                     Text="{Binding ImageFormat}"/>
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
