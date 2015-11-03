@@ -35,8 +35,23 @@ namespace ContosoMoments.Views
                 await LoadItems();
             }
 
-            
+            App.Instance.ImageTaken += App_ImageTaken;
 
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            App.Instance.ImageTaken -= App_ImageTaken;
+        }
+
+        private void App_ImageTaken(object sender, EventArgs e)
+        {
+            //DEBUG
+            //imgPreview.Source = App.Instance.image;
+
+            //Upload image
         }
 
         private async Task LoadItems()
@@ -86,7 +101,7 @@ namespace ContosoMoments.Views
 
         public async void OnAdd(object sender, EventArgs e)
         {
-            
+            App.Instance.TakePicture();
         }
 
         public async void OnSyncItems(object sender, EventArgs e)

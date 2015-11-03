@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Tasks;
 
 namespace ContosoMoments.WinPhone
 {
@@ -19,7 +20,30 @@ namespace ContosoMoments.WinPhone
 
 			global::Xamarin.Forms.Forms.Init ();
 
+           
             LoadApplication(new ContosoMoments.App ());
-		}
-	}
+
+            ContosoMoments.App.Instance.ShouldTakePicture += () => {
+                CameraCaptureTask cameraCaptureTask = new CameraCaptureTask();
+                cameraCaptureTask.Completed += CameraCaptureTaskOnCompleted;
+
+                cameraCaptureTask.Show();
+            };
+        }
+
+        private void CameraCaptureTaskOnCompleted(object sender, PhotoResult e)
+        {
+            if (e.TaskResult == TaskResult.None)
+            {
+                return;
+            }
+
+            if (e.TaskResult == TaskResult.Cancel)
+            {
+                return;
+            }
+
+            ContosoMoments.App.Instance.ShowCapturedImage(e.ChosenPhoto);
+        }
+    }
 }
