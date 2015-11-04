@@ -7,7 +7,7 @@
     "SmallImages": "sm",
     "ExtraSmallImages": "xs",
     "MediumImages": "md",
-    "StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=contosomomentsstorage;AccountKey=4/3HkQaWRsmwDHxZAwLulfpUfy0irYIJ6yrHKcaGocjpkhyOBxTH86LcbSZWozRmZ0cI54umJn/+cEzcM7npZQ==",
+    "StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=contosomomentsstorage;AccountKey=**KEY**",
   },
   "Data": {
     "DefaultConnection": {
