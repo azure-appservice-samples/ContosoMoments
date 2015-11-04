@@ -39,7 +39,7 @@ namespace ContosoMoments.iOS
                                    Environment.SpecialFolder.MyDocuments), "tmp.png");
                 var image = (UIImage)e.Info.ObjectForKey(new NSString("UIImagePickerControllerOriginalImage"));
                 InvokeOnMainThread(() => {
-                    image.AsPNG().Save(filepath, false);
+                    image.AsJPEG().Save(filepath, false);
                     (Xamarin.Forms.Application.Current as App).ShowCapturedImage(filepath);
                 });
                 app.KeyWindow.RootViewController.DismissViewController(true, null);
