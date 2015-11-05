@@ -17,11 +17,6 @@ namespace ContosoMoments.Views
 		{
 			InitializeComponent ();
 
-            if (Device.OS == TargetPlatform.Windows || Device.OS == TargetPlatform.WinPhone)
-            {
-                syncButton.IsVisible = true;
-            }
-
             BindingContext = viewModel;
         }
 
