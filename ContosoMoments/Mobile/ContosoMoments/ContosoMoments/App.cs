@@ -1,4 +1,5 @@
-﻿using ContosoMoments.Views;
+﻿using ContosoMoments.Settings;
+using ContosoMoments.Views;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace ContosoMoments
 {
     public class App : Application
     {
-        public static MobileServiceClient MobileService = new MobileServiceClient(Constants.ApplicationURL/*, Constants.ApplicationKey*/);
+        public static MobileServiceClient MobileService;
 
         public static App Instance;
         //DEBUG
@@ -25,19 +26,22 @@ namespace ContosoMoments
         {
             Instance = this;
 
-            // The root page of your application
-            //MainPage = new ContentPage {
-            //	Content = new StackLayout {
-            //		VerticalOptions = LayoutOptions.Center,
-            //		Children = {
-            //			new Label {
-            //				XAlign = TextAlignment.Center,
-            //				Text = "Welcome to Xamarin Forms!"
-            //			}
-            //		}
-            //	}
-            //};
-            MainPage = new NavigationPage(new ImagesList());
+            if (AppSettings.Current.GetValueOrDefault<string>("MobileAppURL") == default(string))
+            {
+                //first run
+                MainPage = new SettingView();
+            }
+            else
+            {
+                Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+                //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
+                //Constants.ApplicationKey = AppSettings.Current.GetValueOrDefault<string>("ApplicationKey");
+                MobileService = new MobileServiceClient(Constants.ApplicationURL);
+
+                // The root page of your application
+                MainPage = new NavigationPage(new ImagesList());
+            }
+
         }
 
         protected override void OnStart()
