@@ -1,7 +1,11 @@
 ﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -95,6 +99,47 @@ namespace ContosoMoments.ViewModels
             {
                 IsPending = false;
             }
+        }
+
+        public async Task<bool> UploadImageAsync(Stream imageStream)
+        {
+            //1. Get SaSToken
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/MobileImage/GetSasToken"));
+            request.Method = "GET";
+
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+                using (Stream stream = response.GetResponseStream())
+                {
+                    byte[] bytes = new byte[stream.Length];
+                    await stream.ReadAsync(bytes, 0, (int)stream.Length);
+
+                    var sasToken = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)stream.Length);
+
+                    StorageCredentials credentials = new StorageCredentials(sasToken);
+                    CloudBlobContainer container = new CloudBlobContainer(new Uri("https://contosomomentsstorage.blob.core.windows.net/images/lg"), credentials);
+
+                    //2. Upload the new image as a BLOB from the stream.
+                    Guid imageId = Guid.NewGuid();
+                    CloudBlockBlob blobFromSASCredential = container.GetBlockBlobReference(imageId.ToString() + ".jpg");
+                    blobFromSASCredential.Properties.ContentType = "image/jpeg";
+
+                    bytes = new byte[imageStream.Length];
+                    await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
+                    await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
+
+                    //await blobFromSASCredential.UploadFromStreamAsync(imageStream);
+
+                    //3. Call mobile service with new imageId
+                    //HttpWebRequest postRequest = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/MobileImage/PostImage"));
+                    //request.ContentType = "application/json";
+                    //request.Method = "POST";
+                }
+            }
+
+
+
+            return true;
         }
     }
 }

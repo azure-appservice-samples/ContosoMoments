@@ -84,8 +84,10 @@ namespace ContosoMoments
             //DEBUG
             //image = ImageSource.FromStream(() => stream);
 
-            ImageStream = new MemoryStream((int)stream.Length);
-            await stream.CopyToAsync(ImageStream);
+            byte[] bytes = new byte[(int)stream.Length];
+            await stream.ReadAsync(bytes, 0, (int)stream.Length);
+
+            ImageStream = new MemoryStream(bytes);
 
             if (null != ImageTaken)
                 ImageTaken(this, new EventArgs());

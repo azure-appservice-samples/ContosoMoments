@@ -41,12 +41,20 @@ namespace ContosoMoments.Views
             App.Instance.ImageTaken -= App_ImageTaken;
         }
 
-        private void App_ImageTaken(object sender, EventArgs e)
+        private async void App_ImageTaken(object sender, EventArgs e)
         {
             //DEBUG
             //imgPreview.Source = App.Instance.image;
 
             //Upload image
+            if (await viewModel.UploadImageAsync(App.Instance.ImageStream))
+            {
+                OnRefresh(sender, e);
+            }
+            else
+            {
+                await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
+            }
         }
 
         private async Task LoadItems()

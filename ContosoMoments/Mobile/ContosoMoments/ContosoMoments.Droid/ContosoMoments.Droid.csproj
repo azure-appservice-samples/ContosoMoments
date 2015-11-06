@@ -80,8 +80,8 @@
       <HintPath>..\..\..\packages\WindowsAzure.MobileServices.SQLiteStore.2.0.0-beta\lib\portable-win+net45+wp8+wpa81+monotouch+monoandroid\Microsoft.WindowsAzure.Mobile.SQLiteStore.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=4.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\WindowsAzure.Storage.4.4.1-preview\lib\portable-net45+netcore45+wpa81+MonoAndroid1+MonoTouch1\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=6.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\WindowsAzure.Storage.6.1.1-preview\lib\portable-net45+netcore45+wpa81+MonoAndroid1+MonoTouch1\Microsoft.WindowsAzure.Storage.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Android" />
