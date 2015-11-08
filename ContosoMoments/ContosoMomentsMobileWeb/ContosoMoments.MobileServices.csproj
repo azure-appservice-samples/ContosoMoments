@@ -196,6 +196,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AlbumController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Models\MobileServiceContext.cs" />
     <Compile Include="Global.asax.cs">

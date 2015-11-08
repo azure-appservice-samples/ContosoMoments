@@ -4,7 +4,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
 using ContosoMoments.MobileServices.Models;
-using ContosoMomentsCommon.Models;
+using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server;
 
 namespace ContosoMoments.MobileServices.Controllers

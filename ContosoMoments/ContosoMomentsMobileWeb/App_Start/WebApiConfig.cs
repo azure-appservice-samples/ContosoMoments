@@ -2,7 +2,7 @@
 using System.Data.Entity;
 using System.Web.Http;
 using ContosoMoments.MobileServices.Models;
-using ContosoMomentsCommon.Models;
+using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server.Config;
 
 namespace ContosoMoments.MobileServices

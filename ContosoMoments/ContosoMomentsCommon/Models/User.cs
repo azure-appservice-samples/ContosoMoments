@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Mobile.Server;
 
-namespace ContosoMomentsCommon.Models
+namespace ContosoMoments.Common.Models
 {
     public class User : EntityData
     {
