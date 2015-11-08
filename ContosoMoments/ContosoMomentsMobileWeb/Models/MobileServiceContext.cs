@@ -1,11 +1,11 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
+using ContosoMomentsCommon.Models;
 using Microsoft.Azure.Mobile.Server;
 using Microsoft.Azure.Mobile.Server.Tables;
-using ContosoMomentsMobileWeb.DataObjects;
 
-namespace ContosoMomentsMobileWeb.Models
+namespace ContosoMoments.MobileServices.Models
 {
 
     public class MobileServiceContext : DbContext
@@ -42,9 +42,9 @@ namespace ContosoMomentsMobileWeb.Models
                     "ServiceTableColumn", (property, attributes) => attributes.Single().ColumnType.ToString()));
         }
 
-        public System.Data.Entity.DbSet<ContosoMomentsMobileWeb.DataObjects.Album> Albums { get; set; }
+        public System.Data.Entity.DbSet<Album> Albums { get; set; }
 
-        public System.Data.Entity.DbSet<ContosoMomentsMobileWeb.DataObjects.User> Users { get; set; }
+        public System.Data.Entity.DbSet<User> Users { get; set; }
     }
 
 }

@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Azure.Mobile.Server;
 
 namespace ContosoMomentsCommon.Models
 {
-    public class Image
+    public class Image : EntityData
     {
         public Guid ImageId { get; set; }
 
@@ -15,9 +16,10 @@ namespace ContosoMomentsCommon.Models
 
         public string ContainerName { get; set; }
 
-        public Guid AlbumId { get; set; }
+        public Album Album { get; set; }
 
-        public Guid UserId { get; set; }
+        public User User { get; set; }
+
 
         [NotMapped]
         public IDictionary<string, Uri> ImagePath

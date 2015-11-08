@@ -1,9 +1,6 @@
-﻿using System.Web.Http;
-using System.Web.Routing;
-
-namespace ContosoMomentsMobileWeb
+﻿namespace ContosoMoments.MobileServices
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class Global : System.Web.HttpApplication
     {
         protected void Application_Start()
         {

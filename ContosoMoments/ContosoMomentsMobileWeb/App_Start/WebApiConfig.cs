@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Web.Http;
-using ContosoMomentsMobileWeb.DataObjects;
-using ContosoMomentsMobileWeb.Models;
-using Microsoft.Azure.Mobile.Server;
+using ContosoMoments.MobileServices.Models;
+using ContosoMomentsCommon.Models;
 using Microsoft.Azure.Mobile.Server.Config;
 
-namespace ContosoMomentsMobileWeb
+namespace ContosoMoments.MobileServices
 {
     public static class WebApiConfig
     {

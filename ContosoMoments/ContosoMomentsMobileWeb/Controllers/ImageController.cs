@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
+using ContosoMoments.MobileServices.Models;
+using ContosoMomentsCommon.Models;
 using Microsoft.Azure.Mobile.Server;
-using ContosoMomentsMobileWeb.DataObjects;
-using ContosoMomentsMobileWeb.Models;
 
-namespace ContosoMomentsMobileWeb.Controllers
+namespace ContosoMoments.MobileServices.Controllers
 {
     public class ImageController : TableController<Image>
     {
