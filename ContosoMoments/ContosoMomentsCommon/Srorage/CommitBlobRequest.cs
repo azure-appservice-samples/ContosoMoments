@@ -8,7 +8,8 @@ namespace ContosoMoments.Common.Srorage
 {
     public class CommitBlobRequest
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
+        public Guid AlbumId { get; set; }
         public string ContainerName { get; set; }
         public string FileName { get; set; }
         public string[] blobParts { get; set; }

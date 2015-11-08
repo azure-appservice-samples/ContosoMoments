@@ -1,0 +1,101 @@
+﻿
+
+<script src="Scripts/upload.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+
+
+<form>
+    <div style="margin-left: 20px;">
+        <h1>File Uploader</h1>
+        <p>
+            <strong>The Storage Container Name</strong>:
+            <br />
+            <span class="input-control text">
+
+                <input type="text" id="containerName" style="width: 50%"
+                       placeholder="<fill in the container name>" value="testfolder" />
+            </span>
+        </p>
+
+      
+
+
+        <p>
+            <strong>File To Upload</strong>:
+            <br />
+            <span class="input-control text">
+                <input type="file" id="file" name="file" style="width: 50%" />
+            </span>
+        </p>
+        <div id="output">
+
+
+            <p>
+                <input type="button" id="buttonUploadFile" value="Upload File" />
+            </p>
+
+            <hr />
+
+            <p>
+                <progress id="fileUploadProgress" value="0" max="100"></progress>
+
+            </p>
+           
+        </div>
+
+
+
+    </div>
+    <div>
+    </div>
+</form>
+<script type="text/javascript">
+
+    var selectedFileName;
+    $("buttonUploadFile").on("click", function (e) { e.preventDefault; });
+    $(document).on('setPercentComplete', function (e, prog) { $("#fileUploadProgress").val(prog); });
+    $("#buttonUploadFile").click(function () { GetSasUrl(); });
+
+    $("#GetMediaUrlsButton").click(function () { GetMediaUrls(); });
+
+
+    function CommitFinished() {
+        var mediatype = $("#mediaType").val();
+       
+        $.get("api/ConvertMedia?" +
+            "containerName=" + containerName +
+            "&filename=" + selectedFileName +
+            "&mediaType=" + mediatype ,{}, function (res) {
+
+                document.write("<p>" + res[0] + "</p>");
+              
+
+            });
+    }
+
+
+
+    function GetSasUrl() {
+        selectedFileName = $("input[type=file]").val().replace(/^.*[\\\/]/, '');
+        containerName = $("#containerName").val();
+        fileName = selectedFileName;
+        $.get("api/GetSasUrl?containerName=" + containerName + "&filename=" + fileName, {
+
+        }, function (res) {
+            setFile($("#file")[0].files[0], res[0]);
+        });
+    }
+
+    function commit() {
+        $.post("api/CommitUploadFile", {
+            FileName: selectedFileName,
+            ContainerName: containerName,
+            blobParts: blobface.blockIds,
+            type: blobface.selectedFile.type
+            //sendNotification: store.sendNotification(blobface.selectedFile.name)
+        }, function (res) {
+            CommitFinished();
+        });
+    }
+</script>

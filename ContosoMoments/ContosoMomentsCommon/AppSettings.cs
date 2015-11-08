@@ -11,8 +11,7 @@ namespace ContosoMoments.Common
     {
         public static string StorageAccountName = CloudConfigurationManager.GetSetting("StorageAccountName");
         public static string StorageAccountKey = CloudConfigurationManager.GetSetting("StorageAccountKey");
-        public static string StorageCustomDomainName = CloudConfigurationManager.GetSetting("StorageCustomDomainName");
-        public static string UploadSasTime = CloudConfigurationManager.GetSetting("UploadSasTime");
+        public static int UploadSasTime = int.Parse(CloudConfigurationManager.GetSetting("UploadSasTime"));
         
     }
 }
