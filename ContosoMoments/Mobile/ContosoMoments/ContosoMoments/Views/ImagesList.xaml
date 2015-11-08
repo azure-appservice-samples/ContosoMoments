@@ -27,7 +27,11 @@
                   Placeholder="Item name" />-->
         <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
           <Button Text="+" MinimumHeightRequest="30" Clicked="OnAdd" />
-          <Button Text="Sync images" x:Name="syncButton" IsVisible="False" HeightRequest="30" Clicked="OnSyncItems"/>
+          <Button Text="Sync images" x:Name="syncButton" HeightRequest="30" Clicked="OnSyncItems">
+            <Button.IsVisible>
+              <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False" WinPhone="True"/>
+            </Button.IsVisible>
+          </Button>
           <!--<Image x:Name="imgPreview" HeightRequest="45" WidthRequest="45" IsVisible="True" BackgroundColor="Red"/>-->
         </StackLayout>
       </Grid>

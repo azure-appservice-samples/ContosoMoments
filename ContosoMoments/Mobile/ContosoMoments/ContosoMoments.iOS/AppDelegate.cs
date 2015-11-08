@@ -31,14 +31,16 @@ namespace ContosoMoments.iOS
             LoadApplication(new ContosoMoments.App());
 
             var imagePicker = new UIImagePickerController { SourceType = UIImagePickerControllerSourceType.Camera };
-            (Xamarin.Forms.Application.Current as App).ShouldTakePicture += () => 
+            (Xamarin.Forms.Application.Current as App).ShouldTakePicture += () =>
                 app.KeyWindow.RootViewController.PresentViewController(imagePicker, true, null);
 
-            imagePicker.FinishedPickingMedia += (sender, e) => {
+            imagePicker.FinishedPickingMedia += (sender, e) =>
+            {
                 var filepath = Path.Combine(Environment.GetFolderPath(
                                    Environment.SpecialFolder.MyDocuments), "tmp.png");
                 var image = (UIImage)e.Info.ObjectForKey(new NSString("UIImagePickerControllerOriginalImage"));
-                InvokeOnMainThread(() => {
+                InvokeOnMainThread(() =>
+                {
                     image.AsJPEG().Save(filepath, false);
                     (Xamarin.Forms.Application.Current as App).ShowCapturedImage(filepath);
                 });
