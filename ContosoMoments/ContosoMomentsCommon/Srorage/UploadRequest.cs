@@ -8,7 +8,7 @@ namespace ContosoMoments.Common.Models
 {
     public class UploadRequest
     {
-        public string ContainerName { get; set; }  
+        public string ContainerName { get; set; }   
         public string FileName { get; set; }
         public string FileType { get; set; }
 
