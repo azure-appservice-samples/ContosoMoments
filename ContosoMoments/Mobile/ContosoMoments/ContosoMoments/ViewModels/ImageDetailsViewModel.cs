@@ -16,6 +16,8 @@ namespace ContosoMoments.ViewModels
         {
             _client = client;
             this.Image = image;
+            _UserName = "Demo User";
+            _AlbumName = "Demo Album";
 
             this.OpenImageCommand = new Command<ImageSource>((source) =>
             {
@@ -25,5 +27,27 @@ namespace ContosoMoments.ViewModels
 
         public Models.Image Image { get; set; }
         public ICommand OpenImageCommand { protected set; get; }
+
+        private string _UserName;
+        public string UserName
+        {
+            get { return _UserName; }
+            set
+            {
+                _UserName = value;
+                OnPropertyChanged("UserName");
+            }
+        }
+
+        private string _AlbumName;
+        public string AlbumName
+        {
+            get { return _AlbumName; }
+            set
+            {
+                _AlbumName = value;
+                OnPropertyChanged("AlbumName");
+            }
+        }
     }
 }

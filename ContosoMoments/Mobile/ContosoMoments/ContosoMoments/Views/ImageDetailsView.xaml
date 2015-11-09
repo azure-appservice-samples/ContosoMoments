@@ -2,29 +2,52 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImageDetailsView"
-             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments">
+             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments"
+             BackgroundColor="#8C0A4B">
   <ContentPage.Resources>
     <ResourceDictionary>
       <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
     </ResourceDictionary>
   </ContentPage.Resources>
-  
+
   <Grid>
     <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition/>
-      <ColumnDefinition/>
-      <ColumnDefinition/>
-    </Grid.ColumnDefinitions>
-    <Label Text="Image details" Grid.Row="0" Grid.ColumnSpan="3"/>
-    <Image Grid.Row="1" Grid.ColumnSpan="3" Source="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}"/>
-    <Button Grid.Row="2" Grid.Column="0" Text="Extra Small" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"/>
-    <Button Grid.Row="2" Grid.Column="1" Text="Medium" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}"/>
-    <Button Grid.Row="2" Grid.Column="2" Text="Large" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}"/>
+
+    <!--Header-->
+    <Grid Grid.Row="0" Padding="10,30,10,5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Image Source="Assets/logo.png" Grid.Column="0" HeightRequest="30" VerticalOptions="Center"/>
+
+      <Label Text="Contoso Moments" FontSize="28" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
+    </Grid>
+    
+    <!--User and Album info-->
+    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0">
+      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding UserName}"/>
+      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding AlbumName}"/>
+    </StackLayout>
+
+    <!--Image preview-->
+    <Grid Grid.Row="2">
+      <Image Source="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+      <Image x:Name="imgLike" Source="Assets/like.png" VerticalOptions="End" HorizontalOptions="End"/>
+    </Grid>
+
+    <!--Links to external images-->
+    <StackLayout Grid.Row="3" BackgroundColor="White">
+      <Button Image="Assets/link.png" Text="Small Image" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}"/>
+      <Button Image="Assets/link.png" Text="Medium Image" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}"/>
+      <Button Image="Assets/link.png" Text="Large Image" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}"/>
+    </StackLayout>
   </Grid>
 
-</ContentPage> 
+</ContentPage>

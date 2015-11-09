@@ -9,15 +9,32 @@ using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
-	public partial class ImagesList : ContentPage
-	{
+    public partial class ImagesList : ContentPage
+    {
         ImagesListViewModel viewModel = new ImagesListViewModel(App.MobileService);
 
-        public ImagesList ()
-		{
-			InitializeComponent ();
+        public ImagesList()
+        {
+            InitializeComponent();
 
             BindingContext = viewModel;
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            var tapUploadImage = new TapGestureRecognizer();
+            tapUploadImage.Tapped += OnAdd;
+            imgUpload.GestureRecognizers.Add(tapUploadImage);
+
+            var tapSyncImage = new TapGestureRecognizer();
+            tapSyncImage.Tapped += OnSyncItems;
+            imgSync.GestureRecognizers.Add(tapSyncImage);
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ErrorMessage" && viewModel.ErrorMessage != null)
+            {
+                DisplayAlert("Error occurred", viewModel.ErrorMessage, "Close");
+            }
         }
 
         protected override async void OnAppearing()
@@ -26,8 +43,11 @@ namespace ContosoMoments.Views
 
             if (imagesList.ItemsSource == null)
             {
-                //await SyncItemsAsync(true);
-                await LoadItems();
+                using (var scope = new ActivityIndicatorScope(syncIndicator, true))
+                {
+                    //await manager.SyncImagesAsync();
+                    await LoadItems();
+                }
             }
 
             App.Instance.ImageTaken += App_ImageTaken;
@@ -61,9 +81,9 @@ namespace ContosoMoments.Views
         {
             await viewModel.GetImagesAsync();
 
-            imagesList.ItemsSource = viewModel.Images.ToList();
+            if (null != viewModel.Images)
+                imagesList.ItemsSource = viewModel.Images.ToList();
         }
-
 
         public async void OnRefresh(object sender, EventArgs e)
         {
@@ -76,7 +96,7 @@ namespace ContosoMoments.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert ("Refresh Error", "Couldn't refresh data ("+ex.Message+")", "OK");
+                await DisplayAlert("Refresh Error", "Couldn't refresh data (" + ex.Message + ")", "OK");
             }
             list.EndRefresh();
 
@@ -117,7 +137,7 @@ namespace ContosoMoments.Views
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
                 //await manager.SyncImagesAsync();
-                //await LoadItems();
+                await LoadItems();
             }
         }
 

@@ -23,6 +23,8 @@ namespace ContosoMoments.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            app.StatusBarHidden = false;
+
             global::Xamarin.Forms.Forms.Init();
 
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();

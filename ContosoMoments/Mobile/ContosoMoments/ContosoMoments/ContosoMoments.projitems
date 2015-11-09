@@ -51,4 +51,11 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\sync.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\upload.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\logo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\link.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\like.png" />
+  </ItemGroup>
 </Project>

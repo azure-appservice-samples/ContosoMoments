@@ -13,6 +13,15 @@ namespace ContosoMoments.Views
 		public ImageDetailsView ()
 		{
 			InitializeComponent ();
-		}
-	}
+
+            var tapUploadImage = new TapGestureRecognizer();
+            tapUploadImage.Tapped += OnLike;
+            imgLike.GestureRecognizers.Add(tapUploadImage);
+        }
+
+        public async void OnLike(object sender, EventArgs e)
+        {
+            //TODO
+        }
+    }
 }
