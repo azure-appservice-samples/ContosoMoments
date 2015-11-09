@@ -17,6 +17,13 @@ namespace ContosoMoments.MobileServices.Controllers
     {
         public ApiServices Services { get; set; }
 
+        ////POST - for Web app: MSFT request
+        //public async Task<IHttpActionResult> Post(Image item, byte[] bytes)
+        //{
+        //    //...
+        //    //Proxy to ImageController for item data and use bytes to upload to the blob
+        //}
+
         // GET SASUrl
         public string Get(string containerName, string fileName, string fileType )
         {
