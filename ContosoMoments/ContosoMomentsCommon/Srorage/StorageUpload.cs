@@ -39,7 +39,7 @@ namespace ContosoMoments.Common.Srorage
             string imageUri = string.Empty;
 
             // Set the URI for the Blob Storage service.
-            Uri blobEndpoint = new Uri(string.Format("https://{0}.blob.core.windows.net", storageAccount));
+            Uri blobEndpoint = new Uri(string.Format("https://{0}.blob.core.windows.net", AppSettings.StorageAccountName));
 
             // Create the BLOB service client.
             CloudBlobClient blobClient = new CloudBlobClient(blobEndpoint, storageCred);
@@ -72,8 +72,8 @@ namespace ContosoMoments.Common.Srorage
                 var sasQueryString = container.GetSharedAccessSignature(sasPolicy);
 
                 // Set the URL used to store the image.
-                imageUri = string.Format("{0}{1}/{2}", blobEndpoint.ToString(),
-                   request.ContainerName, request.FileName);
+                imageUri = string.Format("{0}{1}/{2}{3}", blobEndpoint.ToString(),
+                   request.ContainerName, request.FileName, sasQueryString);
             }
 
             // Complete the insert operation.
