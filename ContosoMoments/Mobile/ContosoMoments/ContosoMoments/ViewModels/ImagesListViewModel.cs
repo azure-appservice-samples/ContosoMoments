@@ -18,8 +18,8 @@ namespace ContosoMoments.ViewModels
         {
             _client = client;
 
-            _UserName = "Demo User";
-            _AlbumName = "Demo Album";
+            //_UserName = "Demo User";
+            //_AlbumName = "Demo Album";
         }
 
         // View model properties
@@ -97,6 +97,47 @@ namespace ContosoMoments.ViewModels
             {
                 _ErrorMessage = value;
                 OnPropertyChanged("ErrorMessage");
+            }
+        }
+
+
+        public async Task GetUserAsync(Guid userId)
+        {
+            try
+            {
+                var table = _client.GetTable<User>();
+                var user = await table.LookupAsync(userId);
+
+                if (null != user)
+                    UserName = user.UserName;
+            }
+            catch (MobileServiceInvalidOperationException ex)
+            {
+                ErrorMessage = ex.Message;
+            }
+            catch (HttpRequestException ex2)
+            {
+                ErrorMessage = ex2.Message;
+            }
+        }
+
+        public async Task GetAlbumAsync(Guid albumId)
+        {
+            try
+            {
+                var table = _client.GetTable<Album>();
+                var album = await table.LookupAsync(albumId);
+
+                if (null != album)
+                    AlbumName = album.AlbumName;
+            }
+            catch (MobileServiceInvalidOperationException ex)
+            {
+                ErrorMessage = ex.Message;
+            }
+            catch (HttpRequestException ex2)
+            {
+                ErrorMessage = ex2.Message;
             }
         }
 

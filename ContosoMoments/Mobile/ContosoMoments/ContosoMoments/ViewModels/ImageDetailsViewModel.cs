@@ -14,8 +14,6 @@ namespace ContosoMoments.ViewModels
         {
             _client = client;
             this.Image = image;
-            _UserName = "Demo User";
-            _AlbumName = "Demo Album";
 
             this.OpenImageCommand = new Command<ImageSource>((source) =>
             {
