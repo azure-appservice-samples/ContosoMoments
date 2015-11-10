@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
-using ContosoMoments.MobileServices.Models;
-using ContosoMomentsCommon.Models;
-using Microsoft.Azure.Mobile.Server;
+using Microsoft.WindowsAzure.Mobile.Service;
+using ContosoMoments.AzureMobileServices.Models;
+using ContosoMoments.Common.Models;
 
 namespace ContosoMoments.MobileServices.Controllers
 {

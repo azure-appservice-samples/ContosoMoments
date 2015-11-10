@@ -1,11 +1,11 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
-using ContosoMomentsCommon.Models;
-using Microsoft.Azure.Mobile.Server;
-using Microsoft.Azure.Mobile.Server.Tables;
+using Microsoft.WindowsAzure.Mobile.Service;
+using Microsoft.WindowsAzure.Mobile.Service.Tables;
+using ContosoMoments.Common.Models;
 
-namespace ContosoMoments.MobileServices.Models
+namespace ContosoMoments.AzureMobileServices.Models
 {
 
     public class MobileServiceContext : DbContext
@@ -27,7 +27,12 @@ namespace ContosoMoments.MobileServices.Models
         {
         }
 
+
         public DbSet<Image> Images { get; set; }
+        public DbSet<Album> Albums { get; set; }
+        public DbSet<User> Users { get; set; }
+
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -41,10 +46,6 @@ namespace ContosoMoments.MobileServices.Models
                 new AttributeToColumnAnnotationConvention<TableColumnAttribute, string>(
                     "ServiceTableColumn", (property, attributes) => attributes.Single().ColumnType.ToString()));
         }
-
-        public System.Data.Entity.DbSet<Album> Albums { get; set; }
-
-        public System.Data.Entity.DbSet<User> Users { get; set; }
     }
 
 }

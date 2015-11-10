@@ -12,7 +12,8 @@ namespace ContosoMoments.MobileServices
         public static void Register()
         {
             HttpConfiguration config = new HttpConfiguration();
-
+            
+            
             new MobileAppConfiguration()
                 .UseDefaultConfiguration()
                 .ApplyTo(config);

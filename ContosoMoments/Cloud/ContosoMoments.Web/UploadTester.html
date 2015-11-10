@@ -1,62 +1,17 @@
 ﻿
-
-<script src="Scripts/upload.js"></script>
-<script src="Scripts/jquery-1.10.2.js"></script>
-
+<script src="JavaScript/Upload.js"></script>
+<script src="JavaScript/jquery-1.11.3.min.js"></script>
 
 
 <form>
     <div style="margin-left: 20px;">
         <h1>File Uploader</h1>
-        <p>
-            <strong>The Storage Container Name</strong>:
-            <br />
-            <span class="input-control text">
+       
 
-                <input type="text" id="containerName" style="width: 50%"
-                       placeholder="<fill in the container name>" value="testfolder" />
-            </span>
-        </p>
+      
+      
 
-        <p>
-            <strong>The Media Type (Audio/rotem-tpyoga:)</strong>:
-            <br />
-            <span class="input-control text">
-
-                <input type="text" id="mediaType" style="width: 50%"
-                       placeholder="<fill in the media type>" value="Video" />
-            </span>
-        </p>
-
-        <p>
-            <strong>The start time </strong>:
-            <br />
-            <span class="input-control text">
-
-                <input type="text" id="startTime" style="width: 50%"
-                       placeholder="<fill in the start time>" value="00:00:00" />
-            </span>
-        </p>
-
-        <p>
-            <strong>The end time</strong>:
-            <br />
-            <span class="input-control text">
-
-                <input type="text" id="endTime" style="width: 50%"
-                       placeholder="<fill in the endtime>" value="00:00:07" />
-            </span>
-        </p>
-
-        <p>
-            <strong>Thumbnail time</strong>:
-            <br />
-            <span class="input-control text">
-
-                <input type="text" id="thumbnailTime" style="width: 50%"
-                       placeholder="<fill in the endtime>" value="00:00:02" />
-            </span>
-        </p>
+       
 
 
         <p>
@@ -79,22 +34,7 @@
                 <progress id="fileUploadProgress" value="0" max="100"></progress>
 
             </p>
-            <p>
-                <strong>Thumbnail Image</strong>:
-                <br />
-                <span class="input-control text">
-
-                    <img id="thumbnailImage" />
-                </span>
-            </p>
-            <p>
-
-                <br />
-                <span class="input-control text">
-
-                    <label id="JobId"> Job Id</label>
-                </span>
-            </p>
+            
         </div>
 
 
@@ -114,51 +54,30 @@
 
 
     function CommitFinished() {
-        var mediatype = $("#mediaType").val();
-        var startTime = $("#startTime").val();
-        var endTime = $("#endTime").val();
-        var thumbnailTime = $("#thumbnailTime").val();
-        $.get("api/ConvertMedia?" +
-            "containerName=" + containerName +
-            "&filename=" + selectedFileName +
-            "&mediaType=" + mediatype +
-            "&startTime=" + startTime +
-            "&endTime=" + endTime +
-            "&thumbnailTime=" + thumbnailTime
-             +
-            "&userId=" + 1
-            ,
-            {
-
-            }, function (res) {
-
-
-                document.write("<p>" + res[0] + "</p>");
-                document.write("<p>" + res[1] + "</p>");
-
-            });
+     alert("YOYO");
     }
 
-
+    var sasurl = "";
 
     function GetSasUrl() {
         selectedFileName = $("input[type=file]").val().replace(/^.*[\\\/]/, '');
         containerName = $("#containerName").val();
         fileName = selectedFileName;
-        $.get("api/GetSasUrl?containerName=" + containerName + "&filename=" + fileName, {
+        $.get("http://localhost:60480/api/GetSasUrl", {
 
         }, function (res) {
-            setFile($("#file")[0].files[0], res[0]);
+            sasurl = res;
+            setFile($("#file")[0].files[0], res);
         });
     }
 
     function commit() {
-        $.post("api/CommitUploadFile", {
-            FileName: selectedFileName,
-            ContainerName: containerName,
+        $.post("http://localhost:60480/api/CommitBlob", {
+           
             blobParts: blobface.blockIds,
-            type: blobface.selectedFile.type,
-            MediaTypeId: $("#mediaType").val(),
+            UserId: "",
+            AlbumId : "",
+            SasUrl: sasurl,
             //sendNotification: store.sendNotification(blobface.selectedFile.name)
         }, function (res) {
             CommitFinished();
