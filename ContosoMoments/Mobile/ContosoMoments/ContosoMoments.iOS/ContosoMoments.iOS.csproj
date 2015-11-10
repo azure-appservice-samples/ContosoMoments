@@ -90,10 +90,13 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="MobileClient.cs" />
     <Compile Include="Settings.cs" />
     <None Include="app.config" />
     <None Include="Entitlements.plist" />
-    <None Include="Info.plist" />
+    <None Include="Info.plist">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork@2x" />
@@ -196,6 +199,48 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Xamarin.iOS" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\save%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\logo%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\logotext.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\logotext%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\upload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\upload%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\sync%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\sync.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\like.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\like%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\link.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Assets\link%402x.png" />
   </ItemGroup>
   <Import Project="..\ContosoMoments\ContosoMoments.projitems" Label="Shared" Condition="Exists('..\ContosoMoments\ContosoMoments.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

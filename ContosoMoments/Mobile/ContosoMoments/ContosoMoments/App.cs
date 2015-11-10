@@ -14,6 +14,7 @@ namespace ContosoMoments
     public class App : Application
     {
         public static MobileServiceClient MobileService;
+        public static MobileServiceUser AuthenticatedUser;
 
         public static App Instance;
         //DEBUG
@@ -34,12 +35,23 @@ namespace ContosoMoments
             else
             {
                 Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+                //DEBUG!!!
                 //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
+                Constants.GatewayURL = "http://default-storage-westus7a065f30c6524563a7ccea44480a2776.azurewebsites.net";
                 //Constants.ApplicationKey = AppSettings.Current.GetValueOrDefault<string>("ApplicationKey");
-                MobileService = new MobileServiceClient(Constants.ApplicationURL);
+                MobileService = new MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
+                AuthenticatedUser = MobileService.CurrentUser;
 
-                // The root page of your application
-                MainPage = new NavigationPage(new ImagesList());
+                //TODO - authenticate if required
+                //if (AuthenticatedUser == null)
+                //{
+                //    MainPage = new NavigationPage(new Login());
+                //}
+                //else
+                //{
+                    // The root page of your application
+                    MainPage = new NavigationPage(new ImagesList());
+                //}
             }
 
         }

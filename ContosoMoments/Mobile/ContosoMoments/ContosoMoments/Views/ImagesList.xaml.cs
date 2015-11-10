@@ -49,7 +49,6 @@ namespace ContosoMoments.Views
                     await LoadItems();
                 }
             }
-
             App.Instance.ImageTaken += App_ImageTaken;
 
         }

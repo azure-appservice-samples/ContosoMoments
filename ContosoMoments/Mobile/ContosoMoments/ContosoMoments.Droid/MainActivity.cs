@@ -21,7 +21,9 @@ namespace ContosoMoments.Droid
 		{
             base.OnCreate (bundle);
 
-			global::Xamarin.Forms.Forms.Init (this, bundle);
+            this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+
+            global::Xamarin.Forms.Forms.Init (this, bundle);
 
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
 
