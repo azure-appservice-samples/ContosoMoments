@@ -7,7 +7,7 @@ using ContosoMoments.AzureMobileServices.Models;
 using ContosoMoments.Common.Models;
 using Microsoft.WindowsAzure.Mobile.Service;
 
-namespace ContosoMoments.MobileServices.Controllers
+namespace ContosoMoments.AzureMobileServices.Controllers
 {
     public class ImageController : TableController<Image>
     {

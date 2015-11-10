@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
-using Microsoft.WindowsAzure.Mobile.Service;
 using ContosoMoments.AzureMobileServices.Models;
 using ContosoMoments.Common.Models;
+using Microsoft.WindowsAzure.Mobile.Service;
 
-namespace ContosoMoments.MobileServices.Controllers
+namespace ContosoMoments.AzureMobileServices.Controllers
 {
     public class AlbumController : TableController<Album>
     {
