@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImagesList"
-             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments">
+             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments"
+             BackgroundColor="#8C0A4B">
   <ContentPage.Resources>
     <ResourceDictionary>
       <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
@@ -12,39 +13,57 @@
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <ActivityIndicator Grid.RowSpan="2" IsVisible="False" IsEnabled="True" x:Name="syncIndicator"/>
 
-    <StackLayout Grid.Row="0" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
-      <Label TextColor="#555555" Text="Contoso Moments" />
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <!--<ColumnDefinition/>-->
-          <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <!--<Entry x:Name="newItemName"
-                  Placeholder="Item name" />-->
-        <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-          <Button Text="+" MinimumHeightRequest="30" Clicked="OnAdd" />
-          <Button Text="Sync images" x:Name="syncButton" HeightRequest="30" Clicked="OnSyncItems">
-            <Button.IsVisible>
-              <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False" WinPhone="True"/>
-            </Button.IsVisible>
-          </Button>
-          <!--<Image x:Name="imgPreview" HeightRequest="45" WidthRequest="45" IsVisible="True" BackgroundColor="Red"/>-->
-        </StackLayout>
-      </Grid>
+    <!--Header-->
+    <Grid Grid.Row="0" Padding="10,30,10,5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <Image Source="Assets/logo.png" Grid.Column="0" HeightRequest="30" VerticalOptions="Center"/>
+
+      <Label Text="Contoso Moments" FontSize="28" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
+
+      <Image Source="Assets/sync.png" x:Name="imgSync" VerticalOptions="Center" HeightRequest="30" WidthRequest="30" Grid.Column="3">
+        <Image.IsVisible>
+          <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False" WinPhone="True"/>
+        </Image.IsVisible>
+      </Image>
+
+      <Image Source="Assets/upload.png" VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgUpload"/>
+    </Grid>
+
+    <!--User and Album info-->
+    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0,10,5">
+      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding UserName}"/>
+      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding AlbumName}"/>
     </StackLayout>
 
-    <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="1">
+    <!--List of images-->
+    <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="2" BackgroundColor="White">
+      <!--<ListView.RowHeight>
+        <OnPlatform x:TypeArguments="x:Int32" iOS="128" Android="136" WinPhone="144" />
+      </ListView.RowHeight>-->
       <ListView.ItemTemplate>
         <DataTemplate>
-          <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}" 
-                     Text="{Binding ImageFormat}"/>
+          <!--<ViewCell>
+          <Grid Padding="8">-->
+          <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"
+                   Text="{Binding ImageFormat}" TextColor="Black"/>
+          <!--<Image Source="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"/>
+          </Grid>
+          </ViewCell>-->
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
+
+    <ActivityIndicator Grid.RowSpan="3" IsVisible="False" IsEnabled="True" x:Name="syncIndicator" Color="#8C0A4B"/>
 
   </Grid>
 </ContentPage>

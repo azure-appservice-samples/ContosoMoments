@@ -19,6 +19,9 @@ namespace ContosoMoments.ViewModels
         public ImagesListViewModel(MobileServiceClient client)
         {
             _client = client;
+
+            _UserName = "Demo User";
+            _AlbumName = "Demo Album";
         }
 
         // View model properties
@@ -66,6 +69,28 @@ namespace ContosoMoments.ViewModels
             }
         }
 
+        private string _UserName;
+        public string UserName
+        {
+            get { return _UserName; }
+            set
+            {
+                _UserName = value;
+                OnPropertyChanged("UserName");
+            }
+        }
+
+        private string _AlbumName;
+        public string AlbumName
+        {
+            get { return _AlbumName; }
+            set
+            {
+                _AlbumName = value;
+                OnPropertyChanged("AlbumName");
+            }
+        }
+
         private string _ErrorMessage = null;
         public string ErrorMessage
         {
@@ -103,8 +128,13 @@ namespace ContosoMoments.ViewModels
 
         public async Task<bool> UploadImageAsync(Stream imageStream)
         {
+            string filename = Guid.NewGuid().ToString();
+            string containername = "images/lg";
+            string filetype = "image/jpeg";
+            string qs = string.Format("?containerName={0}&fileName={1}&fileType={2}", containername, filename, filetype);
             //1. Get SaSToken
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/MobileImage/GetSasToken"));
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/upload" + qs));
+            //HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/MobileImage/GetSasToken"));
             request.Method = "GET";
 
             using (WebResponse response = await request.GetResponseAsync())
