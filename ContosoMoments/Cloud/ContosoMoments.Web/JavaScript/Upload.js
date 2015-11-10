@@ -1,7 +1,7 @@
 ﻿
 window.blobface = {};
 blobface.maxBlockSize = 1 * 1024 * 1024; // 1MB per block
-
+var sasurl;
 function initializeNewFile(filetmp, url) {
     blobface.numberOfBlocks = 1;
     blobface.selectedFile = filetmp;
@@ -24,6 +24,7 @@ function initializeNewFile(filetmp, url) {
 
 function resumeUpload(file, url) {
     setFile(file, url, true);
+
 }
 
 
@@ -34,7 +35,9 @@ var startTime, endTime;
 function setFile(filetmp, url, isResume, uncommittedBlocks) {
 
     startTime = new Date();
-
+    sasurl = url;
+    url = url + "&comp=block&blockid=";
+    
     if (!isResume) {
         initializeNewFile(filetmp, url);
     }
@@ -108,7 +111,8 @@ var fileName;
 
 
 function allThreadFinish() {
-    commit();
+    commit(sasurl);
+    sasurl = "";
 }
 
 
