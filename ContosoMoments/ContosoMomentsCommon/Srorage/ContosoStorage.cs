@@ -35,11 +35,11 @@ namespace ContosoMoments.Common.Srorage
 
         public bool CommitUpload(CommitBlobRequest commitRequest)
         {
+            var result = false;
             var url = commitRequest.SasUrl.Replace(blobEndpoint.ToString(), "");
             var urldata = url.Split('?');
             var content = urldata[0].Split('/');
 
-            var result = false;
 
             var FileName = content[1];
             var ContainerName = content[0];
