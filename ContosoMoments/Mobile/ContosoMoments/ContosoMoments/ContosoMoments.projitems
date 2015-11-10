@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImagePathForSizeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Image.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\IMobileClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ISettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
@@ -26,6 +27,10 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\ImagesList.xaml.cs">
       <DependentUpon>ImagesList.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\SettingView.xaml.cs">
@@ -52,10 +57,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Assets\sync.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\upload.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\logo.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\link.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\like.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

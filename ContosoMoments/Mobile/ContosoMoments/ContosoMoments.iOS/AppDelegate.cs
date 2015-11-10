@@ -23,7 +23,7 @@ namespace ContosoMoments.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            app.StatusBarHidden = false;
+            app.StatusBarHidden = true;
 
             global::Xamarin.Forms.Forms.Init();
 
@@ -32,6 +32,7 @@ namespace ContosoMoments.iOS
 
             LoadApplication(new ContosoMoments.App());
 
+#error COMMENT WHEN DEBUGGING ON EMULATOR!
             var imagePicker = new UIImagePickerController { SourceType = UIImagePickerControllerSourceType.Camera };
             (Xamarin.Forms.Application.Current as App).ShouldTakePicture += () =>
                 app.KeyWindow.RootViewController.PresentViewController(imagePicker, true, null);

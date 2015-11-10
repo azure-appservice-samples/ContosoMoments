@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MobileClient.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -172,7 +173,36 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AndroidManifest.xml" />
+    <AndroidAsset Include="Resources\drawable-hdpi\logotext.png" />
+    <AndroidAsset Include="Resources\drawable-hdpi\logo.png" />
+    <AndroidAsset Include="Resources\drawable-hdpi\link.png" />
+    <AndroidAsset Include="Resources\drawable-hdpi\like.png" />
+    <AndroidAsset Include="Resources\drawable-hdpi\save.png" />
+    <AndroidAsset Include="Resources\drawable-hdpi\sync.png" />
+    <AndroidAsset Include="Resources\drawable-hdpi\upload.png" />
+    <AndroidAsset Include="Resources\drawable-ldpi\save.png" />
+    <AndroidAsset Include="Resources\drawable-ldpi\sync.png" />
+    <AndroidAsset Include="Resources\drawable-ldpi\logotext.png" />
+    <AndroidAsset Include="Resources\drawable-ldpi\logo.png" />
+    <AndroidAsset Include="Resources\drawable-ldpi\link.png" />
+    <AndroidAsset Include="Resources\drawable-ldpi\like.png" />
+    <AndroidAsset Include="Resources\drawable-ldpi\upload.png" />
+    <AndroidAsset Include="Resources\drawable-xhdpi\save.png" />
+    <AndroidAsset Include="Resources\drawable-xhdpi\sync.png" />
+    <AndroidAsset Include="Resources\drawable-xhdpi\logotext.png" />
+    <AndroidAsset Include="Resources\drawable-xhdpi\logo.png" />
+    <AndroidAsset Include="Resources\drawable-xhdpi\link.png" />
+    <AndroidAsset Include="Resources\drawable-xhdpi\like.png" />
+    <AndroidAsset Include="Resources\drawable-xhdpi\upload.png" />
+    <AndroidResource Include="Resources\Drawable\like.png" />
+    <AndroidResource Include="Resources\Drawable\link.png" />
+    <AndroidResource Include="Resources\Drawable\logo.png" />
+    <AndroidResource Include="Resources\Drawable\logotext.png" />
+    <AndroidResource Include="Resources\Drawable\save.png" />
+    <AndroidResource Include="Resources\Drawable\sync.png" />
+    <AndroidResource Include="Resources\Drawable\upload.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\ContosoMoments\ContosoMoments.projitems" Label="Shared" Condition="Exists('..\ContosoMoments\ContosoMoments.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\..\packages\Xamarin.Forms.1.5.1.6471\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\..\packages\Xamarin.Forms.1.5.1.6471\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

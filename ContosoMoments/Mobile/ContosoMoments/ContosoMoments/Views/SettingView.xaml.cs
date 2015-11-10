@@ -22,41 +22,55 @@ namespace ContosoMoments.Views
         public SettingView()
         {
             InitializeComponent();
+
+            var tapSaveImage = new TapGestureRecognizer();
+            tapSaveImage.Tapped += OnSave;
+            imgSave.GestureRecognizers.Add(tapSaveImage);
         }
 
         public async void OnSave(object sender, EventArgs args)
         {
-            if (mobileServiceUrl.Text.Length != 0)
+            if (null != mobileServiceUrl.Text)
             {
-                bool ValidURL = false;
+                if (mobileServiceUrl.Text.Length != 0)
+                {
+                    bool ValidURL = false;
 
-                if (mobileServiceUrl.Text.Last() != '/')
-                    mobileServiceUrl.Text += "/";
+                    if (mobileServiceUrl.Text.Last() != '/')
+                        mobileServiceUrl.Text += "/";
 
 #if __WP__
-                ValidURL = await CheckServerAddressWP(mobileServiceUrl.Text);
+                    ValidURL = await CheckServerAddressWP(mobileServiceUrl.Text);
 #elif __IOS__
                 ValidURL = await CheckServerAddressIOS(mobileServiceUrl.Text);
 #elif __DROID__
                 ValidURL = await CheckServerAddressDroid(mobileServiceUrl.Text);
 #endif
 
-                if (ValidURL)
-                {
-                    AppSettings.Current.AddOrUpdateValue<string>("MobileAppURL", mobileServiceUrl.Text);
-                    Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
-                    App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL);
-                    App.Current.MainPage = new NavigationPage(new ImagesList());
+                    if (ValidURL)
+                    {
+                        AppSettings.Current.AddOrUpdateValue<string>("MobileAppURL", mobileServiceUrl.Text);
+                        Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+
+                        //TODO: get getaway URL from temp client and save it
+                        //var tempClient = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL);
+                        //var res = await tempClient.InvokeApiAsync("GetGetawayURL");
+
+                        App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL);
+                        App.Current.MainPage = new NavigationPage(new ImagesList());
+                    }
+                    else
+                    {
+                        DisplayAlert("Configuration Error", "Mobile Service URL is unreachable. Please check the URL value and try again", "OK");
+                    }
                 }
                 else
                 {
-                    DisplayAlert("Configuration Error", "Mobile Service URL is unreachable. Please check the URL value and try again", "OK");
+                    DisplayAlert("Configuration Error", "Mobile Service URL is empty. Please type in the value and try again", "OK");
                 }
             }
             else
-            {
                 DisplayAlert("Configuration Error", "Mobile Service URL is empty. Please type in the value and try again", "OK");
-            }
         }
 
 #if __WP__

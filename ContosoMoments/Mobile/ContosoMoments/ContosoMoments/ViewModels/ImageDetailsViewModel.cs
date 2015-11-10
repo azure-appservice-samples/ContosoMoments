@@ -10,8 +10,6 @@ namespace ContosoMoments.ViewModels
 {
     public class ImageDetailsViewModel : BaseViewModel
     {
-        MobileServiceClient _client;
-
         public ImageDetailsViewModel(MobileServiceClient client, Models.Image image)
         {
             _client = client;

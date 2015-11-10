@@ -107,6 +107,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MobileClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -138,12 +139,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\BadgeLogo.png" />
-    <Content Include="Assets\Logo.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\SquareTile150x150.png" />
     <Content Include="Assets\SquareTile71x71.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\save.png" />
     <Content Include="Assets\WideLogo.png" />
+    <Content Include="Assets\sync.png" />
+    <Content Include="Assets\logotext.png" />
+    <Content Include="Assets\logo.png" />
+    <Content Include="Assets\link.png" />
+    <Content Include="Assets\like.png" />
+    <Content Include="Assets\upload.png" />
     <Content Include="README_FIRST.txt" />
     <Content Include="SplashScreenImage.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

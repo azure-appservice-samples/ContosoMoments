@@ -14,8 +14,6 @@ namespace ContosoMoments.ViewModels
 {
     public class ImagesListViewModel : BaseViewModel
     {
-        MobileServiceClient _client;
-
         public ImagesListViewModel(MobileServiceClient client)
         {
             _client = client;
