@@ -201,6 +201,9 @@
     <AndroidResource Include="Resources\Drawable\save.png" />
     <AndroidResource Include="Resources\Drawable\sync.png" />
     <AndroidResource Include="Resources\Drawable\upload.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\icon.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\ContosoMoments\ContosoMoments.projitems" Label="Shared" Condition="Exists('..\ContosoMoments\ContosoMoments.projitems')" />
