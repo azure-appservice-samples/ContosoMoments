@@ -74,7 +74,14 @@
       </ListView.ItemTemplate>
     </ListView>
 
-    <ActivityIndicator Grid.RowSpan="3" IsVisible="False" IsEnabled="True" x:Name="syncIndicator" Color="#8C0A4B"/>
+    <ActivityIndicator Grid.RowSpan="3" IsVisible="False" IsEnabled="True" x:Name="syncIndicator" Color="#8C0A4B">
+      <ActivityIndicator.VerticalOptions>
+        <OnPlatform x:TypeArguments="LayoutOptions" Android="Center" WinPhone="Fill" iOS="Fill"/>
+      </ActivityIndicator.VerticalOptions>
+      <ActivityIndicator.HorizontalOptions>
+        <OnPlatform x:TypeArguments="LayoutOptions" Android="Center" WinPhone="Fill" iOS="Fill"/>
+      </ActivityIndicator.HorizontalOptions>
+    </ActivityIndicator>
 
   </Grid>
 </ContentPage>

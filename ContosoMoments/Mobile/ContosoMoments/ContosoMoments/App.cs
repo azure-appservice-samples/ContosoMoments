@@ -42,16 +42,20 @@ namespace ContosoMoments
                 MobileService = new MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
                 AuthenticatedUser = MobileService.CurrentUser;
 
-                //TODO - authenticate if required
-                //if (AuthenticatedUser == null)
-                //{
-                //    MainPage = new NavigationPage(new Login());
-                //}
-                //else
-                //{
+#if !__WP__
+                //TODO - authenticate if required.How to check?
+                if (AuthenticatedUser == null)
+                {
+                    MainPage = new NavigationPage(new Login());
+                }
+                else
+                {
                     // The root page of your application
                     MainPage = new NavigationPage(new ImagesList());
-                //}
+                }
+#elif __WP__
+                MainPage = new NavigationPage(new ImagesList());
+#endif
             }
 
         }

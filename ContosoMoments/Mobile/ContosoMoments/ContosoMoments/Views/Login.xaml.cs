@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 
 namespace ContosoMoments.Views
@@ -26,6 +25,8 @@ namespace ContosoMoments.Views
                 // The authentication provider could also be Facebook, Twitter, or Microsoft
                 user = await DependencyService.Get<IMobileClient>().LoginAsync(MobileServiceAuthenticationProvider.Facebook);
                 App.AuthenticatedUser = user;
+                System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
+
                 Navigation.InsertPageBefore(new ImagesList(), this);
                 await Navigation.PopAsync();
             }
