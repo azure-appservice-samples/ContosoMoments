@@ -63,7 +63,7 @@
         selectedFileName = $("input[type=file]").val().replace(/^.*[\\\/]/, '');
         containerName = $("#containerName").val();
         fileName = selectedFileName;
-        $.get("http://localhost:60480/api/GetSasUrl", {
+        $.get("http://localhost:31475/api/GetSasUrl", {
 
         }, function (res) {
             sasurl = res;
@@ -72,7 +72,7 @@
     }
 
     function commit() {
-        $.post("http://localhost:60480/api/CommitBlob", {
+        $.post("http://localhost:31475/api/CommitBlob", {
            
             blobParts: blobface.blockIds,
             UserId: "",
