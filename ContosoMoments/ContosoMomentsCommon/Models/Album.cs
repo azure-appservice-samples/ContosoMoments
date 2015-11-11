@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.WindowsAzure.Mobile.Service;
+using Microsoft.Azure.Mobile.Server;
 
 
 namespace ContosoMoments.Common.Models
 {
     public class Album : EntityData
     {
-        public Guid AlbumId { get; set; }
+       // public Guid AlbumId { get; set; }
 
         public string AlbumName { get; set; }
 

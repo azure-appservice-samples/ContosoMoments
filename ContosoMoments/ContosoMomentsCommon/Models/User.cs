@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.WindowsAzure.Mobile.Service;
+using Microsoft.Azure.Mobile.Server;
 
 namespace ContosoMoments.Common.Models
 {
     public class User : EntityData
     {
-        public Guid UserId { get; set; }
+       // public Guid UserId { get; set; }
 
         public string UserName { get; set; }
 

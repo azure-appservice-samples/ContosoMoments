@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.WindowsAzure.Mobile.Service;
+using Microsoft.Azure.Mobile.Server;
 
 namespace ContosoMoments.Common.Models
 {
     public class Image : EntityData
     {
-        public Guid ImageId { get; set; }
+       // public Guid ImageId { get; set; }
 
         public string ImageFormat { get; set; }
 
         public string ContainerName { get; set; }
+        public string FileName { get; set; }
+
+        public bool Resized { get; set; }
+
 
         public Album Album { get; set; }
 
@@ -25,10 +29,10 @@ namespace ContosoMoments.Common.Models
             {
                 Dictionary<string, Uri> retVal = new Dictionary<string, Uri>();
 
-                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}.jpg", ContainerName, ImageId.ToString())));
-                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}.jpg", ContainerName, ImageId.ToString())));
-                retVal.Add("md", new Uri(string.Format("{0}/md/{1}.jpg", ContainerName, ImageId.ToString())));
-                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}.jpg", ContainerName, ImageId.ToString())));
+                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}.jpg", ContainerName, FileName)));
+                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}.jpg", ContainerName, FileName)));
+                retVal.Add("md", new Uri(string.Format("{0}/md/{1}.jpg", ContainerName, FileName)));
+                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}.jpg", ContainerName, FileName)));
 
                 return retVal;
             }
