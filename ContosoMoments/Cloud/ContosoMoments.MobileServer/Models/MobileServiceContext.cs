@@ -1,0 +1,59 @@
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using ContosoMoments.Common.Models;
+
+namespace ContosoMoments.MobileServer.Models
+{
+
+    public class MobileServiceContext : DbContext
+    {
+        // You can add custom code to this file. Changes will not be overwritten.
+        // 
+        // If you want Entity Framework to alter your database
+        // automatically whenever you change your model schema, please use data migrations.
+        // For more information refer to the documentation:
+        // http://msdn.microsoft.com/en-us/data/jj591621.aspx
+        //
+        // To enable Entity Framework migrations in the cloud, please ensure that the 
+        // service name, set by the 'MS_MobileServiceName' AppSettings in the local 
+        // Web.config, is the same as the service name when hosted in Azure.
+
+        private const string connectionStringName = "Name=MS_TableConnectionString";
+
+        public MobileServiceContext() : base(connectionStringName)
+        {
+            Database.SetInitializer(new BasicDBInitializer());
+        }
+
+        public DbSet<Image> Images { get; set; }
+
+       
+
+        public System.Data.Entity.DbSet<Album> Albums { get; set; }
+
+        public System.Data.Entity.DbSet<User> Users { get; set; }
+    }
+
+    public class BasicDBInitializer : DropCreateDatabaseAlways<MobileServiceContext>
+    {
+        protected override void Seed(MobileServiceContext context)
+        {
+            var defaultAlbum = new Album
+            {
+                Id = "111",
+                AlbumName = "Default",
+                User = new User
+                {
+                    UserName = "DefaultUser",
+                    Id = "111",
+                }
+            };
+
+            context.Albums.Add(defaultAlbum);
+            context.SaveChanges();
+            base.Seed(context);
+        }
+    }
+
+
+}

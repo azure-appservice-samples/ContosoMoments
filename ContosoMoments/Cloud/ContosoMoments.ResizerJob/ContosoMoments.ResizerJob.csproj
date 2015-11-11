@@ -90,7 +90,7 @@
     <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ContosoMomentsCommon\ContosoMoments.Common.csproj">
+    <ProjectReference Include="..\ContosoMoments.Common\ContosoMoments.Common.csproj">
       <Project>{c2c4991b-5a0c-4da4-9a80-2d2c89a95dce}</Project>
       <Name>ContosoMoments.Common</Name>
     </ProjectReference>
