@@ -41,6 +41,7 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
+            //if (imagesWrap.ItemsSource == null)
             if (imagesList.ItemsSource == null)
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
@@ -88,6 +89,7 @@ namespace ContosoMoments.Views
 
             if (null != viewModel.Images)
                 imagesList.ItemsSource = viewModel.Images.ToList();
+                //imagesWrap.ItemsSource = viewModel.Images.ToList();
         }
 
         public async void OnRefresh(object sender, EventArgs e)

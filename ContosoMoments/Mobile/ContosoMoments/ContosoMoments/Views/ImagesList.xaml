@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImagesList"
              xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments"
+             xmlns:controls="clr-namespace:ContosoMoments.Controls;assembly=ContosoMoments"
              BackgroundColor="#8C0A4B">
   <ContentPage.Resources>
     <ResourceDictionary>
@@ -74,6 +75,18 @@
       </ListView.ItemTemplate>
     </ListView>
 
+    <!--<ScrollView>
+      <controls:WrapPanel Orientation="Horizontal" x:Name="imagesWrap">
+        <controls:WrapPanel.ItemTemplate>
+          <DataTemplate>
+            <StackLayout>
+              <Image Source="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}" />
+            </StackLayout>
+          </DataTemplate>
+        </controls:WrapPanel.ItemTemplate>
+      </controls:WrapPanel>
+    </ScrollView>-->
+    
     <ActivityIndicator Grid.RowSpan="3" IsVisible="False" IsEnabled="True" x:Name="syncIndicator" Color="#8C0A4B">
       <ActivityIndicator.VerticalOptions>
         <OnPlatform x:TypeArguments="LayoutOptions" Android="Center" WinPhone="Fill" iOS="Fill"/>
