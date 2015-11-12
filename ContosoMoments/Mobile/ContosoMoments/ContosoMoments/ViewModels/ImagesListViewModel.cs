@@ -207,11 +207,14 @@ namespace ContosoMoments.ViewModels
                         using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                         {
                             var result = streamReader.ReadToEnd();
+                            bool b;
+                            if (!bool.TryParse(result, out b))
+                                retVal = b;
+                            else
+                                retVal = false;
                         }
                     }
                 }
-
-                retVal = true;
             }
             catch (Exception ex)
             {
