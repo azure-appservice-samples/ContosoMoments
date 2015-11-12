@@ -13,6 +13,7 @@ namespace ContosoMoments.Common.Models
 
         public string ContainerName { get; set; }
         public string FileName { get; set; }
+        public string SasUrl { get; set; }
 
         public bool Resized { get; set; }
 

@@ -9,7 +9,8 @@ namespace ContosoMoments.MobileServer.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
+            ContextKey = "ContosoMoments.MobileServer.Models.MobileServiceContext";
         }
 
         protected override void Seed(ContosoMoments.MobileServer.Models.MobileServiceContext context)

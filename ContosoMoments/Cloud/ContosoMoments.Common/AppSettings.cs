@@ -9,6 +9,8 @@ namespace ContosoMoments.Common
         public static string ResizeQueueName = ConfigurationManager.AppSettings.Get("ResizeQueueName");
         public static string UploadContainerName = ConfigurationManager.AppSettings.Get("UploadContainerName");
         public static string FacebookAuthString = ConfigurationManager.AppSettings.Get("FacebookAuthString");
+        public static string DefaultAlbumId = ConfigurationManager.AppSettings.Get("DefaultAlbumId");
+        public static string DefaultUserId = ConfigurationManager.AppSettings.Get("DefaultUserId");
 
     }
 }

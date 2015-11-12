@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -37,22 +38,28 @@ namespace ContosoMoments.MobileServer.Controllers
             var containerName = urldata[0].Substring(0, index);
 
             string fileName = urldata[0].Replace(containerName +"/", "");
-          //  var sasForView = cs.GetSasUrlForView(containerName, fileName);
+            var sasForView = cs.GetSasUrlForView(containerName, fileName);
 
             var ctx = new MobileServiceContext();
 
-            var img = new Image();
-            img.Album = ctx.Albums.Where(x => x.Id == "111").FirstOrDefault();
-            img.User = ctx.Users.Where(x => x.Id == "111").FirstOrDefault();
-            //img.
-            img.ContainerName = containerName;
-            img.FileName = fileName;
-            img.Resized = false;
+            var img = new Image
+            {
+                Album = ctx.Albums.Where(x => x.Id == AppSettings.DefaultAlbumId).FirstOrDefault(),
+                User = ctx.Users.Where(x => x.Id == AppSettings.DefaultUserId).FirstOrDefault(),
+                Id = Guid.NewGuid().ToString(),
+                ContainerName = containerName,
+                FileName = fileName,
+                SasUrl = sasForView
+               // Resized = false
+            };
             ctx.Images.Add(img);
             ctx.SaveChanges();
 
             var qm = new QueueManager();
-            qm.PushToQueue(new ResizeQueueMessage());
+            var blobInfo = new BlobInformation();
+            blobInfo.BlobUri = cs.GetBlobUri(containerName, fileName);
+            //blobInfo.ImageId = 
+            qm.PushToQueue(blobInfo);
             return true;
 
         }

@@ -11,11 +11,11 @@ namespace ContosoMoments.Common.Queue
 {
     public class QueueManager
     {
-        public void PushToQueue(ResizeQueueMessage resizeQueueMessage)
+        public void PushToQueue(BlobInformation blobInformation)
         {
             string connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
             QueueClient Client = QueueClient.CreateFromConnectionString(connectionString, AppSettings.ResizeQueueName);
-            Client.Send(new BrokeredMessage(resizeQueueMessage));
+            Client.Send(new BrokeredMessage(blobInformation));
         }
     }
 }
