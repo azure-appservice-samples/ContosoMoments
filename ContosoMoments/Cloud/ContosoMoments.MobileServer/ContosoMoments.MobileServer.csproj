@@ -214,6 +214,7 @@
     <Compile Include="Controllers\CommitBlobController.cs" />
     <Compile Include="Controllers\GetSasUrlController.cs" />
     <Compile Include="Controllers\CustomController.cs" />
+    <Compile Include="Controllers\GetwayController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\SecuredController.cs" />
     <Compile Include="Controllers\UserController.cs" />
