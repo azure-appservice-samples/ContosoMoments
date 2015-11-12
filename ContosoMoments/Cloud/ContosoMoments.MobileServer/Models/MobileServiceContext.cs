@@ -56,12 +56,13 @@ namespace ContosoMoments.MobileServer.Models
         {
             var defaultAlbum = new Album
             {
-                Id = "111",
-                AlbumName = "Default",
+                Id = "11111111-1111-1111-1111-111111111111",
+                AlbumName = "Default Album",
                 User = new User
                 {
-                    UserName = "DefaultUser",
-                    Id = "111",
+                    UserName = "Demo User",
+                    Id = "11111111-1111-1111-1111-111111111111",
+                    IsEnabled = true
                 }
             };
 

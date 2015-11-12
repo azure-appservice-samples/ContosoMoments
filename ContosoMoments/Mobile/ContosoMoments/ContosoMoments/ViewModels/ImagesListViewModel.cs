@@ -194,7 +194,7 @@ namespace ContosoMoments.ViewModels
                         postRequest.ContentType = "application/json";
                         postRequest.Method = "POST";
 
-                        string json = string.Format("{{\"UserId\":null, \"IsMobile\":true, \"AlbumId\":null, \"SasUrl\": {0}, \"blobParts\":null }}", sasToken);
+                        string json = string.Format("{{\"UserId\":\"11111111-1111-1111-1111-111111111111\", \"IsMobile\":true, \"AlbumId\":\"11111111-1111-1111-1111-111111111111\", \"SasUrl\": {0}, \"blobParts\":null }}", sasToken);
 
                         using (var streamWriter = new StreamWriter(await postRequest.GetRequestStreamAsync()))
                         {

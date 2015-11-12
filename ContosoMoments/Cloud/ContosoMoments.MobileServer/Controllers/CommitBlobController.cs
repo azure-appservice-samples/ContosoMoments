@@ -42,8 +42,8 @@ namespace ContosoMoments.MobileServer.Controllers
             var ctx = new MobileServiceContext();
 
             var img = new Image();
-            img.Album = ctx.Albums.Where(x => x.Id == "111").FirstOrDefault();
-            img.User = ctx.Users.Where(x => x.Id == "111").FirstOrDefault();
+            img.Album = ctx.Albums.Where(x => x.Id == commitBlobRequest.AlbumId).FirstOrDefault();
+            img.User = ctx.Users.Where(x => x.Id == commitBlobRequest.UserId).FirstOrDefault();
             //img.
             img.ContainerName = containerName;
             img.FileName = fileName;
