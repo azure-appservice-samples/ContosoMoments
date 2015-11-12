@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Linq;
 using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server.Tables;
 
 namespace ContosoMoments.MobileServer.Models
 {
@@ -22,7 +25,11 @@ namespace ContosoMoments.MobileServer.Models
 
         public MobileServiceContext() : base(connectionStringName)
         {
-            Database.SetInitializer(new BasicDBInitializer());
+
+           // Database.SetInitializer(new MigrateDatabaseToLatestVersion<MobileServiceContext, Migrations.Configuration>());
+//            var migrator = new System.Data.Entity.Migrations.DbMigrator(new Migrations.Configuration());
+//migrator.Update();
+          //  Database.SetInitializer(new BasicDBInitializer());
         }
 
         public DbSet<Image> Images { get; set; }
@@ -32,9 +39,18 @@ namespace ContosoMoments.MobileServer.Models
         public System.Data.Entity.DbSet<Album> Albums { get; set; }
 
         public System.Data.Entity.DbSet<User> Users { get; set; }
+
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Conventions.Add(
+               new AttributeToColumnAnnotationConvention<TableColumnAttribute, string>(
+                   "ServiceTableColumn", (property, attributes) => attributes.Single().ColumnType.ToString()));
+            base.OnModelCreating(modelBuilder);
+        }
     }
 
-    public class BasicDBInitializer : DropCreateDatabaseAlways<MobileServiceContext>
+    public class ContosoMomentsDBInitializer : DropCreateDatabaseAlways<MobileServiceContext>
     {
         protected override void Seed(MobileServiceContext context)
         {

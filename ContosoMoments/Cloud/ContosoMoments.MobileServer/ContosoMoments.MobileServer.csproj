@@ -221,11 +221,6 @@
     <Compile Include="DataObjects\Green.cs" />
     <Compile Include="DataObjects\Person.cs" />
     <Compile Include="DataObjects\BrownOnline.cs" />
-    <Compile Include="Migrations\201511112333395_v1.cs" />
-    <Compile Include="Migrations\201511112333395_v1.Designer.cs">
-      <DependentUpon>201511112333395_v1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\MobileServiceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -246,11 +241,6 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201511112333395_v1.resx">
-      <DependentUpon>201511112333395_v1.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ContosoMoments.Common\ContosoMoments.Common.csproj">

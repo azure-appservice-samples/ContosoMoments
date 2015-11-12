@@ -37,7 +37,7 @@ namespace ContosoMoments.MobileServer.Controllers
             var containerName = urldata[0].Substring(0, index);
 
             string fileName = urldata[0].Replace(containerName +"/", "");
-            var sasForView = cs.GetSasUrlForView(containerName, fileName);
+          //  var sasForView = cs.GetSasUrlForView(containerName, fileName);
 
             var ctx = new MobileServiceContext();
 
