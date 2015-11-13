@@ -1,16 +1,18 @@
 ﻿using System.Configuration;
+using Microsoft.Azure;
 
 namespace ContosoMoments.Common
 {
     public class AppSettings
     {
-        public static string StorageAccountName = ConfigurationManager.AppSettings.Get("StorageAccountName");
-        public static string StorageAccountKey = ConfigurationManager.AppSettings.Get("StorageAccountKey");
-        public static string ResizeQueueName = ConfigurationManager.AppSettings.Get("ResizeQueueName");
-        public static string UploadContainerName = ConfigurationManager.AppSettings.Get("UploadContainerName");
-        public static string FacebookAuthString = ConfigurationManager.AppSettings.Get("FacebookAuthString");
-        public static string DefaultAlbumId = ConfigurationManager.AppSettings.Get("DefaultAlbumId");
-        public static string DefaultUserId = ConfigurationManager.AppSettings.Get("DefaultUserId");
+        public static string StorageAccountName = CloudConfigurationManager.GetSetting("StorageAccountName");
+        public static string StorageAccountKey = CloudConfigurationManager.GetSetting("StorageAccountKey");
+        public static string ResizeQueueName = CloudConfigurationManager.GetSetting("ResizeQueueName");
+        public static string UploadContainerName = CloudConfigurationManager.GetSetting("UploadContainerName");
+        public static string FacebookAuthString = CloudConfigurationManager.GetSetting("FacebookAuthString");
+        public static string DefaultAlbumId = CloudConfigurationManager.GetSetting("DefaultAlbumId");
+        public static string DefaultUserId = CloudConfigurationManager.GetSetting("DefaultUserId");
+        public static string ServiceBusConnectionString = CloudConfigurationManager.GetSetting("ServiceBusConnectionString");
 
     }
 }
