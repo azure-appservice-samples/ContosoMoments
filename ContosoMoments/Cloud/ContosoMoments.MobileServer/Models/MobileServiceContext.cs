@@ -50,7 +50,7 @@ namespace ContosoMoments.MobileServer.Models
         }
     }
 
-    public class ContosoMomentsDBInitializer : DropCreateDatabaseAlways<MobileServiceContext>
+    public class ContosoMomentsDBInitializer : DropCreateDatabaseIfModelChanges<MobileServiceContext>
     {
         protected override void Seed(MobileServiceContext context)
         {
