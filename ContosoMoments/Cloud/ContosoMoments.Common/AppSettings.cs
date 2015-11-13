@@ -12,7 +12,7 @@ namespace ContosoMoments.Common
         public static string FacebookAuthString = CloudConfigurationManager.GetSetting("FacebookAuthString");
         public static string DefaultAlbumId = CloudConfigurationManager.GetSetting("DefaultAlbumId");
         public static string DefaultUserId = CloudConfigurationManager.GetSetting("DefaultUserId");
-        public static string ServiceBusConnectionString = CloudConfigurationManager.GetSetting("ServiceBusConnectionString");
+        public static string ServiceBusConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
 
     }
 }

@@ -20,7 +20,7 @@ namespace ContosoMoments.ResizerJob
 {
     public class Functions
     {
-        private const string resizeQueue = AppSettings.ResizeQueueName;
+     //   private const string resizeQueue = AppSettings.ResizeQueueName;
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
             [Blob("{BlobName}/{BlobNameLG}", FileAccess.Read)] Stream blobInput,

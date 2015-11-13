@@ -45,12 +45,32 @@ namespace ContosoMoments.MobileServer.Controllers
             var img = new Image();
             img.Album = ctx.Albums.Where(x => x.Id == commitBlobRequest.AlbumId).FirstOrDefault();
             img.User = ctx.Users.Where(x => x.Id == commitBlobRequest.UserId).FirstOrDefault();
-            //img.
+            img.Id = Guid.NewGuid().ToString();
             img.ContainerName = containerName;
             img.FileName = fileName;
             img.Resized = false;
             ctx.Images.Add(img);
-            ctx.SaveChanges();
+            try
+            {
+                ctx.SaveChanges();
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
+            {
+                Exception raise = dbEx;
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        string message = string.Format("{0}:{1}",
+                            validationErrors.Entry.Entity.ToString(),
+                            validationError.ErrorMessage);
+                        // raise a new exception nesting
+                        // the current instance as InnerException
+                        raise = new InvalidOperationException(message, raise);
+                    }
+                }
+                throw raise;
+            }
 
             var qm = new QueueManager();
             var blobInfo = new BlobInformation();
