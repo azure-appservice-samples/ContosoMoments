@@ -24,25 +24,25 @@ namespace ContosoMoments.ViewModels
         public Models.Image Image { get; set; }
         public ICommand OpenImageCommand { protected set; get; }
 
-        private string _UserName;
-        public string UserName
+        private User _user;
+        public User User
         {
-            get { return _UserName; }
+            get { return _user; }
             set
             {
-                _UserName = value;
-                OnPropertyChanged("UserName");
+                _user = value;
+                OnPropertyChanged("User");
             }
         }
 
-        private string _AlbumName;
-        public string AlbumName
+        private Album _album;
+        public Album Album
         {
-            get { return _AlbumName; }
+            get { return _album; }
             set
             {
-                _AlbumName = value;
-                OnPropertyChanged("AlbumName");
+                _album = value;
+                OnPropertyChanged("Album");
             }
         }
     }

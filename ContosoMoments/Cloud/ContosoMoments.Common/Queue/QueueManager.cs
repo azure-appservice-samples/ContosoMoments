@@ -7,21 +7,46 @@ using Microsoft.Azure;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using Microsoft.WindowsAzure.Storage.Queue.Protocol;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace ContosoMoments.Common.Queue
 {
     public class QueueManager
     {
-        public void PushToQueue(BlobInformation blobInformation)
+        public async Task PushToQueue(BlobInformation blobInformation)
         {
-            var namespaceManager = NamespaceManager.CreateFromConnectionString(AppSettings.ServiceBusConnectionString);
+            //var namespaceManager = NamespaceManager.CreateFromConnectionString(AppSettings.ServiceBusConnectionString);
 
-            if (!namespaceManager.QueueExists(AppSettings.ResizeQueueName))
+            //if (!namespaceManager.QueueExists(AppSettings.ResizeQueueName))
+            //{
+            //    namespaceManager.CreateQueue(AppSettings.ResizeQueueName);
+            //}
+            //QueueClient Client = QueueClient.CreateFromConnectionString(AppSettings.ServiceBusConnectionString, AppSettings.ResizeQueueName);
+            //Client.Send(new BrokeredMessage(blobInformation));
+
+            try
             {
-                namespaceManager.CreateQueue(AppSettings.ResizeQueueName);
+                CloudStorageAccount account;
+                string storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", AppSettings.StorageAccountName, AppSettings.StorageAccountKey);
+
+                if (CloudStorageAccount.TryParse(storageConnectionString, out account))
+                {
+                    CloudQueueClient queueClient = account.CreateCloudQueueClient();
+                    CloudQueue resizeRequestQueue = queueClient.GetQueueReference(AppSettings.ResizeQueueName);
+                    resizeRequestQueue.CreateIfNotExists(); 
+
+                    var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(blobInformation));
+                    await resizeRequestQueue.AddMessageAsync(queueMessage);
+                }
             }
-            QueueClient Client = QueueClient.CreateFromConnectionString(AppSettings.ServiceBusConnectionString, AppSettings.ResizeQueueName);
-            Client.Send(new BrokeredMessage(blobInformation));
+            catch (Exception ex)
+            {
+                Trace.TraceError("Exception in QueueManager.PushToQueue => " + ex.Message);
+            }
+
         }
     }
 }

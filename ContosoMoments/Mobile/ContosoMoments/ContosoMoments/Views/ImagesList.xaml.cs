@@ -46,10 +46,10 @@ namespace ContosoMoments.Views
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
-                    if (null == viewModel.UserName)
+                    if (null == viewModel.User)
                         await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
 
-                    if (null == viewModel.AlbumName)
+                    if (null == viewModel.Album)
                         await viewModel.GetAlbumAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
 
                     //await manager.SyncImagesAsync();
@@ -73,13 +73,17 @@ namespace ContosoMoments.Views
             //imgPreview.Source = App.Instance.image;
 
             //Upload image
-            if (await viewModel.UploadImageAsync(App.Instance.ImageStream))
+            using (var scope = new ActivityIndicatorScope(syncIndicator, true))
             {
-                OnRefresh(sender, e);
-            }
-            else
-            {
-                await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
+                if (await viewModel.UploadImageAsync(App.Instance.ImageStream))
+                {
+                    await DisplayAlert("Upload succeeded", "Image uploaded and will appear in the list shortly", "Ok");
+                    OnRefresh(sender, e);
+                }
+                else
+                {
+                    await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
+                }
             }
         }
 
@@ -94,7 +98,7 @@ namespace ContosoMoments.Views
 
         public async void OnRefresh(object sender, EventArgs e)
         {
-            var list = (ListView)sender;
+            //var list = (ListView)sender;
             var success = false;
             try
             {
@@ -105,7 +109,7 @@ namespace ContosoMoments.Views
             {
                 await DisplayAlert("Refresh Error", "Couldn't refresh data (" + ex.Message + ")", "OK");
             }
-            list.EndRefresh();
+            imagesList.EndRefresh();
 
             if (!success)
                 await DisplayAlert("Refresh Error", "Couldn't refresh data", "OK");
@@ -120,8 +124,8 @@ namespace ContosoMoments.Views
             {
                 var detailsView = new ImageDetailsView();
                 var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
-                detailsVM.AlbumName = viewModel.AlbumName;
-                detailsVM.UserName = viewModel.UserName;
+                detailsVM.Album = viewModel.Album;
+                detailsVM.User = viewModel.User;
                 detailsView.BindingContext = detailsVM;
 
                 await Navigation.PushAsync(detailsView);

@@ -53,8 +53,8 @@
 
     <!--User and Album info-->
     <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0,10,5">
-      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding UserName}"/>
-      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding AlbumName}"/>
+      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
+      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
     </StackLayout>
 
     <!--List of images-->

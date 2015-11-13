@@ -1,6 +1,6 @@
 ﻿{
   "$schema": "http://schemastore.org/schemas/json/webjob-publish-settings.json",
-  "webJobName": "ResizerJob",
+  "webJobName": "ContosoMomentsResizerJob",
   "startTime": null,
   "endTime": null,
   "jobRecurrenceFrequency": null,

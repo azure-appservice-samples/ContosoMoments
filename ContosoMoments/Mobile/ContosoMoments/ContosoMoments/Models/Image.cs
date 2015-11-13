@@ -12,8 +12,8 @@ namespace ContosoMoments.Models
         Guid imageId;
         string imageFormat;
         string containerName;
-        Guid albumId;
-        Guid userId;
+        Album album;
+        User user;
 
         [JsonProperty(PropertyName = "Id")]
         public Guid Id
@@ -22,7 +22,7 @@ namespace ContosoMoments.Models
             set { id = value; }
         }
 
-        [JsonProperty(PropertyName = "ImageId")]
+        [JsonProperty(PropertyName = "FileName")]
         public Guid ImageId
         {
             get { return imageId; }
@@ -43,18 +43,18 @@ namespace ContosoMoments.Models
             set { containerName = value; }
         }
 
-        [JsonProperty(PropertyName = "AlbumId")]
-        public Guid AlbumId
+        [JsonProperty(PropertyName = "Album")]
+        public Album Album
         {
-            get { return albumId; }
-            set { albumId = value; }
+            get { return album; }
+            set { album = value; }
         }
 
-        [JsonProperty(PropertyName = "UserId")]
-        public Guid UserId
+        [JsonProperty(PropertyName = "User")]
+        public User User
         {
-            get { return userId; }
-            set { userId = value; }
+            get { return user; }
+            set { user = value; }
         }
 
         [JsonIgnore]

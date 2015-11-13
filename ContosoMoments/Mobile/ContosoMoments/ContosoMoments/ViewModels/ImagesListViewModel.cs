@@ -67,25 +67,25 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        private string _UserName;
-        public string UserName
+        private User _user;
+        public User User
         {
-            get { return _UserName; }
+            get { return _user; }
             set
             {
-                _UserName = value;
-                OnPropertyChanged("UserName");
+                _user = value;
+                OnPropertyChanged("User");
             }
         }
 
-        private string _AlbumName;
-        public string AlbumName
+        private Album _album;
+        public Album Album
         {
-            get { return _AlbumName; }
+            get { return _album; }
             set
             {
-                _AlbumName = value;
-                OnPropertyChanged("AlbumName");
+                _album = value;
+                OnPropertyChanged("Album");
             }
         }
 
@@ -109,7 +109,7 @@ namespace ContosoMoments.ViewModels
                 var user = await table.LookupAsync(userId);
 
                 if (null != user)
-                    UserName = user.UserName;
+                    User = user;
             }
             catch (MobileServiceInvalidOperationException ex)
             {
@@ -129,7 +129,7 @@ namespace ContosoMoments.ViewModels
                 var album = await table.LookupAsync(albumId);
 
                 if (null != album)
-                    AlbumName = album.AlbumName;
+                    Album = album;
             }
             catch (MobileServiceInvalidOperationException ex)
             {
@@ -186,6 +186,7 @@ namespace ContosoMoments.ViewModels
                         StorageCredentials credentials = new StorageCredentials(token);
                         string blobUri = sasToken.Substring(1, sasToken.IndexOf("?"));
                         CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
+                        blobFromSASCredential.Properties.ContentType = "image/jpeg";
                         bytes = new byte[imageStream.Length];
                         await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
                         await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
@@ -194,7 +195,7 @@ namespace ContosoMoments.ViewModels
                         postRequest.ContentType = "application/json";
                         postRequest.Method = "POST";
 
-                        string json = string.Format("{{\"UserId\":\"11111111-1111-1111-1111-111111111111\", \"IsMobile\":true, \"AlbumId\":\"11111111-1111-1111-1111-111111111111\", \"SasUrl\": {0}, \"blobParts\":null }}", sasToken);
+                        string json = string.Format("{{\"UserId\":\"{1}\", \"IsMobile\":true, \"AlbumId\":\"{2}\", \"SasUrl\": {0}, \"blobParts\":null }}", sasToken, User.UserId, Album.AlbumId);
 
                         using (var streamWriter = new StreamWriter(await postRequest.GetRequestStreamAsync()))
                         {
@@ -208,7 +209,7 @@ namespace ContosoMoments.ViewModels
                         {
                             var result = streamReader.ReadToEnd();
                             bool b;
-                            if (!bool.TryParse(result, out b))
+                            if (bool.TryParse(result, out b))
                                 retVal = b;
                             else
                                 retVal = false;

@@ -78,7 +78,7 @@ namespace ContosoMoments.Common.Srorage
             CloudBlobContainer container = blobClient.GetContainerReference(sasContainerName);
             container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
             var blob = container.GetBlockBlobReference(fileName);
-            return blob.Uri;
+            return container.Uri;
         }
 
         public string GetSasUrlForView(string sasContainerName, string fileName)

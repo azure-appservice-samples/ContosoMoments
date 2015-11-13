@@ -8,6 +8,7 @@ using ContosoMoments.Common.Queue;
 using ContosoMoments.Common.Srorage;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Config;
+using System.Threading.Tasks;
 
 namespace ContosoMoments.MobileServer.Controllers
 {
@@ -19,7 +20,7 @@ namespace ContosoMoments.MobileServer.Controllers
 
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public bool Post([FromBody]CommitBlobRequest commitBlobRequest)
+        public async Task<bool> Post([FromBody]CommitBlobRequest commitBlobRequest)
         {
             
             var cs = new ContosoStorage();
@@ -37,7 +38,8 @@ namespace ContosoMoments.MobileServer.Controllers
 
             var containerName = urldata[0].Substring(0, index);
 
-            string fileName = urldata[0].Replace(containerName +"/", "");
+            string fileName = urldata[0].Replace(containerName +"/lg/", "");
+            fileName = fileName.Replace(".jpg", "");
             var sasForView = cs.GetSasUrlForView(containerName, fileName);
 
             var ctx = new MobileServiceContext();
@@ -46,7 +48,8 @@ namespace ContosoMoments.MobileServer.Controllers
             img.Album = ctx.Albums.Where(x => x.Id == commitBlobRequest.AlbumId).FirstOrDefault();
             img.User = ctx.Users.Where(x => x.Id == commitBlobRequest.UserId).FirstOrDefault();
             img.Id = Guid.NewGuid().ToString();
-            img.ContainerName = containerName;
+            img.ImageFormat = commitBlobRequest.IsMobile ? "Mobile Image" : "Web Image";
+            img.ContainerName = webUri + containerName;
             img.FileName = fileName;
             img.Resized = false;
             ctx.Images.Add(img);
@@ -74,9 +77,9 @@ namespace ContosoMoments.MobileServer.Controllers
 
             var qm = new QueueManager();
             var blobInfo = new BlobInformation();
-            blobInfo.BlobUri = cs.GetBlobUri(containerName, fileName);
-            //blobInfo.ImageId = 
-            qm.PushToQueue(blobInfo);
+            blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName + "/", ""));
+            blobInfo.ImageId = fileName;
+            await qm.PushToQueue(blobInfo);
             return true;
 
         }
