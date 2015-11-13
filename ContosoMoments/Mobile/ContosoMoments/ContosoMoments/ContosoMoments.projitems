@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AppSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\WrapPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImagePathForSizeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Image.cs" />

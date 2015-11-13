@@ -42,16 +42,13 @@ namespace ContosoMoments.MobileServer.Controllers
 
             var ctx = new MobileServiceContext();
 
-            var img = new Image
-            {
-                Album = ctx.Albums.Where(x => x.Id == AppSettings.DefaultAlbumId).FirstOrDefault(),
-                User = ctx.Users.Where(x => x.Id == AppSettings.DefaultUserId).FirstOrDefault(),
-                Id = Guid.NewGuid().ToString(),
-                ContainerName = containerName,
-                FileName = fileName,
-                SasUrl = sasForView
-               // Resized = false
-            };
+            var img = new Image();
+            img.Album = ctx.Albums.Where(x => x.Id == commitBlobRequest.AlbumId).FirstOrDefault();
+            img.User = ctx.Users.Where(x => x.Id == commitBlobRequest.UserId).FirstOrDefault();
+            //img.
+            img.ContainerName = containerName;
+            img.FileName = fileName;
+            img.Resized = false;
             ctx.Images.Add(img);
             ctx.SaveChanges();
 

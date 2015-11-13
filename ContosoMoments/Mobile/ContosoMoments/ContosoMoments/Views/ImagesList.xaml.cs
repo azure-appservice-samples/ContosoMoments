@@ -41,15 +41,16 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
+            //if (imagesWrap.ItemsSource == null)
             if (imagesList.ItemsSource == null)
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
                     if (null == viewModel.UserName)
-                        await viewModel.GetUserAsync(Guid.Parse("60AA71AE-59DA-43D1-A8B4-088246A4007F")); //MUST BE 11111-11111....
+                        await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
 
                     if (null == viewModel.AlbumName)
-                        await viewModel.GetAlbumAsync(Guid.Parse("6CF58A5B-1B7B-4097-85D7-C9254440BAFB")); //MUST BE 11111-11111....
+                        await viewModel.GetAlbumAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
 
                     //await manager.SyncImagesAsync();
                     await LoadItems();
@@ -88,6 +89,7 @@ namespace ContosoMoments.Views
 
             if (null != viewModel.Images)
                 imagesList.ItemsSource = viewModel.Images.ToList();
+                //imagesWrap.ItemsSource = viewModel.Images.ToList();
         }
 
         public async void OnRefresh(object sender, EventArgs e)

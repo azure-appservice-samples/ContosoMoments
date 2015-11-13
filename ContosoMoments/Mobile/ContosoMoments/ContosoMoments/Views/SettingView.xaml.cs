@@ -1,7 +1,9 @@
 ﻿using ContosoMoments.Settings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 #if __WP__
@@ -44,7 +46,7 @@ namespace ContosoMoments.Views
 #elif __IOS__
                 ValidURL = await CheckServerAddressIOS(mobileServiceUrl.Text);
 #elif __DROID__
-                ValidURL = await CheckServerAddressDroid(mobileServiceUrl.Text);
+                    ValidURL = await CheckServerAddressDroid(mobileServiceUrl.Text);
 #endif
 
                     if (ValidURL)
@@ -53,11 +55,41 @@ namespace ContosoMoments.Views
                         Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
 
                         //TODO: get getaway URL from temp client and save it
-                        //var tempClient = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL);
-                        //var res = await tempClient.InvokeApiAsync("GetGetawayURL");
+                        var getwayService = Constants.ApplicationURL + "api/Getway";
 
-                        App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL);
+                        HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(getwayService));
+                        request.Method = "GET";
+
+                        using (WebResponse response = await request.GetResponseAsync())
+                        {
+                            using (Stream stream = response.GetResponseStream())
+                            {
+                                byte[] bytes = new byte[stream.Length];
+                                await stream.ReadAsync(bytes, 0, (int)stream.Length);
+
+                                var getawayURL = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)stream.Length);
+
+                                AppSettings.Current.AddOrUpdateValue<string>("GatewayURL", getawayURL.TrimStart('"').TrimEnd('"'));
+                                Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
+                            }
+                        }
+                        App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
+                        App.AuthenticatedUser = App.MobileService.CurrentUser;
+
+#if !__WP__
+                        //TODO - authenticate if required.How to check?
+                        if (App.AuthenticatedUser == null)
+                        {
+                            App.Current.MainPage = new NavigationPage(new Login());
+                        }
+                        else
+                        {
+                            // The root page of your application
+                            App.Current.MainPage = new NavigationPage(new ImagesList());
+                        }
+#elif __WP__
                         App.Current.MainPage = new NavigationPage(new ImagesList());
+#endif
                     }
                     else
                     {

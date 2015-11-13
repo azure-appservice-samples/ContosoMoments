@@ -167,43 +167,61 @@ namespace ContosoMoments.ViewModels
 
         public async Task<bool> UploadImageAsync(Stream imageStream)
         {
-            //1. Get SaSToken
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/getsasurl"));
-            request.Method = "GET";
+            bool retVal = false;
 
-            using (WebResponse response = await request.GetResponseAsync())
+            try
             {
-                using (Stream stream = response.GetResponseStream())
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/GetSasUrl"));
+                request.Method = "GET";
+
+                using (WebResponse response = await request.GetResponseAsync())
                 {
-                    byte[] bytes = new byte[stream.Length];
-                    await stream.ReadAsync(bytes, 0, (int)stream.Length);
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        byte[] bytes = new byte[stream.Length];
+                        await stream.ReadAsync(bytes, 0, (int)stream.Length);
 
-                    var sasToken = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)stream.Length);
+                        var sasToken = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)stream.Length);
+                        string token = sasToken.Substring(sasToken.IndexOf("?")).TrimEnd('"');
+                        StorageCredentials credentials = new StorageCredentials(token);
+                        string blobUri = sasToken.Substring(1, sasToken.IndexOf("?"));
+                        CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
+                        bytes = new byte[imageStream.Length];
+                        await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
+                        await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
 
-                    StorageCredentials credentials = new StorageCredentials(sasToken);
-                    CloudBlobContainer container = new CloudBlobContainer(new Uri("https://contosomomentsstorage.blob.core.windows.net/images/lg"), credentials);
+                        HttpWebRequest postRequest = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/CommitBlob"));
+                        postRequest.ContentType = "application/json";
+                        postRequest.Method = "POST";
 
-                    //2. Upload the new image as a BLOB from the stream.
-                    Guid imageId = Guid.NewGuid();
-                    CloudBlockBlob blobFromSASCredential = container.GetBlockBlobReference(imageId.ToString() + ".jpg");
-                    blobFromSASCredential.Properties.ContentType = "image/jpeg";
+                        string json = string.Format("{{\"UserId\":\"11111111-1111-1111-1111-111111111111\", \"IsMobile\":true, \"AlbumId\":\"11111111-1111-1111-1111-111111111111\", \"SasUrl\": {0}, \"blobParts\":null }}", sasToken);
 
-                    bytes = new byte[imageStream.Length];
-                    await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
-                    await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
+                        using (var streamWriter = new StreamWriter(await postRequest.GetRequestStreamAsync()))
+                        {
+                            streamWriter.Write(json);
+                            streamWriter.Flush();
+                            streamWriter.Close();
+                        }
 
-                    //await blobFromSASCredential.UploadFromStreamAsync(imageStream);
-
-                    //3. Call mobile service with new imageId
-                    //HttpWebRequest postRequest = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/MobileImage/PostImage"));
-                    //request.ContentType = "application/json";
-                    //request.Method = "POST";
+                        var httpResponse = (HttpWebResponse)await postRequest.GetResponseAsync();
+                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                        {
+                            var result = streamReader.ReadToEnd();
+                            bool b;
+                            if (!bool.TryParse(result, out b))
+                                retVal = b;
+                            else
+                                retVal = false;
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
             }
 
 
-
-            return true;
+            return retVal;
         }
     }
 }

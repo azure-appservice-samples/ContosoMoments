@@ -36,8 +36,8 @@ namespace ContosoMoments
             {
                 Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
                 //DEBUG!!!
-                //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
-                Constants.GatewayURL = "http://default-storage-westus7a065f30c6524563a7ccea44480a2776.azurewebsites.net";
+                Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
+                //Constants.GatewayURL = "http://default-storage-westus7a065f30c6524563a7ccea44480a2776.azurewebsites.net";
                 //Constants.ApplicationKey = AppSettings.Current.GetValueOrDefault<string>("ApplicationKey");
                 MobileService = new MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
                 AuthenticatedUser = MobileService.CurrentUser;
