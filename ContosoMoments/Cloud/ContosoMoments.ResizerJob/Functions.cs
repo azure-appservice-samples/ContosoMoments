@@ -12,15 +12,18 @@ using System.Text;
 using System.Threading.Tasks;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Enums;
+using ContosoMoments.Common.Srorage;
+using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.ServiceBus.Notifications;
 using Microsoft.WindowsAzure.Storage.Blob;
+using static ContosoMoments.Common.Enums.ImageSizes;
 
 namespace ContosoMoments.ResizerJob
 {
     public class Functions
     {
-     //   private const string resizeQueue = AppSettings.ResizeQueueName;
+        //   private const string resizeQueue = AppSettings.ResizeQueueName;
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
             [Blob("{BlobName}/{BlobNameLG}", FileAccess.Read)] Stream blobInput,
@@ -28,16 +31,17 @@ namespace ContosoMoments.ResizerJob
             [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
             [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
         {
+            var dataContext = new MobileServiceContext();
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            bool res = await scaleImage(blobInput, blobOutputMedium, ImageSizes.Medium);
+            bool res = await scaleImage(blobInput, blobOutputMedium, Medium, dataContext, blobInfo);
             TraceInfo(blobInfo.ImageId, "MEDIUM", res);
 
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
-            res = await scaleImage(blobInput, blobOutputSmall, ImageSizes.Small);
+            res = await scaleImage(blobInput, blobOutputSmall, Small, dataContext, blobInfo);
             TraceInfo(blobInfo.ImageId, "SMALL", res);
 
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            res = await scaleImage(blobInput, blobOutputExtraSmall, ImageSizes.ExtraSmall);
+            res = await scaleImage(blobInput, blobOutputExtraSmall, ExtraSmall, dataContext, blobInfo);
             TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
 
             Trace.TraceInformation("Done processing 'resizerequest' message");
@@ -139,7 +143,7 @@ namespace ContosoMoments.ResizerJob
         #endregion
 
         #region Private functionality
-        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize)
+        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, MobileServiceContext ctx, BlobInformation blobInfo)
         {
             bool retVal = true; //Assume success
 
@@ -148,7 +152,38 @@ namespace ContosoMoments.ResizerJob
                 using (Stream output = blobOutput.OpenWrite())
                 {
                     if (doScaling(blobInput, output, imageSize))
+                    {
                         blobOutput.Properties.ContentType = "image/jpeg";
+
+                        var img = ctx.Images.Where(x => x.FileGuidName == blobInfo.FileGuidName).FirstOrDefault();
+                        var cs = new ContosoStorage();
+                        var url = cs.GetDownloadUrl(AppSettings.UploadContainerName, blobOutput.Name);
+                        switch (imageSize)
+                        {
+
+                            //case ImageSizes.Large:
+                              
+                            case Medium:
+                                img.MedumeFIleUrl = url;
+                                break;
+                            case Small:
+                                img.MedumeFIleUrl = url;
+                                break;
+                            case ExtraSmall:
+                                img.MedumeFIleUrl = url;
+                                break;
+
+
+
+                        }
+
+                        ctx.SaveChanges();
+                        //   var ibl = new ImageBusinessLogic();
+                        // ibl.AddImageToDB(blobInfo.AlbumId, blobInfo.UserId, AppSettings.UploadContainerName, blobInfo.FileGuidName, blobInfo.FileName, "WebJob Resize");
+
+                    }
+
+
                     else
                         retVal = false;
                 }
@@ -173,19 +208,19 @@ namespace ContosoMoments.ResizerJob
                 //TODO: get original image aspect ratio, get "priority property" (width) and calculate new height...
                 switch (imageSize)
                 {
-                    case ImageSizes.Medium:
+                    case Medium:
                         width = 800;
                         height = 480;
                         break;
-                    case ImageSizes.Large:
+                    case Large:
                         width = 1024;
                         height = 768;
                         break;
-                    case ImageSizes.ExtraSmall:
+                    case ExtraSmall:
                         width = 320;
                         height = 200;
                         break;
-                    case ImageSizes.Small:
+                    case Small:
                         width = 640;
                         height = 400;
                         break;
@@ -267,7 +302,7 @@ namespace ContosoMoments.ResizerJob
             return retVal;
         }
 
-       
+
         #endregion
     }
 }

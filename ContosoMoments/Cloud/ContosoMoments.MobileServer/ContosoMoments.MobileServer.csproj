@@ -222,6 +222,7 @@
     <Compile Include="DataObjects\Person.cs" />
     <Compile Include="DataObjects\BrownOnline.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\ImageBusinessLogic.cs" />
     <Compile Include="Models\MobileServiceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

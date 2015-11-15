@@ -9,7 +9,7 @@ namespace ContosoMoments.Common.Models
     {
        // public Guid ImageId { get; set; }
 
-        public string ImageFormat { get; set; }
+        public string UploadFormat { get; set; }
 
         public string ContainerName { get; set; }
         public string FileGuidName { get; set; }

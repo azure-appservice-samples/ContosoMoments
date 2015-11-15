@@ -10,6 +10,8 @@ namespace ContosoMoments.Common
     {
         public Uri BlobUri { get; set; }
 
+        public string FileGuidName { get; set; }
+      
         public string BlobName
         {
             get
