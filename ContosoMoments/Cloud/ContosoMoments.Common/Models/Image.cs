@@ -12,8 +12,11 @@ namespace ContosoMoments.Common.Models
         public string ImageFormat { get; set; }
 
         public string ContainerName { get; set; }
-        public string FileName { get; set; }
-        public string SasUrl { get; set; }
+        public string FileGuidName { get; set; }
+        public string LargeFileUrl { get; set; }
+        public string MedumeFIleUrl { get; set; }
+        public string SmallFileUrl { get; set; }
+        public string ExtraSmallFileUrl { get; set; }
 
         public bool Resized { get; set; }
 
@@ -23,20 +26,20 @@ namespace ContosoMoments.Common.Models
         public User User { get; set; }
 
 
-        [NotMapped]
-        public IDictionary<string, Uri> ImagePath
-        {
-            get
-            {
-                Dictionary<string, Uri> retVal = new Dictionary<string, Uri>();
+        //[NotMapped]
+        //public IDictionary<string, Uri> ImagePath
+        //{
+        //    get
+        //    {
+        //        Dictionary<string, Uri> retVal = new Dictionary<string, Uri>();
 
-                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}.jpg", ContainerName, FileName)));
-                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}.jpg", ContainerName, FileName)));
-                retVal.Add("md", new Uri(string.Format("{0}/md/{1}.jpg", ContainerName, FileName)));
-                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}.jpg", ContainerName, FileName)));
+        //        retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}.jpg", ContainerName, FileName)));
+        //        retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}.jpg", ContainerName, FileName)));
+        //        retVal.Add("md", new Uri(string.Format("{0}/md/{1}.jpg", ContainerName, FileName)));
+        //        retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}.jpg", ContainerName, FileName)));
 
-                return retVal;
-            }
-        }
+        //        return retVal;
+        //    }
+        //}
     }
 }

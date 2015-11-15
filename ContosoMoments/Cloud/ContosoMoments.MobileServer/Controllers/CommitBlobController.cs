@@ -37,9 +37,9 @@ namespace ContosoMoments.MobileServer.Controllers
 
 
             var containerName = urldata[0].Substring(0, index);
-
-            string fileName = urldata[0].Replace(containerName +"/lg/", "");
-            fileName = fileName.Replace(".jpg", "");
+            var fileName = urldata[0].Replace(containerName + "/", "");
+            string fileGuidName = urldata[0].Replace(containerName +"/lg/", "").Replace(".jpg", ""); 
+        
             var sasForView = cs.GetSasUrlForView(containerName, fileName);
 
             var ctx = new MobileServiceContext();
@@ -50,8 +50,9 @@ namespace ContosoMoments.MobileServer.Controllers
             img.Id = Guid.NewGuid().ToString();
             img.ImageFormat = commitBlobRequest.IsMobile ? "Mobile Image" : "Web Image";
             img.ContainerName = webUri + containerName;
-            img.FileName = fileName;
+            img.FileGuidName = fileGuidName ;
             img.Resized = false;
+            img.LargeFileUrl = cs.GetDownloadUrl(containerName, fileName);
             ctx.Images.Add(img);
             try
             {
