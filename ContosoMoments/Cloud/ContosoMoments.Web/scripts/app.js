@@ -161,7 +161,6 @@
         albumsService.getAlbum('1').then(function(album){
             self.curAlbum = album;
             setTimeout(function () {
-                alert('polyfilling');
                 objectFit.polyfill({
                     selector: 'img',
                     fittype: 'cover'
