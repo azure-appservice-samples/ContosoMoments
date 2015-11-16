@@ -1,0 +1,7 @@
+<div class="row">
+    <div ng-repeat="img in albumCtrl.curAlbum.images" class="col-xs-6 col-sm-4 col-md-3 col-lg-2 galleryRow">
+        <a ng-href="albums/{{albumCtrl.curAlbum.id}}/images/{{img.id}}" >
+            <img class="img-preview" ng-src="{{img.url}}" alt='{{img.name}}' />
+        </a>
+    </div>
+</div>
