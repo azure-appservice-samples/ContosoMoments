@@ -29,7 +29,7 @@ namespace ContosoMoments.Models
             set { imageId = value; }
         }
 
-        [JsonProperty(PropertyName = "ImageFormat")]
+        [JsonProperty(PropertyName = "UploadFormat")]
         public string ImageFormat
         {
             get { return imageFormat; }

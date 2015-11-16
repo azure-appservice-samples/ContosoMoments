@@ -21,31 +21,31 @@ namespace ContosoMoments.MobileServer.Controllers
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task<bool> Post([FromBody]CommitBlobRequest commitBlobRequest)
         {
-            
+
             var cs = new ContosoStorage();
             if (!commitBlobRequest.IsMobile)
             {
-               
+
                 cs.CommitUpload(commitBlobRequest);
             }
             var url = commitBlobRequest.SasUrl.Replace(AppSettings.StorageWebUri, "");
             var urldata = url.Split('?');
             var index = urldata[0].IndexOf('/');
-            
+
             var content = urldata[0].Split('/');
 
 
             var containerName = urldata[0].Substring(0, index);
-          //  var fileName = urldata[0].Replace(containerName + "/", "");
-            string fileGuidName = urldata[0].Replace(containerName +"/lg/", "").Replace(".jpg", ""); 
-        
-           var ibl = new ImageBusinessLogic();
-            ibl.AddImageToDB(commitBlobRequest.AlbumId ,commitBlobRequest.UserId , containerName, fileGuidName + ".jpg", commitBlobRequest.IsMobile = false);
+            //  var fileName = urldata[0].Replace(containerName + "/", "");
+            string fileGuidName = urldata[0].Replace(containerName + "/lg/", "").Replace(".jpg", "");
+
+            var ibl = new ImageBusinessLogic();
+            ibl.AddImageToDB(commitBlobRequest.AlbumId, commitBlobRequest.UserId, containerName, fileGuidName/* + ".jpg"*/, commitBlobRequest.IsMobile);
 
             var qm = new QueueManager();
             var blobInfo = new BlobInformation();
-            blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName , ""));
-           // blobInfo.FileGuidName = fileGuidName;
+            blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName, ""));
+            // blobInfo.FileGuidName = fileGuidName;
             blobInfo.ImageId = fileGuidName;
             await qm.PushToQueue(blobInfo);
             return true;
