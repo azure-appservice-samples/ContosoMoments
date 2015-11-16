@@ -40,9 +40,9 @@ namespace ContosoMoments.Common.Srorage
             var urldata = url.Split('?');
             var content = urldata[0].Split('/');
 
-
-            var FileName = content[1];
             var ContainerName = content[0];
+            var FileName = urldata[0].Replace(ContainerName + "/", "");
+            
             var accountAndKey = new StorageCredentials(AppSettings.StorageAccountName, AppSettings.StorageAccountKey);
             var storageaccount = new CloudStorageAccount(accountAndKey, true);
             var blobClient = storageaccount.CreateCloudBlobClient();
@@ -79,6 +79,24 @@ namespace ContosoMoments.Common.Srorage
             container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
             var blob = container.GetBlockBlobReference(fileName);
             return container.Uri;
+        }
+
+
+        public string GetDownloadUrl(string sasContainerName, string fileName)
+        {
+            var blobClient = GetCloudBlobClient(ref sasContainerName, ref fileName);
+            //Get the container.  This is what we will attach the signature to.
+            CloudBlobContainer container = blobClient.GetContainerReference(sasContainerName);
+            container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+            var blob = container.GetBlockBlobReference(fileName);
+            var sasConstraints = new SharedAccessBlobPolicy();
+            sasConstraints.SharedAccessStartTime = DateTime.UtcNow.AddMinutes(-5);
+            sasConstraints.SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(10);
+            sasConstraints.Permissions = SharedAccessBlobPermissions.Read;
+
+            var sasBlobToken = blob.GetSharedAccessSignature(sasConstraints);
+
+            return blob.Uri + sasBlobToken;
         }
 
         public string GetSasUrlForView(string sasContainerName, string fileName)

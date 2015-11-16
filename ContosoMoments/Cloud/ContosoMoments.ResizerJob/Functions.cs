@@ -6,21 +6,18 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Enums;
 using Microsoft.Azure.WebJobs;
-using Microsoft.ServiceBus.Notifications;
 using Microsoft.WindowsAzure.Storage.Blob;
+using static ContosoMoments.Common.Enums.ImageSizes;
 
 namespace ContosoMoments.ResizerJob
 {
     public class Functions
     {
-     //   private const string resizeQueue = AppSettings.ResizeQueueName;
+        //   private const string resizeQueue = AppSettings.ResizeQueueName;
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
             [Blob("{BlobName}/{BlobNameLG}", FileAccess.Read)] Stream blobInput,
@@ -29,15 +26,15 @@ namespace ContosoMoments.ResizerJob
             [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
         {
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            bool res = await scaleImage(blobInput, blobOutputMedium, ImageSizes.Medium);
+            bool res = await scaleImage(blobInput, blobOutputMedium, Medium);
             TraceInfo(blobInfo.ImageId, "MEDIUM", res);
 
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
-            res = await scaleImage(blobInput, blobOutputSmall, ImageSizes.Small);
+            res = await scaleImage(blobInput, blobOutputSmall, Small);
             TraceInfo(blobInfo.ImageId, "SMALL", res);
 
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            res = await scaleImage(blobInput, blobOutputExtraSmall, ImageSizes.ExtraSmall);
+            res = await scaleImage(blobInput, blobOutputExtraSmall, ExtraSmall);
             TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
 
             Trace.TraceInformation("Done processing 'resizerequest' message");
@@ -148,7 +145,13 @@ namespace ContosoMoments.ResizerJob
                 using (Stream output = blobOutput.OpenWrite())
                 {
                     if (doScaling(blobInput, output, imageSize))
+                    {
                         blobOutput.Properties.ContentType = "image/jpeg";
+
+                      
+                    }
+
+
                     else
                         retVal = false;
                 }
@@ -173,19 +176,19 @@ namespace ContosoMoments.ResizerJob
                 //TODO: get original image aspect ratio, get "priority property" (width) and calculate new height...
                 switch (imageSize)
                 {
-                    case ImageSizes.Medium:
+                    case Medium:
                         width = 800;
                         height = 480;
                         break;
-                    case ImageSizes.Large:
+                    case Large:
                         width = 1024;
                         height = 768;
                         break;
-                    case ImageSizes.ExtraSmall:
+                    case ExtraSmall:
                         width = 320;
                         height = 200;
                         break;
-                    case ImageSizes.Small:
+                    case Small:
                         width = 640;
                         height = 400;
                         break;
@@ -267,7 +270,7 @@ namespace ContosoMoments.ResizerJob
             return retVal;
         }
 
-       
+
         #endregion
     }
 }
