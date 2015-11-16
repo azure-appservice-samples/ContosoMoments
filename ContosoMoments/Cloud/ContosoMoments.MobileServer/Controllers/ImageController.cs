@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Cors;
 using System.Web.Http.OData;
 using ContosoMoments.Common.Models;
 using ContosoMoments.MobileServer.Models;
@@ -18,6 +19,8 @@ namespace ContosoMoments.MobileServer.Controllers
             DomainManager = new EntityDomainManager<Image>(context, Request);
         }
 
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+
         // GET tables/Images
         public IQueryable<Image> GetAllImage()
         {
@@ -25,12 +28,14 @@ namespace ContosoMoments.MobileServer.Controllers
         }
 
         // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public SingleResult<Image> GetImage(string id)
         {
             return Lookup(id);
         }
 
         // PATCH tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public Task<Image> PatchImage(string id, Delta<Image> patch)
         {
              return UpdateAsync(id, patch);
@@ -44,6 +49,7 @@ namespace ContosoMoments.MobileServer.Controllers
         }
 
         // DELETE tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public Task DeleteImage(string id)
         {
              return DeleteAsync(id);
