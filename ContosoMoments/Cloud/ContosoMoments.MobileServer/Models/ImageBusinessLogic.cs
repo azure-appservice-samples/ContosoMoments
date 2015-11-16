@@ -13,15 +13,14 @@ namespace ContosoMoments.MobileServer.Models
 
       
 
-        public void AddImageToDB(string AlbumId, string UserId, string containerName, string fileGuidName,
-            string fileName, bool IsMobile)
+        public void AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, bool IsMobile)
         {
 
             var uploadFormat = IsMobile ? "Mobile Image" : "Web Image";
-            AddImageToDB(AlbumId, UserId, containerName, fileGuidName, fileName, uploadFormat);
+            AddImageToDB(AlbumId, UserId, containerName,  fileName, uploadFormat);
         }
 
-        public void AddImageToDB(string AlbumId, string UserId, string containerName, string fileGuidName, string fileName, string UploadFormat)
+        public void AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, string UploadFormat)
         {
             ContosoStorage cs = new ContosoStorage();
             var ctx = new MobileServiceContext();
@@ -32,9 +31,9 @@ namespace ContosoMoments.MobileServer.Models
                 Id = Guid.NewGuid().ToString(),
                 UploadFormat = UploadFormat,
                 ContainerName = AppSettings.StorageWebUri + containerName,
-                FileGuidName = fileGuidName,
-                Resized = false,
-                LargeFileUrl = cs.GetDownloadUrl(containerName, fileName)
+                FileName = fileName,
+                
+              
             };
             ctx.Images.Add(img);
             try

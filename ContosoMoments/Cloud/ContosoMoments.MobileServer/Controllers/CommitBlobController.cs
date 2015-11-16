@@ -36,17 +36,17 @@ namespace ContosoMoments.MobileServer.Controllers
 
 
             var containerName = urldata[0].Substring(0, index);
-            var fileName = urldata[0].Replace(containerName + "/", "");
+          //  var fileName = urldata[0].Replace(containerName + "/", "");
             string fileGuidName = urldata[0].Replace(containerName +"/lg/", "").Replace(".jpg", ""); 
         
            var ibl = new ImageBusinessLogic();
-            ibl.AddImageToDB(commitBlobRequest.AlbumId ,commitBlobRequest.UserId , containerName, fileGuidName,  fileName, commitBlobRequest.IsMobile = false);
+            ibl.AddImageToDB(commitBlobRequest.AlbumId ,commitBlobRequest.UserId , containerName, fileGuidName + ".jpg", commitBlobRequest.IsMobile = false);
 
             var qm = new QueueManager();
             var blobInfo = new BlobInformation();
-            blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName + "/lg/", ""));
-            blobInfo.FileGuidName = fileGuidName;
-            blobInfo.ImageId = fileGuidName+ ".jpg";
+            blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName , ""));
+           // blobInfo.FileGuidName = fileGuidName;
+            blobInfo.ImageId = fileGuidName;
             await qm.PushToQueue(blobInfo);
             return true;
 
