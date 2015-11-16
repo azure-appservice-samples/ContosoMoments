@@ -1,4 +1,6 @@
 # ContosoMoments
 Welcome to ContosoMoments Demo!
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/?repository=https://github.com/azure-appservice-samples/ContosoMoments/)
+<a href="https://azuredeploy.net/?repository=https://github.com/azure-appservice-samples/ContosoMoments/" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
