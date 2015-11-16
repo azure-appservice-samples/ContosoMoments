@@ -1,0 +1,265 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serverLocation": {
+      "type": "string"
+    },
+    "dbAdminUser": {
+      "type": "string"
+    },
+    "dbAdminPassword": {
+      "type": "securestring"
+    },
+
+    "dbServerName": { "type": "string" },
+    "dbName": { "type": "string" },
+
+    "storageAccountName": { "type": "string" },
+    "storageAccountType": { "type": "string" },
+    "storageContainerName": { "type": "string" },
+
+    "hostPlanName": { "type": "string" },
+    "webName": { "type": "string" },
+    "webApiName": { "type": "string" },
+    "webJobSiteName": { "type": "string" },
+
+    "webJobCollectionName": { "type": "string" },
+    "webJobName": { "type": "string" },
+
+    "ResizeQueueName": { "type": "string" },
+    "DefaultUserId": { "type": "string" },
+    "DefaultAlbumId": { "type": "string" },
+    "FacebookAuthString": { "type": "string" }
+  },
+  
+  "resources": [
+    //Storage account
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('storageAccountName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('serverLocation')]",
+      "properties": {
+        "accountType": "[parameters('storageAccountType')]"
+      } //,
+      //"resources": [
+      //  {
+      //    "apiVersion": "2015-05-01-preview",
+      //    "name": "[parameters('storageContainerName')]",
+      //    "type": "container",
+      //    "location": "[parameters('serverLocation')]",
+      //    "dependsOn": [
+      //      "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+      //    ],
+      //    "properties": {
+      //      "permission" :  "Container"
+      //    }
+      //  }
+      //]
+    },
+
+    //DB server
+    {
+      "apiVersion": "2014-04-01-preview",
+      "name": "[parameters('dbServerName')]",
+      "type": "Microsoft.Sql/servers",
+      "location": "[parameters('serverLocation')]",
+      "properties": {
+        "administratorLogin": "[parameters('dbAdminUser')]",
+        "administratorLoginPassword": "[parameters('dbAdminPassword')]"
+      },
+      "resources": [
+        //DB instance
+        {
+          "apiVersion": "2014-04-01-preview",
+          "name": "[parameters('dbName')]",
+          "type": "databases",
+          "location": "[parameters('serverLocation')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]"
+          ],
+          "properties": {
+            "edition": "Basic",
+            "maxSizeBytes": "2147483648"
+          }
+        }
+      ]
+    },
+
+    //Web hosting plan
+    {
+      "apiVersion": "2014-06-01",
+      "type": "Microsoft.Web/serverfarms",
+      "name": "[parameters('hostPlanName')]",
+      "location": "[parameters('serverLocation')]",
+      "properties": {
+        "name": "[parameters('hostPlanName')]",
+        "sku": "Free"
+      }
+    },
+
+    //Web client
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[parameters('webName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('webName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', parameters('webName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "DefaultConnection",
+                "Type": 2
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.Web.v0.5.zip",
+            "setParameters": { }
+          }
+        }
+      ]
+    },
+
+    //Mobile Web APIs
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[parameters('webApiName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
+        "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('webApiName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "MS_TableConnectionString",
+                "Type": 2
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "StorageAccountName": "[parameters('storageAccountName')]",
+            "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "UploadSasDaysTime": "5",
+            "ResizeQueueName": "[parameters('ResizeQueueName')]",
+            "UploadContainerName": "[parameters('storageContainerName')]",
+            "FacebookAuthString": "[parameters('FacebookAuthString')]",
+            "DefaultUserId": "[parameters('DefaultUserId')]",
+            "DefaultAlbumId": "[parameters('DefaultAlbumId')]"
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.MobileServer.v0.5.zip",
+            "setParameters": { }
+          }
+        }
+      ]
+    },
+
+    //WebJob hosting site
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[parameters('webJobSiteName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('webJobSiteName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', parameters('webJobSiteName'))]"
+          ],
+          "properties": {
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webJobSiteName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.WebJobHost.v0.5.zip",
+            "setParameters": { }
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+   
+  }
+}
