@@ -10,38 +10,59 @@
     },
     "dbAdminPassword": {
       "type": "securestring"
-    }
+    },
+
+    "dbServerName": { "type": "string" },
+    "dbName": { "type": "string" },
+
+    "storageAccountName": { "type": "string" },
+    "storageAccountType": { "type": "string" },
+    "storageContainerName": { "type": "string" },
+
+    "hostPlanName": { "type": "string" },
+    "webName": { "type": "string" },
+    "webApiName": { "type": "string" },
+    "webJobSiteName": { "type": "string" },
+
+    "webJobCollectionName": { "type": "string" },
+    "webJobName": { "type": "string" },
+
+    "ResizeQueueName": { "type": "string" },
+    "DefaultUserId": { "type": "string" },
+    "DefaultAlbumId": { "type": "string" },
+    "FacebookAuthString": { "type": "string" }
   },
-  "variables": {
-    "dbServerName": "contosomomentssqlserver",
-    "dbName": "ContosoMomentsDbQA",
-    "storageAccountName": "contosomomentsstorageqa",
-    "storageAccountType": "Standard_GRS",
-    "storageContainerName": "images",
-    "hostPlanName": "ContosoMomentsHostPlan",
-    "webName": "ContosoMomentsWebQA",
-    "webApiName": "ContosoMomentsWebApiQA",
-    "webJobSiteName": "ContosoMomentsWebJobsQA",
-    "webJobCollectionName": "ContosoMomentsWebJobsCollectionQA",
-    "webJobName": "ContosoMomentsWebJobsCollectionQA"
-  },
+  //"variables": {
+  //  "dbServerName": "contosomomentssqlserver",
+  //  "dbName": "ContosoMomentsDbQA",
+  //  "storageAccountName": "contosomomentsstorageqa",
+  //  "storageAccountType": "Standard_GRS",
+  //  "storageContainerName": "images",
+  //  "hostPlanName": "ContosoMomentsHostPlan",
+  //  "webName": "ContosoMomentsWebQA",
+  //  "webApiName": "ContosoMomentsWebApiQA",
+  //  "webJobSiteName": "ContosoMomentsWebJobsQA",
+  //  "webJobCollectionName": "ContosoMomentsWebJobsCollectionQA",
+  //  "webJobName": "ContosoMomentsWebJobsCollectionQA"
+  //},
   "resources": [
+    //Storage account
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('storageAccountName')]",
+      "name": "[parameters('storageAccountName')]",
       "apiVersion": "2015-05-01-preview",
       "location": "[parameters('serverLocation')]",
       "properties": {
-        "accountType": "[variables('storageAccountType')]"
-      },
+        "accountType": "[parameters('storageAccountType')]"
+      } //,
       //"resources": [
       //  {
       //    "apiVersion": "2015-05-01-preview",
-      //    "name": "[variables('storageContainerName')]",
+      //    "name": "[parameters('storageContainerName')]",
       //    "type": "container",
       //    "location": "[parameters('serverLocation')]",
       //    "dependsOn": [
-      //      "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      //      "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
       //    ],
       //    "properties": {
       //      "permission" :  "Container"
@@ -50,9 +71,10 @@
       //]
     },
 
+    //DB server
     {
       "apiVersion": "2014-04-01-preview",
-      "name": "[variables('dbServerName')]",
+      "name": "[parameters('dbServerName')]",
       "type": "Microsoft.Sql/servers",
       "location": "[parameters('serverLocation')]",
       "properties": {
@@ -60,13 +82,14 @@
         "administratorLoginPassword": "[parameters('dbAdminPassword')]"
       },
       "resources": [
+        //DB instance
         {
           "apiVersion": "2014-04-01-preview",
-          "name": "[variables('dbName')]",
+          "name": "[parameters('dbName')]",
           "type": "databases",
           "location": "[parameters('serverLocation')]",
           "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers/', variables('dbServerName'))]"
+            "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]"
           ],
           "properties": {
             "edition": "Basic",
@@ -76,28 +99,30 @@
       ]
     },
 
+    //Web hosting plan
     {
       "apiVersion": "2014-06-01",
       "type": "Microsoft.Web/serverfarms",
-      "name": "[variables('hostPlanName')]",
+      "name": "[parameters('hostPlanName')]",
       "location": "[parameters('serverLocation')]",
       "properties": {
-        "name": "[variables('hostPlanName')]",
+        "name": "[parameters('hostPlanName')]",
         "sku": "Free"
       }
     },
 
+    //Web client
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
-      "name": "[variables('webName')]",
+      "name": "[parameters('webName')]",
       "location": "[parameters('serverLocation')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]"
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]"
       ],
       "properties": {
-        "name": "[variables('webName')]",
-        "serverFarm": "[variables('hostPlanName')]"
+        "name": "[parameters('webName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
       },
       "resources": [
         {
@@ -105,13 +130,63 @@
           "type": "config",
           "name": "web",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', variables('webName'))]"
+            "[resourceId('Microsoft.Web/sites/', parameters('webName'))]"
           ],
           "properties": {
             "connectionStrings": [
               {
-                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('dbName'), ';User Id=', parameters('dbAdminUser'), '@', variables('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
                 "Name": "DefaultConnection",
+                "Type": 2
+              }
+            ]
+          }
+        },
+        //{
+        //  "apiVersion": "2015-08-01",
+        //  "name": "MSDeploy",
+        //  "type": "extensions",
+        //  "dependsOn": [
+        //    "[resourceId('Microsoft.Web/Sites/', parameters('webName'))]"
+        //  ],
+        //  "properties": {
+        //    "connectionString": "",
+        //    "dbType": "None",
+        //    "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
+        //    "setParameters": { }
+        //  }
+        //}
+      ]
+    },
+
+    //Mobile Web APIs
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[parameters('webApiName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
+        "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('webApiName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "MS_TableConnectionString",
                 "Type": 2
               }
             ]
@@ -119,110 +194,87 @@
         },
         {
           "apiVersion": "2015-08-01",
-          "name": "MSDeploy",
-          "type": "extensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', variables('webName'))]"
-          ],
-          "properties": {
-            "connectionString": "",
-            "dbType": "None",
-            "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
-            "setParameters": { }
-          }
-        }
-      ]
-    },
-
-    {
-      "apiVersion": "2014-04-01",
-      "type": "Microsoft.Web/sites",
-      "name": "[variables('webApiName')]",
-      "location": "[parameters('serverLocation')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]",
-        "[resourceId('Microsoft.Sql/servers/', variables('dbServerName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-      ],
-      "properties": {
-        "name": "[variables('webApiName')]",
-        "serverFarm": "[variables('hostPlanName')]"
-      },
-      "resources": [
-        {
-          "apiVersion": "2014-04-01",
           "type": "config",
-          "name": "web",
+          "name": "appsettings",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
+            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
           ],
           "properties": {
-            "connectionStrings": [
-              {
-                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('dbName'), ';User Id=', parameters('dbAdminUser'), '@', variables('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
-                "Name": "DefaultConnection",
-                "Type": 2
-              }
-            ]
+            "StorageAccountName": "[parameters('storageAccountName')]",
+            "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "UploadSasDaysTime": "5",
+            "ResizeQueueName": "[parameters('ResizeQueueName')]",
+            "UploadContainerName": "[parameters('storageContainerName')]",
+            "FacebookAuthString": "[parameters('FacebookAuthString')]",
+            "DefaultUserId": "[parameters('DefaultUserId')]",
+            "DefaultAlbumId": "[parameters('DefaultAlbumId')]"
           }
         },
-        {
-          "apiVersion": "2014-04-01",
-          "type": "config",
-          "name": "appsettings",
-          "dependsOn": [
-            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
-          ],
-          "properties": {
-            "StorageConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1)]"
-          }
-        }
+        //{
+        //  "apiVersion": "2015-08-01",
+        //  "name": "MSDeploy",
+        //  "type": "extensions",
+        //  "dependsOn": [
+        //    "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
+        //  ],
+        //  "properties": {
+        //    "connectionString": "",
+        //    "dbType": "None",
+        //    "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
+        //    "setParameters": { }
+        //  }
+        //}
       ]
     },
 
+    //WebJob hosting site
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
-      "name": "[variables('webJobSiteName')]",
+      "name": "[parameters('webJobSiteName')]",
       "location": "[parameters('serverLocation')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms/', variables('hostPlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
       ],
       "properties": {
-        "name": "[variables('webJobSiteName')]",
-        "serverFarm": "[variables('hostPlanName')]"
+        "name": "[parameters('webJobSiteName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
       },
       "resources": [
         {
-          "apiVersion": "2014-04-01-preview",
+          "apiVersion": "2015-08-01",
           "type": "config",
           "name": "appsettings",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', variables('webJobSiteName'))]"
+            "[concat('Microsoft.Web/sites/', parameters('webJobSiteName'))]"
           ],
           "properties": {
-            "connectionStrings": [
-              {
-                "ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
-                "Name": "AzureWebJobsDashboard",
-                "Type": 2
-              },
-              {
-                "ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
-                "Name": "AzureWebJobsStorage",
-                "Type": 2
-              }
-            ]
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
           }
-        }
+        },
+        //{
+        //  "apiVersion": "2015-08-01",
+        //  "name": "MSDeploy",
+        //  "type": "extensions",
+        //  "dependsOn": [
+        //    "[resourceId('Microsoft.Web/Sites/', parameters('webJobSiteName'))]"
+        //  ],
+        //  "properties": {
+        //    "connectionString": "",
+        //    "dbType": "None",
+        //    "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
+        //    "setParameters": { }
+        //  }
+        //}
       ]
     }
   ],
   "outputs": {
     /*
     "exampleOutput": {
-      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1]",
+      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1]",
       "type": "string"
     }*/
   }
