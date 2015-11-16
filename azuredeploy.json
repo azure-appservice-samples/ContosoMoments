@@ -32,19 +32,7 @@
     "DefaultAlbumId": { "type": "string" },
     "FacebookAuthString": { "type": "string" }
   },
-  //"variables": {
-  //  "dbServerName": "contosomomentssqlserver",
-  //  "dbName": "ContosoMomentsDbQA",
-  //  "storageAccountName": "contosomomentsstorageqa",
-  //  "storageAccountType": "Standard_GRS",
-  //  "storageContainerName": "images",
-  //  "hostPlanName": "ContosoMomentsHostPlan",
-  //  "webName": "ContosoMomentsWebQA",
-  //  "webApiName": "ContosoMomentsWebApiQA",
-  //  "webJobSiteName": "ContosoMomentsWebJobsQA",
-  //  "webJobCollectionName": "ContosoMomentsWebJobsCollectionQA",
-  //  "webJobName": "ContosoMomentsWebJobsCollectionQA"
-  //},
+  
   "resources": [
     //Storage account
     {
@@ -272,10 +260,6 @@
     }
   ],
   "outputs": {
-    /*
-    "exampleOutput": {
-      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1]",
-      "type": "string"
-    }*/
+   
   }
 }
