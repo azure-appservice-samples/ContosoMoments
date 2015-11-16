@@ -32,19 +32,7 @@
     "DefaultAlbumId": { "type": "string" },
     "FacebookAuthString": { "type": "string" }
   },
-  //"variables": {
-  //  "dbServerName": "contosomomentssqlserver",
-  //  "dbName": "ContosoMomentsDbQA",
-  //  "storageAccountName": "contosomomentsstorageqa",
-  //  "storageAccountType": "Standard_GRS",
-  //  "storageContainerName": "images",
-  //  "hostPlanName": "ContosoMomentsHostPlan",
-  //  "webName": "ContosoMomentsWebQA",
-  //  "webApiName": "ContosoMomentsWebApiQA",
-  //  "webJobSiteName": "ContosoMomentsWebJobsQA",
-  //  "webJobCollectionName": "ContosoMomentsWebJobsCollectionQA",
-  //  "webJobName": "ContosoMomentsWebJobsCollectionQA"
-  //},
+  
   "resources": [
     //Storage account
     {
@@ -142,20 +130,20 @@
             ]
           }
         },
-        //{
-        //  "apiVersion": "2015-08-01",
-        //  "name": "MSDeploy",
-        //  "type": "extensions",
-        //  "dependsOn": [
-        //    "[resourceId('Microsoft.Web/Sites/', parameters('webName'))]"
-        //  ],
-        //  "properties": {
-        //    "connectionString": "",
-        //    "dbType": "None",
-        //    "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
-        //    "setParameters": { }
-        //  }
-        //}
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.Web.v0.5.zip",
+            "setParameters": { }
+          }
+        }
       ]
     },
 
@@ -210,20 +198,20 @@
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]"
           }
         },
-        //{
-        //  "apiVersion": "2015-08-01",
-        //  "name": "MSDeploy",
-        //  "type": "extensions",
-        //  "dependsOn": [
-        //    "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
-        //  ],
-        //  "properties": {
-        //    "connectionString": "",
-        //    "dbType": "None",
-        //    "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
-        //    "setParameters": { }
-        //  }
-        //}
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.MobileServer.v0.5.zip",
+            "setParameters": { }
+          }
+        }
       ]
     },
 
@@ -254,28 +242,23 @@
             "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
           }
         },
-        //{
-        //  "apiVersion": "2015-08-01",
-        //  "name": "MSDeploy",
-        //  "type": "extensions",
-        //  "dependsOn": [
-        //    "[resourceId('Microsoft.Web/Sites/', parameters('webJobSiteName'))]"
-        //  ],
-        //  "properties": {
-        //    "connectionString": "",
-        //    "dbType": "None",
-        //    "packageUri": "https://auxmktplceprod.blob.core.windows.net/packages/ASPNETEmptySite.zip", //HOW to upload automatically?
-        //    "setParameters": { }
-        //  }
-        //}
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webJobSiteName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.WebJobHost.v0.5.zip",
+            "setParameters": { }
+          }
+        }
       ]
     }
   ],
   "outputs": {
-    /*
-    "exampleOutput": {
-      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1]",
-      "type": "string"
-    }*/
   }
 }
