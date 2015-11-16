@@ -3,9 +3,6 @@
   "WebJobs": [
     {
       "filePath": "../ContosoMoments.ResizerJob/ContosoMoments.ResizerJob.csproj"
-    },
-    {
-      "filePath": "../ContosoMoments.ResizerJob/ContosoMoments.ResizerJob.csproj"
     }
   ]
 }
