@@ -42,50 +42,36 @@
       "location": "[parameters('serverLocation')]",
       "properties": {
         "accountType": "[parameters('storageAccountType')]"
-      } //,
-      //"resources": [
-      //  {
-      //    "apiVersion": "2015-05-01-preview",
-      //    "name": "[parameters('storageContainerName')]",
-      //    "type": "container",
-      //    "location": "[parameters('serverLocation')]",
-      //    "dependsOn": [
-      //      "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
-      //    ],
-      //    "properties": {
-      //      "permission" :  "Container"
-      //    }
-      //  }
-      //]
+      }
     },
 
-    ////DB server
-    //{
-    //  "apiVersion": "2014-04-01-preview",
-    //  "name": "[parameters('dbServerName')]",
-    //  "type": "Microsoft.Sql/servers",
-    //  "location": "[parameters('serverLocation')]",
-    //  "properties": {
-    //    "administratorLogin": "[parameters('dbAdminUser')]",
-    //    "administratorLoginPassword": "[parameters('dbAdminPassword')]"
-    //  },
-    //  "resources": [
-    //    //DB instance
-    //    {
-    //      "apiVersion": "2014-04-01-preview",
-    //      "name": "[parameters('dbName')]",
-    //      "type": "databases",
-    //      "location": "[parameters('serverLocation')]",
-    //      "dependsOn": [
-    //        "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]"
-    //      ],
-    //      "properties": {
-    //        "edition": "Basic",
-    //        "maxSizeBytes": "2147483648"
-    //      }
-    //    }
-    //  ]
-    //},
+    //DB server
+    {
+      "apiVersion": "2014-04-01-preview",
+      "name": "[parameters('dbServerName')]",
+      "type": "Microsoft.Sql/servers",
+      "location": "[parameters('serverLocation')]",
+      "properties": {
+        "administratorLogin": "[parameters('dbAdminUser')]",
+        "administratorLoginPassword": "[parameters('dbAdminPassword')]"
+      },
+      "resources": [
+        //DB instance
+        {
+          "apiVersion": "2014-04-01-preview",
+          "name": "[parameters('dbName')]",
+          "type": "databases",
+          "location": "[parameters('serverLocation')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]"
+          ],
+          "properties": {
+            "edition": "Basic",
+            "maxSizeBytes": "2147483648"
+          }
+        }
+      ]
+    },
 
     //Web hosting plan
     {
@@ -99,121 +85,121 @@
       }
     },
 
-    ////Web client
-    //{
-    //  "apiVersion": "2014-04-01",
-    //  "type": "Microsoft.Web/sites",
-    //  "name": "[parameters('webName')]",
-    //  "location": "[parameters('serverLocation')]",
-    //  "dependsOn": [
-    //    "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]"
-    //  ],
-    //  "properties": {
-    //    "name": "[parameters('webName')]",
-    //    "serverFarm": "[parameters('hostPlanName')]"
-    //  },
-    //  "resources": [
-    //    {
-    //      "apiVersion": "2014-04-01",
-    //      "type": "config",
-    //      "name": "web",
-    //      "dependsOn": [
-    //        "[resourceId('Microsoft.Web/sites/', parameters('webName'))]"
-    //      ],
-    //      "properties": {
-    //        "connectionStrings": [
-    //          {
-    //            "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
-    //            "Name": "DefaultConnection",
-    //            "Type": 2
-    //          }
-    //        ]
-    //      }
-    //    },
-    //    {
-    //      "apiVersion": "2015-08-01",
-    //      "name": "MSDeploy",
-    //      "type": "extensions",
-    //      "dependsOn": [
-    //        "[resourceId('Microsoft.Web/Sites/', parameters('webName'))]"
-    //      ],
-    //      "properties": {
-    //        "connectionString": "",
-    //        "dbType": "None",
-    //        "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.Web.v0.5.zip",
-    //        "setParameters": { }
-    //      }
-    //    }
-    //  ]
-    //},
+    //Web client
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[parameters('webName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('webName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', parameters('webName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "DefaultConnection",
+                "Type": 2
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.Web.v0.5.zip",
+            "setParameters": { }
+          }
+        }
+      ]
+    },
 
-    ////Mobile Web APIs
-    //{
-    //  "apiVersion": "2014-04-01",
-    //  "type": "Microsoft.Web/sites",
-    //  "name": "[parameters('webApiName')]",
-    //  "location": "[parameters('serverLocation')]",
-    //  "dependsOn": [
-    //    "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
-    //    "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]",
-    //    "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
-    //  ],
-    //  "properties": {
-    //    "name": "[parameters('webApiName')]",
-    //    "serverFarm": "[parameters('hostPlanName')]"
-    //  },
-    //  "resources": [
-    //    {
-    //      "apiVersion": "2014-04-01",
-    //      "type": "config",
-    //      "name": "web",
-    //      "dependsOn": [
-    //        "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
-    //      ],
-    //      "properties": {
-    //        "connectionStrings": [
-    //          {
-    //            "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
-    //            "Name": "MS_TableConnectionString",
-    //            "Type": 2
-    //          }
-    //        ]
-    //      }
-    //    },
-    //    {
-    //      "apiVersion": "2015-08-01",
-    //      "type": "config",
-    //      "name": "appsettings",
-    //      "dependsOn": [
-    //        "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
-    //      ],
-    //      "properties": {
-    //        "StorageAccountName": "[parameters('storageAccountName')]",
-    //        "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
-    //        "UploadSasDaysTime": "5",
-    //        "ResizeQueueName": "[parameters('ResizeQueueName')]",
-    //        "UploadContainerName": "[parameters('storageContainerName')]",
-    //        "FacebookAuthString": "[parameters('FacebookAuthString')]",
-    //        "DefaultUserId": "[parameters('DefaultUserId')]",
-    //        "DefaultAlbumId": "[parameters('DefaultAlbumId')]"
-    //      }
-    //    },
-    //    {
-    //      "apiVersion": "2015-08-01",
-    //      "name": "MSDeploy",
-    //      "type": "extensions",
-    //      "dependsOn": [
-    //        "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
-    //      ],
-    //      "properties": {
-    //        "connectionString": "",
-    //        "dbType": "None",
-    //        "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.MobileServer.v0.5.zip",
-    //        "setParameters": { }
-    //      }
-    //    }
-    //  ]
-    //},
+    //Mobile Web APIs
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[parameters('webApiName')]",
+      "location": "[parameters('serverLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
+        "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('webApiName')]",
+        "serverFarm": "[parameters('hostPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-04-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "connectionStrings": [
+              {
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "Name": "MS_TableConnectionString",
+                "Type": 2
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "StorageAccountName": "[parameters('storageAccountName')]",
+            "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "UploadSasDaysTime": "5",
+            "ResizeQueueName": "[parameters('ResizeQueueName')]",
+            "UploadContainerName": "[parameters('storageContainerName')]",
+            "FacebookAuthString": "[parameters('FacebookAuthString')]",
+            "DefaultUserId": "[parameters('DefaultUserId')]",
+            "DefaultAlbumId": "[parameters('DefaultAlbumId')]"
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "MSDeploy",
+          "type": "extensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
+          ],
+          "properties": {
+            "connectionString": "",
+            "dbType": "None",
+            "packageUri": "http://contosomomentsstorage.blob.core.windows.net/deploy-qa/ContosoMoments.MobileServer.v0.5.zip",
+            "setParameters": { }
+          }
+        }
+      ]
+    },
 
     //WebJob hosting site
     {
