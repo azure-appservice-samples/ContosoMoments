@@ -5,8 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace ContosoMoments
@@ -27,6 +28,29 @@ namespace ContosoMoments
         {
             Instance = this;
 
+            Label label = new Label() { Text = "Loading..." };
+            label.TextColor = Color.White;
+            Image img = new Image() {
+                Source = Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Assets/logo.png"),
+                    Android: ImageSource.FromFile("logo.png"),
+                    WinPhone: ImageSource.FromFile("Assets/logo.png"))};
+            StackLayout stack = new StackLayout();
+            stack.VerticalOptions = LayoutOptions.Center;
+            stack.HorizontalOptions = LayoutOptions.Center;
+            stack.Orientation = StackOrientation.Vertical;
+            stack.Children.Add(img);
+            stack.Children.Add(label);
+            ContentPage page = new ContentPage();
+            page.BackgroundColor = Color.FromHex("#8C0A4B");
+            page.Content = stack;
+            MainPage = page;
+
+        }
+
+        protected override async void OnStart()
+        {
+            // Handle when your app starts
             if (AppSettings.Current.GetValueOrDefault<string>("MobileAppURL") == default(string))
             {
                 //first run
@@ -35,16 +59,20 @@ namespace ContosoMoments
             else
             {
                 Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
-                //DEBUG!!!
                 Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
-                //Constants.GatewayURL = "http://default-storage-westus7a065f30c6524563a7ccea44480a2776.azurewebsites.net";
+
+                bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
+
                 //Constants.ApplicationKey = AppSettings.Current.GetValueOrDefault<string>("ApplicationKey");
-                MobileService = new MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
+                if (isAuthRequred)
+                    MobileService = new MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
+                else
+                    MobileService = new MobileServiceClient(Constants.ApplicationURL);
+
                 AuthenticatedUser = MobileService.CurrentUser;
 
 #if !__WP__
-                //TODO - authenticate if required.How to check?
-                if (AuthenticatedUser == null)
+                if (isAuthRequred && AuthenticatedUser == null)
                 {
                     MainPage = new NavigationPage(new Login());
                 }
@@ -57,12 +85,6 @@ namespace ContosoMoments
                 MainPage = new NavigationPage(new ImagesList());
 #endif
             }
-
-        }
-
-        protected override void OnStart()
-        {
-            // Handle when your app starts
         }
 
         protected override void OnSleep()

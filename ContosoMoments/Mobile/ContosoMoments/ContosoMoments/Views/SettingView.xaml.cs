@@ -32,6 +32,11 @@ namespace ContosoMoments.Views
 
         public async void OnSave(object sender, EventArgs args)
         {
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                mobileServiceUrl.Text = "http://contosomomentsmobileweb.azurewebsites.net/";
+            }
+
             if (null != mobileServiceUrl.Text)
             {
                 if (mobileServiceUrl.Text.Length != 0)
@@ -42,11 +47,11 @@ namespace ContosoMoments.Views
                         mobileServiceUrl.Text += "/";
 
 #if __WP__
-                    ValidURL = await CheckServerAddressWP(mobileServiceUrl.Text);
+                    ValidURL = await Utils.CheckServerAddressWP(mobileServiceUrl.Text);
 #elif __IOS__
-                ValidURL = await CheckServerAddressIOS(mobileServiceUrl.Text);
+                ValidURL = await Utils.CheckServerAddressIOS(mobileServiceUrl.Text);
 #elif __DROID__
-                    ValidURL = await CheckServerAddressDroid(mobileServiceUrl.Text);
+                    ValidURL = await Utils.CheckServerAddressDroid(mobileServiceUrl.Text);
 #endif
 
                     if (ValidURL)
@@ -54,31 +59,22 @@ namespace ContosoMoments.Views
                         AppSettings.Current.AddOrUpdateValue<string>("MobileAppURL", mobileServiceUrl.Text);
                         Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
 
-                        //TODO: get getaway URL from temp client and save it
-                        var getwayService = Constants.ApplicationURL + "api/Getway";
+                        string getawayURL = Constants.ApplicationURL + ".auth/login/facebook/callback";
+                        getawayURL = getawayURL.Replace("http://", "https://");
+                        AppSettings.Current.AddOrUpdateValue<string>("GatewayURL", getawayURL);
+                        Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
 
-                        HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(getwayService));
-                        request.Method = "GET";
+                        bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
 
-                        using (WebResponse response = await request.GetResponseAsync())
-                        {
-                            using (Stream stream = response.GetResponseStream())
-                            {
-                                byte[] bytes = new byte[stream.Length];
-                                await stream.ReadAsync(bytes, 0, (int)stream.Length);
+                        if (isAuthRequred)
+                            App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
+                        else
+                            App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL);
 
-                                var getawayURL = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)stream.Length);
-
-                                AppSettings.Current.AddOrUpdateValue<string>("GatewayURL", getawayURL.TrimStart('"').TrimEnd('"'));
-                                Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
-                            }
-                        }
-                        App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
                         App.AuthenticatedUser = App.MobileService.CurrentUser;
 
 #if !__WP__
-                        //TODO - authenticate if required.How to check?
-                        if (App.AuthenticatedUser == null)
+                        if (isAuthRequred && App.AuthenticatedUser == null)
                         {
                             App.Current.MainPage = new NavigationPage(new Login());
                         }
@@ -104,110 +100,5 @@ namespace ContosoMoments.Views
             else
                 DisplayAlert("Configuration Error", "Mobile Service URL is empty. Please type in the value and try again", "OK");
         }
-
-#if __WP__
-        private async Task<bool> CheckServerAddressWP(string url, int port = 80, int msTimeout = 5000)
-        {
-            bool retVal = false;
-            try
-            {
-                using (var tcpClient = new StreamSocket())
-                {
-                    url = url.Replace("http://", string.Empty).Replace("https://", string.Empty);
-                    if (url.Last() == '/')
-                        url = url.Substring(0, url.Length - 1);
-
-                    await tcpClient.ConnectAsync(new Windows.Networking.HostName(url), port.ToString(), SocketProtectionLevel.PlainSocket);
-
-                    if (tcpClient.Information.RemoteHostName.ToString().ToLower() == url.ToLower())
-                        retVal = true;
-
-                    tcpClient.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                retVal = false;
-            }
-
-            return retVal;
-        }
-#endif
-
-#if __IOS__
-        private async Task<bool> CheckServerAddressIOS(string url, int port = 80, int msTimeout = 5000)
-        {
-            bool retVal = false;
-
-            url = url.Replace("http://", string.Empty).Replace("https://", string.Empty);
-            if (url.Last() == '/')
-                url = url.Substring(0, url.Length - 1);
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    var clientDone = new ManualResetEvent(false);
-                    var reachable = false;
-                    var hostEntry = new DnsEndPoint(url, port);
-                    using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-                    {
-                        var socketEventArg = new SocketAsyncEventArgs { RemoteEndPoint = hostEntry };
-                        socketEventArg.Completed += (s, e) =>
-                        {
-                            reachable = e.SocketError == SocketError.Success;
-
-                            clientDone.Set();
-                        };
-
-                        clientDone.Reset();
-
-                        socket.ConnectAsync(socketEventArg);
-
-                        clientDone.WaitOne(msTimeout);
-
-                        retVal = reachable;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    retVal = false;
-                }
-            });
-
-            return retVal;
-        }
-#endif
-
-#if __DROID__
-        private async Task<bool> CheckServerAddressDroid(string url, int port = 80, int msTimeout = 5000)
-        {
-            bool retVal = false;
-            await Task.Run(async () =>
-            {
-                try
-                {
-                    url = url.Replace("http://", string.Empty).Replace("https://", string.Empty);
-                    if (url.Last() == '/')
-                        url = url.Substring(0, url.Length - 1);
-
-                    var sockaddr = new InetSocketAddress(url, port);
-                    using (var sock = new Socket())
-                    {
-                        await sock.ConnectAsync(sockaddr, msTimeout);
-
-                        if (sock.InetAddress.HostName.ToString().ToLower() == url.ToLower())
-                            retVal = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    retVal = false;
-                }
-            });
-
-            return retVal;
-        }
-#endif
     }
 }
