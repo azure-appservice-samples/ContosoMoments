@@ -27,6 +27,10 @@ namespace ContosoMoments.Views
             var tapSyncImage = new TapGestureRecognizer();
             tapSyncImage.Tapped += OnSyncItems;
             imgSync.GestureRecognizers.Add(tapSyncImage);
+
+            var tapSettingsImage = new TapGestureRecognizer();
+            tapSettingsImage.Tapped += OnSettings;
+            imgSettings.GestureRecognizers.Add(tapSettingsImage);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -138,6 +142,11 @@ namespace ContosoMoments.Views
         public async void OnAdd(object sender, EventArgs e)
         {
             App.Instance.TakePicture();
+        }
+
+        public async void OnSettings(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new SettingView());
         }
 
         public async void OnSyncItems(object sender, EventArgs e)

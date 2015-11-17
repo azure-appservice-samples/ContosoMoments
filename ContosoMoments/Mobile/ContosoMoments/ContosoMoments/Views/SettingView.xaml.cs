@@ -30,9 +30,17 @@ namespace ContosoMoments.Views
             imgSave.GestureRecognizers.Add(tapSaveImage);
         }
 
+        protected override void OnAppearing()
+        {
+            if (null != AppSettings.Current.GetValueOrDefault<string>("MobileAppURL"))
+                mobileServiceUrl.Text = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+
+            base.OnAppearing();
+        }
+
         public async void OnSave(object sender, EventArgs args)
         {
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (System.Diagnostics.Debugger.IsAttached && null == mobileServiceUrl.Text)
             {
                 mobileServiceUrl.Text = "http://contosomomentsmobileweb.azurewebsites.net/";
             }
@@ -49,7 +57,7 @@ namespace ContosoMoments.Views
 #if __WP__
                     ValidURL = await Utils.CheckServerAddressWP(mobileServiceUrl.Text);
 #elif __IOS__
-                ValidURL = await Utils.CheckServerAddressIOS(mobileServiceUrl.Text);
+                    ValidURL = await Utils.CheckServerAddressIOS(mobileServiceUrl.Text);
 #elif __DROID__
                     ValidURL = await Utils.CheckServerAddressDroid(mobileServiceUrl.Text);
 #endif
