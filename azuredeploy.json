@@ -34,7 +34,6 @@
   },
   
   "resources": [
-    //Storage account
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[parameters('storageAccountName')]",
@@ -42,24 +41,9 @@
       "location": "[parameters('serverLocation')]",
       "properties": {
         "accountType": "[parameters('storageAccountType')]"
-      } //,
-      //"resources": [
-      //  {
-      //    "apiVersion": "2015-05-01-preview",
-      //    "name": "[parameters('storageContainerName')]",
-      //    "type": "container",
-      //    "location": "[parameters('serverLocation')]",
-      //    "dependsOn": [
-      //      "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
-      //    ],
-      //    "properties": {
-      //      "permission" :  "Container"
-      //    }
-      //  }
-      //]
+      }
     },
 
-    //DB server
     {
       "apiVersion": "2014-04-01-preview",
       "name": "[parameters('dbServerName')]",
@@ -70,7 +54,6 @@
         "administratorLoginPassword": "[parameters('dbAdminPassword')]"
       },
       "resources": [
-        //DB instance
         {
           "apiVersion": "2014-04-01-preview",
           "name": "[parameters('dbName')]",
@@ -87,7 +70,6 @@
       ]
     },
 
-    //Web hosting plan
     {
       "apiVersion": "2014-06-01",
       "type": "Microsoft.Web/serverfarms",
@@ -99,7 +81,6 @@
       }
     },
 
-    //Web client
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
@@ -147,7 +128,6 @@
       ]
     },
 
-    //Mobile Web APIs
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
@@ -215,7 +195,6 @@
       ]
     },
 
-    //WebJob hosting site
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
@@ -260,6 +239,5 @@
     }
   ],
   "outputs": {
-   
   }
 }
