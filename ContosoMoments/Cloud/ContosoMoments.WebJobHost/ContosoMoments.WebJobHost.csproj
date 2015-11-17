@@ -69,6 +69,7 @@
     <Content Include="packages.config" />
     <Content Include="Properties\webjobs-list.json" />
     <None Include="Properties\PublishProfiles\contosomomentswebjob.pubxml" />
+    <None Include="Properties\PublishProfiles\ContosoMomentsWebJobs %284%29.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
