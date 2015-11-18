@@ -96,8 +96,11 @@ namespace ContosoMoments.Views
             await viewModel.GetImagesAsync();
 
             if (null != viewModel.Images)
+            {
+                imagesList.ItemsSource = null;
                 imagesList.ItemsSource = viewModel.Images.ToList();
                 //imagesWrap.ItemsSource = viewModel.Images.ToList();
+            }
         }
 
         public async void OnRefresh(object sender, EventArgs e)

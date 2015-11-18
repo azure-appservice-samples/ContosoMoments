@@ -62,12 +62,7 @@ namespace ContosoMoments
                 //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
                 bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
 
-                ////Constants.ApplicationKey = AppSettings.Current.GetValueOrDefault<string>("ApplicationKey");
-                //if (isAuthRequred)
-                //    MobileService = new MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
-                //else
-                    MobileService = new MobileServiceClient(Constants.ApplicationURL);
-
+                MobileService = new MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
                 AuthenticatedUser = MobileService.CurrentUser;
 
 #if !__WP__

@@ -67,18 +67,9 @@ namespace ContosoMoments.Views
                         AppSettings.Current.AddOrUpdateValue<string>("MobileAppURL", mobileServiceUrl.Text);
                         Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
 
-                        //string getawayURL = Constants.ApplicationURL + ".auth/login/facebook/callback";
-                        //getawayURL = getawayURL.Replace("http://", "https://");
-                        //AppSettings.Current.AddOrUpdateValue<string>("GatewayURL", getawayURL);
-                        //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
-
                         bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
 
-                        //if (isAuthRequred)
-                        //    App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL, Constants.GatewayURL, string.Empty);
-                        //else
-                            App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(Constants.ApplicationURL);
-
+                        App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
                         App.AuthenticatedUser = App.MobileService.CurrentUser;
 
 #if !__WP__

@@ -171,56 +171,24 @@ namespace ContosoMoments.ViewModels
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/GetSasUrl"));
-                request.Method = "GET";
+                var sasToken = await App.MobileService.InvokeApiAsync<string>("GetSasUrl", HttpMethod.Get, null);
+                string token = sasToken.Substring(sasToken.IndexOf("?")).TrimEnd('"');
+                StorageCredentials credentials = new StorageCredentials(token);
+                string blobUri = sasToken.Substring(0, sasToken.IndexOf("?"));
+                CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
+                blobFromSASCredential.Properties.ContentType = "image/jpeg";
+                byte[] bytes = new byte[imageStream.Length];
+                await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
+                await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
+                string json = string.Format("{{\"UserId\":\"{1}\", \"IsMobile\":true, \"AlbumId\":\"{2}\", \"SasUrl\": \"{0}\", \"blobParts\":null }}", sasToken, User.UserId, Album.AlbumId);
 
-                using (WebResponse response = await request.GetResponseAsync())
-                {
-                    using (Stream stream = response.GetResponseStream())
-                    {
-                        byte[] bytes = new byte[stream.Length];
-                        await stream.ReadAsync(bytes, 0, (int)stream.Length);
+                Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
 
-                        var sasToken = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)stream.Length);
-                        string token = sasToken.Substring(sasToken.IndexOf("?")).TrimEnd('"');
-                        StorageCredentials credentials = new StorageCredentials(token);
-                        string blobUri = sasToken.Substring(1, sasToken.IndexOf("?"));
-                        CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
-                        blobFromSASCredential.Properties.ContentType = "image/jpeg";
-                        bytes = new byte[imageStream.Length];
-                        await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
-                        await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
-
-                        HttpWebRequest postRequest = (HttpWebRequest)HttpWebRequest.Create(new Uri(Constants.ApplicationURL + "api/CommitBlob"));
-                        postRequest.ContentType = "application/json";
-                        postRequest.Method = "POST";
-
-                        string json = string.Format("{{\"UserId\":\"{1}\", \"IsMobile\":true, \"AlbumId\":\"{2}\", \"SasUrl\": {0}, \"blobParts\":null }}", sasToken, User.UserId, Album.AlbumId);
-
-                        using (var streamWriter = new StreamWriter(await postRequest.GetRequestStreamAsync()))
-                        {
-                            streamWriter.Write(json);
-                            streamWriter.Flush();
-                            streamWriter.Close();
-                        }
-
-                        var httpResponse = (HttpWebResponse)await postRequest.GetResponseAsync();
-                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                        {
-                            var result = streamReader.ReadToEnd();
-                            bool b;
-                            if (bool.TryParse(result, out b))
-                                retVal = b;
-                            else
-                                retVal = false;
-                        }
-                    }
-                }
+                retVal = await App.MobileService.InvokeApiAsync<Newtonsoft.Json.Linq.JToken, bool>("CommitBlob", body, HttpMethod.Post, null);
             }
             catch (Exception ex)
             {
             }
-
 
             return retVal;
         }
