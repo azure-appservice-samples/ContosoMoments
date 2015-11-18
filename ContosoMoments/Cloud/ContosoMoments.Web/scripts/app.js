@@ -18,10 +18,14 @@
                 imageData:['$route','albumsService',function($route,albumsService){
                     console.log('images route...');
                     return albumsService.getAlbum($route.current.params.albumid).then(function(album){
-                       return {
+                        var img = albumsService.getImage($route.current.params.imageid, album);
+                        img.url = albumsService.getImageURL(img, 'lg');
+                        var imageData = {
                                 album:album,
-                                image:albumsService.getImage($route.current.params.imageid,album)
-                            }
+                                image: img
+                        }
+                       
+                        return imageData;
                      })
                     
                 }]
@@ -36,10 +40,11 @@
     }])
 
 
-    app.factory('albumsService', ['$http','$q','$cacheFactory',function($http,$q,$cacheFactory){
+    app.factory('albumsService', ['$http', '$q', '$cacheFactory', '$interpolate', function ($http, $q, $cacheFactory, $interpolate) {
         var albumCache=$cacheFactory('albums');
-
-        var getImageFromAlbum=function(album,id){
+        var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}.jpg');
+  
+        var getImageFromAlbum = function (album, id) {
             if(album && album.images){
                 var images=album.images.filter(function(item){
                     return item.id===id;
@@ -59,7 +64,10 @@
             return albumCache.get(albumid);
         }
 
-        var albumService={
+        var albumService = {
+           getImageURL:function(img,imgSize){
+               return urlExp({ image: img, size: imgSize });
+           },
           getImage:function(id,currentAlbum){
 
             var img;        
@@ -78,77 +86,20 @@
             var currentAlbum=albumCache.get(id);
             if(angular.isUndefined(currentAlbum)){
                 //TODO:Wrap with $http
-                currentAlbum={
-                            id:"1",
-                            name:'Protraits',
-                            owner:'Jonn Doe',
-                            images:[
-                                {
-                                    id:'1',
-                                    name:'autoprefixer',
-                                    url:'images/img1.jpg'
-                                },
-                                {
-                                    id:'2',
-                                    name:'autoprefixer',
-                                    url: 'images/img2.jpg'
-                                },
-                                {
-                                    id:'3',
-                                    name:'autoprefixer',
-                                    url: 'images/img3.jpg'
-                                },
-                                {
-                                    id:'4',
-                                    name:'autoprefixer',
-                                    url: 'images/img4.jpg'
-                                },
-                                {
-                                    id:'5',
-                                    name:'autoprefixer',
-                                    url: 'images/img5.jpg'
-                                },
-                                {
-                                    id:'6',
-                                    name:'autoprefixer',
-                                    url: 'images/img6.jpg'
-                                },
-                                {
-                                    id:'7',
-                                    name:'autoprefixer',
-                                    url: 'images/img7.jpg'
-                                },{
-                                    id:'8',
-                                    name:'autoprefixer',
-                                    url: 'images/img8.jpg'
-                                },
-                                {
-                                    id:'9',
-                                    name:'autoprefixer',
-                                    url: 'images/img9.jpg'
-                                },
-                                {
-                                    id:'10',
-                                    name:'autoprefixer',
-                                    url: 'images/img10.jpg'
-                                },
-                                {
-                                    id:'11',
-                                    name:'autoprefixer',
-                                    url: 'images/img11.jpg'
-                                },
-                                {
-                                    id:'12',
-                                    name:'autoprefixer',
-                                    url:'images/img12.jpg'
-                                } 
-                           ]
-                };
-                albumCache.put(id,currentAlbum);
+                $http.get('http://localhost:31475/tables/image').then(function(res){
+                    currentAlbum = { id: 1, name: 'Portraits', owner: 'John Doe' };
+                    currentAlbum.images=res.data;
+                    albumCache.put(id,currentAlbum);
+                    defered.resolve(currentAlbum);
+                },
+                function(err){
+                    //TODO: Error Handling
+                    console.log(err);
+                    defered.reject(err);
+                });
+            } else {
+                defered.resolve(currentAlbum);
             }
-            
-            
-            defered.resolve(currentAlbum);
             return defered.promise;
           } 
         }  
@@ -156,10 +107,10 @@
     }])
 
 
-    app.controller('albumController', ['albumsService',function(albumsService){
+    app.controller('albumController', ['albumsService',function (albumsService) {
         var self=this;
-        albumsService.getAlbum('1').then(function(album){
-            self.curAlbum = album;
+        albumsService.getAlbum('1').then(function (album) {
+            self.curAlbum=album;
             setTimeout(function () {
                 objectFit.polyfill({
                     selector: 'img',
@@ -167,11 +118,19 @@
                 });
             },1000);
         });
+
+        self.getImageURL = function (img, size) {
+            return albumsService.getImageURL(img, size);
+        }
         
     }]);
-    app.controller('imageController', ['imageData',function(imageData){
+    app.controller('imageController', ['imageData', 'albumsService', function (imageData, albumsService) {
         this.currentImage=imageData.image;
-        this.currentAlbum=imageData.album;
+        this.currentAlbum = imageData.album;
+        this.getCurrentImageURL = function (size) {
+            return albumsService.getImageURL(this.currentImage, size);
+        }
+
 
     }]);
 

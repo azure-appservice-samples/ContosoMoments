@@ -14,15 +14,12 @@ namespace ContosoMoments.Common.Models
         public string ContainerName { get; set; }
         public string FileName { get; set; }
       // public string SasUrl { get; set; }
-     
-
-
         public Album Album { get; set; }
 
         public User User { get; set; }
 
 
-        [NotMapped]
+        //[NotMapped]
         public IDictionary<string, Uri> ImagePath
         {
             get
