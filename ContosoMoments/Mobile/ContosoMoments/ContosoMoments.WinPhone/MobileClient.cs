@@ -18,9 +18,9 @@ namespace ContosoMoments.WinPhone
             return await ContosoMoments.App.MobileService.LoginAsync(provider);
         }
 
-        public void Logout()
+        public async void Logout()
         {
-            ContosoMoments.App.MobileService.Logout();
+            await ContosoMoments.App.MobileService.LogoutAsync();
         }
 
         public static void LoginComplete(WebAuthenticationBrokerContinuationEventArgs args)

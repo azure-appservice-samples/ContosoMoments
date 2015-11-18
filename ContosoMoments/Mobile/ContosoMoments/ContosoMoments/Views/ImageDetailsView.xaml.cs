@@ -14,14 +14,23 @@ namespace ContosoMoments.Views
 		{
 			InitializeComponent ();
 
-            var tapUploadImage = new TapGestureRecognizer();
-            tapUploadImage.Tapped += OnLike;
-            imgLike.GestureRecognizers.Add(tapUploadImage);
+            var tapLikeImage = new TapGestureRecognizer();
+            tapLikeImage.Tapped += OnLike;
+            imgLike.GestureRecognizers.Add(tapLikeImage);
+
+            var tapSettingsImage = new TapGestureRecognizer();
+            tapSettingsImage.Tapped += OnSettings;
+            imgSettings.GestureRecognizers.Add(tapSettingsImage);
         }
 
         public async void OnLike(object sender, EventArgs e)
         {
             //TODO
+        }
+
+        public async void OnSettings(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new SettingView());
         }
     }
 }

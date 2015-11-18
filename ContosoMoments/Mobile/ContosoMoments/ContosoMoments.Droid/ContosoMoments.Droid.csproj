@@ -61,11 +61,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\WindowsAzure.MobileServices.2.0.0-beta-2\lib\monoandroid\Microsoft.WindowsAzure.Mobile.dll</HintPath>
+      <HintPath>..\..\..\packages\WindowsAzure.MobileServices.2.0.0-beta-3\lib\monoandroid\Microsoft.WindowsAzure.Mobile.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile.Ext, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\WindowsAzure.MobileServices.2.0.0-beta-2\lib\monoandroid\Microsoft.WindowsAzure.Mobile.Ext.dll</HintPath>
+      <HintPath>..\..\..\packages\WindowsAzure.MobileServices.2.0.0-beta-3\lib\monoandroid\Microsoft.WindowsAzure.Mobile.Ext.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile.Files, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -77,7 +77,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile.SQLiteStore, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\WindowsAzure.MobileServices.SQLiteStore.2.0.0-beta\lib\portable-win+net45+wp8+wpa81+monotouch+monoandroid\Microsoft.WindowsAzure.Mobile.SQLiteStore.dll</HintPath>
+      <HintPath>..\..\..\packages\WindowsAzure.MobileServices.SQLiteStore.2.0.0-beta-2\lib\portable-win+net45+wp8+wpa81+monotouch+monoandroid\Microsoft.WindowsAzure.Mobile.SQLiteStore.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=6.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -87,7 +87,7 @@
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.1-beta1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.1-beta2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SQLitePCL, Version=3.8.7.2, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
@@ -170,27 +170,27 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AndroidManifest.xml" />
-    <AndroidAsset Include="Resources\drawable-hdpi\logotext.png" />
-    <AndroidAsset Include="Resources\drawable-hdpi\logo.png" />
-    <AndroidAsset Include="Resources\drawable-hdpi\link.png" />
-    <AndroidAsset Include="Resources\drawable-hdpi\like.png" />
-    <AndroidAsset Include="Resources\drawable-hdpi\save.png" />
-    <AndroidAsset Include="Resources\drawable-hdpi\sync.png" />
-    <AndroidAsset Include="Resources\drawable-hdpi\upload.png" />
-    <AndroidAsset Include="Resources\drawable-ldpi\save.png" />
-    <AndroidAsset Include="Resources\drawable-ldpi\sync.png" />
-    <AndroidAsset Include="Resources\drawable-ldpi\logotext.png" />
-    <AndroidAsset Include="Resources\drawable-ldpi\logo.png" />
-    <AndroidAsset Include="Resources\drawable-ldpi\link.png" />
-    <AndroidAsset Include="Resources\drawable-ldpi\like.png" />
-    <AndroidAsset Include="Resources\drawable-ldpi\upload.png" />
-    <AndroidAsset Include="Resources\drawable-xhdpi\save.png" />
-    <AndroidAsset Include="Resources\drawable-xhdpi\sync.png" />
-    <AndroidAsset Include="Resources\drawable-xhdpi\logotext.png" />
-    <AndroidAsset Include="Resources\drawable-xhdpi\logo.png" />
-    <AndroidAsset Include="Resources\drawable-xhdpi\link.png" />
-    <AndroidAsset Include="Resources\drawable-xhdpi\like.png" />
-    <AndroidAsset Include="Resources\drawable-xhdpi\upload.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\logotext.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\logo.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\link.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\like.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\save.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\sync.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\upload.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\save.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\sync.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\logotext.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\logo.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\link.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\like.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\upload.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\save.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\sync.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\logotext.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\logo.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\link.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\like.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\upload.png" />
     <AndroidResource Include="Resources\Drawable\like.png" />
     <AndroidResource Include="Resources\Drawable\link.png" />
     <AndroidResource Include="Resources\Drawable\logo.png" />
@@ -201,6 +201,10 @@
     <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-ldpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
+    <AndroidResource Include="Resources\Drawable\settings.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\settings.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\settings.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\settings.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\ContosoMoments\ContosoMoments.projitems" Label="Shared" Condition="Exists('..\ContosoMoments\ContosoMoments.projitems')" />

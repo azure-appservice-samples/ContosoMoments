@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\IMobileClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ISettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ImageDetailsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ImagesListViewModel.cs" />

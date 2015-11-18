@@ -32,7 +32,7 @@
     "DefaultAlbumId": { "type": "string" },
     "FacebookAuthString": { "type": "string" }
   },
-  
+
   "resources": [
     //Storage account
     {
@@ -42,21 +42,7 @@
       "location": "[parameters('serverLocation')]",
       "properties": {
         "accountType": "[parameters('storageAccountType')]"
-      } //,
-      //"resources": [
-      //  {
-      //    "apiVersion": "2015-05-01-preview",
-      //    "name": "[parameters('storageContainerName')]",
-      //    "type": "container",
-      //    "location": "[parameters('serverLocation')]",
-      //    "dependsOn": [
-      //      "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
-      //    ],
-      //    "properties": {
-      //      "permission" :  "Container"
-      //    }
-      //  }
-      //]
+      }
     },
 
     //DB server

@@ -18,7 +18,7 @@
     "storageAccountType": { "value": "Standard_GRS" },
     "storageContainerName": { "value": "images" },
 
-    "hostPlanName": { "value": "ContosoMomentsHostPlan" },
+    "hostPlanName": { "value": "ContosoMomentsHostPlanQA" },
     "webName": { "value": "ContosoMomentsWebQA" },
     "webApiName": { "value": "ContosoMomentsWebApiQA" },
     "webJobSiteName": { "value": "ContosoMomentsWebJobsQA" },
