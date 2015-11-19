@@ -15,7 +15,9 @@ namespace ContosoMoments.WinPhone
     {
         public async Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
-            return await ContosoMoments.App.MobileService.LoginAsync(provider);
+            IDictionary<string, string> p = new Dictionary<string, string>();
+
+            return await ContosoMoments.App.MobileService.LoginAsync(provider.ToString(), p);
         }
 
         public async void Logout()

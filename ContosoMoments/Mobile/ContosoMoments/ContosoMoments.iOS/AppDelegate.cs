@@ -5,6 +5,9 @@ using System.Linq;
 using Foundation;
 using UIKit;
 using System.IO;
+using Microsoft.WindowsAzure.MobileServices;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments.iOS
 {
@@ -14,6 +17,9 @@ namespace ContosoMoments.iOS
     [Register("AppDelegate")]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
+        public static NSData DeviceToken { get; private set; }
+        public static bool IsAfterLogin = false;
+
         //
         // This method is invoked when the application has loaded and is ready to run. In this 
         // method you should instantiate the window, load the UI into it and then make the window
@@ -25,10 +31,21 @@ namespace ContosoMoments.iOS
         {
             app.StatusBarHidden = true;
 
+            // registers for push for iOS8
+            var settings = UIUserNotificationSettings.GetSettingsForTypes(
+                UIUserNotificationType.Alert
+                | UIUserNotificationType.Badge
+                | UIUserNotificationType.Sound,
+                new NSSet());
+
+
             global::Xamarin.Forms.Forms.Init();
 
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
             SQLitePCL.CurrentPlatform.Init();
+
+            UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+            UIApplication.SharedApplication.RegisterForRemoteNotifications();
 
             LoadApplication(new ContosoMoments.App());
 
@@ -53,6 +70,60 @@ namespace ContosoMoments.iOS
 //            imagePicker.Canceled += (sender, e) => app.KeyWindow.RootViewController.DismissViewController(true, null);
 
             return base.FinishedLaunching(app, options);
+        }
+
+        public static async Task RegisterWithMobilePushNotifications()
+        {
+            if (null != DeviceToken && IsAfterLogin)
+            {
+                // Register for push with Mobile Services
+                IEnumerable<string> tag = new List<string>() { "uniqueTag" };
+
+                const string notificationTemplate = "{\"aps\":{\"alert\":\"$(message)\"}}";
+
+                JObject templateBody = new JObject();
+                templateBody["body"] = notificationTemplate;
+
+                JObject templates = new JObject();
+                templates["ContosoMomentsApnsTemplate"] = templateBody;
+
+                //var expiryDate = DateTime.Now.AddDays(90).ToString
+                //    (System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
+
+                // Get Mobile Services client
+                MobileServiceClient client = App.MobileService;
+                var push = client.GetPush();
+
+                try
+                {
+                    await push.RegisterAsync(DeviceToken, templates);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("RegisterWithMobilePushNotifications: " + ex.Message);
+                }
+            }
+        }
+
+        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        {
+            DeviceToken = deviceToken;
+
+            if (IsAfterLogin)
+                RegisterWithMobilePushNotifications();
+        }
+
+        public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
+        {
+            NSObject inAppMessage;
+
+            bool success = userInfo.TryGetValue(new NSString("inAppMessage"), out inAppMessage);
+
+            if (success)
+            {
+                var alert = new UIAlertView("Got push notification", inAppMessage.ToString(), null, "OK", null);
+                alert.Show();
+            }
         }
     }
 }

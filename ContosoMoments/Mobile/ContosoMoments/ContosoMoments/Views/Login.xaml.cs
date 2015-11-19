@@ -27,6 +27,16 @@ namespace ContosoMoments.Views
                 App.AuthenticatedUser = user;
                 System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
 
+
+#if __DROID__
+                Droid.GcmService.RegisterWithMobilePushNotifications();
+#elif __IOS__
+                iOS.AppDelegate.IsAfterLogin = true;
+                await iOS.AppDelegate.RegisterWithMobilePushNotifications();
+#elif __WP__
+                ContosoMoments.WinPhone.App.AcquirePushChannel();
+#endif
+
                 Navigation.InsertPageBefore(new ImagesList(), this);
                 await Navigation.PopAsync();
             }
