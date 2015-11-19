@@ -11,6 +11,8 @@ namespace ContosoMoments.Common.Models
 
         public string AlbumName { get; set; }
 
+        public bool IsDefault { get; set; }
+
         public IEnumerable<Image> Images { get; set; }
 
         public User User { get; set; }

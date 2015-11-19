@@ -15,11 +15,12 @@ namespace ContosoMoments.Common.Models
         public string FileName { get; set; }
       // public string SasUrl { get; set; }
         public Album Album { get; set; }
-
         public User User { get; set; }
 
+        public IEnumerable<Like> Likes { get; set; }
 
-        //[NotMapped]
+
+        [NotMapped]
         public IDictionary<string, Uri> ImagePath
         {
             get

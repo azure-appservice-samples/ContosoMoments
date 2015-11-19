@@ -25,19 +25,12 @@ namespace ContosoMoments.MobileServer.Models
         public MobileServiceContext() : base(connectionStringName)
         {
 
-           // Database.SetInitializer(new MigrateDatabaseToLatestVersion<MobileServiceContext, Migrations.Configuration>());
-//            var migrator = new System.Data.Entity.Migrations.DbMigrator(new Migrations.Configuration());
-//migrator.Update();
-          //  Database.SetInitializer(new BasicDBInitializer());
         }
 
         public DbSet<Image> Images { get; set; }
-
-       
-
-        public System.Data.Entity.DbSet<Album> Albums { get; set; }
-
-        public System.Data.Entity.DbSet<User> Users { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Album> Albums { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -47,6 +40,7 @@ namespace ContosoMoments.MobileServer.Models
                    "ServiceTableColumn", (property, attributes) => attributes.Single().ColumnType.ToString()));
             base.OnModelCreating(modelBuilder);
         }
+
     }
 
     public class ContosoMomentsDBInitializer : DropCreateDatabaseIfModelChanges<MobileServiceContext>
@@ -59,7 +53,7 @@ namespace ContosoMoments.MobileServer.Models
                 AlbumName = "Default Album",
                 User = new User
                 {
-                    UserName = "Demo User",
+                    Email = "Unauthenticated User",
                     Id = "11111111-1111-1111-1111-111111111111",
                     IsEnabled = true
                 }

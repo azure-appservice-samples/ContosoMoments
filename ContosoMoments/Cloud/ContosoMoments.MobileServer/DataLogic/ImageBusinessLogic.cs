@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
 using ContosoMoments.Common.Srorage;
+using ContosoMoments.MobileServer.Models;
 
-namespace ContosoMoments.MobileServer.Models
+namespace ContosoMoments.MobileServer.DataLogic
 {
     public class ImageBusinessLogic
     {

@@ -6,12 +6,8 @@ using System.Data.Entity;
 using System.Web.Http;
 using Microsoft.Azure.Mobile.Server.Config;
 using Owin;
-using System.Data.Entity.Migrations;
 using AutoMapper;
-using ContosoMoments.Common.Models;
 using ContosoMoments.MobileServer.Models;
-using Local.Models;
-using Microsoft.Azure.Mobile.Server;
 
 
 namespace ContosoMoments.MobileServer

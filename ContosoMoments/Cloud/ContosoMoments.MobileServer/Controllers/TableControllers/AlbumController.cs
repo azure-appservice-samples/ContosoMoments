@@ -8,7 +8,7 @@ using ContosoMoments.Common.Models;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 
-namespace ContosoMoments.MobileServer.Controllers
+namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
     public class AlbumController : TableController<Album>
     {

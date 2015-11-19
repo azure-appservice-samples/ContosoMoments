@@ -5,7 +5,7 @@ using ContosoMoments.Common;
 using ContosoMoments.Common.Srorage;
 using Microsoft.Azure.Mobile.Server.Config;
 
-namespace ContosoMoments.MobileServer.Controllers
+namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
     [MobileAppController]
     public class GetSasUrlController : ApiController

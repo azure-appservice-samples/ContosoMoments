@@ -226,19 +226,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\AlbumController.cs" />
-    <Compile Include="Controllers\CommitBlobController.cs" />
-    <Compile Include="Controllers\GetSasUrlController.cs" />
-    <Compile Include="Controllers\CustomController.cs" />
-    <Compile Include="Controllers\GetwayController.cs" />
-    <Compile Include="Controllers\ImageController.cs" />
+    <Compile Include="Controllers\IntiController.cs" />
+    <Compile Include="Controllers\TableControllers\AlbumController.cs" />
+    <Compile Include="Controllers\WebAPI\CommitBlobController.cs" />
+    <Compile Include="Controllers\WebAPI\GetSasUrlController.cs" />
+    <Compile Include="Controllers\WebAPI\GetwayController.cs" />
+    <Compile Include="Controllers\TableControllers\ImageController.cs" />
+    <Compile Include="Controllers\TableControllers\LikeController.cs" />
     <Compile Include="Controllers\SecuredController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="DataObjects\Green.cs" />
-    <Compile Include="DataObjects\Person.cs" />
-    <Compile Include="DataObjects\BrownOnline.cs" />
+    <Compile Include="Controllers\TableControllers\UserController.cs" />
+    <Compile Include="DataLogic\UserLogic.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\ImageBusinessLogic.cs" />
+    <Compile Include="DataLogic\ImageBusinessLogic.cs" />
     <Compile Include="Models\MobileServiceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

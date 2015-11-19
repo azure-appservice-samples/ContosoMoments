@@ -8,49 +8,49 @@ using ContosoMoments.Common.Models;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 
-namespace ContosoMoments.MobileServer.Controllers
+namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
-    public class UserController : TableController<User>
+    public class ImageController : TableController<Image>
     {
         protected override void Initialize(HttpControllerContext controllerContext)
         {
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
-            DomainManager = new EntityDomainManager<User>(context, Request);
+            DomainManager = new EntityDomainManager<Image>(context, Request);
         }
 
-        // GET tables/User
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IQueryable<User> GetAllUser()
+
+        // GET tables/Images
+        public IQueryable<Image> GetAllImage()
         {
             return Query(); 
         }
 
-        // GET tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public SingleResult<User> GetUser(string id)
+        public SingleResult<Image> GetImage(string id)
         {
             return Lookup(id);
         }
 
-        // PATCH tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // PATCH tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public Task<User> PatchUser(string id, Delta<User> patch)
+        public Task<Image> PatchImage(string id, Delta<Image> patch)
         {
              return UpdateAsync(id, patch);
         }
 
-        // POST tables/User
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<IHttpActionResult> PostUser(User item)
+        // POST tables/Images
+        public async Task<IHttpActionResult> PostImage(Image item)
         {
-            User current = await InsertAsync(item);
+            Image current = await InsertAsync(item);
             return CreatedAtRoute("Tables", new { id = current.Id }, current);
         }
 
-        // DELETE tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // DELETE tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public Task DeleteUser(string id)
+        public Task DeleteImage(string id)
         {
              return DeleteAsync(id);
         }

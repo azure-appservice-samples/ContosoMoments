@@ -212,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="Models\Like.cs" />
     <Compile Include="Nptification\Notifier.cs" />
     <Compile Include="Queue\QueueManager.cs" />
     <Compile Include="Queue\ResizeQueueMessage.cs" />

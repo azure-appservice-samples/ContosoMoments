@@ -1,16 +1,14 @@
-using System;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using ContosoMoments.Common;
-using ContosoMoments.Common.Models;
 using ContosoMoments.Common.Queue;
 using ContosoMoments.Common.Srorage;
+using ContosoMoments.MobileServer.DataLogic;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Config;
-using System.Threading.Tasks;
 
-namespace ContosoMoments.MobileServer.Controllers
+namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
 
     [MobileAppController]
