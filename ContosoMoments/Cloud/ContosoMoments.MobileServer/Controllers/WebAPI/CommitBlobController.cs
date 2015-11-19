@@ -3,7 +3,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Queue;
-using ContosoMoments.Common.Srorage;
+using ContosoMoments.Common.Storage;
 using ContosoMoments.MobileServer.DataLogic;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Config;
