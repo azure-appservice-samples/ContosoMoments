@@ -228,31 +228,7 @@ namespace ContosoMoments.WinPhone
 
         public static void AcquirePushChannel()
         {
-#warning TRY AGAIN WITH NEXT DROP OF MOBILE SERVICES SDK
-            //CurrentChannel = HttpNotificationChannel.Find("ContosoMomentsPushChannel");
-
-            //if (CurrentChannel == null)
-            //{
-            //    CurrentChannel = new HttpNotificationChannel("ContosoMomentsMyPushChannel");
-            //    CurrentChannel.Open();
-            //    CurrentChannel.BindToShellToast();
-            //}
-
-            //CurrentChannel.ChannelUriUpdated +=
-            //    new EventHandler<NotificationChannelUriEventArgs>(async (o, args) =>
-            //    {
-
-            //        // Register for notifications using the new channel
-            //        const string template =
-            //                "<?xml version=\"1.0\" encoding=\"utf-8\"?><wp:Notification " +
-            //                "xmlns:wp=\"WPNotification\"><wp:Toast><wp:Text1>$(message)</wp:Text1></wp:Toast></wp:Notification>";
-
-            //        JObject templates = JObject.Parse(template);
-
-            //        MobileServiceClient client = ContosoMoments.App.MobileService;
-            //        var push = client.GetPush();
-            //        await push.RegisterAsync(CurrentChannel.ChannelUri.ToString(), templates);
-            //    });
+            Debug.WriteLine("MPNS Push Notifications are not supported in WP8.1 Silverlight due to lack of support in Azure Mobile Apps Client SDK");
         }
     }
 }
