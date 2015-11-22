@@ -1,7 +1,7 @@
 (function(angular){
     'use strict';
 
-    var app=angular.module('app',['ngRoute']);
+    var app=angular.module('app',['ngRoute','ui.bootstrap','azureBlobUpload']);
 
     app.config(['$locationProvider','$routeProvider',function($locationProvider,$routeProvider) {
         $routeProvider.when('/',{
@@ -106,6 +106,49 @@
         return albumService;         
     }])
 
+    app.factory('uploadService', ['azureBlob','$http', function(azureBlob,$http){
+        var getSasUrl=function(){
+            return $http.get("http://localhost:31475/api/GetSasUrl").then(function (res) {
+                return res.data;
+            });
+        }
+        var commit=function (sasurl) {
+            return $http.post("http://localhost:31475/api/CommitBlob", {
+                isMobile:true,
+                UserId: "11111111-1111-1111-1111-111111111111",
+                AlbumId: "11111111-1111-1111-1111-111111111111",
+                SasUrl: sasurl,
+                //sendNotification: store.sendNotification(blobface.selectedFile.name)
+            }).then(function (res) {
+                return res.data;
+            });
+        }
+        return function upload(currentFile,options){
+            var config=options || {};
+
+            getSasUrl().then(function(res){
+                var sasurl = res;
+                var urlParts=res.split('?');   
+                azureBlob.upload({
+                  baseUrl: urlParts[0],// baseUrl for blob file uri (i.e. http://<accountName>.blob.core.windows.net/<container>/<blobname>),
+                  sasToken: '?'+urlParts[1], // Shared access signature querystring key/value prefixed with ?,
+                  file:currentFile, // File object using the HTML5 File API,
+                  progress:config.progress || angular.noop, // progress callback function,
+                  complete:function(){
+                    commit(sasurl).then(function(){
+                        if(angular.isFunction(config.complete)){
+                            config.complete();
+                        }
+                    })
+                    
+                  },// complete callback function,
+                  error: config.error || angular.noop// error callback function,                       
+                });
+                //setFile($("#file")[0].files[0], res); 
+            });
+        };
+    }]);
+
 
     app.controller('albumController', ['albumsService',function (albumsService) {
         var self=this;
@@ -131,6 +174,88 @@
             return albumsService.getImageURL(this.currentImage, size);
         }
 
+
+    }]);
+
+    app.controller('navController', ['$uibModal',function($uibModal){
+        
+
+        this.openUploadModal=function(){
+
+            var modalInstance = $uibModal.open({
+              animation: true,
+              templateUrl: 'uploadModal.html',
+              controller: 'uploadController',
+              controllerAs:'uploadCtrl'
+            });
+
+            modalInstance.result.then(function (uplodedFile) {
+              console.log('upload modal completed at: ' + new Date());
+            }, function () {
+              console.log('Modal dismissed at: ' + new Date());
+            });
+            
+        }
+
+
+      
+
+    }]);
+    app.controller('uploadController',['$scope','uploadService','$uibModalInstance','$timeout',function($scope,uploadService,$uibModalInstance,$timeout){
+        $scope.progress=-1; 
+        var uploadOptions={
+            complete:function(){
+                $timeout(function(){
+                    $uibModalInstance.close($scope.selectedFile);
+                },1500);
+                 
+            },
+            progress:function(progress){
+                $scope.progress=parseFloat(progress);
+            }
+        }
+        this.showProgress=function(){
+            return ($scope.progress >=0);
+        }
+        this.onFileChange=function(files){
+            $scope.selectedFile=files[0];
+        }
+        this.upload=function(){
+            if(!angular.isUndefined($scope.selectedFile)){
+                $scope.progress=0;
+                uploadService($scope.selectedFile,uploadOptions);
+            }
+        }
+        this.cancel=function(){
+            $uibModalInstance.dismiss('cancel');
+        }
+
+    }]);
+
+    app.directive('fileChange',[function(){
+        return {    
+            restrict:'A',
+            scope:{
+                fileChange:'&'
+            },
+            link:function(scope,elem,attr){
+
+                if(elem[0].tagName==='INPUT' && attr.type==='file'){
+
+                    elem.on('change',function(ev){
+
+                        scope.$apply(function(){
+                            scope.fileChange({files:ev.target.files,event:ev});
+
+                        })
+
+                    });
+
+
+                }
+
+            }
+        }
 
     }]);
 
