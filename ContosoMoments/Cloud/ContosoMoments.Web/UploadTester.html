@@ -55,9 +55,7 @@
         selectedFileName = $("input[type=file]").val().replace(/^.*[\\\/]/, '');
         containerName = $("#containerName").val();
         fileName = selectedFileName;
-        $.get("http://localhost:31475/api/GetSasUrl", {
-
-        }, function (res) {
+        $.get("http://localhost:31475/api/GetSasUrl", {}, function (res) {
             sasurl = res;
             setFile($("#file")[0].files[0], res);
         });

@@ -29,6 +29,15 @@ div.imgCnt {
     border-radius: 50%;
     background-color: RGBA(147, 94, 76, 0.5);
 } 
+a.icon-upload{
+    color: white;
+    font-size: 20px;    
+}
+
+.nav>li>a.icon-upload:focus,
+.nav>li>a.icon-upload:hover{
+    background-color: transparent;    
+}
 
 .galleryRow{
     padding:2px;

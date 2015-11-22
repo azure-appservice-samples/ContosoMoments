@@ -66,6 +66,12 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bower_components\angular-bootstrap\index.js" />
+    <Content Include="bower_components\angular-bootstrap\ui-bootstrap-csp.css" />
+    <Content Include="bower_components\angular-bootstrap\ui-bootstrap-tpls.js" />
+    <Content Include="bower_components\angular-bootstrap\ui-bootstrap-tpls.min.js" />
+    <Content Include="bower_components\angular-bootstrap\ui-bootstrap.js" />
+    <Content Include="bower_components\angular-bootstrap\ui-bootstrap.min.js" />
     <Content Include="bower_components\angular-route\angular-route.js" />
     <Content Include="bower_components\angular-route\angular-route.min.js" />
     <Content Include="bower_components\angular-route\index.js" />
@@ -216,6 +222,7 @@
     <Content Include="images\img9.jpg" />
     <Content Include="images\Web-ContosoMomentsLogo.svg" />
     <Content Include="index.html" />
+    <Content Include="nguploaderTest.html" />
     <Content Include="packages.config" />
     <Content Include="bower.json" />
     <Content Include="bower_components\angular-route\angular-route.min.js.map" />
@@ -334,6 +341,9 @@
     <Content Include="bower_components\raf.js\LICENSE-MIT" />
     <Content Include="bower_components\raf.js\package.json" />
     <Content Include="bower_components\raf.js\README.md" />
+    <Content Include="bower_components\angular-bootstrap\bower.json" />
+    <Content Include="bower_components\angular-bootstrap\package.json" />
+    <Content Include="bower_components\angular-bootstrap\README.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -345,6 +355,12 @@
     <Content Include="JavaScript\jquery-1.11.3.min.js" />
     <Content Include="JavaScript\Upload.js" />
     <Content Include="scripts\app.js" />
+    <Content Include="scripts\azure-blob-upload.js" />
+    <Content Include="scripts\ui-bootstrap-custom\ui-bootstrap-custom-0.14.3.js" />
+    <Content Include="scripts\ui-bootstrap-custom\ui-bootstrap-custom-0.14.3.min.js" />
+    <Content Include="scripts\ui-bootstrap-custom\ui-bootstrap-custom-tpls-0.14.3.js" />
+    <Content Include="scripts\ui-bootstrap-custom\ui-bootstrap-custom-tpls-0.14.3.min.js" />
+    <Content Include="scripts\uploader.js" />
     <Content Include="templates\gallery.html" />
     <Content Include="templates\singleimage.html" />
     <Content Include="UploadTester.html" />
