@@ -65,7 +65,7 @@ namespace ContosoMoments
                 MobileService = new MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
                 AuthenticatedUser = MobileService.CurrentUser;
 
-#if !__WP__
+//#if !__WP__
                 if (isAuthRequred && AuthenticatedUser == null)
                 {
                     MainPage = new NavigationPage(new Login());
@@ -75,9 +75,9 @@ namespace ContosoMoments
                     // The root page of your application
                     MainPage = new NavigationPage(new ImagesList());
                 }
-#elif __WP__
-                MainPage = new NavigationPage(new ImagesList());
-#endif
+//#elif __WP__
+//                MainPage = new NavigationPage(new ImagesList());
+//#endif
             }
         }
 

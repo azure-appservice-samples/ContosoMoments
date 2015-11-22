@@ -226,7 +226,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\IntiController.cs" />
+    <Compile Include="Controllers\InitController.cs" />
     <Compile Include="Controllers\TableControllers\AlbumController.cs" />
     <Compile Include="Controllers\WebAPI\CommitBlobController.cs" />
     <Compile Include="Controllers\WebAPI\GetSasUrlController.cs" />
@@ -264,6 +264,9 @@
       <Project>{c2c4991b-5a0c-4da4-9a80-2d2c89a95dce}</Project>
       <Name>ContosoMoments.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

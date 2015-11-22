@@ -72,7 +72,7 @@ namespace ContosoMoments.Views
                         App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
                         App.AuthenticatedUser = App.MobileService.CurrentUser;
 
-#if !__WP__
+//#if !__WP__
                         if (isAuthRequred && App.AuthenticatedUser == null)
                         {
                             App.Current.MainPage = new NavigationPage(new Login());
@@ -82,9 +82,9 @@ namespace ContosoMoments.Views
                             // The root page of your application
                             App.Current.MainPage = new NavigationPage(new ImagesList());
                         }
-#elif __WP__
-                        App.Current.MainPage = new NavigationPage(new ImagesList());
-#endif
+//#elif __WP__
+//                        App.Current.MainPage = new NavigationPage(new ImagesList());
+//#endif
                     }
                     else
                     {

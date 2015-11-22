@@ -2,7 +2,7 @@
 using System.Linq;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
-using ContosoMoments.Common.Srorage;
+using ContosoMoments.Common.Storage;
 using ContosoMoments.MobileServer.Models;
 
 namespace ContosoMoments.MobileServer.DataLogic

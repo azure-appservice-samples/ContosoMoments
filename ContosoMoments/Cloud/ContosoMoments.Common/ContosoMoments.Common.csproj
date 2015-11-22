@@ -213,18 +213,18 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="Models\Like.cs" />
-    <Compile Include="Nptification\Notifier.cs" />
+    <Compile Include="Notification\Notifier.cs" />
     <Compile Include="Queue\QueueManager.cs" />
     <Compile Include="Queue\ResizeQueueMessage.cs" />
-    <Compile Include="Srorage\BlobInformation.cs" />
+    <Compile Include="Storage\BlobInformation.cs" />
     <Compile Include="Enums\ImageFormats.cs" />
     <Compile Include="Enums\ImageSizes.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Srorage\CommitBlobRequest.cs" />
-    <Compile Include="Srorage\ContosoStorage.cs" />
+    <Compile Include="Storage\CommitBlobRequest.cs" />
+    <Compile Include="Storage\ContosoStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

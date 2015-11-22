@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Notifications;
 
-namespace ContosoMoments.Common.Nptification
+namespace ContosoMoments.Common.Notification
 {
     public class Notifier
     {

@@ -53,7 +53,7 @@ namespace ContosoMoments.MobileServer.Models
                 AlbumName = "Default Album",
                 User = new User
                 {
-                    Email = "Unauthenticated User",
+                    Email = "demo@contoso.com",
                     Id = "11111111-1111-1111-1111-111111111111",
                     IsEnabled = true
                 }

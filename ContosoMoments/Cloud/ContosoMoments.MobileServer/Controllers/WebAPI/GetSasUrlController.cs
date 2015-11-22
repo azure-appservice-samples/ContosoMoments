@@ -2,7 +2,7 @@
 using System.Web.Http;
 using System.Web.Http.Cors;
 using ContosoMoments.Common;
-using ContosoMoments.Common.Srorage;
+using ContosoMoments.Common.Storage;
 using Microsoft.Azure.Mobile.Server.Config;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI

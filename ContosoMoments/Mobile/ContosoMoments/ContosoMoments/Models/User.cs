@@ -19,7 +19,7 @@ namespace ContosoMoments.Models
             set { userId = value; }
         }
 
-        [JsonProperty(PropertyName = "UserName")]
+        [JsonProperty(PropertyName = "Email")]
         public string UserName
         {
             get { return userName; }

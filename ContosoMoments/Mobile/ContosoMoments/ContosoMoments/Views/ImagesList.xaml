@@ -24,9 +24,9 @@
         <ColumnDefinition Width="Auto"/>
         <!--<ColumnDefinition Width="Auto"/>-->
         <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="45"/>
+        <ColumnDefinition Width="45"/>
+        <ColumnDefinition Width="45"/>
       </Grid.ColumnDefinitions>
       <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center">
         <Image.Source>
