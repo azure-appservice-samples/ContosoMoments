@@ -115,7 +115,7 @@
         }
         var commit=function (sasurl) {
             return $http.post(appConfig.DefaultServiceUrl+'api/CommitBlob', {
-                isMobile:true,
+                isMobile:false,
                 UserId: appConfig.DefaultUserId,
                 AlbumId: appConfig.DefaultAlbumId,
                 SasUrl: sasurl,
