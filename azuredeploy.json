@@ -169,7 +169,6 @@
   },
 
   "resources": [
-    //Storage account
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[parameters('storageAccountName')]",
@@ -180,7 +179,6 @@
       }
     },
 
-    //DB server
     {
       "apiVersion": "2014-04-01-preview",
       "name": "[parameters('dbServerName')]",
@@ -191,7 +189,6 @@
         "administratorLoginPassword": "[parameters('dbAdminPassword')]"
       },
       "resources": [
-        //DB instance
         {
           "apiVersion": "2014-04-01-preview",
           "name": "[parameters('dbName')]",
@@ -208,7 +205,6 @@
       ]
     },
 
-    //Web hosting plan
     {
       "apiVersion": "2014-06-01",
       "type": "Microsoft.Web/serverfarms",
@@ -220,7 +216,6 @@
       }
     },
 
-    //Web client
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
@@ -281,7 +276,6 @@
       ]
     },
 
-    //Mobile Web APIs
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
@@ -350,7 +344,6 @@
       ]
     },
 
-    //WebJob hosting site
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
