@@ -52,10 +52,9 @@ namespace ContosoMoments.ViewModels
         {
             try
             {
-                string json = string.Format("{{\"imageId\": \"{0}\"}}", Image.ImageId.ToString());
+                string body = string.Format("'{0}'", Image.ImageId.ToString());
 
-                Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
-                await App.MobileService.InvokeApiAsync("Like", body, HttpMethod.Post, null);
+                await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
             }
             catch (Exception ex)
             {

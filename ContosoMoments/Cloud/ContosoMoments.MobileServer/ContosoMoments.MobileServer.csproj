@@ -238,7 +238,6 @@
     <Compile Include="DataLogic\UserLogic.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DataLogic\ImageBusinessLogic.cs" />
-    <Compile Include="Models\ConfigModel.cs" />
     <Compile Include="Models\MobileServiceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -267,6 +266,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
