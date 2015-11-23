@@ -3,6 +3,7 @@
 
     var app=angular.module('app',['ngRoute','ui.bootstrap','azureBlobUpload']);
 
+    app.constant('appConfig',(configJson || {})); 
     app.config(['$locationProvider','$routeProvider',function($locationProvider,$routeProvider) {
         $routeProvider.when('/',{
            templateUrl:'templates/gallery.html',
@@ -40,7 +41,7 @@
     }])
 
 
-    app.factory('albumsService', ['$http', '$q', '$cacheFactory', '$interpolate', function ($http, $q, $cacheFactory, $interpolate) {
+    app.factory('albumsService', ['$http', '$q', '$cacheFactory', '$interpolate','appConfig', function ($http, $q, $cacheFactory, $interpolate,appConfig) {
         var albumCache=$cacheFactory('albums');
         var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}.jpg');
   
@@ -86,7 +87,7 @@
             var currentAlbum=albumCache.get(id);
             if(angular.isUndefined(currentAlbum)){
                 //TODO:Wrap with $http
-                $http.get('http://localhost:31475/tables/image').then(function(res){
+                $http.get(appConfig.DefaultServiceUrl+'tables/image').then(function(res){
                     currentAlbum = { id: 1, name: 'Portraits', owner: 'John Doe' };
                     currentAlbum.images=res.data;
                     albumCache.put(id,currentAlbum);
@@ -106,17 +107,17 @@
         return albumService;         
     }])
 
-    app.factory('uploadService', ['azureBlob','$http', function(azureBlob,$http){
+    app.factory('uploadService', ['azureBlob','$http','appConfig',function(azureBlob,$http,appConfig){
         var getSasUrl=function(){
-            return $http.get("http://localhost:31475/api/GetSasUrl").then(function (res) {
+            return $http.get(appConfig.DefaultServiceUrl+"/api/GetSasUrl").then(function (res) {
                 return res.data;
             });
         }
         var commit=function (sasurl) {
-            return $http.post("http://localhost:31475/api/CommitBlob", {
+            return $http.post(appConfig.DefaultServiceUrl+'api/CommitBlob', {
                 isMobile:true,
-                UserId: "11111111-1111-1111-1111-111111111111",
-                AlbumId: "11111111-1111-1111-1111-111111111111",
+                UserId: appConfig.DefaultUserId,
+                AlbumId: appConfig.DefaultAlbumId,
                 SasUrl: sasurl,
                 //sendNotification: store.sendNotification(blobface.selectedFile.name)
             }).then(function (res) {
@@ -153,13 +154,7 @@
     app.controller('albumController', ['albumsService',function (albumsService) {
         var self=this;
         albumsService.getAlbum('1').then(function (album) {
-            self.curAlbum=album;
-            setTimeout(function () {
-                objectFit.polyfill({
-                    selector: 'img',
-                    fittype: 'cover'
-                });
-            },1000);
+            self.curAlbum=album; 
         });
 
         self.getImageURL = function (img, size) {

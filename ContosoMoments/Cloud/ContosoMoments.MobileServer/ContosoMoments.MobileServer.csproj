@@ -238,6 +238,7 @@
     <Compile Include="DataLogic\UserLogic.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DataLogic\ImageBusinessLogic.cs" />
+    <Compile Include="Models\ConfigModel.cs" />
     <Compile Include="Models\MobileServiceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
