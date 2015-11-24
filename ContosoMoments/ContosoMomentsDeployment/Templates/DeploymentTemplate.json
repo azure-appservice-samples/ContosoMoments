@@ -24,30 +24,35 @@
     },
     "dbAdminUser": {
       "type": "string",
+      "defaultValue": "dbAdmin",
       "metadata": {
         "description": "The database admin username that you wish to create."
       }
     },
     "dbAdminPassword": {
       "type": "securestring",
+      "defaultValue": "P@ssw0rd!",
       "metadata": {
         "description": "Password for database admin user that you wish to use."
       }
     },
     "dbServerName": {
       "type": "string",
+      "defaultValue": "contosomomentsdb",
       "metadata": {
         "description": "The name of the SQL database server that you wish to create."
       }
     },
     "dbName": {
       "type": "string",
+      "defaultValue": "ContosoMomentsDB",
       "metadata": {
         "description": "The name of the database that you wish to create."
       }
     },
     "storageAccountName": {
       "type": "string",
+      "defaultValue": "contosomomentsstorage",
       "metadata": {
         "description": "The name of the storage account that you wish to create."
       }
@@ -74,6 +79,7 @@
     },
     "hostPlanName": {
       "type": "string",
+      "defaultValue": "ContosoMomentsHostingPlan",
       "metadata": {
         "description": "The hosting service plan name that you wish to create."
       }
@@ -93,18 +99,21 @@
     },
     "webName": {
       "type": "string",
+      "defaultValue": "ContosoMomentsWeb",
       "metadata": {
         "description": "The name of the web client app that you wish to create."
       }
     },
     "webApiName": {
       "type": "string",
+      "defaultValue": "ContosoMomentsMobileWeb",
       "metadata": {
         "description": "The name of the mobile web service app that you wish to create."
       }
     },
     "webJobSiteName": {
       "type": "string",
+      "defaultValue": "ContosoMomentsWebJobs",
       "metadata": {
         "description": "The name of the web job hosting app that you wish to create."
       }
@@ -132,21 +141,32 @@
     },
     "FacebookAuthString": {
       "type": "string",
+      "defaultValue": "http://www.facebook.com",
       "metadata": {
-        "description": "{OBSOLETE}Use any valid URL here."
+        "description": "Use any valid URL."
       }
     },
-    "PackagesBaseURL": {
+    "MobileWebApiPackageURL": {
       "type": "string",
+      "defaultValue": "http://github.com/azure-appservice-samples/ContosoMoments/raw/master/ContosoMoments/Deployment/ContosoMoments.MobileServer.zip",
       "metadata": {
-        "description": "Base location for deployment packages (must NOT include trailing '/')."
+        "description": "Location of the Mobile Web API deployment package."
       }
     },
 
-    "DeploymentVersion": {
+    "WebClientPackageURL": {
       "type": "string",
+      "defaultValue": "http://github.com/azure-appservice-samples/ContosoMoments/raw/master/ContosoMoments/Deployment/ContosoMoments.Web.zip",
       "metadata": {
-        "description": "Current deployment version -- string of type {VERSION}, ex. 0.1, 1.2, etc."
+        "description": "Location of the Web Client deployment package."
+      }
+    },
+
+    "WebJobsPackageURL": {
+      "type": "string",
+      "defaultValue": "http://github.com/azure-appservice-samples/ContosoMoments/raw/master/ContosoMoments/Deployment/ContosoMoments.WebJobs.zip",
+      "metadata": {
+        "description": "Location of the Web Jobs deployment package."
       }
     }
   },
@@ -260,7 +280,7 @@
           "properties": {
             "connectionString": "",
             "dbType": "None",
-            "packageUri": "[concat(parameters('PackagesBaseURL'), '/ContosoMoments.MobileServer.v', parameters('DeploymentVersion') ,'.zip')]",
+            "packageUri": "[parameters('MobileWebApiPackageURL')]",
             "setParameters": { }
           }
         }
@@ -321,7 +341,7 @@
           "properties": {
             "connectionString": "",
             "dbType": "None",
-            "packageUri": "[concat(parameters('PackagesBaseURL'), '/ContosoMoments.Web.v', parameters('DeploymentVersion') ,'.zip')]",
+            "packageUri": "[parameters('WebClientPackageURL')]",
             "setParameters": { }
           }
         }
@@ -364,7 +384,7 @@
           "properties": {
             "connectionString": "",
             "dbType": "None",
-            "packageUri": "[concat(parameters('PackagesBaseURL'), '/ContosoMoments.WebJobs.v', parameters('DeploymentVersion') ,'.zip')]",
+            "packageUri": "[parameters('WebJobsPackageURL')]",
             "setParameters": { }
           }
         }
