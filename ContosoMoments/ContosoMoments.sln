@@ -58,9 +58,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.ResizerWebJo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{4F43C3FA-1A1F-4851-A849-55B5A96E260B}"
 	ProjectSection(SolutionItems) = preProject
-		Deployment\ContosoMoments.MobileServer.v0.5.zip = Deployment\ContosoMoments.MobileServer.v0.5.zip
-		Deployment\ContosoMoments.Web.v0.5.zip = Deployment\ContosoMoments.Web.v0.5.zip
-		Deployment\ContosoMoments.WebJobs.v0.5.zip = Deployment\ContosoMoments.WebJobs.v0.5.zip
+		Deployment\ContosoMoments.MobileServer.zip = Deployment\ContosoMoments.MobileServer.zip
+		Deployment\ContosoMoments.Web.zip = Deployment\ContosoMoments.Web.zip
+		Deployment\ContosoMoments.WebJobs.zip = Deployment\ContosoMoments.WebJobs.zip
 	EndProjectSection
 EndProject
 Global
