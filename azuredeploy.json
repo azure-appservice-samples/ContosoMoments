@@ -22,7 +22,7 @@
         "description": "Azure region where application gateway will be deployed"
       }
     },
-    "dbAdminUser": {
+    "sqlAdministratorLogin": {
       "type": "string",
       "metadata": {
         "description": "The database admin username that you wish to create."
@@ -34,7 +34,7 @@
         "description": "Password for database admin user that you wish to use."
       }
     },
-    "dbServerName": {
+    "sqlServerName": {
       "type": "string",
       "metadata": {
         "description": "The name of the SQL database server that you wish to create."
@@ -72,7 +72,7 @@
         "description": "The name of storage container that you wish to use."
       }
     },
-    "hostPlanName": {
+    "hostingPlanName": {
       "type": "string",
       "metadata": {
         "description": "The hosting service plan name that you wish to create."
@@ -91,22 +91,10 @@
         "description": "The pricing tier for the hosting plan."
       }
     },
-    "webName": {
+    "siteName": {
       "type": "string",
       "metadata": {
         "description": "The name of the web client app that you wish to create."
-      }
-    },
-    "webApiName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the mobile web service app that you wish to create."
-      }
-    },
-    "webJobSiteName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the web job hosting app that you wish to create."
       }
     },
     "ResizeQueueName": {
@@ -138,11 +126,11 @@
     },
     "PackagesBaseURL": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "Base location for deployment packages (must NOT include trailing '/')."
       }
     },
-
     "DeploymentVersion": {
       "type": "string",
       "metadata": {
@@ -150,7 +138,10 @@
       }
     }
   },
-
+  "variables": {
+    "webApiName": "[concat(parameters('siteName'), '-api')]",
+    "webJobSiteName": "[concat(parameters('siteName'), '-jobs')]"
+  },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
@@ -164,11 +155,11 @@
 
     {
       "apiVersion": "2014-04-01-preview",
-      "name": "[parameters('dbServerName')]",
+      "name": "[parameters('sqlServerName')]",
       "type": "Microsoft.Sql/servers",
       "location": "[parameters('serverLocation')]",
       "properties": {
-        "administratorLogin": "[parameters('dbAdminUser')]",
+        "administratorLogin": "[parameters('sqlAdministratorLogin')]",
         "administratorLoginPassword": "[parameters('dbAdminPassword')]"
       },
       "resources": [
@@ -178,7 +169,7 @@
           "type": "databases",
           "location": "[parameters('serverLocation')]",
           "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]"
+            "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
           ],
           "properties": {
             "edition": "Basic",
@@ -191,10 +182,10 @@
     {
       "apiVersion": "2014-06-01",
       "type": "Microsoft.Web/serverfarms",
-      "name": "[parameters('hostPlanName')]",
+      "name": "[parameters('hostingPlanName')]",
       "location": "[parameters('serverLocation')]",
       "properties": {
-        "name": "[parameters('hostPlanName')]",
+        "name": "[parameters('hostingPlanName')]",
         "sku": "[parameters('sku')]"
       }
     },
@@ -205,13 +196,13 @@
       "name": "[parameters('webApiName')]",
       "location": "[parameters('serverLocation')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
-        "[resourceId('Microsoft.Sql/servers/', parameters('dbServerName'))]",
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
+        "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
       ],
       "properties": {
         "name": "[parameters('webApiName')]",
-        "serverFarm": "[parameters('hostPlanName')]"
+        "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
         {
@@ -224,7 +215,7 @@
           "properties": {
             "connectionStrings": [
               {
-                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('sqlServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('sqlAdministratorLogin'), '@', parameters('sqlServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
                 "Name": "MS_TableConnectionString",
                 "Type": 2
               }
@@ -270,15 +261,15 @@
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
-      "name": "[parameters('webName')]",
+      "name": "[parameters('siteName')]",
       "location": "[parameters('serverLocation')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
-        "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
+        "[resourceId('Microsoft.Web/Sites/', variables('webApiName'))]"
       ],
       "properties": {
-        "name": "[parameters('webName')]",
-        "serverFarm": "[parameters('hostPlanName')]"
+        "name": "[parameters('siteName')]",
+        "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
         {
@@ -286,12 +277,12 @@
           "type": "config",
           "name": "web",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/', parameters('webName'))]"
+            "[resourceId('Microsoft.Web/sites/', parameters('siteName'))]"
           ],
           "properties": {
             "connectionStrings": [
               {
-                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('dbServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('dbAdminUser'), '@', parameters('dbServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('sqlServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('dbName'), ';User Id=', parameters('sqlAdministratorLogin'), '@', parameters('sqlServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
                 "Name": "DefaultConnection",
                 "Type": 2
               }
@@ -303,12 +294,12 @@
           "type": "config",
           "name": "appsettings",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webName'))]"
+            "[concat('Microsoft.Web/sites/', parameters('siteName'))]"
           ],
           "properties": {
             "DefaultUserId": "[parameters('DefaultUserId')]",
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]",
-            "DefaultServiceURL": "[concat('http://', parameters('webApiName'), '.azurewebsites.net')]"
+            "DefaultServiceURL": "[concat('http://', variables('webApiName'), '.azurewebsites.net')]"
           }
         },
         {
@@ -316,7 +307,7 @@
           "name": "MSDeploy",
           "type": "extensions",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', parameters('webName'))]"
+            "[resourceId('Microsoft.Web/Sites/', parameters('siteName'))]"
           ],
           "properties": {
             "connectionString": "",
@@ -331,15 +322,15 @@
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
-      "name": "[parameters('webJobSiteName')]",
+      "name": "[variables('webJobSiteName')]",
       "location": "[parameters('serverLocation')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostPlanName'))]",
+        "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
       ],
       "properties": {
         "name": "[parameters('webJobSiteName')]",
-        "serverFarm": "[parameters('hostPlanName')]"
+        "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
         {
@@ -347,7 +338,7 @@
           "type": "config",
           "name": "appsettings",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webJobSiteName'))]"
+            "[concat('Microsoft.Web/sites/', variables('webJobSiteName'))]"
           ],
           "properties": {
             "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
