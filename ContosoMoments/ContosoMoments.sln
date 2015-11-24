@@ -56,6 +56,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WebJobs", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.ResizerWebJob", "ContosoMoments.ResizerWebJob\ContosoMoments.ResizerWebJob.csproj", "{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{4F43C3FA-1A1F-4851-A849-55B5A96E260B}"
+	ProjectSection(SolutionItems) = preProject
+		Deployment\ContosoMoments.MobileServer.v0.5.zip = Deployment\ContosoMoments.MobileServer.v0.5.zip
+		Deployment\ContosoMoments.Web.v0.5.zip = Deployment\ContosoMoments.Web.v0.5.zip
+		Deployment\ContosoMoments.WebJobs.v0.5.zip = Deployment\ContosoMoments.WebJobs.v0.5.zip
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Mobile\ContosoMoments\ContosoMoments\ContosoMoments.projitems*{d2b524e8-338f-4d83-ac73-37fad854acf3}*SharedItemsImports = 4
@@ -491,5 +498,6 @@ Global
 		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
 		{32FDB152-1D9B-4682-9869-4CEF34C3E40E} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
 		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C} = {8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}
+		{4F43C3FA-1A1F-4851-A849-55B5A96E260B} = {B6E02BEC-863D-43CC-AE96-E80D393746A8}
 	EndGlobalSection
 EndGlobal
