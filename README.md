@@ -4,6 +4,7 @@ Welcome to ContosoMoments Demo!
 Blah blah blah..
 
 Deployment script require the following paramaters:
+
 1. ServerLocation: Azure region where application gateway will be deployed. 
     a. Default value: West US
 2. dbAdminUser: The database admin username that you wish to create.
