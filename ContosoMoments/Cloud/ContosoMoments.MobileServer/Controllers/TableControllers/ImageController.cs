@@ -22,13 +22,9 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         [EnableCors(origins: "*", headers: "*", methods: "*")]
 
         // GET tables/Images
-        public IQueryable<Image> GetAllImage(int start=0,int count=50)
+        public IQueryable<Image> GetAllImage()
         {
-            return Query()
-                .OrderByDescending(x=>x.CreatedAt)
-                .Skip(start)
-                .Take(count);
-                 
+            return Query();              
         }
 
         // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959

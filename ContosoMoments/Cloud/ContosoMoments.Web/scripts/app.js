@@ -40,12 +40,30 @@
 
     }])
 
+    app.factory('mobileServicesClient', [function () {
+        
+        return function (appUrl, appKey) {
+            var MobileServiceClient = WindowsAzure.MobileServiceClient;
+            return new MobileServiceClient(appUrl, appKey);
+        }
 
-    app.factory('albumsService', ['$http', '$q', '$cacheFactory', '$interpolate','appConfig', function ($http, $q, $cacheFactory, $interpolate,appConfig) {
-        var albumCache=$cacheFactory('albums');
+
+    }]);
+
+    app.factory('albumsService', ['$http', '$q', '$cacheFactory', '$interpolate', 'appConfig', 'mobileServicesClient', function ($http, $q, $cacheFactory, $interpolate, appConfig, mobileServicesClient) {
+        var albumCache = $cacheFactory('albums');  
+       
         var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}.jpg');
-  
-        var getImageFromAlbum = function (album, id) {
+        var imageUrlExp = $interpolate(appConfig.DefaultServiceUrl + 'tables/image?start={{start}}&count={{count}}');
+        var albumDefaultOptions = {
+            start: 0,
+            count: 50
+        };
+        var mobileSrvClient = mobileServicesClient(appConfig.DefaultServiceUrl);
+        var getAlbumReqOptions = function (options) {
+            return angular.extend(albumDefaultOptions, options);
+        }
+         var getImageFromAlbum = function (album, id) {
             if(album && album.images){
                 var images=album.images.filter(function(item){
                     return item.id===id;
@@ -60,9 +78,11 @@
             }
             return null;
         }
-
-        var getAlbumFromCache=function(albumid){
-            return albumCache.get(albumid);
+        var getAlbumCacheKey = function (id, options) {
+            return id + options.start + options.count;
+        }
+        var getAlbumFromCache=function(key){
+            return albumCache.get(key);
         }
 
         var albumService = {
@@ -79,25 +99,37 @@
                
             return img;
           },
-          getAlbum:function(id){
+          getAlbum:function(id,options){
 
-            var defered=$q.defer();
-
-            
-            var currentAlbum=albumCache.get(id);
+            var defered = $q.defer();
+            var reqOptions = getAlbumReqOptions(options);
+            var albumCacheKey = getAlbumCacheKey(id, reqOptions);
+            var currentAlbum = getAlbumFromCache(albumCacheKey);
             if(angular.isUndefined(currentAlbum)){
-                //TODO:Wrap with $http
-                $http.get(appConfig.DefaultServiceUrl+'tables/image').then(function(res){
+                var reqUrl = imageUrlExp(reqOptions);
+
+                var imageTable = mobileSrvClient.getTable('image');
+                imageTable.skip(reqOptions.start).take(reqOptions.count).read().done(function (results) {
                     currentAlbum = { id: 1, name: 'Portraits', owner: 'John Doe' };
-                    currentAlbum.images=res.data;
-                    albumCache.put(id,currentAlbum);
+                    currentAlbum.images = results;
+                    albumCache.put(albumCacheKey, currentAlbum);
                     defered.resolve(currentAlbum);
-                },
-                function(err){
-                    //TODO: Error Handling
+                }, function (error) {
                     console.log(err);
                     defered.reject(err);
                 });
+                
+                //$http.get(reqUrl).then(function (res) {
+                //    currentAlbum = { id: 1, name: 'Portraits', owner: 'John Doe' };
+                //    currentAlbum.images=res.data;
+                //    albumCache.put(albumCacheKey, currentAlbum);
+                //    defered.resolve(currentAlbum);
+                //},
+                //function(err){
+                //    //TODO: Error Handling
+                //    console.log(err);
+                //    defered.reject(err);
+                //});
             } else {
                 defered.resolve(currentAlbum);
             }
@@ -152,11 +184,34 @@
 
 
     app.controller('albumController', ['albumsService',function (albumsService) {
-        var self=this;
-        albumsService.getAlbum('1').then(function (album) {
-            self.curAlbum=album; 
-        });
+        var self = this;
+        this.currentIndex = 0;
+        this.count = 24;
 
+        this.getAlbumImages = function () {
+            albumsService.getAlbum('1', { start: self.currentIndex, count: self.count }).then(function (album) {
+                if (album.images && album.images.length >= self.count) {
+                    album.images[album.images.length - 1].showPlaceholder = true;
+                }
+
+                if (self.currentIndex === 0) {
+                    self.curAlbum = album;
+                }
+                else {
+                    self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = false;
+                    self.curAlbum.images = self.curAlbum.images.concat(album.images);
+                }
+               
+            });
+        }
+        this.showNext = function () {
+            this.currentIndex += this.count;
+            this.getAlbumImages();
+        }
+
+
+       
+        this.getAlbumImages();
         self.getImageURL = function (img, size) {
             return albumsService.getImageURL(img, size);
         }
