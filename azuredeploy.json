@@ -126,7 +126,6 @@
     },
     "PackagesBaseURL": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Base location for deployment packages (must NOT include trailing '/')."
       }
