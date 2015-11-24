@@ -139,7 +139,7 @@
         "description": "The default albumId that you wish to use for unauthenticated users."
       }
     },
-    "FacebookAuthRequiredString": {
+    "FacebookAuthString": {
       "type": "string",
       "defaultValue": "http://www.facebook.com",
       "metadata": {
