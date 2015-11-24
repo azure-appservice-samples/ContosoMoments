@@ -2,7 +2,9 @@
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -43,6 +45,19 @@ namespace ContosoMoments.ViewModels
             {
                 _album = value;
                 OnPropertyChanged("Album");
+            }
+        }
+
+        public async Task LikeImageAsync()
+        {
+            try
+            {
+                string body = string.Format("'{0}'", Image.ImageId.ToString());
+
+                await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
+            }
+            catch (Exception ex)
+            {
             }
         }
     }

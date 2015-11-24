@@ -232,9 +232,9 @@
     <Compile Include="Controllers\WebAPI\GetSasUrlController.cs" />
     <Compile Include="Controllers\WebAPI\GetwayController.cs" />
     <Compile Include="Controllers\TableControllers\ImageController.cs" />
-    <Compile Include="Controllers\TableControllers\LikeController.cs" />
     <Compile Include="Controllers\SecuredController.cs" />
     <Compile Include="Controllers\TableControllers\UserController.cs" />
+    <Compile Include="Controllers\WebAPI\LikeController.cs" />
     <Compile Include="DataLogic\UserLogic.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DataLogic\ImageBusinessLogic.cs" />
@@ -266,6 +266,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>

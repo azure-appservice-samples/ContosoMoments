@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ContosoMoments.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,8 @@ namespace ContosoMoments.Views
 
         public async void OnLike(object sender, EventArgs e)
         {
-            //TODO
+            ImageDetailsViewModel vm = this.BindingContext as ImageDetailsViewModel;
+            await vm.LikeImageAsync();
         }
 
         public async void OnSettings(object sender, EventArgs e)
