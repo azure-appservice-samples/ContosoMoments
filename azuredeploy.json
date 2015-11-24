@@ -192,7 +192,7 @@
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
-      "name": "[parameters('webApiName')]",
+      "name": "[variables('webApiName')]",
       "location": "[parameters('serverLocation')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
@@ -200,7 +200,7 @@
         "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
       ],
       "properties": {
-        "name": "[parameters('webApiName')]",
+        "name": "[variables('webApiName')]",
         "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
@@ -209,7 +209,7 @@
           "type": "config",
           "name": "web",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
+            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
           ],
           "properties": {
             "connectionStrings": [
@@ -226,7 +226,7 @@
           "type": "config",
           "name": "appsettings",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webApiName'))]"
+            "[concat('Microsoft.Web/sites/', variables('webApiName'))]"
           ],
           "properties": {
             "StorageAccountName": "[parameters('storageAccountName')]",
@@ -237,7 +237,7 @@
             "FacebookAuthString": "[parameters('FacebookAuthString')]",
             "DefaultUserId": "[parameters('DefaultUserId')]",
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]",
-            "DefaultServiceURL": "[concat('http://', parameters('webApiName'), '.azurewebsites.net')]"
+            "DefaultServiceURL": "[concat('http://', variables('webApiName'), '.azurewebsites.net')]"
           }
         },
         {
@@ -245,7 +245,7 @@
           "name": "MSDeploy",
           "type": "extensions",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', parameters('webApiName'))]"
+            "[resourceId('Microsoft.Web/Sites/', variables('webApiName'))]"
           ],
           "properties": {
             "connectionString": "",
