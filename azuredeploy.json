@@ -328,7 +328,7 @@
         "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
       ],
       "properties": {
-        "name": "[parameters('webJobSiteName')]",
+        "name": "[variables('webJobSiteName')]",
         "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
@@ -349,7 +349,7 @@
           "name": "MSDeploy",
           "type": "extensions",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', parameters('webJobSiteName'))]"
+            "[resourceId('Microsoft.Web/Sites/', variables('webJobSiteName'))]"
           ],
           "properties": {
             "connectionString": "",
