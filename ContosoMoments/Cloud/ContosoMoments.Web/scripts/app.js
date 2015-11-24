@@ -6,13 +6,13 @@
     app.constant('appConfig',(configJson || {})); 
     app.config(['$locationProvider','$routeProvider',function($locationProvider,$routeProvider) {
         $routeProvider.when('/',{
-           templateUrl:'templates/gallery.html',
+           templateUrl:'/templates/gallery.html',
            controller:'albumController',
            controllerAs:'albumCtrl'
 
         })
         .when('/albums/:albumid/images/:imageid',{
-            templateUrl: 'templates/singleimage.html',
+            templateUrl: '/templates/singleimage.html',
             controller:'imageController',
             controllerAs:'imageCtrl',   
             resolve:{
@@ -115,21 +115,9 @@
                     albumCache.put(albumCacheKey, currentAlbum);
                     defered.resolve(currentAlbum);
                 }, function (error) {
-                    console.log(err);
-                    defered.reject(err);
+                    console.log(error);
+                    defered.reject(error);
                 });
-                
-                //$http.get(reqUrl).then(function (res) {
-                //    currentAlbum = { id: 1, name: 'Portraits', owner: 'John Doe' };
-                //    currentAlbum.images=res.data;
-                //    albumCache.put(albumCacheKey, currentAlbum);
-                //    defered.resolve(currentAlbum);
-                //},
-                //function(err){
-                //    //TODO: Error Handling
-                //    console.log(err);
-                //    defered.reject(err);
-                //});
             } else {
                 defered.resolve(currentAlbum);
             }
