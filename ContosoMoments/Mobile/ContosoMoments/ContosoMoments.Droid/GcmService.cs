@@ -72,7 +72,7 @@ namespace ContosoMoments.Droid
             Log.Verbose(PushHandlerBroadcastReceiver.TAG, "GCM Registered: " + registrationId);
             RegistrationID = registrationId;
 
-            createNotification("GcmService Registered...", "The device has been Registered, Tap to View!");
+            //createNotification("GcmService Registered...", "The device has been Registered, Tap to View!");
         }
 
         //public async void Register(Microsoft.WindowsAzure.MobileServices.Push push, IEnumerable<string> tags)
