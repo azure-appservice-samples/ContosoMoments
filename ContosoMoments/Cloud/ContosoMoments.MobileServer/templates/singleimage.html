@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-xs-12">
+        <h4>{{imageCtrl.currentAlbum.owner}}</h4> 
+        {{imageCtrl.currentAlbum.name}}
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+            <span class="icon-heart icon-rounded"></span>
+            <img class="img-full" ng-src="{{imageCtrl.currentImage.url}}" alt='{{imageCtrl.currentImage.name}}'  />
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <ul class="links-list">
+            <li class="icon-link" ><a ng-href="{{imageCtrl.currentImage.url}}">Large Image</a></li>
+            <li class="icon-link" ><a ng-href="{{imageCtrl.getCurrentImageURL('md')}}" >Medium Image</a></li>
+            <li class="icon-link" ><a ng-href="{{imageCtrl.getCurrentImageURL('sm')}}" >Small Image</a></li>
+            <li class="icon-link"><a ng-href="{{imageCtrl.getCurrentImageURL('xs')}}" >Extra small Image</a></li>
+        </ul>
+    </div>
+</div>

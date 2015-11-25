@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>  
+        <title>Contoso Moments</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <script src="http://ajax.aspnetcdn.com/ajax/mobileservices/MobileServices.Web-1.2.7.min.js"></script>
+        <script src="/bower_components/angular/angular.min.js" ></script>
+        <script src="/bower_components/angular-route/angular-route.min.js" ></script>
+        <script src="/config.js"></script>
+        <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link href="/css/main.css" rel="stylesheet" />
+        <link href="/css/fontello.css" rel="stylesheet" />
+            
+        <base href="/"></base>
+    </head>
+    <body ng-app="app">
+        <header >
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="container" ng-controller="navController as navCtrl">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/" >
+                            <img class="img-responsive" src="images/Web-ContosoMomentsLogo.svg">
+                        </a>
+                    </div>
+                    <ul class="nav navbar navbar-right">
+                        <li>
+                            <a class="icon-upload" href="#" ng-click="navCtrl.openUploadModal()" ></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <div class="container" ng-view >
+            
+        </div>
+
+        <script src="/scripts/ui-bootstrap-custom/ui-bootstrap-custom-tpls-0.14.3.min.js"> </script>
+        <script src="/scripts/azure-blob-upload.js" ></script>
+        <script src="/scripts/app.js"></script>
+        <script type="text/ng-template" id="uploadModal.html">
+            <div class="modal-body">
+                <div ng-hide="uploadCtrl.showProgress()">
+                    <input type="file" file-change="uploadCtrl.onFileChange(files,event)" />
+                </div>
+                <div class="row" ng-show="uploadCtrl.showProgress()" > 
+                    <div class="col-xs-12 text-center" >
+                        <h4 ng-show="progress>=0 && progress<100">Uploading</h4>
+                        <h4 ng-show="progress>=100">Upload complete</h4>
+                        <uib-progressbar value="progress"></uib-progressbar>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" ng-hide="uploadCtrl.showProgress()">
+                <button class="btn btn-default" type="button" ng-click="uploadCtrl.cancel()">Cancel</button>
+                <button class="btn btn-primary" type="button" ng-click="uploadCtrl.upload()">Upload</button>
+        
+            </div>
+        </script>
+    </body>
+
+</html>
