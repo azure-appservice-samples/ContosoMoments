@@ -74,7 +74,6 @@
     },
     "hostingPlanName": {
       "type": "string",
-      "defaultValue": "ContosoMomentsHostingPlan",
       "metadata": {
         "description": "The hosting service plan name that you wish to create."
       }
@@ -129,7 +128,7 @@
     },
     "MobileWebApiPackageURL": {
       "type": "string",
-      "defaultValue": "http://github.com/azure-appservice-samples/ContosoMoments/raw/master/ContosoMoments/Deployment/ContosoMoments.MobileServer.zip",
+      "defaultValue": "http://appservicedemobits.blob.core.windows.net/contosomoments/ContosoMoments.MobileServer.v1.0.zip",
       "metadata": {
         "description": "Location of the Mobile Web API deployment package."
       }
@@ -137,7 +136,7 @@
 
     "WebClientPackageURL": {
       "type": "string",
-      "defaultValue": "http://github.com/azure-appservice-samples/ContosoMoments/raw/master/ContosoMoments/Deployment/ContosoMoments.Web.zip",
+      "defaultValue": "http://appservicedemobits.blob.core.windows.net/contosomoments/ContosoMoments.Web.v1.0.zip",
       "metadata": {
         "description": "Location of the Web Client deployment package."
       }
@@ -145,7 +144,7 @@
 
     "WebJobsPackageURL": {
       "type": "string",
-      "defaultValue": "http://github.com/azure-appservice-samples/ContosoMoments/raw/master/ContosoMoments/Deployment/ContosoMoments.WebJobs.zip",
+      "defaultValue": "http://appservicedemobits.blob.core.windows.net/contosomoments/ContosoMoments.WebJobs.v1.0.zip",
       "metadata": {
         "description": "Location of the Web Jobs deployment package."
       }
