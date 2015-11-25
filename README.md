@@ -13,11 +13,11 @@
 
 Contoso Moments is a photo sharing application.
 
-## How Do I Deploy this Demo
+## How To: Deploy the Demo
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)]("https://azuredeploy.net/?repository=https://github.com/azure-appservice-samples/ContosoMoments.git)
 
-## How Do I Install the Mobile Client App
+## How To: Install the Mobile Client App
 
 currently unavailable.
 
