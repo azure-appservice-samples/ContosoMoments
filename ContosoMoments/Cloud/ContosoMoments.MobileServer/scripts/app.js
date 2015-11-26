@@ -17,7 +17,6 @@
             controllerAs:'imageCtrl',   
             resolve:{
                 imageData:['$route','albumsService',function($route,albumsService){
-                    console.log('images route...');
                     return albumsService.getAlbum($route.current.params.albumid).then(function(album){
                         var img = albumsService.getImage($route.current.params.imageid, album);
                         img.url = albumsService.getImageURL(img, 'lg');
@@ -169,8 +168,6 @@
             });
         };
     }]);
-
-
     app.controller('albumController', ['albumsService',function (albumsService) {
         var self = this;
         this.currentIndex = 0;
@@ -215,8 +212,15 @@
 
     }]);
 
-    app.controller('navController', ['$uibModal',function($uibModal){
+    app.controller('navController', ['$scope','$uibModal','$location',function($scope,$uibModal,$location){
         
+        $scope.showUpload = true;
+
+        $scope.$on('$routeChangeSuccess', function (e, current) {
+            $scope.showUpload = $location.path() === '/';
+        })
+
+
 
         this.openUploadModal=function(){
 
@@ -240,9 +244,11 @@
 
     }]);
     app.controller('uploadController',['$scope','uploadService','$uibModalInstance','$timeout',function($scope,uploadService,$uibModalInstance,$timeout){
-        $scope.progress=-1; 
+        $scope.progress = -1;
+        $scope.uploading = false;
         var uploadOptions={
-            complete:function(){
+            complete: function () {
+                $scope.uploading = false;
                 $timeout(function(){
                     $uibModalInstance.close($scope.selectedFile);
                 },1500);
@@ -250,6 +256,9 @@
             },
             progress:function(progress){
                 $scope.progress=parseFloat(progress);
+            },
+            error:function(){
+                $scope.uploading = false;
             }
         }
         this.showProgress=function(){
@@ -261,12 +270,18 @@
         this.upload=function(){
             if(!angular.isUndefined($scope.selectedFile)){
                 $scope.progress=0;
-                uploadService($scope.selectedFile,uploadOptions);
+                uploadService($scope.selectedFile, uploadOptions);
+                $scope.uploading = true;
             }
         }
         this.cancel=function(){
             $uibModalInstance.dismiss('cancel');
         }
+        $scope.$on('modal.closing', function (event) {
+            if ($scope.uploading) {
+                event.preventDefault();
+            }
+        });
 
     }]);
 
