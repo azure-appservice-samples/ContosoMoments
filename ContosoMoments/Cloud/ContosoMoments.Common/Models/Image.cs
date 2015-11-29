@@ -14,7 +14,7 @@ namespace ContosoMoments.Common.Models
         public string ContainerName { get; set; }
         public string FileName { get; set; }
       // public string SasUrl { get; set; }
-        public Album Album { get; set; }
+        public virtual Album Album { get; set; }
         public User User { get; set; }
 
         public IEnumerable<Like> Likes { get; set; }
