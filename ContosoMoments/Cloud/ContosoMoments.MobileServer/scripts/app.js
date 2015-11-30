@@ -20,12 +20,18 @@
                 controller: 'albumController as albumCtrl'
             })
             .state('main.singleImage', {
-                url:'/images/:imageid',
+                url:'/image/:imageid',
                 templateUrl: '/templates/singleimage.html',
                 controller: 'imageController as imageCtrl',
                 resolve: {
-                    currentImage: ['selectedImage', '$stateParams', function (selectedImage, $stateParams) {
-                        return selectedImage;
+                    currentImage: ['selectedImage', '$stateParams', 'imageService', function (selectedImage, $stateParams, imageService) {
+                        if (selectedImage.image)  return selectedImage;
+                        if ($stateParams.imageid) {
+                           return imageService.getImageById($stateParams.imageid);
+                        }
+                       
+                        
+                        
                     }]
                 }
             });

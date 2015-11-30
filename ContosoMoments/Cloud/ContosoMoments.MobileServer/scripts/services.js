@@ -118,6 +118,26 @@
                     defered.reject('album is undefined');
                 }
                 return defered.promise;
+            },
+            getImageById: function (id) {
+                var defered = $q.defer();
+                var imageTable = mobileServicesClient.getTable('image');
+                //imageTable.lookup(id)  
+                //.done(function (results) {
+                //    defered.resolve(results);
+                //}, function (error) {
+                //    console.log(error);
+                //    defered.reject(error);
+                //});
+
+                imageTable.read('$expand=Album&$filter=id eq \''+id+'\'')
+                    .done(function (results) {
+                        defered.resolve(results);
+                    }, function (error) {
+                        console.log(error);
+                        defered.reject(error);
+                    });
+                return defered.promise;
             }
         }
     }]);

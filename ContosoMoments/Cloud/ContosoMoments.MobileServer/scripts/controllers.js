@@ -5,7 +5,7 @@
     app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state', function ($scope, albumsService, imageService, appConfig, selectedImage, $state) {
         var self = this;
         this.currentIndex = 0;
-        this.count = 12;
+        this.count = 24;
         this.curAlbum;
 
         var onImageGotten = function (images) {
@@ -46,15 +46,26 @@
 
     }]);
 
-    app.controller('imageController', ['currentImage', 'imageService', 'authContext', 'selectedImage', function (currentImage, imageService, authContext, selectedImage) {
-        this.currentImage = currentImage.image;
-        this.currentAlbum = currentImage.album;
-        this.currentAlbum.owner = authContext.currentUser.email;
+    app.controller('imageController', ['currentImage', 'imageService', 'authContext','$q',function (currentImage, imageService, authContext,$q) {
+        var self = this;
+        $q.when(currentImage).then(function (curImage) {
+            if (angular.isArray(curImage)){
+                self.currentImage = curImage[0];
+                self.currentAlbum = curImage[0].album
+            }
+            else{
+                self.currentImage = curImage.image;
+                self.currentAlbum = curImage.album;
+            }
+               
+            self.currentAlbum.owner = authContext.currentUser.email;
+        });
+      
         this.getCurrentImageURL = function (size) {
             return imageService.getImageURL(this.currentImage, size);
         }
     }]);
-    app.controller('navController', ['$scope', '$uibModal', '$location', function ($scope, $uibModal, $location, currentUser) {
+    app.controller('navController', ['$scope', '$uibModal', '$location',function ($scope, $uibModal, $location, currentUser) {
 
         $scope.showUpload = true;
 
