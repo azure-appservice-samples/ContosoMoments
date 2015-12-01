@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\contosomomentswebjob.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsWebJobs.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <None Include="Web.Debug.config">
