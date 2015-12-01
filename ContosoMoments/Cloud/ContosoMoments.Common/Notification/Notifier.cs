@@ -10,11 +10,12 @@ namespace ContosoMoments.Common.Notification
 {
     public class Notifier
     {
-        public static async Task sendGCMNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        public static async Task sendGCMNotification(NotificationHubClient hub, string messgae
+            )
         {
             try
             {
-                Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
+              //  Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
                 // Define an Android notification.
                 var notification = "{\"data\":{\"msg\":\"" + messgae + "\"}}";
                 await hub.SendGcmNativeNotificationAsync(notification);
