@@ -23,6 +23,7 @@ div.imgCnt {
     position: absolute;
     bottom: 5px;
     right: 20px;
+    cursor:pointer;
 }
 .icon-rounded{
     text-align: center;

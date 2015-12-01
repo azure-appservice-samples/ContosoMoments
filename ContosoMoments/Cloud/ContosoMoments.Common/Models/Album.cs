@@ -13,7 +13,7 @@ namespace ContosoMoments.Common.Models
 
         public bool IsDefault { get; set; }
 
-        public IEnumerable<Image> Images { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
 
         public User User { get; set; }
     }

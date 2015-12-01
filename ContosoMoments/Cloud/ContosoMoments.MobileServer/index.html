@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <script src="https://ajax.aspnetcdn.com/ajax/mobileservices/MobileServices.Web-1.2.7.min.js"></script>
         <script src="/bower_components/angular/angular.min.js" ></script>
-        <script src="/bower_components/angular-route/angular-route.min.js" ></script>
+        <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
         <script src="/config.js"></script>
         <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link href="/css/main.css" rel="stylesheet" />
@@ -23,20 +23,21 @@
                         </a>
                     </div>
                     <ul class="nav navbar navbar-right">
-                        <li>
+                        <li ng-show="showUpload">
                             <a class="icon-upload" href="#" ng-click="navCtrl.openUploadModal()" ></a>
                         </li>
                     </ul>
                 </div>
             </nav>
         </header>
-        <div class="container" ng-view >
-            
-        </div>
+        <div class="container" ui-view ></div>
 
         <script src="/scripts/ui-bootstrap-custom/ui-bootstrap-custom-tpls-0.14.3.min.js"> </script>
         <script src="/scripts/azure-blob-upload.js" ></script>
         <script src="/scripts/app.js"></script>
+        <script src="/scripts/controllers.js"></script>
+        <script src="/scripts/services.js"></script>
+        <script src="/scripts/directives.js"></script>
         <script type="text/ng-template" id="uploadModal.html">
             <div class="modal-body">
                 <div ng-hide="uploadCtrl.showProgress()">
