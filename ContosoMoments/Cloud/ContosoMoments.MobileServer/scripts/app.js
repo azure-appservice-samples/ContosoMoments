@@ -14,6 +14,11 @@
                     }]
                 }
             })
+                .state('main.gallery_-_', {
+                    url: '/_-_',
+                    templateUrl: '/templates/gallery.html',
+                    controller: 'albumController as albumCtrl'
+                })
             .state('main.gallery', {
                 url: '/',
                 templateUrl: '/templates/gallery.html',
