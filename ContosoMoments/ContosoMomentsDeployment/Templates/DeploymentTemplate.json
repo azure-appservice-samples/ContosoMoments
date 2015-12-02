@@ -277,7 +277,7 @@
           "name":"web",
           "type":"sourcecontrols",
           "dependsOn":[
-            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+            "[resourceId('Microsoft.Web/Sites', variables('webJobSiteName'))]"
           ],
           "properties":{
             "RepoUrl":"https://github.com/azure-appservice-samples/ContosoMoments.git",
