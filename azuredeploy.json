@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -125,21 +125,6 @@
       "metadata": {
         "description": "Use any valid URL."
       }
-    },
-    "MobileWebApiPackageURL": {
-      "type": "string",
-      "defaultValue": "https://github.com/azure-appservice-samples/ContosoMoments/releases/download/v0.1.0/ContosoMoments.MobileServer.v1.0B.zip",
-      "metadata": {
-        "description": "Location of the Mobile Web API deployment package."
-      }
-    },
-
-    "WebJobsPackageURL": {
-      "type": "string",
-      "defaultValue": "http://github.com/azure-appservice-samples/ContosoMoments/releases/download/v0.1.0/ContosoMoments.WebJobs.v1.0B.zip",
-      "metadata": {
-        "description": "Location of the Web Jobs deployment package."
-      }
     }
   },
   "variables": {
@@ -241,21 +226,20 @@
             "FacebookAuthString": "[parameters('FacebookAuthString')]",
             "DefaultUserId": "[parameters('DefaultUserId')]",
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]",
-            "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]"
+            "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
+            "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.MobileServer\\ContosoMoments.MobileServer.csproj"
           }
         },
         {
-          "apiVersion": "2015-08-01",
-          "name": "MSDeploy",
-          "type": "extensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', parameters('siteName'))]"
+          "apiVersion":"2015-04-01",
+          "name":"web",
+          "type":"sourcecontrols",
+          "dependsOn":[
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ],
-          "properties": {
-            "connectionString": "",
-            "dbType": "None",
-            "packageUri": "[parameters('MobileWebApiPackageURL')]",
-            "setParameters": { }
+          "properties":{
+            "RepoUrl":"https://github.com/azure-appservice-samples/ContosoMoments.git",
+            "branch":"stable"
           }
         }
       ]
@@ -284,21 +268,20 @@
           ],
           "properties": {
             "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
-            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]"
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "PROJECT": "ContosoMoments\\ContosoMoments.WebJobs\\ContosoMoments.WebJobs.csproj"
           }
         },
         {
-          "apiVersion": "2015-08-01",
-          "name": "MSDeploy",
-          "type": "extensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/', variables('webJobSiteName'))]"
+          "apiVersion":"2015-04-01",
+          "name":"web",
+          "type":"sourcecontrols",
+          "dependsOn":[
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ],
-          "properties": {
-            "connectionString": "",
-            "dbType": "None",
-            "packageUri": "[parameters('WebJobsPackageURL')]",
-            "setParameters": { }
+          "properties":{
+            "RepoUrl":"https://github.com/azure-appservice-samples/ContosoMoments.git",
+            "branch":"stable"
           }
         }
       ]
