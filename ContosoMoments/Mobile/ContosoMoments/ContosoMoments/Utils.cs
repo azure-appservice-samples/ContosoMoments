@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 #if __WP__
 using Windows.Networking.Sockets;
 #elif __DROID__
@@ -22,6 +23,11 @@ namespace ContosoMoments
         public static async Task<bool> CheckServerAddressWP(string url, int port = 80, int msTimeout = 5000)
         {
             bool retVal = false;
+            string originalUrl = url;
+
+            if (!IsUrlValid(url))
+                return retVal;
+
             try
             {
                 using (var tcpClient = new StreamSocket())
@@ -43,6 +49,8 @@ namespace ContosoMoments
                 retVal = false;
             }
 
+            retVal &= await ExposesContosoMomentsWebAPIs(originalUrl);
+
             return retVal;
         }
 #endif
@@ -51,6 +59,10 @@ namespace ContosoMoments
         public static async Task<bool> CheckServerAddressIOS(string url, int port = 80, int msTimeout = 5000)
         {
             bool retVal = false;
+            string originalUrl = url;
+
+            if (!IsUrlValid(url))
+                return retVal;
 
             url = url.Replace("http://", string.Empty).Replace("https://", string.Empty);
             if (url.Last() == '/')
@@ -88,6 +100,8 @@ namespace ContosoMoments
                 }
             });
 
+            retVal &= await ExposesContosoMomentsWebAPIs(originalUrl);
+
             return retVal;
         }
 #endif
@@ -96,6 +110,11 @@ namespace ContosoMoments
         public static async Task<bool> CheckServerAddressDroid(string url, int port = 80, int msTimeout = 5000)
         {
             bool retVal = false;
+            string originalUrl = url;
+
+            if (!IsUrlValid(url))
+                return retVal;
+
             await Task.Run(async () =>
             {
                 try
@@ -119,9 +138,41 @@ namespace ContosoMoments
                 }
             });
 
+            retVal &= await ExposesContosoMomentsWebAPIs(originalUrl);
+
             return retVal;
         }
 #endif
+
+        public static async Task<bool> ExposesContosoMomentsWebAPIs(string applicationURL)
+        {
+            bool bRes = false; //Assume Web APIs are not present
+
+            try
+            {
+                var getwayService = applicationURL + "api/Getway";
+
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(getwayService));
+                request.Method = "GET";
+
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    bRes = true;
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Message.IndexOf("Unauthorized") > 0)
+                    bRes = true;
+                else
+                    bRes = false;
+            }
+            catch (Exception e)
+            {
+            }
+
+            return bRes;
+        }
 
         public static async Task<bool> IsAuthRequired(string applicationURL)
         {
@@ -152,6 +203,14 @@ namespace ContosoMoments
             }
 
             return bRes;
+        }
+
+        private static bool IsUrlValid(string url)
+        {
+            //string pattern = @"^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$";
+            string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            return regex.IsMatch(url);
         }
     }
 }

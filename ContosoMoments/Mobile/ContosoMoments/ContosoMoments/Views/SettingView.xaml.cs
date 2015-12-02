@@ -21,6 +21,8 @@ namespace ContosoMoments.Views
 {
     public partial class SettingView : ContentPage
     {
+        public bool IsInURLTrouble { get; set; }
+
         public SettingView()
         {
             InitializeComponent();
@@ -34,6 +36,9 @@ namespace ContosoMoments.Views
         {
             if (null != AppSettings.Current.GetValueOrDefault<string>("MobileAppURL"))
                 mobileServiceUrl.Text = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+
+            if (IsInURLTrouble)
+                DisplayAlert("Configuration Error", "Mobile Service URL seems to be not valid anymore. Please check the URL value and try again", "OK");
 
             base.OnAppearing();
         }
@@ -53,6 +58,12 @@ namespace ContosoMoments.Views
 
                     if (mobileServiceUrl.Text.Last() != '/')
                         mobileServiceUrl.Text += "/";
+
+                    if (mobileServiceUrl.Text.IndexOf("http://") == -1 && mobileServiceUrl.Text.IndexOf("https://") == -1)
+                    {
+                        DisplayAlert("Configuration Error", "Mobile Service URL does not contain http or https scheme. Please check the URL value and try again", "OK");
+                        return;
+                    }
 
 #if __WP__
                     ValidURL = await Utils.CheckServerAddressWP(mobileServiceUrl.Text);
@@ -88,7 +99,7 @@ namespace ContosoMoments.Views
                     }
                     else
                     {
-                        DisplayAlert("Configuration Error", "Mobile Service URL is unreachable. Please check the URL value and try again", "OK");
+                        DisplayAlert("Configuration Error", "Mobile Service URL malformed, unreachable or does not expose ContosoMoments Web APIs. Please check the URL value and try again", "OK");
                     }
                 }
                 else
