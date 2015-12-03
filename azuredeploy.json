@@ -133,7 +133,7 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[parameters('storageAccountName')]",
+      "name": "[toLower(parameters('storageAccountName'))]",
       "apiVersion": "2015-05-01-preview",
       "location": "[parameters('siteLocation')]",
       "properties": {
@@ -186,7 +186,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
         "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/', toLower(parameters('storageAccountName')))]"
       ],
       "properties": {
         "name": "[parameters('siteName')]",
@@ -218,8 +218,8 @@
             "[concat('Microsoft.Web/sites/', parameters('siteName'))]"
           ],
           "properties": {
-            "StorageAccountName": "[parameters('storageAccountName')]",
-            "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "StorageAccountName": "[toLower(parameters('storageAccountName'))]",
+            "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', toLower(parameters('storageAccountName'))), '2015-05-01-preview').key1)]",
             "UploadSasDaysTime": "5",
             "ResizeQueueName": "[parameters('ResizeQueueName')]",
             "UploadContainerName": "[parameters('storageContainerName')]",
@@ -252,7 +252,7 @@
       "location": "[parameters('siteLocation')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/', toLower(parameters('storageAccountName')))]"
       ],
       "properties": {
         "name": "[variables('webJobSiteName')]",
@@ -267,8 +267,8 @@
             "[resourceId('Microsoft.Web/Sites', variables('webJobSiteName'))]"
           ],
           "properties": {
-            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
-            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(parameters('storageAccountName')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(parameters('storageAccountName')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
             "PROJECT": "ContosoMoments\\ContosoMoments.WebJobs\\ContosoMoments.WebJobs.csproj"
           }
         },
