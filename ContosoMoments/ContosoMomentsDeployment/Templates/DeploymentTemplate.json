@@ -226,7 +226,7 @@
             "FacebookAuthString": "[parameters('FacebookAuthString')]",
             "DefaultUserId": "[parameters('DefaultUserId')]",
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]",
-            "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
+            "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net/')]",
             "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.MobileServer\\ContosoMoments.MobileServer.csproj"
           }
         },
