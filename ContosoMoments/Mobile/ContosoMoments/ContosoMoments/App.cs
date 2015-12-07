@@ -59,6 +59,22 @@ namespace ContosoMoments
             else
             {
                 Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+
+                if (await Utils.ExposesContosoMomentsWebAPIs(Constants.ApplicationURL))
+                    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", 0);
+                else
+                {
+                    int count = AppSettings.Current.GetValueOrDefault<int>("MobileAppURLInvalidCount");
+                    count++;
+                    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", count);
+
+                    if (count > 3)
+                    {
+                        MainPage = new SettingView() { IsInURLTrouble = true };
+                        return;
+                    }
+                }
+
                 //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
                 bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
 
