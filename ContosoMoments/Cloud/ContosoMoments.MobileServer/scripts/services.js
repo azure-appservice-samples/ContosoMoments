@@ -9,7 +9,7 @@
         this.isAuthenticated = isAuthenticated;
     };
 
-    app.factory('authService', ['userService', 'appConfig', '$q', function (userService, appConfig, $q) {
+    app.factory('authService', ['userService', 'appConfig', '$q', '$rootScope', function (userService, appConfig, $q, $rootScope) {
         var context;
 
         return {
@@ -22,6 +22,7 @@
                     userService.getUser(appConfig.DefaultUserId).then(function (res) {
                         context = new AuthContext(appConfig.DefaultUserId, true, res);
                         defered.resolve(context);
+                        $rootScope.$broadcast('userAuthenticated', context);
                     }, function (err) {
                         defered.reject(context);
                     });
@@ -29,9 +30,13 @@
 
 
                 return defered.promise;
+            },
+            currentContext:function() {
+                return context;
             }
         }
     }]);
+
     app.factory('mobileServicesClient', ['appConfig', function (appConfig) {
 
         var serviceClient = new WindowsAzure.MobileServiceClient(appConfig.DefaultServiceURL || '/', appConfig.MobileClientAppKey || '');
@@ -40,7 +45,7 @@
 
     }]);
 
-    app.factory('albumsService', ['$http', '$q', '$cacheFactory', 'mobileServicesClient', function ($http, $q, $cacheFactory, mobileServicesClient) {
+    app.factory('albumsService', ['$http', '$q', '$cacheFactory', 'mobileServicesClient','$rootScope', function ($http, $q, $cacheFactory, mobileServicesClient,$rootScope) {
         var albumCache = $cacheFactory('albums');
         var albumService = {
             getAlbum: function (id) {
@@ -61,10 +66,41 @@
                     defered.resolve(currentAlbum);
                 }
                 return defered.promise;
+            },
+            getUserAlbums: function (userId) {
+                var defered = $q.defer();
+                var albumTable = mobileServicesClient.getTable('album');
+                albumTable.where({
+                    "User/Id": userId
+                })
+                .read()
+                .done(function (results) {
+                    defered.resolve(results);
+                }, function (error) {
+                    console.log(error);
+                    defered.reject(error);
+                });
+                return defered.promise;
+            },
+            createAlbum: function (name, userId) {
+                var defered = $q.defer();
+                var albumTable = mobileServicesClient.getTable('album');
+                albumTable.insert({
+                    albumName: name,
+                    isDefault: false,
+                    UserId: userId
+                }).done(function (res) {
+                    $rootScope.$broadcast('albumCreated',res);
+                    defered.resolve(res);
+                }, function (err) {
+                    defered.reject(err);
+                });
+
+                return defered.promise;
             }
         }
         return albumService;
-    }])
+    }]);
 
     app.factory('imageService', ['mobileServicesClient', '$interpolate', '$q', function (mobileServicesClient, $interpolate, $q) {
         var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}.jpg');
@@ -148,11 +184,11 @@
                 return res.data;
             });
         }
-        var commit = function (sasurl) {
+        var commit = function (sasurl,options) {
             return $http.post(appConfig.DefaultServiceUrl + 'api/CommitBlob', {
                 isMobile: false,
-                UserId: appConfig.DefaultUserId,
-                AlbumId: appConfig.DefaultAlbumId,
+                UserId: options.userId,
+                AlbumId:options.albumId,
                 SasUrl: sasurl,
                 //sendNotification: store.sendNotification(blobface.selectedFile.name)
             }).then(function (res) {
@@ -171,7 +207,7 @@
                     file: currentFile, // File object using the HTML5 File API,
                     progress: config.progress || angular.noop, // progress callback function,
                     complete: function () {
-                        commit(sasurl).then(function () {
+                        commit(sasurl,config).then(function () {
                             if (angular.isFunction(config.complete)) {
                                 config.complete();
                             }
@@ -201,6 +237,8 @@
     }]);
 
     app.value('selectedImage', { image: null, album: null });
+
+    app.value('selectedAlbum', { album: null } );
 
 
 })(angular)

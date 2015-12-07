@@ -2,11 +2,27 @@
     'use strict';
 
     var app = angular.module('app');
-    app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state', function ($scope, albumsService, imageService, appConfig, selectedImage, $state) {
+    app.controller('albumsController', ['$scope','albumsService', 'authContext','$state', function ($scope,albumsService, authContext,$state) {
+        var self = this;
+        self.albums=[];
+        albumsService.getUserAlbums(authContext.userId).then(function (albums) {
+            if (albums && angular.isArray(albums)) {
+                self.albums = albums;
+            }
+        });
+        $scope.$on('albumCreated', function (e,album) {
+            self.albums.push(album);
+        });
+        self.goToAlbum=function(album){
+            $state.go('main.gallery', { albumid: album.id });
+        }
+
+    }]);
+    app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state','selectedAlbum',function ($scope, albumsService, imageService, appConfig, selectedImage, $state,selectedAlbum) {
         var self = this;
         this.currentIndex = 0;
         this.count = 24;
-        this.curAlbum;
+        this.curAlbum = selectedAlbum.album;
 
         var onImageGotten = function (images) {
             if (self.currentIndex === 0 && self.curAlbum.images.length === 0) {
@@ -23,10 +39,7 @@
             }
         }
         this.getAlbumImages = function () {
-            albumsService.getAlbum(appConfig.DefaultAlbumId, { start: self.currentIndex, count: self.count }).then(function (album) {
-                self.curAlbum = album;
-                return imageService.getImagesFromAlbum(album, { start: self.currentIndex, count: self.count });
-            }).then(onImageGotten);
+            imageService.getImagesFromAlbum(self.curAlbum, { start: self.currentIndex, count: self.count }).then(onImageGotten);
         }
         this.showNext = function () {
             this.currentIndex += this.count;
@@ -40,12 +53,34 @@
             selectedImage.album = self.curAlbum;
             $state.go('main.singleImage', { imageid: image.id });
         }
-
-        this.getAlbumImages();
+       this.getAlbumImages();
 
 
     }]);
+    app.controller('createAlbumController', ['$scope','albumsService', '$uibModalInstance', 'authService', function ($scope,albumsService, $uibModalInstance, authService) {
+        var self = this;
+        self.postingAlbum=false;
+        self.createAlbum = function () {
+            var auth = authService.currentContext();
+            self.postingAlbum = true;
+            albumsService.createAlbum(self.albumName, auth.userId).then(function (res) {
+                $uibModalInstance.close(res);
+            }).finally(function () {
+                self.postingAlbum = false;
+            });
+           
+        }
+        self.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
 
+        $scope.$on('modal.closing', function (event) {
+            if ($scope.uploading) {
+                event.preventDefault();
+            }
+        });
+
+    }]);
     app.controller('imageController', ['currentImage', 'imageService', 'authContext','$q',function (currentImage, imageService, authContext,$q) {
         var self = this;
         $q.when(currentImage).then(function (curImage) {
@@ -65,15 +100,15 @@
             return imageService.getImageURL(this.currentImage, size);
         }
     }]);
-    app.controller('navController', ['$scope', '$uibModal', '$location',function ($scope, $uibModal, $location, currentUser) {
+    app.controller('navController', ['$scope', '$uibModal', '$location',function ($scope, $uibModal, $location) {
 
-        $scope.showUpload = true;
+        $scope.showUpload = false;
+        $scope.showCreateAlbum = false;
 
         $scope.$on('$stateChangeSuccess', function (e, toState) {
             $scope.showUpload = toState.name === 'main.gallery';
-        })
-
-
+            $scope.showCreateAlbum = toState.name === 'main.albums';
+        });
 
         this.openUploadModal = function () {
 
@@ -91,12 +126,34 @@
             });
 
         }
+        this.openAlbummModal= function () {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'createAlbum.html',
+                controller: 'createAlbumController',
+                controllerAs: 'crtAlbumCtrl'
+            });
 
-
-
+            modalInstance.result.then(function (createdAlbum) {
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        }
 
     }]);
-    app.controller('uploadController', ['$scope', 'uploadService', '$uibModalInstance', '$timeout', function ($scope, uploadService, $uibModalInstance, $timeout) {
+    app.controller('titleController', ['$scope', 'selectedAlbum', function ($scope, selectedAlbum) {
+        $scope.$on('userAuthenticated', function (e, authContext) {
+            $scope.userEmail = authContext.currentUser.email;
+        });
+        $scope.curAlbum = selectedAlbum;
+        //$scope.$watch(function watchAlbum () {
+        //    return selectedAlbum;
+        //}, function onAlbumChange(newValue, oldValue) {
+        //    $scope.album = newValue;
+        //});
+    }]);
+    app.controller('uploadController', ['$scope', 'uploadService', '$uibModalInstance', '$timeout', 'authService', 'selectedAlbum', function ($scope, uploadService, $uibModalInstance, $timeout, authService, selectedAlbum) {
+        
         $scope.progress = -1;
         $scope.uploading = false;
         var uploadOptions = {
@@ -112,7 +169,9 @@
             },
             error: function () {
                 $scope.uploading = false;
-            }
+            },
+            userId: authService.currentContext().userId,
+            albumId: selectedAlbum.album.id
         }
         this.showProgress = function () {
             return ($scope.progress >= 0);

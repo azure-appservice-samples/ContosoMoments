@@ -47,16 +47,21 @@ namespace ContosoMoments.MobileServer.Models
     {
         protected override void Seed(MobileServiceContext context)
         {
+            var userid = "11111111-1111-1111-1111-111111111111";
             var defaultAlbum = new Album
             {
                 Id = "11111111-1111-1111-1111-111111111111",
                 AlbumName = "Default Album",
+                IsDefault=true,
                 User = new User
                 {
                     Email = "demo@contoso.com",
-                    Id = "11111111-1111-1111-1111-111111111111",
+                    Id = userid,
                     IsEnabled = true
-                }
+                },
+                UserId = userid
+                
+
             };
 
             context.Albums.Add(defaultAlbum);

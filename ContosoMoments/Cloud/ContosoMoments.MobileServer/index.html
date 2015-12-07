@@ -5,12 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <script src="https://ajax.aspnetcdn.com/ajax/mobileservices/MobileServices.Web-1.2.7.min.js"></script>
         <script src="/bower_components/angular/angular.min.js" ></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
         <script src="/config.js"></script>
         <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link href="/css/main.css" rel="stylesheet" />
         <link href="/css/fontello.css" rel="stylesheet" />
-            
+        <link href="css/animation.css" rel="stylesheet" />
         <base href="/"></base>
     </head>
     <body ng-app="app">
@@ -23,21 +25,47 @@
                         </a>
                     </div>
                     <ul class="nav navbar navbar-right">
-                        <li ng-show="showUpload">
-                            <a class="icon-upload" href="#" ng-click="navCtrl.openUploadModal()" ></a>
+                        <li class="pull-right" ng-show="showUpload">
+                            <a class="glyphicon glyphicon-cloud-upload" href="#" ng-click="navCtrl.openUploadModal()" ></a>
+                        </li>
+                        <li class="pull-right" ng-show="showUpload">
+                            <a class="glyphicon glyphicon-trash" href="#" ng-click="navCtrl.openUploadModal()"></a>
+                        </li>
+                        <li class="pull-right" ng-show="showCreateAlbum" >
+                            <a class="glyphicon glyphicon-plus" href="#" ng-click="navCtrl.openAlbummModal()"  >
+                            </a>
                         </li>
                     </ul>
                 </div>
             </nav>
+            <div class="container" ng-controller="titleController as titleCtrl">
+                <span class="glyphicon glyphicon-user" > 
+                </span>
+                <span ng-bind="userEmail"></span>
+                <span ng-show="curAlbum.album">\ {{curAlbum.album.albumName}}</span>
+
+            </div>  
         </header>
         <div class="container" ui-view ></div>
 
-        <script src="/scripts/ui-bootstrap-custom/ui-bootstrap-custom-tpls-0.14.3.min.js"> </script>
+        <script src="/scripts/ui-bootstrap-custom/ui-bootstrap-custom-tpls-0.14.3.js"> </script>
         <script src="/scripts/azure-blob-upload.js" ></script>
         <script src="/scripts/app.js"></script>
         <script src="/scripts/controllers.js"></script>
         <script src="/scripts/services.js"></script>
         <script src="/scripts/directives.js"></script>
+        <script type="text/ng-template" id="createAlbum.html">
+            <div class="modal-body">
+                <div class="has-feedback" ng-hide="uploadCtrl.showProgress()">
+                    <input type="text" class="form-control" ng-model="crtAlbumCtrl.albumName" ng-disabled="crtAlbumCtrl.postingAlbum" placeholder="Album name" />
+                    <span ng-show="crtAlbumCtrl.postingAlbum" class="icon-spin3 animate-spin form-control-feedback" ></span>
+                </div>
+            </div>
+            <div class="modal-footer" ng-hide="uploadCtrl.showProgress()">
+                <button class="btn btn-default" type="button" ng-click="crtAlbumCtrl.cancel()" ng-disabled="crtAlbumCtrl.postingAlbum" >Cancel</button>
+                <button class="btn btn-primary" type="button" ng-click="crtAlbumCtrl.createAlbum()" ng-disabled="crtAlbumCtrl.postingAlbum" >Add</button>
+            </div>   
+        </script>
         <script type="text/ng-template" id="uploadModal.html">
             <div class="modal-body">
                 <div ng-hide="uploadCtrl.showProgress()">
@@ -54,7 +82,6 @@
             <div class="modal-footer" ng-hide="uploadCtrl.showProgress()">
                 <button class="btn btn-default" type="button" ng-click="uploadCtrl.cancel()">Cancel</button>
                 <button class="btn btn-primary" type="button" ng-click="uploadCtrl.upload()">Upload</button>
-        
             </div>
         </script>
     </body>

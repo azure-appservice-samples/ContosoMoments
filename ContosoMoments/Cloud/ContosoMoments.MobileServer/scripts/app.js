@@ -14,10 +14,27 @@
                     }]
                 }
             })
-            .state('main.gallery', {
+            .state('main.albums', {
                 url: '/',
+                templateUrl: '/templates/albums.html',
+                controller: 'albumsController as albumsCtrl',
+                onEnter:['selectedAlbum',function(selectedAlbum){
+                    selectedAlbum.album=null; 
+                }]
+
+            })
+            .state('main.gallery', {
+                url: '/album/:albumid',
                 templateUrl: '/templates/gallery.html',
-                controller: 'albumController as albumCtrl'
+                controller: 'albumController as albumCtrl',
+                resolve: {
+                    currentAlbum: ['albumsService', '$stateParams', function (albumsService, $stateParams) {
+                        return albumsService.getAlbum($stateParams.albumid, { start: 0, count: 24 });   
+                    }]
+                },
+                onEnter: ['selectedAlbum', 'currentAlbum', function (selectedAlbum, currentAlbum) {
+                    selectedAlbum.album = currentAlbum;
+                }]
             })
             .state('main.singleImage', {
                 url:'/image/:imageid',
@@ -27,11 +44,8 @@
                     currentImage: ['selectedImage', '$stateParams', 'imageService', function (selectedImage, $stateParams, imageService) {
                         if (selectedImage.image)  return selectedImage;
                         if ($stateParams.imageid) {
-                           return imageService.getImageById($stateParams.imageid);
+                            return imageService.getImageById($stateParams.imageid);
                         }
-                       
-                        
-                        
                     }]
                 }
             });

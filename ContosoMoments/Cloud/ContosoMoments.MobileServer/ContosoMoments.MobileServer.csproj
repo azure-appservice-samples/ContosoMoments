@@ -16,7 +16,7 @@
     <AssemblyName>ContosoMoments.MobileServer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort>31475</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
@@ -24,7 +24,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <UseGlobalApplicationHostFile />
-    <TypeScriptToolsVersion>1.6</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.7</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -431,6 +431,7 @@
     <Content Include="scripts\ui-bootstrap-custom\ui-bootstrap-custom-tpls-0.14.3.js" />
     <Content Include="scripts\ui-bootstrap-custom\ui-bootstrap-custom-tpls-0.14.3.min.js" />
     <Content Include="scripts\uploader.js" />
+    <Content Include="templates\albums.html" />
     <Content Include="templates\gallery.html" />
     <Content Include="templates\singleimage.html" />
     <Content Include="Web.config">
@@ -585,10 +586,10 @@
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="bower_components\angular-ui-router\api\angular-ui-router.d.ts" />
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+    <Folder Include="bower_components\angular-ui-router\api\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -605,9 +606,9 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>63803</DevelopmentServerPort>
+          <DevelopmentServerPort>31475</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:31475/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

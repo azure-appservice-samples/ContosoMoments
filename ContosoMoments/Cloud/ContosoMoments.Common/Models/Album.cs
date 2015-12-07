@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Azure.Mobile.Server;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoMoments.Common.Models
 {
@@ -15,6 +15,11 @@ namespace ContosoMoments.Common.Models
 
         public virtual ICollection<Image> Images { get; set; }
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
+
+        [Column("User_Id")]
+        public string UserId { get; set; }
+
+
     }
 }

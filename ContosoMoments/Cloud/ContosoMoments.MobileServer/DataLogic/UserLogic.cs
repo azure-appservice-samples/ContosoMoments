@@ -16,18 +16,20 @@ namespace ContosoMoments.MobileServer.DataLogic
             var user = ctx.Users.Where(x => x.Email.ToLower() == email.ToLower()).FirstOrDefault();
             if (user == null)
             {
+                var userid = Guid.NewGuid().ToString();
                 var defaultAlbum = new Album
                 {
                     Id = Guid.NewGuid().ToString(),
+                    IsDefault = true,
+                    AlbumName = "Default Album",
                     User = new User
                     {
                         Email = email.ToLower(),
-                        Id = Guid.NewGuid().ToString(),
-                        IsEnabled = true,
+                        Id = userid,
+                        IsEnabled = true
                     },
-                    IsDefault = true,
+                    UserId= userid
                 };
-
                 ctx.Albums.Add(defaultAlbum);
                 ctx.SaveChanges();
             }

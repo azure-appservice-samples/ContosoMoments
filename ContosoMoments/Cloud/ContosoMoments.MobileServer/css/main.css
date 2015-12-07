@@ -12,6 +12,11 @@ div.imgCnt {
 }
 .navbar-default{
     background-color: #8C0A4B;
+    color:white;
+}
+.navbar-default a{
+    color:white;
+    font-size:20px;
 }
 .navbar-brand{
     padding: 8px 8px;
@@ -35,13 +40,17 @@ a.icon-upload{
     font-size: 20px;    
 }
 
-.nav>li>a.icon-upload:focus,
-.nav>li>a.icon-upload:hover{
+
+.nav>li>a:focus,
+.nav>li>a:hover{
     background-color: transparent;    
 }
 
 .galleryRow{
     padding:2px;
+}
+.galleryRowAlbum{
+    padding:7px;
 }
 
 
@@ -56,6 +65,22 @@ ul{
     width: 100%;
     height: 100%;
 }
+.rounded-border{
+    border:solid 1px #e3e3e3;
+    border-radius:3px;
+}
+.album{
+    width:100%;
+    height:11em;
+    box-shadow:#e3e3e3 4px 4px 2px;
+    transition: box-shadow linear 0.2s;
+    cursor:pointer;
+    color:#8C0A4B;
+}
+
+.album:hover{
+    box-shadow:#e3e3e3 8px 8px 2px;
+}
 .img-preview{
     width: 100%;
     height: 11em;
@@ -64,7 +89,7 @@ ul{
     border:solid 1px #e3e3e3;
     border-radius:3px;
 }
-.load-more{
+.load-more, .text-center-vertical{
     display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
     display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
     display: -ms-flexbox;      /* TWEENER - IE 10 */
@@ -89,6 +114,15 @@ ul{
 }
 .load-more .icon-down-circled{
     font-size:40px;
+}
+.modal-footer .btn-primary{
+    background-color:#8C0A4B;
+}
+.modal-footer .btn-primary{
+    background-color:#8C0A4B;
+}
+.modal-footer .btn-primary:hover{
+    background-color:#77073F;
 }
 
 

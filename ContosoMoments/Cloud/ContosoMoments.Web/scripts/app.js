@@ -86,19 +86,6 @@
         }
 
         var albumService = {
-           getImageURL:function(img,imgSize){
-               return urlExp({ image: img, size: imgSize });
-           },
-          getImage:function(id,currentAlbum){
-
-            var img;        
-            if(angular.isDefined(currentAlbum)){
-                img=getImageFromAlbum(currentAlbum,id);
-                
-            }
-               
-            return img;
-          },
           getAlbum:function(id,options){
 
             var defered = $q.defer();
@@ -122,7 +109,10 @@
                 defered.resolve(currentAlbum);
             }
             return defered.promise;
-          } 
+          },
+          getUserAlbums: function () {
+
+          }
         }  
         return albumService;         
     }])
