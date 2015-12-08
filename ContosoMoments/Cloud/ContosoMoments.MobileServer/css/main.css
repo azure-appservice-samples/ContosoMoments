@@ -15,11 +15,17 @@ div.imgCnt {
     color:white;
 }
 .navbar-default a{
-    color:white;
-    font-size:20px;
+    color:white !important;
+    font-size:16px;
+}
+.navbar-default a .glyphicon{ 
+    margin-right: 3px;
 }
 .navbar-brand{
     padding: 8px 8px;
+}
+.navbar-default .navbar-collapse{
+    border-color:white;
 }
 
 .icon-heart{
@@ -63,7 +69,6 @@ ul{
 }
 .img-full{
     width: 100%;
-    height: 100%;
 }
 .rounded-border{
     border:solid 1px #e3e3e3;
@@ -86,6 +91,9 @@ ul{
     height: 11em;
     background-size:cover; 
     overflow: hidden;
+
+}
+.img-border{
     border:solid 1px #e3e3e3;
     border-radius:3px;
 }
@@ -124,6 +132,46 @@ ul{
 .modal-footer .btn-primary:hover{
     background-color:#77073F;
 }
+.pull-right-sm{
+    float:none !important;
+}
+@media (min-width: 768px) {
+    .pull-right-sm{
+        float:right !important;
+    }
+    .navbar-default a{
+        font-size:20px;
+        padding-bottom:0px !important;
+    }
+}
+.navbar-toggle .icon-bar {
+    width:17px;
+    background-color:white !important;
+}
+.navbar-toggle{
+    padding:10px 0 0 0;
+    border:none;
+    background-color:transparent !important;
+}
 
+.page-header{
+    margin:10px 0;
+    padding-bottom:0;
+    font-size:16px;
+    border:none;
+}
+.page-header h4{
+    font-size:16px;
+}
+
+.min-height{
+    min-height:15em;
+}
+.images-view{
+    margin:0 -2px;
+}
+.albums-view{
+    margin:0 -7px;
+}
 
       

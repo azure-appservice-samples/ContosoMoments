@@ -10,16 +10,14 @@ namespace ContosoMoments.MobileServer.DataLogic
     public class ImageBusinessLogic
     {
 
-      
-
-        public void AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, bool IsMobile)
+        public Image AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, bool IsMobile)
         {
 
             var uploadFormat = IsMobile ? "Mobile Image" : "Web Image";
-            AddImageToDB(AlbumId, UserId, containerName,  fileName, uploadFormat);
+            return AddImageToDB(AlbumId, UserId, containerName,  fileName, uploadFormat);
         }
 
-        public void AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, string UploadFormat)
+        public Image AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, string UploadFormat)
         {
             ContosoStorage cs = new ContosoStorage();
             var ctx = new MobileServiceContext();
@@ -37,7 +35,8 @@ namespace ContosoMoments.MobileServer.DataLogic
             ctx.Images.Add(img);
             try
             {
-                ctx.SaveChanges();
+               ctx.SaveChanges();
+               return img;
             }
             catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
             {

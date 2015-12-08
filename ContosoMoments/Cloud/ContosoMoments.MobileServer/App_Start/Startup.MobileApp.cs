@@ -25,6 +25,7 @@ namespace ContosoMoments.MobileServer
                 .UseDefaultConfiguration()
                 .ApplyTo(config);
 
+
             Mapper.Initialize(cfg =>
             {
                 //cfg.CreateMap<Album, Album>()
@@ -42,6 +43,8 @@ namespace ContosoMoments.MobileServer
 
           //  app.UseAppServiceAuthentication(config, AppServiceAuthenticationMode.LocalOnly);
             app.UseWebApi(config);
+            
+          
         }
     }
 

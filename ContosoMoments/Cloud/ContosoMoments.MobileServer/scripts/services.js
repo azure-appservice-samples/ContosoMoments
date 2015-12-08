@@ -73,6 +73,7 @@
                 albumTable.where({
                     "User/Id": userId
                 })
+                .orderByDescending("__createdAt")
                 .read()
                 .done(function (results) {
                     defered.resolve(results);
@@ -91,6 +92,19 @@
                     UserId: userId
                 }).done(function (res) {
                     $rootScope.$broadcast('albumCreated',res);
+                    defered.resolve(res);
+                }, function (err) {
+                    defered.reject(err);
+                });
+
+                return defered.promise;
+            },
+            deleteAlbum: function (albumId) {
+                var defered = $q.defer();
+                var albumTable = mobileServicesClient.getTable('album');
+                albumTable.del({
+                    id:albumId
+                }).done(function (res) {
                     defered.resolve(res);
                 }, function (err) {
                     defered.reject(err);
@@ -140,6 +154,7 @@
                     imageTable.where({
                         'Album/Id': album.id
                     })
+                    .orderByDescending("__createdAt")
                     .skip(reqOptions.start)
                     .take(reqOptions.count)
                     .read()
@@ -158,14 +173,6 @@
             getImageById: function (id) {
                 var defered = $q.defer();
                 var imageTable = mobileServicesClient.getTable('image');
-                //imageTable.lookup(id)  
-                //.done(function (results) {
-                //    defered.resolve(results);
-                //}, function (error) {
-                //    console.log(error);
-                //    defered.reject(error);
-                //});
-
                 imageTable.read('$expand=Album&$filter=id eq \''+id+'\'')
                     .done(function (results) {
                         defered.resolve(results);
@@ -178,7 +185,7 @@
         }
     }]);
 
-    app.factory('uploadService', ['azureBlob', '$http', 'appConfig', function (azureBlob, $http, appConfig) {
+    app.factory('uploadService', ['azureBlob', '$http', 'appConfig', '$rootScope', function (azureBlob, $http, appConfig, $rootScope) {
         var getSasUrl = function () {
             return $http.get(appConfig.DefaultServiceUrl + "/api/GetSasUrl").then(function (res) {
                 return res.data;
@@ -207,10 +214,15 @@
                     file: currentFile, // File object using the HTML5 File API,
                     progress: config.progress || angular.noop, // progress callback function,
                     complete: function () {
-                        commit(sasurl,config).then(function () {
+                        commit(sasurl,config).then(function (res) {
                             if (angular.isFunction(config.complete)) {
-                                config.complete();
+                                config.complete(res);
                             }
+                            if (res.success) {
+                                $rootScope.$broadcast('imageUploaded', res.imageId);
+                            }
+
+
                         })
 
                     },// complete callback function,

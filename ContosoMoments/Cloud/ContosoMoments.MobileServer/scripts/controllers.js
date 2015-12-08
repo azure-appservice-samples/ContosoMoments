@@ -21,16 +21,16 @@
     app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state','selectedAlbum',function ($scope, albumsService, imageService, appConfig, selectedImage, $state,selectedAlbum) {
         var self = this;
         this.currentIndex = 0;
-        this.count = 24;
-        this.curAlbum = selectedAlbum.album;
+        this.count = 12;
+        this.curAlbum = selectedAlbum.album ;
 
         var onImageGotten = function (images) {
             if (self.currentIndex === 0 && self.curAlbum.images.length === 0) {
                 self.curAlbum.images = images;
-                if (self.curAlbum.images.length === self.count) {
+                if (self.curAlbum.images.length >= (self.count-1)) {
                     self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = true;
                 }
-            } else if (self.currentIndex > 0 && self.curAlbum.images.length < (self.currentIndex + self.count)) {
+            } else if (self.currentIndex > 0 && self.curAlbum.images.length < (self.currentIndex + self.count-1)) {
                 self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = images.length <= 0;
                 self.curAlbum.images = self.curAlbum.images.concat(images);
                 if (self.curAlbum.images.length === self.currentIndex + self.count) {
@@ -54,7 +54,13 @@
             $state.go('main.singleImage', { imageid: image.id });
         }
        this.getAlbumImages();
-
+        
+       $scope.$on('imageUploaded', function (e, imageId) {
+           imageService.getImageById(imageId).then(function (img) {
+               self.curAlbum.images.unshift(img[0]);
+           });
+        
+       });
 
     }]);
     app.controller('createAlbumController', ['$scope','albumsService', '$uibModalInstance', 'authService', function ($scope,albumsService, $uibModalInstance, authService) {
@@ -69,6 +75,30 @@
                 self.postingAlbum = false;
             });
            
+        }
+        self.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        $scope.$on('modal.closing', function (event) {
+            if ($scope.uploading) {
+                event.preventDefault();
+            }
+        });
+
+    }]);
+    app.controller('deleteAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum','$state', function ($scope, albumsService, $uibModalInstance, selectedAlbum,$state) {
+        var self = this;
+        $scope.albumName = selectedAlbum.album.albumName;
+        self.deletingAlbum = false;
+        self.deleteAlbum = function () { 
+            self.deletingAlbum = true;
+            albumsService.deleteAlbum(selectedAlbum.album.id).then(function (res) {
+                $uibModalInstance.close(res);
+            }).finally(function () {
+                self.deletingAlbum = false;
+            });
+
         }
         self.cancel = function () {
             $uibModalInstance.dismiss('cancel');
@@ -100,45 +130,61 @@
             return imageService.getImageURL(this.currentImage, size);
         }
     }]);
-    app.controller('navController', ['$scope', '$uibModal', '$location',function ($scope, $uibModal, $location) {
+    app.controller('navController', ['$scope', '$uibModal', '$state',function ($scope, $uibModal, $state) {
 
         $scope.showUpload = false;
         $scope.showCreateAlbum = false;
+        $scope.showMenu = true;
 
         $scope.$on('$stateChangeSuccess', function (e, toState) {
+            $scope.navCollapsed = true;
             $scope.showUpload = toState.name === 'main.gallery';
             $scope.showCreateAlbum = toState.name === 'main.albums';
+            $scope.showMenu = toState.name !== 'main.singleImage';
         });
+
+        var openModal = function (options) {
+            return $uibModal.open(options);
+        }
 
         this.openUploadModal = function () {
 
-            var modalInstance = $uibModal.open({
+            openModal({
                 animation: true,
                 templateUrl: 'uploadModal.html',
                 controller: 'uploadController',
                 controllerAs: 'uploadCtrl'
-            });
-
-            modalInstance.result.then(function (uplodedFile) {
+            }).result.then(function (uplodedFile) {
                 console.log('upload modal completed at: ' + new Date());
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
 
         }
-        this.openAlbummModal= function () {
-            var modalInstance = $uibModal.open({
+        this.openAlbummModal = function () {
+            openModal({
                 animation: true,
                 templateUrl: 'createAlbum.html',
                 controller: 'createAlbumController',
                 controllerAs: 'crtAlbumCtrl'
+            }).result.then(function (createdAlbum) {}, function () {
+                console.log('Modal dismissed at: ' + new Date());
             });
-
-            modalInstance.result.then(function (createdAlbum) {
+        }
+        this.deleteAlbumModal = function () {
+            openModal({
+                animation: true,
+                templateUrl: 'deleteAlbum.html',
+                controller: 'deleteAlbumController',
+                controllerAs: 'delAlbumCtrl'
+            }).result.then(function (album) {
+                $state.go('main.albums')
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
         }
+
+       
 
     }]);
     app.controller('titleController', ['$scope', 'selectedAlbum', function ($scope, selectedAlbum) {
@@ -161,7 +207,7 @@
                 $scope.uploading = false;
                 $timeout(function () {
                     $uibModalInstance.close($scope.selectedFile);
-                }, 1500);
+                }, 1000);
 
             },
             progress: function (progress) {

@@ -17,9 +17,9 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<bool> Post([FromBody]CommitBlobRequest commitBlobRequest)
+        public async Task<CommitBlobResponse> Post([FromBody]CommitBlobRequest commitBlobRequest)
         {
-
+            var res = new CommitBlobResponse();
             var cs = new ContosoStorage();
             if (!commitBlobRequest.IsMobile)
             {
@@ -37,16 +37,21 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             //  var fileName = urldata[0].Replace(containerName + "/", "");
             string fileGuidName = urldata[0].Replace(containerName + "/lg/", "").Replace(".jpg", "");
 
+            
             var ibl = new ImageBusinessLogic();
-            ibl.AddImageToDB(commitBlobRequest.AlbumId, commitBlobRequest.UserId, containerName, fileGuidName/* + ".jpg"*/, commitBlobRequest.IsMobile);
-
+            var image = ibl.AddImageToDB(commitBlobRequest.AlbumId, commitBlobRequest.UserId, containerName, fileGuidName/* + ".jpg"*/, commitBlobRequest.IsMobile);
+            if (image != null)
+            {
+                res.Success = true;
+                res.ImageId = image.Id;                                                                                                                                                                                                                            
+            }
             var qm = new QueueManager();
             var blobInfo = new BlobInformation();
             blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName, ""));
             // blobInfo.FileGuidName = fileGuidName;
             blobInfo.ImageId = fileGuidName;
             await qm.PushToQueue(blobInfo);
-            return true;
+            return res;
 
         }
 
