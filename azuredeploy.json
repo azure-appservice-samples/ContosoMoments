@@ -49,7 +49,7 @@
     "storageAccountName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the storage account that you wish to create."
+        "description": "The name of the storage account that you wish to create. Note: This must be lowercase."
       }
     },
     "storageAccountType": {
@@ -93,7 +93,7 @@
     },
     "siteName": {
       "type": "string",
-      "defaultValue": "ContosoMomentsWeb",
+      "defaultValue": "contosomomentsweb",
       "metadata": {
         "description": "The name of the web client app that you wish to create."
       }
@@ -128,12 +128,13 @@
     }
   },
   "variables": {
-    "webJobSiteName":  "[concat(parameters('siteName'), '-jobs')]"
+    "webJobSiteName": "[concat(parameters('siteName'), '-jobs')]",
+    "storageAccountName": "[toLower(parameters('storageAccountName'))]"
   },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[toLower(parameters('storageAccountName'))]",
+      "name": "[variables('storageAccountName')]",
       "apiVersion": "2015-05-01-preview",
       "location": "[parameters('siteLocation')]",
       "properties": {
@@ -199,7 +200,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
         "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', toLower(parameters('storageAccountName')))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
       ],
       "properties": {
         "name": "[parameters('siteName')]",
@@ -231,8 +232,8 @@
             "[concat('Microsoft.Web/sites/', parameters('siteName'))]"
           ],
           "properties": {
-            "StorageAccountName": "[toLower(parameters('storageAccountName'))]",
-            "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', toLower(parameters('storageAccountName'))), '2015-05-01-preview').key1)]",
+            "StorageAccountName": "[variables('storageAccountName')]",
+            "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
             "UploadSasDaysTime": "5",
             "ResizeQueueName": "[parameters('ResizeQueueName')]",
             "UploadContainerName": "[parameters('storageContainerName')]",
@@ -265,7 +266,7 @@
       "location": "[parameters('siteLocation')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', toLower(parameters('storageAccountName')))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
       ],
       "properties": {
         "name": "[variables('webJobSiteName')]",
@@ -280,8 +281,8 @@
             "[resourceId('Microsoft.Web/Sites', variables('webJobSiteName'))]"
           ],
           "properties": {
-            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(parameters('storageAccountName')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
-            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(parameters('storageAccountName')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
             "PROJECT": "ContosoMoments\\ContosoMoments.WebJobs\\ContosoMoments.WebJobs.csproj"
           }
         },
