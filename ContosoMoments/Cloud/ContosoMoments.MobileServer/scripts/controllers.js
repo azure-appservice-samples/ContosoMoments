@@ -21,7 +21,7 @@
     app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state','selectedAlbum',function ($scope, albumsService, imageService, appConfig, selectedImage, $state,selectedAlbum) {
         var self = this;
         this.currentIndex = 0;
-        this.count = 12;
+        this.count = 24;
         this.curAlbum = selectedAlbum.album ;
 
         var onImageGotten = function (images) {

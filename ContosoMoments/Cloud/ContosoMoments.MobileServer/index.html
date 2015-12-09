@@ -30,7 +30,7 @@
                         <img class="img-responsive" src="images/Web-ContosoMomentsLogo.svg">
                     </a>
                 </div>
-                <div ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
+                <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="pull-right-sm" ng-show="showUpload">
                             <a  href="#" ng-click="navCtrl.openUploadModal()">
@@ -57,7 +57,7 @@
         </nav>
         <div class="container" ng-controller="titleController as titleCtrl">
 
-            <div class="page-header">
+            <div ng-show="userEmail" class="page-header">
                 <span class="glyphicon glyphicon-user">
                 </span>
                 <span ng-bind="userEmail" ></span>
@@ -66,6 +66,7 @@
             
         </div>
     </header>
+    <route-loader></route-loader>
     <div class="container" ui-view></div>
 
     <script src="/scripts/ui-bootstrap-custom/ui-bootstrap-custom-tpls-0.14.3.js"> </script>
@@ -76,6 +77,9 @@
     <script src="/scripts/directives.js"></script>
 
     <script type="text/ng-template" id="createAlbum.html">
+        <div class="modal-header">
+            <h4 class="modal-title">Create Album</h4>
+        </div>
         <div class="modal-body">
             <div class="has-feedback" ng-hide="uploadCtrl.showProgress()">
                 <input type="text" class="form-control" ng-model="crtAlbumCtrl.albumName" ng-disabled="crtAlbumCtrl.postingAlbum" placeholder="Album name" />
@@ -88,6 +92,9 @@
         </div>
     </script>
     <script type="text/ng-template" id="uploadModal.html">
+        <div class="modal-header">
+            <h4 class="modal-title">Upload image</h4>
+        </div>
         <div class="modal-body">
             <div ng-hide="uploadCtrl.showProgress()">
                 <input type="file" file-change="uploadCtrl.onFileChange(files,event)" />
@@ -105,7 +112,7 @@
             <button class="btn btn-primary" type="button" ng-click="uploadCtrl.upload()">Upload</button>
         </div>
     </script>
-    <script type="text/ng-template" id="deleteAlbum.html">
+    <script type="text/ng-template" id="deleteAlbum.html">  
         <div class="modal-body">
             <div class="text-center">
                 You are about to delete <strong>{{::albumName}}</strong> album<br /> Are you sure?
