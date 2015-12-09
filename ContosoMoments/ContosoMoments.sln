@@ -1,35 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24711.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cloud", "Cloud", "{8A3D202E-8B7F-403D-A7D0-D2C6A73A4ACB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{33782237-97DF-416D-B1D1-7F8D7E870EAA}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{001D206C-86CB-4F44-BD09-B9EEE1207BC8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{94A82226-A745-412E-8642-966C34425695}"
-	ProjectSection(SolutionItems) = preProject
-		PublishScripts\Scripts\Deploy-AzureResourceGroup-2.ps1 = PublishScripts\Scripts\Deploy-AzureResourceGroup-2.ps1
-		PublishScripts\Scripts\Deploy-AzureResourceGroup-3.ps1 = PublishScripts\Scripts\Deploy-AzureResourceGroup-3.ps1
-		PublishScripts\Scripts\Deploy-AzureResourceGroup-4.ps1 = PublishScripts\Scripts\Deploy-AzureResourceGroup-4.ps1
-		PublishScripts\Scripts\Deploy-AzureResourceGroup.ps1 = PublishScripts\Scripts\Deploy-AzureResourceGroup.ps1
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{F78A366C-1452-4973-B879-80B33BAAA61D}"
-	ProjectSection(SolutionItems) = preProject
-		PublishScripts\Templates\ContosoMomentsWeb.json = PublishScripts\Templates\ContosoMomentsWeb.json
-		PublishScripts\Templates\ContosoMomentsWeb.param.dev.json = PublishScripts\Templates\ContosoMomentsWeb.param.dev.json
-		PublishScripts\Templates\ContosoMomentsWebAPI.json = PublishScripts\Templates\ContosoMomentsWebAPI.json
-		PublishScripts\Templates\ContosoMomentsWebAPI.param.dev.json = PublishScripts\Templates\ContosoMomentsWebAPI.param.dev.json
-		PublishScripts\Templates\ContosoMomentsWebJobs-2.json = PublishScripts\Templates\ContosoMomentsWebJobs-2.json
-		PublishScripts\Templates\ContosoMomentsWebJobs.json = PublishScripts\Templates\ContosoMomentsWebJobs.json
-		PublishScripts\Templates\ContosoMomentsWebJobs.param.dev-2.json = PublishScripts\Templates\ContosoMomentsWebJobs.param.dev-2.json
-		PublishScripts\Templates\ContosoMomentsWebJobs.param.dev.json = PublishScripts\Templates\ContosoMomentsWebJobs.param.dev.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{B6E02BEC-863D-43CC-AE96-E80D393746A8}"
@@ -479,8 +457,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{94A82226-A745-412E-8642-966C34425695} = {001D206C-86CB-4F44-BD09-B9EEE1207BC8}
-		{F78A366C-1452-4973-B879-80B33BAAA61D} = {001D206C-86CB-4F44-BD09-B9EEE1207BC8}
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED} = {B6E02BEC-863D-43CC-AE96-E80D393746A8}
 		{9ADECDE0-0A6D-41C3-B0C8-DF786035A62B} = {71D9D8A9-51F7-4B05-B9DF-C24EAF853A50}
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B} = {71D9D8A9-51F7-4B05-B9DF-C24EAF853A50}
