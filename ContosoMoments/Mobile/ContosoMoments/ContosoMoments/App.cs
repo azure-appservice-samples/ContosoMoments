@@ -89,7 +89,8 @@ namespace ContosoMoments
                 else
                 {
                     // The root page of your application
-                    MainPage = new NavigationPage(new ImagesList());
+                    //MainPage = new NavigationPage(new ImagesList());
+                    MainPage = new NavigationPage(new AlbumsListView());
                 }
 //#elif __WP__
 //                MainPage = new NavigationPage(new ImagesList());

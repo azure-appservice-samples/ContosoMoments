@@ -20,9 +20,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ISettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AlbumsListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ImageDetailsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ImagesListViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\AlbumsListView.xaml.cs">
+      <DependentUpon>AlbumsListView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\ImageDetailsView.xaml.cs">
       <DependentUpon>ImageDetailsView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -60,6 +65,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AlbumsListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

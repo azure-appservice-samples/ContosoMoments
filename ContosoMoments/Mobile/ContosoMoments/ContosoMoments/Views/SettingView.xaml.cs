@@ -91,7 +91,8 @@ namespace ContosoMoments.Views
                         else
                         {
                             // The root page of your application
-                            App.Current.MainPage = new NavigationPage(new ImagesList());
+                            //App.Current.MainPage = new NavigationPage(new ImagesList());
+                            App.Current.MainPage = new NavigationPage(new AlbumsListView());
                         }
 //#elif __WP__
 //                        App.Current.MainPage = new NavigationPage(new ImagesList());

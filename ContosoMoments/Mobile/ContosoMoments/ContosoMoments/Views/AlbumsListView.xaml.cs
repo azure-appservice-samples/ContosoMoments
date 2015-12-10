@@ -1,5 +1,4 @@
-﻿using ContosoMoments.Models;
-using ContosoMoments.ViewModels;
+﻿using ContosoMoments.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,23 +9,21 @@ using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
-    public partial class ImagesList : ContentPage
+    public partial class AlbumsListView : ContentPage
     {
-        ImagesListViewModel viewModel = new ImagesListViewModel(App.MobileService);
+        AlbumsListViewModel viewModel = new AlbumsListViewModel(App.MobileService);
 
-        public User User { get; set; }
-        public Album Album { get; set; }
 
-        public ImagesList()
+        public AlbumsListView()
         {
             InitializeComponent();
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            var tapUploadImage = new TapGestureRecognizer();
-            tapUploadImage.Tapped += OnAdd;
-            imgUpload.GestureRecognizers.Add(tapUploadImage);
+            var tapNewAlbumImage = new TapGestureRecognizer();
+            tapNewAlbumImage.Tapped += OnAdd;
+            imgAddAlbum.GestureRecognizers.Add(tapNewAlbumImage);
 
             var tapSyncImage = new TapGestureRecognizer();
             tapSyncImage.Tapped += OnSyncItems;
@@ -49,71 +46,36 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
-            //if (imagesWrap.ItemsSource == null)
-            if (imagesList.ItemsSource == null)
+            if (albumsList.ItemsSource == null)
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
-                    if (null == User)
+                    if (null == viewModel.User)
                         await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
-                    else
-                        viewModel.User = User;
 
-                    if (null == Album)
-                        await viewModel.GetAlbumAsync(/*Guid.Parse(*/"11111111-1111-1111-1111-111111111111"/*)*/);
-                    else
-                        viewModel.Album = Album;
-
-                    //await manager.SyncImagesAsync();
                     await LoadItems();
                 }
             }
-            App.Instance.ImageTaken += App_ImageTaken;
-
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-
-            App.Instance.ImageTaken -= App_ImageTaken;
-        }
-
-        private async void App_ImageTaken(object sender, EventArgs e)
-        {
-            //DEBUG
-            //imgPreview.Source = App.Instance.image;
-
-            //Upload image
-            using (var scope = new ActivityIndicatorScope(syncIndicator, true))
-            {
-                if (await viewModel.UploadImageAsync(App.Instance.ImageStream))
-                {
-                    await DisplayAlert("Upload succeeded", "Image uploaded and will appear in the list shortly", "Ok");
-                    OnRefresh(sender, e);
-                }
-                else
-                {
-                    await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
-                }
-            }
         }
 
         private async Task LoadItems()
         {
-            await viewModel.GetImagesAsync(viewModel.Album.AlbumId);
+            await viewModel.GetAlbumsAsync();
 
-            if (null != viewModel.Images)
+            if (null != viewModel.Albums)
             {
-                imagesList.ItemsSource = null;
-                imagesList.ItemsSource = viewModel.Images.ToList();
-                //imagesWrap.ItemsSource = viewModel.Images.ToList();
+                albumsList.ItemsSource = null;
+                albumsList.ItemsSource = viewModel.Albums.ToList();
             }
         }
 
         public async void OnRefresh(object sender, EventArgs e)
         {
-            //var list = (ListView)sender;
             var success = false;
             try
             {
@@ -124,7 +86,7 @@ namespace ContosoMoments.Views
             {
                 await DisplayAlert("Refresh Error", "Couldn't refresh data (" + ex.Message + ")", "OK");
             }
-            imagesList.EndRefresh();
+            albumsList.EndRefresh();
 
             if (!success)
                 await DisplayAlert("Refresh Error", "Couldn't refresh data", "OK");
@@ -133,31 +95,81 @@ namespace ContosoMoments.Views
 
         public async void OnSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var selectedImage = e.SelectedItem as ContosoMoments.Models.Image;
+            var selectedAlbum = e.SelectedItem as ContosoMoments.Models.Album;
 
-            if (selectedImage != null)
+            if (selectedAlbum != null)
             {
-                var detailsView = new ImageDetailsView();
-                var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
-                detailsVM.Album = viewModel.Album;
-                detailsVM.User = viewModel.User;
-                detailsView.BindingContext = detailsVM;
+                var imagesListView = new ImagesList();
+                imagesListView.User = viewModel.User;
+                imagesListView.Album = selectedAlbum;
 
-                await Navigation.PushAsync(detailsView);
+                await Navigation.PushAsync(imagesListView);
             }
 
             // prevents background getting highlighted
-            imagesList.SelectedItem = null;
+            albumsList.SelectedItem = null;
+
+            HideAndCleanupInput();
+        }
+
+        public async void OnCreateClick(object sender, EventArgs e)
+        {
+            if (null != entAlbumName.Text)
+            {
+                if (entAlbumName.Text.Length > 0)
+                {
+                    bool res = await viewModel.AddNewAlbumAsync(entAlbumName.Text);
+
+                    if (res)
+                    {
+                        await DisplayAlert("Success", "Album created successfully and will appear in the list shortly", "OK");
+                        HideAndCleanupInput();
+                        OnRefresh(sender, e);
+                    }
+                    else
+                        await DisplayAlert("Album creation error", "Couldn't create new album. Please try again later.", "OK");
+                }
+                else
+                    await DisplayAlert("Album creation error", "New album name is empty. Please enter new album name and try again later.", "OK");
+            }
+            else
+                await DisplayAlert("Album creation error", "New album name is empty. Please enter new album name and try again later.", "OK");
+        }
+
+        private void HideAndCleanupInput()
+        {
+            grdInput.IsVisible = false;
+            entAlbumName.Text = null;
+        }
+
+        public async void OnDelete(object sender, EventArgs e)
+        {
+            var res = await DisplayAlert("Delete album?", "Delete album and all associated images?", "Yes", "No");
+
+            if (res)
+            {
+                var selectedAlbum = (sender as MenuItem).BindingContext as ContosoMoments.Models.Album;
+                res = await viewModel.DeleteAlbumAsync(selectedAlbum);
+
+                if (res)
+                {
+                    await DisplayAlert("Success", "Album deleted successfully", "OK");
+                    HideAndCleanupInput();
+                    OnRefresh(sender, e);
+                }
+                else
+                    await DisplayAlert("Delete error", "Couldn't delete the album. Please try again later.", "OK");
+            }
+        }
+
+        public void OnRename(object sender, EventArgs e)
+        {
+            //TODO!
         }
 
         public async void OnAdd(object sender, EventArgs e)
         {
-            App.Instance.TakePicture();
-        }
-
-        public async void OnSettings(object sender, EventArgs e)
-        {
-            await Navigation.PushModalAsync(new SettingView());
+            grdInput.IsVisible = !grdInput.IsVisible;
         }
 
         public async void OnSyncItems(object sender, EventArgs e)
@@ -165,21 +177,20 @@ namespace ContosoMoments.Views
             await SyncItemsAsync(true);
         }
 
+        public async void OnSettings(object sender, EventArgs e)
+        {
+            HideAndCleanupInput();
+            await Navigation.PushModalAsync(new SettingView());
+        }
+
         private async Task SyncItemsAsync(bool showActivityIndicator)
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
-                //await manager.SyncImagesAsync();
+                HideAndCleanupInput();
                 await LoadItems();
             }
         }
-
-
-        //private async Task AddItem(TodoItem item)
-        //{
-        //    await manager.SaveTaskAsync(item);
-        //    await LoadItems();
-        //}
 
         private class ActivityIndicatorScope : IDisposable
         {

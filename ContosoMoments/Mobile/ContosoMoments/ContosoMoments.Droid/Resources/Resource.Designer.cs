@@ -3322,20 +3322,23 @@ namespace ContosoMoments.Droid
 			// aapt resource value: 0x7f020066
 			public const int mr_ic_settings_light = 2130837606;
 			
-			// aapt resource value: 0x7f02006b
-			public const int notification_template_icon_bg = 2130837611;
+			// aapt resource value: 0x7f02006c
+			public const int notification_template_icon_bg = 2130837612;
 			
 			// aapt resource value: 0x7f020067
-			public const int save = 2130837607;
+			public const int plus = 2130837607;
 			
 			// aapt resource value: 0x7f020068
-			public const int settings = 2130837608;
+			public const int save = 2130837608;
 			
 			// aapt resource value: 0x7f020069
-			public const int sync = 2130837609;
+			public const int settings = 2130837609;
 			
 			// aapt resource value: 0x7f02006a
-			public const int upload = 2130837610;
+			public const int sync = 2130837610;
+			
+			// aapt resource value: 0x7f02006b
+			public const int upload = 2130837611;
 			
 			static Drawable()
 			{

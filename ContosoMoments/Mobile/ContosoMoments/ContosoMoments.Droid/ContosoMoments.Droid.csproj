@@ -225,6 +225,10 @@
     <AndroidResource Include="Resources\drawable-hdpi\settings.png" />
     <AndroidResource Include="Resources\drawable-ldpi\settings.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\settings.png" />
+    <AndroidResource Include="Resources\Drawable\plus.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\plus.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\plus.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\plus.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="GCMClient">

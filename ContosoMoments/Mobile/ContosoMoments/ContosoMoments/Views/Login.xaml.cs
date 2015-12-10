@@ -37,7 +37,8 @@ namespace ContosoMoments.Views
                 ContosoMoments.WinPhone.App.AcquirePushChannel();
 #endif
 
-                Navigation.InsertPageBefore(new ImagesList(), this);
+                //Navigation.InsertPageBefore(new ImagesList(), this);
+                Navigation.InsertPageBefore(new AlbumsListView(), this);
                 await Navigation.PopAsync();
             }
             catch (InvalidOperationException ex)

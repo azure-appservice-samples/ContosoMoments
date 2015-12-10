@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\BadgeLogo.png" />
+    <Content Include="Assets\plus.png" />
     <Content Include="Assets\settings.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\SquareTile150x150.png" />
