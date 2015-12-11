@@ -10,6 +10,9 @@ namespace ContosoMoments.ViewModels
 {
     public class AlbumsListViewModel : BaseViewModel
     {
+        //IMobileServiceTable<Album> albumTable;
+        //IMobileServiceTable<User> userTable;
+
         public AlbumsListViewModel(MobileServiceClient client)
         {
             _client = client;
@@ -64,8 +67,9 @@ namespace ContosoMoments.ViewModels
         {
             try
             {
-                var table = _client.GetTable<User>();
-                var user = await table.LookupAsync(userId);
+                //userTable = _client.GetTable<User>();
+                //var user = await userTable.LookupAsync(userId);
+                var user = await (App.Current as App).userTableSync.LookupAsync(userId.ToString());
 
                 if (null != user)
                     User = user;
@@ -87,8 +91,9 @@ namespace ContosoMoments.ViewModels
 
             try
             {
-                IMobileServiceTable<Album> table = _client.GetTable<Album>();
-                Albums = await table.ToCollectionAsync();
+                //albumTable = _client.GetTable<Album>();
+                //Albums = await albumTable.ToCollectionAsync();
+                Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();
             }
             catch (MobileServiceInvalidOperationException ex)
             {
@@ -110,8 +115,8 @@ namespace ContosoMoments.ViewModels
 
             try
             {
-                IMobileServiceTable<Album> table = _client.GetTable<Album>();
-                await table.InsertAsync(new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() });
+                //await albumTable.InsertAsync(new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() });
+                await (App.Current as App).albumTableSync.InsertAsync(new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() });
             }
             catch (Exception ex)
             {
@@ -127,8 +132,8 @@ namespace ContosoMoments.ViewModels
 
             try
             {
-                IMobileServiceTable<Album> table = _client.GetTable<Album>();
-                await table.DeleteAsync(selectedAlbum);
+                //await albumTable.DeleteAsync(selectedAlbum);
+                await (App.Current as App).albumTableSync.DeleteAsync(selectedAlbum);
             }
             catch (Exception ex)
             {

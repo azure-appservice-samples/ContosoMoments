@@ -50,6 +50,8 @@ namespace ContosoMoments.Views
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
+                    await (App.Current as App).SyncAsync();
+
                     if (null == viewModel.User)
                         await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
 
@@ -79,7 +81,7 @@ namespace ContosoMoments.Views
             var success = false;
             try
             {
-                await SyncItemsAsync(false);
+                await SyncItemsAsync(true);
                 success = true;
             }
             catch (Exception ex)
@@ -188,6 +190,7 @@ namespace ContosoMoments.Views
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
                 HideAndCleanupInput();
+                await (App.Current as App).SyncAsync();
                 await LoadItems();
             }
         }

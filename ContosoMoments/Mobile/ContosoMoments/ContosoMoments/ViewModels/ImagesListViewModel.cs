@@ -103,45 +103,45 @@ namespace ContosoMoments.ViewModels
         }
 
 
-        public async Task GetUserAsync(Guid userId)
-        {
-            try
-            {
-                var table = _client.GetTable<User>();
-                var user = await table.LookupAsync(userId);
+        //public async Task GetUserAsync(Guid userId)
+        //{
+        //    try
+        //    {
+        //        var table = _client.GetTable<User>();
+        //        var user = await table.LookupAsync(userId);
 
-                if (null != user)
-                    User = user;
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
-            }
-        }
+        //        if (null != user)
+        //            User = user;
+        //    }
+        //    catch (MobileServiceInvalidOperationException ex)
+        //    {
+        //        ErrorMessage = ex.Message;
+        //    }
+        //    catch (HttpRequestException ex2)
+        //    {
+        //        ErrorMessage = ex2.Message;
+        //    }
+        //}
 
-        public async Task GetAlbumAsync(string albumId)
-        {
-            try
-            {
-                var table = _client.GetTable<Album>();
-                var album = await table.LookupAsync(albumId);
+        //public async Task GetAlbumAsync(string albumId)
+        //{
+        //    try
+        //    {
+        //        var table = _client.GetTable<Album>();
+        //        var album = await table.LookupAsync(albumId);
 
-                if (null != album)
-                    Album = album;
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
-            }
-        }
+        //        if (null != album)
+        //            Album = album;
+        //    }
+        //    catch (MobileServiceInvalidOperationException ex)
+        //    {
+        //        ErrorMessage = ex.Message;
+        //    }
+        //    catch (HttpRequestException ex2)
+        //    {
+        //        ErrorMessage = ex2.Message;
+        //    }
+        //}
 
         public async Task GetImagesAsync(string albumId)
         {
@@ -159,6 +159,8 @@ namespace ContosoMoments.ViewModels
                 _Images = res.ToList();
                 //IMobileServiceTable<Image> table = _client.GetTable<Image>();
                 //Images = await table.ToCollectionAsync();
+
+                var iii = await (App.Current as App).imageTableSync.ToCollectionAsync();
             }
             catch (MobileServiceInvalidOperationException ex)
             {
