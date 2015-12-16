@@ -1,4 +1,5 @@
-﻿using ContosoMoments.ViewModels;
+﻿using ContosoMoments.Models;
+using ContosoMoments.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace ContosoMoments.Views
     public partial class ImagesList : ContentPage
     {
         ImagesListViewModel viewModel = new ImagesListViewModel(App.MobileService);
+
+        public User User { get; set; }
+        public Album Album { get; set; }
 
         public ImagesList()
         {
@@ -50,11 +54,15 @@ namespace ContosoMoments.Views
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
-                    if (null == viewModel.User)
-                        await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
+                    //if (null == User)
+                    //    await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
+                    //else
+                        viewModel.User = User;
 
-                    if (null == viewModel.Album)
-                        await viewModel.GetAlbumAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
+                    //if (null == Album)
+                    //    await viewModel.GetAlbumAsync(/*Guid.Parse(*/"11111111-1111-1111-1111-111111111111"/*)*/);
+                    //else
+                        viewModel.Album = Album;
 
                     //await manager.SyncImagesAsync();
                     await LoadItems();
@@ -93,7 +101,7 @@ namespace ContosoMoments.Views
 
         private async Task LoadItems()
         {
-            await viewModel.GetImagesAsync();
+            await viewModel.GetImagesAsync(viewModel.Album.AlbumId);
 
             if (null != viewModel.Images)
             {

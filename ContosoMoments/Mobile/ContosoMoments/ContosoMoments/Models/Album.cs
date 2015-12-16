@@ -8,11 +8,13 @@ namespace ContosoMoments.Models
 {
     public class Album
     {
-        Guid albumId;
+        string albumId;
         string albumName;
+        bool isDefault;
+        string userId;
 
         [JsonProperty(PropertyName = "Id")]
-        public Guid AlbumId
+        public string AlbumId
         {
             get { return albumId; }
             set { albumId = value; }
@@ -23,6 +25,20 @@ namespace ContosoMoments.Models
         {
             get { return albumName; }
             set { albumName = value; }
+        }
+
+        [JsonProperty(PropertyName = "IsDefault")]
+        public bool IsDefault
+        {
+            get { return isDefault; }
+            set { isDefault = value; }
+        }
+
+        [JsonProperty(PropertyName = "UserId")]
+        public string UserId
+        {
+            get { return userId; }
+            set { userId = value; }
         }
 
         [Version]

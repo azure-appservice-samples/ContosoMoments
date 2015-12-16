@@ -125,6 +125,19 @@
       "metadata": {
         "description": "Use any valid URL."
       }
+    },
+    "repoURL": {
+      "type": "string",
+      "metadata": {
+        "description": "Repo URL."
+      }
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "stable",
+      "metadata": {
+        "description": "Branch"
+      }
     }
   },
   "variables": {
@@ -258,8 +271,8 @@
             "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ],
           "properties": {
-            "RepoUrl": "https://github.com/azure-appservice-samples/ContosoMoments.git",
-            "branch": "stable"
+            "RepoUrl": "[parameters('repoUrl')]",
+            "branch": "[parameters('branch')]"
           }
         }
       ]
@@ -299,8 +312,8 @@
             "[resourceId('Microsoft.Web/Sites', variables('webJobSiteName'))]"
           ],
           "properties": {
-            "RepoUrl": "https://github.com/azure-appservice-samples/ContosoMoments.git",
-            "branch": "stable"
+            "RepoUrl": "[parameters('repoUrl')]",
+            "branch": "[parameters('branch')]"
           }
         }
       ]

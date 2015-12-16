@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ContosoMoments.Views.AlbumsListView"
+             BackgroundColor="#8C0A4B">
+  
+  <Grid RowSpacing="0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!--Header-->
+    <Grid Grid.Row="0" Padding="10,30,10,5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="45"/>
+        <ColumnDefinition Width="45"/>
+        <ColumnDefinition Width="45"/>
+      </Grid.ColumnDefinitions>
+      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center">
+        <Image.Source>
+          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
+        </Image.Source>
+      </Image>
+
+      <Image x:Name="imgSync" VerticalOptions="Center" HeightRequest="30" WidthRequest="30" Grid.Column="2">
+        <Image.IsVisible>
+          <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False" WinPhone="True"/>
+        </Image.IsVisible>
+        <Image.Source>
+          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/sync.png" Android="sync.png" WinPhone="Assets/sync.png"/>
+        </Image.Source>
+      </Image>
+      
+      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings">
+        <Image.Source>
+          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
+        </Image.Source>
+      </Image>
+
+      <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgAddAlbum">
+        <Image.Source>
+          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/plus.png" Android="plus.png" WinPhone="Assets/plus.png"/>
+        </Image.Source>
+      </Image>
+    </Grid>
+
+    <!--User and Album info-->
+    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0,10,15">
+      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
+      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="My Albums:"/>
+
+      <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10,0,10,10" >
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Label Text="New album name:" Grid.Row="0" Grid.Column="0" TextColor="White" HorizontalOptions="StartAndExpand"/>
+        <Entry x:Name="entAlbumName" IsPassword="False" Keyboard="Text" Grid.Row="1" Grid.Column="0" TextColor="White"/>
+        <Button Text="Create" Grid.Row="1" Grid.Column="1" Clicked="OnCreateClick" TextColor="White"/>
+      </Grid>
+      
+    </StackLayout>
+
+    <!--List of albums-->
+    <ListView x:Name="albumsList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="2" BackgroundColor="White">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <ViewCell.ContextActions>
+              <!--<MenuItem Clicked="OnRename" Text="Rename"/>-->
+              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
+            </ViewCell.ContextActions>
+            <Grid Padding="8">
+              <Label Text="{Binding AlbumName}" TextColor="Black" VerticalTextAlignment="Center"/>
+            </Grid>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+
+    <ActivityIndicator Grid.RowSpan="3" IsVisible="False" IsEnabled="True" x:Name="syncIndicator" Color="#8C0A4B">
+      <ActivityIndicator.VerticalOptions>
+        <OnPlatform x:TypeArguments="LayoutOptions" Android="Center" WinPhone="Fill" iOS="Fill"/>
+      </ActivityIndicator.VerticalOptions>
+      <ActivityIndicator.HorizontalOptions>
+        <OnPlatform x:TypeArguments="LayoutOptions" Android="Center" WinPhone="Fill" iOS="Fill"/>
+      </ActivityIndicator.HorizontalOptions>
+    </ActivityIndicator>
+
+  </Grid>
+</ContentPage>

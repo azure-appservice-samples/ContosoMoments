@@ -1,6 +1,8 @@
 ﻿using ContosoMoments.Settings;
 using ContosoMoments.Views;
 using Microsoft.WindowsAzure.MobileServices;
+using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
+using Microsoft.WindowsAzure.MobileServices.Sync;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,8 +16,13 @@ namespace ContosoMoments
 {
     public class App : Application
     {
+        public const string DB_LOCAL_FILENAME = "localDb.sqlite";
         public static MobileServiceClient MobileService;
         public static MobileServiceUser AuthenticatedUser;
+
+        public IMobileServiceSyncTable<Models.Album> albumTableSync;
+        public IMobileServiceSyncTable<Models.User> userTableSync;
+        public IMobileServiceSyncTable<Models.Image> imageTableSync;
 
         public static App Instance;
         //DEBUG
@@ -81,21 +88,24 @@ namespace ContosoMoments
                 MobileService = new MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
                 AuthenticatedUser = MobileService.CurrentUser;
 
-//#if !__WP__
+                await InitLocalStoreAsync(DB_LOCAL_FILENAME);
+                InitLocalTablesAsync();
+
+                //DEBUG
+                //await SyncAsync();
+
                 if (isAuthRequred && AuthenticatedUser == null)
                 {
                     MainPage = new NavigationPage(new Login());
                 }
                 else
                 {
-                    // The root page of your application
-                    MainPage = new NavigationPage(new ImagesList());
+                    MainPage = new NavigationPage(new AlbumsListView());
                 }
-//#elif __WP__
-//                MainPage = new NavigationPage(new ImagesList());
-//#endif
             }
         }
+
+        
 
         protected override void OnSleep()
         {
@@ -145,6 +155,61 @@ namespace ContosoMoments
         public void TakePicture()
         {
             ShouldTakePicture();
+        }
+
+        private async Task InitLocalStoreAsync(string localDbFilename)
+        {
+            if (!MobileService.SyncContext.IsInitialized)
+            {
+                try
+                {
+                    // new code to initialize the SQLite store
+#if !__WP__
+                    string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), localDbFilename);
+#else
+                    string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, localDbFilename);
+#endif
+
+                    if (!File.Exists(path))
+                    {
+                        File.Create(path).Dispose();
+                    }
+
+                    var store = new MobileServiceSQLiteStore(path);
+                    store.DefineTable<Models.User>();
+                    store.DefineTable<Models.Album>();
+                    store.DefineTable<Models.Image>();
+
+                    // Uses the default conflict handler, which fails on conflict
+                    await MobileService.SyncContext.InitializeAsync(store);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task SyncAsync()
+        {
+            await MobileService.SyncContext.PushAsync();
+            await userTableSync.PullAsync("allUsers", userTableSync.CreateQuery() ); // query ID is used for incremental sync
+            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); // query ID is used for incremental sync
+            await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery()); // query ID is used for incremental sync
+        }
+
+        private void InitLocalTablesAsync()
+        {
+            try
+            {
+                userTableSync = MobileService.GetSyncTable<Models.User>(); // offline sync
+                albumTableSync = MobileService.GetSyncTable<Models.Album>(); // offline sync
+                imageTableSync = MobileService.GetSyncTable<Models.Image>(); // offline sync
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
     }
 }
