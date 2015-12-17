@@ -16,7 +16,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         {
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
-            DomainManager = new EntityDomainManager<User>(context, Request);
+            DomainManager = new EntityDomainManager<User>(context, Request ,enableSoftDelete: true);
         }
 
         // GET tables/User

@@ -14,9 +14,12 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
     {
         protected override void Initialize(HttpControllerContext controllerContext)
         {
+
+           
+
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
-            DomainManager = new EntityDomainManager<Image>(context, Request);
+            DomainManager = new EntityDomainManager<Image>(context, Request, enableSoftDelete: true);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]

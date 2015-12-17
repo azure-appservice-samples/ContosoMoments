@@ -16,7 +16,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         {
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
-            DomainManager = new EntityDomainManager<Album>(context, Request,true);
+            DomainManager = new EntityDomainManager<Album>(context, Request, enableSoftDelete: true);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
