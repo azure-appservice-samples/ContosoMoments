@@ -8,7 +8,7 @@ using Microsoft.Azure.Mobile.Server.Config;
 using Owin;
 using AutoMapper;
 using ContosoMoments.MobileServer.Models;
-
+using Newtonsoft.Json;
 
 namespace ContosoMoments.MobileServer
 {
@@ -20,12 +20,12 @@ namespace ContosoMoments.MobileServer
             config.EnableCors();
             config.MapHttpAttributeRoutes();
             config.EnableSystemDiagnosticsTracing();
-
+            config.Formatters.JsonFormatter.SerializerSettings.Re‌​ferenceLoopHandling = ReferenceLoopHandling.Ignore;
             new MobileAppConfiguration()
                 .UseDefaultConfiguration()
                 .ApplyTo(config);
 
-
+           
             Mapper.Initialize(cfg =>
             {
                 //cfg.CreateMap<Album, Album>()

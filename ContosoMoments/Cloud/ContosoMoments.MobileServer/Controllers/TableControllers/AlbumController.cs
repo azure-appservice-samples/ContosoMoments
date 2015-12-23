@@ -17,6 +17,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
             DomainManager = new EntityDomainManager<Album>(context, Request,true);
+            controllerContext.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]

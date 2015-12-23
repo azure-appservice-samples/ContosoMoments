@@ -63,19 +63,41 @@
        });
 
     }]);
-    app.controller('createAlbumController', ['$scope','albumsService', '$uibModalInstance', 'authService', function ($scope,albumsService, $uibModalInstance, authService) {
+    app.controller('createAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'authService', 'selectedAlbum', function ($scope, albumsService, $uibModalInstance, authService, selectedAlbum) {
         var self = this;
-        self.postingAlbum=false;
-        self.createAlbum = function () {
-            var auth = authService.currentContext();
+        self.postingAlbum = false;
+        self.modalTitle = "Create Album";
+        var editAlbum = function () {
             self.postingAlbum = true;
-            albumsService.createAlbum(self.albumName, auth.userId).then(function (res) {
+            albumsService.updateAlbum(selectedAlbum.album.id, self.currentAlbum.albumName).then(function (res) {
+                if (res) {
+                    selectedAlbum.album = res;
+                }
                 $uibModalInstance.close(res);
             }).finally(function () {
                 self.postingAlbum = false;
             });
-           
         }
+        var createAlbum = function () {
+            var auth = authService.currentContext();
+            self.postingAlbum = true;
+            albumsService.createAlbum(self.currentAlbum.albumName, auth.userId).then(function (res) {
+                $uibModalInstance.close(res);
+            }).finally(function () {
+                self.postingAlbum = false;
+            });
+
+        }
+        var postFunc = createAlbum;
+        if (selectedAlbum.album != null) {
+            self.currentAlbum = angular.copy(selectedAlbum.album);
+            self.modalTitle = "Edit Album";
+            postFunc = editAlbum;
+        }
+        self.post = function () {
+            postFunc();
+        }
+       
         self.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         }
@@ -87,6 +109,7 @@
         });
 
     }]);
+    
     app.controller('deleteAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum','$state', function ($scope, albumsService, $uibModalInstance, selectedAlbum,$state) {
         var self = this;
         $scope.albumName = selectedAlbum.album.albumName;
@@ -126,8 +149,18 @@
             self.currentAlbum.owner = authContext.currentUser.email;
         });
       
-        this.getCurrentImageURL = function (size) {
+        self.getCurrentImageURL = function (size) {
             return imageService.getImageURL(this.currentImage, size);
+        }
+
+        self.hasBeenLiked = false;
+        self.like = function () {
+            if (!self.hasBeenLiked) {
+                imageService.likeImage(self.currentImage.id).then(function (res) {
+                    self.hasBeenLiked = res;
+                });
+            }
+           
         }
     }]);
     app.controller('navController', ['$scope', '$uibModal', '$state',function ($scope, $uibModal, $state) {
@@ -161,7 +194,7 @@
             });
 
         }
-        this.openAlbummModal = function () {
+        this.openAlbummModal = function (isEdit) {
             openModal({
                 animation: true,
                 templateUrl: 'createAlbum.html',
@@ -183,6 +216,7 @@
                 console.log('Modal dismissed at: ' + new Date());
             });
         }
+      
 
        
 
@@ -192,11 +226,7 @@
             $scope.userEmail = authContext.currentUser.email;
         });
         $scope.curAlbum = selectedAlbum;
-        //$scope.$watch(function watchAlbum () {
-        //    return selectedAlbum;
-        //}, function onAlbumChange(newValue, oldValue) {
-        //    $scope.album = newValue;
-        //});
+      
     }]);
     app.controller('uploadController', ['$scope', 'uploadService', '$uibModalInstance', '$timeout', 'authService', 'selectedAlbum', function ($scope, uploadService, $uibModalInstance, $timeout, authService, selectedAlbum) {
         

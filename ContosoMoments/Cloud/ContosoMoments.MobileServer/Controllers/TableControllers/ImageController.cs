@@ -17,6 +17,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
             DomainManager = new EntityDomainManager<Image>(context, Request);
+           
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]

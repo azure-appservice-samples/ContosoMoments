@@ -1,3 +1,4 @@
+
 (function (angular) {
     'use strict';
 
@@ -99,6 +100,20 @@
 
                 return defered.promise;
             },
+            updateAlbum: function (albumId,name) {
+                var defered = $q.defer();
+                var albumTable = mobileServicesClient.getTable('album');
+                albumTable.update({
+                    id: albumId,
+                    albumName:name
+                }).done(function (res) {
+                    defered.resolve(res);
+                }, function (err) {
+                    defered.reject(err);
+                });
+
+                return defered.promise;
+            },
             deleteAlbum: function (albumId) {
                 var defered = $q.defer();
                 var albumTable = mobileServicesClient.getTable('album');
@@ -116,7 +131,7 @@
         return albumService;
     }]);
 
-    app.factory('imageService', ['mobileServicesClient', '$interpolate', '$q', function (mobileServicesClient, $interpolate, $q) {
+    app.factory('imageService', ['mobileServicesClient', '$interpolate', '$http', '$q', 'appConfig', function (mobileServicesClient, $interpolate, $http, $q, appConfig) {
         var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}.jpg');
         var imageDefaultOptions = {
             start: 0,
@@ -141,6 +156,11 @@
             }
             return null;
         };
+
+        var setLikeForImage = function (id) {
+
+            return $http.post("/api/like", { imageId: id });
+        }
 
         return {
             getImageURL: function (img, imgSize) {
@@ -181,7 +201,9 @@
                         defered.reject(error);
                     });
                 return defered.promise;
-            }
+            },
+            likeImage: setLikeForImage
+            
         }
     }]);
 
@@ -247,6 +269,7 @@
             }
         }
     }]);
+
 
     app.value('selectedImage', { image: null, album: null });
 

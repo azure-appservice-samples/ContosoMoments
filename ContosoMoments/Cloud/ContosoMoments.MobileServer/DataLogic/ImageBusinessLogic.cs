@@ -56,5 +56,15 @@ namespace ContosoMoments.MobileServer.DataLogic
                 throw raise;
             }
         }
+
+        public Image GetImage(string id)
+        {
+            using (var ctx=new MobileServiceContext())
+            {
+                return ctx.Images.Include("User").SingleOrDefault(x => x.Id == id);
+            }
+            
+           
+        }
     }
 }

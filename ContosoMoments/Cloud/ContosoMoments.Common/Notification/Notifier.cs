@@ -5,19 +5,64 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Notifications;
+using System.Configuration;
 
 namespace ContosoMoments.Common.Notification
 {
     public class Notifier
     {
-        public static async Task sendGCMNotification(NotificationHubClient hub, string messgae
-            )
+
+        private NotificationHubClient hub;
+
+        private Notifier()
+        {
+            var connection = ConfigurationManager.AppSettings["NotificationHubConnection"];
+            hub = NotificationHubClient.CreateClientFromConnectionString(connection, "contomo");
+        }
+
+
+        private static Notifier instance;
+        public static Notifier Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Notifier();
+                }
+
+                return instance;
+            }
+        }
+
+
+        public async Task<bool> SendTemplateNotification(Dictionary<string, string> notification, IEnumerable<string> Tags)
+        {
+            NotificationOutcome outcome = null;
+            try
+            {
+                //  Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
+                // Define an Android notification.
+                outcome=await hub.SendTemplateNotificationAsync(notification,Tags);
+                
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Error while sending Google notification: " + ex.Message);
+            }
+
+            return outcome != null;
+
+             
+        }
+
+        public async Task sendGCMNotification(string message)
         {
             try
             {
               //  Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
                 // Define an Android notification.
-                var notification = "{\"data\":{\"msg\":\"" + messgae + "\"}}";
+                var notification = "{\"data\":{\"msg\":\"" + message + "\"}}";
                 await hub.SendGcmNativeNotificationAsync(notification);
             }
             catch (Exception ex)
@@ -26,13 +71,13 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public static async Task sendIOSNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        public  async Task sendIOSNotification(string message, RegistrationDescription registration)
         {
             try
             {
                 Trace.TraceInformation("Sending iOS alert to RegistrationId " + registration.RegistrationId);
                 // Define an iOS alert.
-                var alert = "{\"aps\":{\"alert\":\"" + messgae + "\"}}";
+                var alert = "{\"aps\":{\"alert\":\"" + message + "\"}}";
                 await hub.SendAppleNativeNotificationAsync(alert);
             }
             catch (Exception ex)
@@ -41,7 +86,7 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public static async Task sendWPNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        public  async Task sendWPNotification(string message, RegistrationDescription registration)
         {
             try
             {
@@ -51,7 +96,7 @@ namespace ContosoMoments.Common.Notification
                     "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                     "<wp:Notification xmlns:wp=\"WPNotification\">" +
                         "<wp:Toast>" +
-                            "<wp:Text1>" + messgae + "</wp:Text1>" +
+                            "<wp:Text1>" + message + "</wp:Text1>" +
                         "</wp:Toast> " +
                     "</wp:Notification>";
                 await hub.SendMpnsNativeNotificationAsync(mpnsToast);
@@ -62,14 +107,14 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public static async Task sendWindowsStoreNotification(NotificationHubClient hub, string messgae, RegistrationDescription registration)
+        public async Task sendWindowsStoreNotification(string message, RegistrationDescription registration)
         {
             try
             {
                 Trace.TraceInformation("Sending Windows Store toast to RegistrationId " + registration.RegistrationId);
                 // Define a Windows Store toast.
                 var wnsToast = "<toast><visual><binding template=\"ToastText01\">"
-                    + "<text id=\"1\">" + messgae
+                    + "<text id=\"1\">" + message
                     + "</text></binding></visual></toast>";
                 await hub.SendWindowsNativeNotificationAsync(wnsToast);
             }
