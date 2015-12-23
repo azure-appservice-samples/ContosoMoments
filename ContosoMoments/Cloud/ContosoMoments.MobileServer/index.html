@@ -33,9 +33,9 @@
                 <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="pull-right-sm" ng-show="showUpload">
-                            <a  href="#" ng-click="navCtrl.openUploadModal()">
-                                <span class="glyphicon glyphicon-cloud-upload"></span>
-                                <span class="hidden-sm hidden-md hidden-lg" >Upload Image</span>
+                            <a href="#" ng-click="navCtrl.deleteAlbumModal()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Delete Album</span>
                             </a>
                         </li>
                         <li class="pull-right-sm" ng-show="showUpload">
@@ -45,11 +45,13 @@
                             </a>
                         </li>
                         <li class="pull-right-sm" ng-show="showUpload">
-                            <a  href="#" ng-click="navCtrl.deleteAlbumModal()">
-                                <span class="glyphicon glyphicon-trash" ></span>
-                                <span class="hidden-sm hidden-md hidden-lg">Delete Album</span>
+                            <a  href="#" ng-click="navCtrl.openUploadModal()">
+                                <span class="glyphicon glyphicon-cloud-upload"></span>
+                                <span class="hidden-sm hidden-md hidden-lg" >Upload Image</span>
                             </a>
                         </li>
+                        
+                        
                         <li class="pull-right-sm" ng-show="showCreateAlbum">
                             <a  href="#" ng-click="navCtrl.openAlbummModal()">
                                 <span class="glyphicon glyphicon-plus" ></span>
