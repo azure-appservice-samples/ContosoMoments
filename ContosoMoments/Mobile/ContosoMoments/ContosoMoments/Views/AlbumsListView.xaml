@@ -61,10 +61,12 @@
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>
           <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label Text="New album name:" Grid.Row="0" Grid.Column="0" TextColor="White" HorizontalOptions="StartAndExpand"/>
         <Entry x:Name="entAlbumName" IsPassword="False" Keyboard="Text" Grid.Row="1" Grid.Column="0" TextColor="White"/>
-        <Button Text="Create" Grid.Row="1" Grid.Column="1" Clicked="OnCreateClick" TextColor="White"/>
+        <Button x:Name="btnUpdate" Text="Create" Grid.Row="1" Grid.Column="1" Clicked="OnCreateClick" TextColor="White"/>
+        <Button x:Name="btnCancel" Text="Cancel" Grid.Row="1" Grid.Column="2" Clicked="OnCancelClick" TextColor="White" IsVisible="False"/>
       </Grid>
       
     </StackLayout>
@@ -75,7 +77,7 @@
         <DataTemplate>
           <ViewCell>
             <ViewCell.ContextActions>
-              <!--<MenuItem Clicked="OnRename" Text="Rename"/>-->
+              <MenuItem Clicked="OnRename" Text="Rename"/>
               <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
             </ViewCell.ContextActions>
             <Grid Padding="8">

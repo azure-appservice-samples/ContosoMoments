@@ -142,5 +142,22 @@ namespace ContosoMoments.ViewModels
 
             return bRes;
         }
+
+        public async Task<bool> UpdateAlbumAsync(Album selectedAlbum)
+        {
+            bool bRes = true; //Assume success
+
+            try
+            {
+                //await albumTable.UpdateAsync(selectedAlbum);
+                await (App.Current as App).albumTableSync.UpdateAsync(selectedAlbum);
+            }
+            catch (Exception ex)
+            {
+                bRes = false;
+            }
+
+            return bRes;
+        }
     }
 }

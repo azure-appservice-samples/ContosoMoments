@@ -12,7 +12,8 @@ namespace ContosoMoments.Views
     public partial class AlbumsListView : ContentPage
     {
         AlbumsListViewModel viewModel = new AlbumsListViewModel(App.MobileService);
-
+        bool? isNew = null;
+        ContosoMoments.Models.Album editedAlbum = null;
 
         public AlbumsListView()
         {
@@ -114,22 +115,44 @@ namespace ContosoMoments.Views
             HideAndCleanupInput();
         }
 
+        public void OnCancelClick(object sender, EventArgs e)
+        {
+            HideAndCleanupInput();
+        }
+
         public async void OnCreateClick(object sender, EventArgs e)
         {
             if (null != entAlbumName.Text)
             {
                 if (entAlbumName.Text.Length > 0)
                 {
-                    bool res = await viewModel.AddNewAlbumAsync(entAlbumName.Text);
-
-                    if (res)
+                    if (isNew.Value)
                     {
-                        await DisplayAlert("Success", "Album created successfully and will appear in the list shortly", "OK");
-                        HideAndCleanupInput();
-                        OnRefresh(sender, e);
+                        bool res = await viewModel.AddNewAlbumAsync(entAlbumName.Text);
+
+                        if (res)
+                        {
+                            await DisplayAlert("Success", "Album created successfully and will appear in the list shortly", "OK");
+                            HideAndCleanupInput();
+                            OnRefresh(sender, e);
+                        }
+                        else
+                            await DisplayAlert("Album creation error", "Couldn't create new album. Please try again later.", "OK");
                     }
-                    else
-                        await DisplayAlert("Album creation error", "Couldn't create new album. Please try again later.", "OK");
+                    else if (!isNew.Value)
+                    {
+                        editedAlbum.AlbumName = entAlbumName.Text;
+                        bool res = await viewModel.UpdateAlbumAsync(editedAlbum);
+
+                        if (res)
+                        {
+                            await DisplayAlert("Success", "Album renamed successfully and will appear in the list shortly", "OK");
+                            HideAndCleanupInput();
+                            OnRefresh(sender, e);
+                        }
+                        else
+                            await DisplayAlert("Album update error", "Couldn't rename album. Please try again later.", "OK");
+                    }
                 }
                 else
                     await DisplayAlert("Album creation error", "New album name is empty. Please enter new album name and try again later.", "OK");
@@ -140,8 +163,12 @@ namespace ContosoMoments.Views
 
         private void HideAndCleanupInput()
         {
+            btnCancel.IsVisible = false;
+            entAlbumName.Text = "";
+            isNew = null;
+            editedAlbum = null;
             grdInput.IsVisible = false;
-            entAlbumName.Text = null;
+
         }
 
         public async void OnDelete(object sender, EventArgs e)
@@ -166,11 +193,23 @@ namespace ContosoMoments.Views
 
         public void OnRename(object sender, EventArgs e)
         {
-            //TODO!
+            isNew = false;
+
+            var selectedAlbum = (sender as MenuItem).BindingContext as ContosoMoments.Models.Album;
+
+            editedAlbum = selectedAlbum;
+            entAlbumName.Text = selectedAlbum.AlbumName;
+            grdInput.IsVisible = true;
+            btnCancel.IsVisible = true;
+            btnUpdate.Text = "Update";
         }
 
         public async void OnAdd(object sender, EventArgs e)
         {
+            isNew = true;
+            entAlbumName.Text = "";
+            btnUpdate.Text = "Create";
+            btnCancel.IsVisible = false;
             grdInput.IsVisible = !grdInput.IsVisible;
         }
 
