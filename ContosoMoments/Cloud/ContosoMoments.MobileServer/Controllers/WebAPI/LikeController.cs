@@ -27,8 +27,8 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 {
                     { "message",string.Format("{0} has liked your image",User.Identity.Name)}
                 };
-                //var tags = new string[1] { img.User.Email };
-                var tags = new string[1] { "uemail:noynir@gmail.com" };
+                var tags = new string[1] { img.User.Email };
+                //var tags = new string[1] { "uemail:noynir@gmail.com" };
                 var res = await Notifier.Instance.SendTemplateNotification(message, tags);
                 return res;
             }
