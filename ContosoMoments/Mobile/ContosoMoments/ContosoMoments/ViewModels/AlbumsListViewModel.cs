@@ -93,7 +93,7 @@ namespace ContosoMoments.ViewModels
             {
                 //albumTable = _client.GetTable<Album>();
                 //Albums = await albumTable.ToCollectionAsync();
-                Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();
+                Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();                
             }
             catch (MobileServiceInvalidOperationException ex)
             {
