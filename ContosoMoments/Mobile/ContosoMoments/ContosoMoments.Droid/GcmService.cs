@@ -111,7 +111,7 @@ namespace ContosoMoments.Droid
             string message = intent.Extras.GetString("message");
             if (!string.IsNullOrEmpty(message))
             {
-                createNotification("New todo item!", "Todo item: " + message);
+                createNotification("New like received!", "Liked image: " + message);
                 return;
             }
 

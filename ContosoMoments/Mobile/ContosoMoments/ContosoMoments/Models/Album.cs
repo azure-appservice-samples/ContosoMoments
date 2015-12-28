@@ -11,6 +11,7 @@ namespace ContosoMoments.Models
         string albumId;
         string albumName;
         bool isDefault;
+        //bool deleted;
         string userId;
 
         [JsonProperty(PropertyName = "Id")]
@@ -40,6 +41,14 @@ namespace ContosoMoments.Models
             get { return userId; }
             set { userId = value; }
         }
+
+        ////[JsonProperty(PropertyName = "Deleted")]
+        //[Deleted]
+        //public bool IsDeleted
+        //{
+        //    get { return deleted; }
+        //    set { deleted = value; }
+        //}
 
         [Version]
         public string Version { get; set; }

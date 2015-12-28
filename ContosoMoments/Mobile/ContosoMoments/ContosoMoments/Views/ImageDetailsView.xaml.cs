@@ -27,7 +27,14 @@ namespace ContosoMoments.Views
         public async void OnLike(object sender, EventArgs e)
         {
             ImageDetailsViewModel vm = this.BindingContext as ImageDetailsViewModel;
-            await vm.LikeImageAsync();
+            if (await vm.LikeImageAsync())
+            {
+                await DisplayAlert("Success", "Your like sent to image author.", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Error", "'Like' functionality is not available at the moment. Please try again later", "OK");
+            }
         }
 
         public async void OnSettings(object sender, EventArgs e)

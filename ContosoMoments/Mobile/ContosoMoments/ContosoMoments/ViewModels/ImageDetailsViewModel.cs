@@ -48,17 +48,23 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        public async Task LikeImageAsync()
+        public async Task<bool> LikeImageAsync()
         {
+            bool bRes = true; //Assume success
             try
             {
-                string body = string.Format("'{0}'", Image.ImageId.ToString());
+                string body = string.Format("{{'imageId':'{0}'}}", Image.Id.ToString());
 
-                await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
+                var res = await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
+
+                bRes = res;
             }
             catch (Exception ex)
             {
+                bRes = false;
             }
+
+            return bRes;
         }
     }
 }
