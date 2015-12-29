@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2014/deployment" AppPlatformVersion="8.1">
   <DefaultLanguage xmlns="" code="en-US" />
-  <App xmlns="" ProductID="{1bdd4d3a-8695-4e52-8051-e25f4c6ed7e8}" Title="Contoso Moments" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="ContosoMoments.WinPhone author" Description="Contoso Moments demo app" Publisher="ContosoMoments.WinPhone" PublisherID="{5ccc0123-68c0-4103-83f5-af6206d42081}" SDOptOut="true">
+  <App xmlns="" ProductID="{1bdd4d3a-8695-4e52-8051-e25f4c6ed7e8}" Title="Contoso Moments" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="ContosoMoments.WinPhone author" Description="Contoso Moments demo app" Publisher="ContosoMoments.WinPhone" PublisherID="{5ccc0123-68c0-4103-83f5-af6206d42081}" SDOptOut="true" NotificationService="WNS">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />

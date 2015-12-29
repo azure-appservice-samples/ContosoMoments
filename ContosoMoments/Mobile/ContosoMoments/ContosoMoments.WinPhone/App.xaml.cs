@@ -10,6 +10,7 @@ using ContosoMoments.WinPhone.Resources;
 using Microsoft.Phone.Notification;
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
+using Windows.Networking.PushNotifications;
 
 namespace ContosoMoments.WinPhone
 {
@@ -226,9 +227,28 @@ namespace ContosoMoments.WinPhone
             }
         }
 
-        public static void AcquirePushChannel()
+        public static async void AcquirePushChannel(MobileServiceClient client)
         {
-            Debug.WriteLine("MPNS Push Notifications are not supported in WP8.1 Silverlight due to lack of support in Azure Mobile Apps Client SDK");
+            Debug.WriteLine("WNS Push Notifications are not supported in WP8.1 Silverlight due to lack of support in Azure Mobile Apps Client SDK");
+
+
+            //NOT SUPPORTED IN WP SP8.1
+            //var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+
+            //const string templateBodyWNS = "<toast><visual><binding template=\"ToastText01\"><text id=\"1\">$(messageParam)</text></binding></visual></toast>";
+
+            //JObject headers = new JObject();
+            //headers["X-WNS-Type"] = "wns/toast";
+
+            //JObject templates = new JObject();
+            //templates["genericMessage"] = new JObject
+            //{
+            //  {"body", templateBodyWNS},
+            //  {"headers", headers} // Only needed for WNS & MPNS
+            //};
+
+            //var push = client.GetPush();
+            //await push.RegisterAsync(channel.Uri, templates);
         }
     }
 }

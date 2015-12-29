@@ -83,6 +83,9 @@ namespace ContosoMoments.Views
                         App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
                         App.AuthenticatedUser = App.MobileService.CurrentUser;
 
+                        await (App.Current as App).InitLocalStoreAsync(App.DB_LOCAL_FILENAME);
+                        (App.Current as App).InitLocalTables();
+
                         if (isAuthRequred && App.AuthenticatedUser == null)
                         {
                             App.Current.MainPage = new NavigationPage(new Login());

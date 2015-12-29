@@ -89,7 +89,7 @@ namespace ContosoMoments
                 AuthenticatedUser = MobileService.CurrentUser;
 
                 await InitLocalStoreAsync(DB_LOCAL_FILENAME);
-                InitLocalTablesAsync();
+                InitLocalTables();
 
                 //DEBUG
                 //await SyncAsync();
@@ -157,7 +157,7 @@ namespace ContosoMoments
             ShouldTakePicture();
         }
 
-        private async Task InitLocalStoreAsync(string localDbFilename)
+        public async Task InitLocalStoreAsync(string localDbFilename)
         {
             if (!MobileService.SyncContext.IsInitialized)
             {
@@ -198,7 +198,7 @@ namespace ContosoMoments
             await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery()); // query ID is used for incremental sync
         }
 
-        private void InitLocalTablesAsync()
+        public void InitLocalTables()
         {
             try
             {
