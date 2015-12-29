@@ -100,6 +100,15 @@ namespace ContosoMoments
                 }
                 else
                 {
+#if __DROID__
+                    Droid.GcmService.RegisterWithMobilePushNotifications();
+#elif __IOS__
+                    iOS.AppDelegate.IsAfterLogin = true;
+                    await iOS.AppDelegate.RegisterWithMobilePushNotifications();
+#elif __WP__
+                    ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+#endif
+
                     MainPage = new NavigationPage(new AlbumsListView());
                 }
             }

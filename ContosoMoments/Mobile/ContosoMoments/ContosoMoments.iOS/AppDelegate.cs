@@ -31,21 +31,27 @@ namespace ContosoMoments.iOS
         {
             app.StatusBarHidden = true;
 
-            // registers for push for iOS8
-            var settings = UIUserNotificationSettings.GetSettingsForTypes(
-                UIUserNotificationType.Alert
-                | UIUserNotificationType.Badge
-                | UIUserNotificationType.Sound,
-                new NSSet());
-
-
             global::Xamarin.Forms.Forms.Init();
 
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
             SQLitePCL.CurrentPlatform.Init();
 
-            UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
-            UIApplication.SharedApplication.RegisterForRemoteNotifications();
+            if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+            {
+                var settings = UIUserNotificationSettings.GetSettingsForTypes(UIUserNotificationType.Sound |
+                                                                              UIUserNotificationType.Alert |
+                                                                              UIUserNotificationType.Badge, null);
+
+                UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+                UIApplication.SharedApplication.RegisterForRemoteNotifications();
+
+            }
+            else
+            {
+                UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(UIRemoteNotificationType.Badge |
+                                                                                   UIRemoteNotificationType.Sound |
+                                                                                   UIRemoteNotificationType.Alert);
+            }
 
             LoadApplication(new ContosoMoments.App());
 
@@ -77,7 +83,7 @@ namespace ContosoMoments.iOS
             if (null != DeviceToken && IsAfterLogin)
             {
                 // Register for push with Mobile Services
-                IEnumerable<string> tag = new List<string>() { "uniqueTag" };
+                //IEnumerable<string> tag = new List<string>() { "uniqueTag" };
 
                 const string notificationTemplate = "{\"aps\":{\"alert\":\"$(message)\"}}";
 
