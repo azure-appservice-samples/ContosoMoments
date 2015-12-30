@@ -46,25 +46,27 @@ namespace ContosoMoments.Droid
 
         public static void RegisterWithMobilePushNotifications()
         {
-            MobileServiceClient client = App.MobileService;
-            var push = client.GetPush();
-
-            MainActivity.DefaultService.RunOnUiThread(async () =>
+            if (null != RegistrationID)
             {
-                try
+                MobileServiceClient client = App.MobileService;
+                var push = client.GetPush();
+
+                MainActivity.DefaultService.RunOnUiThread(async () =>
                 {
-                    const string template = "{\"data\":{\"message\":\"$(message)\"}}";
+                    try
+                    {
+                        const string template = "{\"data\":{\"message\":\"$(message)\"}}";
 
-                    var jObject = Newtonsoft.Json.Linq.JObject.Parse(template);
+                        var jObject = Newtonsoft.Json.Linq.JObject.Parse(template);
 
-                    await push.RegisterAsync(RegistrationID, jObject);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(PushHandlerBroadcastReceiver.TAG, "RegisterWithMobilePushNotifications: " + ex.Message);
-                }
-            });
-
+                        await push.RegisterAsync(RegistrationID, jObject);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(PushHandlerBroadcastReceiver.TAG, "RegisterWithMobilePushNotifications: " + ex.Message);
+                    }
+                });
+            }
         }
 
         protected override void OnRegistered(Context context, string registrationId)
@@ -72,6 +74,8 @@ namespace ContosoMoments.Droid
             Log.Verbose(PushHandlerBroadcastReceiver.TAG, "GCM Registered: " + registrationId);
             RegistrationID = registrationId;
 
+            if (null != registrationId)
+                RegisterWithMobilePushNotifications();
             //createNotification("GcmService Registered...", "The device has been Registered, Tap to View!");
         }
 

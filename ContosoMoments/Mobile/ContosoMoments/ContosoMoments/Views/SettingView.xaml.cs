@@ -92,6 +92,14 @@ namespace ContosoMoments.Views
                         }
                         else
                         {
+#if __DROID__
+                            Droid.GcmService.RegisterWithMobilePushNotifications();
+#elif __IOS__
+                            iOS.AppDelegate.IsAfterLogin = true;
+                            await iOS.AppDelegate.RegisterWithMobilePushNotifications();
+#elif __WP__
+                            ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+#endif
                             // The root page of your application
                             //App.Current.MainPage = new NavigationPage(new ImagesList());
                             App.Current.MainPage = new NavigationPage(new AlbumsListView());

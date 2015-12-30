@@ -64,7 +64,11 @@
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label Text="New album name:" Grid.Row="0" Grid.Column="0" TextColor="White" HorizontalOptions="StartAndExpand"/>
-        <Entry x:Name="entAlbumName" IsPassword="False" Keyboard="Text" Grid.Row="1" Grid.Column="0" TextColor="White"/>
+        <Entry x:Name="entAlbumName" IsPassword="False" Keyboard="Text" Grid.Row="1" Grid.Column="0" TextColor="White">
+          <Entry.TextColor>
+            <OnPlatform x:TypeArguments="Color" iOS="Black" Android="White" WinPhone="White"/>
+          </Entry.TextColor>
+        </Entry>
         <Button x:Name="btnUpdate" Text="Create" Grid.Row="1" Grid.Column="1" Clicked="OnCreateClick" TextColor="White"/>
         <Button x:Name="btnCancel" Text="Cancel" Grid.Row="1" Grid.Column="2" Clicked="OnCancelClick" TextColor="White" IsVisible="False"/>
       </Grid>
