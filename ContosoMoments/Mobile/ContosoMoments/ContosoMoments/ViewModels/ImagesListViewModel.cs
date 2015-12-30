@@ -150,17 +150,20 @@ namespace ContosoMoments.ViewModels
 
             try
             {
-                var json = await _client.GetTable<Image>().ReadAsync("$expand=Album");
-                var images = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Image>>(json.ToString());
+                //var json = await _client.GetTable<Image>().ReadAsync("$expand=Album");
+                //var images = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Image>>(json.ToString());
+                //var res = from image in images
+                //          where image.Album.AlbumId == albumId
+                //          select image;
+
+                //_Images = res.ToList();
+                
+                var images = await (App.Current as App).imageTableSync.ToListAsync();
                 var res = from image in images
-                          where image.Album.AlbumId == albumId
+                          where image.AlbumId == albumId
                           select image;
 
                 _Images = res.ToList();
-                //IMobileServiceTable<Image> table = _client.GetTable<Image>();
-                //Images = await table.ToCollectionAsync();
-
-                var iii = await (App.Current as App).imageTableSync.ToCollectionAsync();
             }
             catch (MobileServiceInvalidOperationException ex)
             {
