@@ -16,8 +16,12 @@ namespace ContosoMoments.Common.Notification
 
         private Notifier()
         {
+            var testSend = false;
+            #if DEBUG
+                testSend = true;
+            #endif
             var connection = ConfigurationManager.AppSettings["NotificationHubConnection"];
-            hub = NotificationHubClient.CreateClientFromConnectionString(connection, "contomo");
+            hub = NotificationHubClient.CreateClientFromConnectionString(connection, "contomo", testSend);
         }
 
 
@@ -43,8 +47,10 @@ namespace ContosoMoments.Common.Notification
             {
                 //  Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
                 // Define an Android notification.
+              
                 outcome=await hub.SendTemplateNotificationAsync(notification,Tags);
-                
+               
+
             }
             catch (Exception ex)
             {
@@ -60,6 +66,7 @@ namespace ContosoMoments.Common.Notification
         {
             try
             {
+               
               //  Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
                 // Define an Android notification.
                 var notification = "{\"data\":{\"msg\":\"" + message + "\"}}";

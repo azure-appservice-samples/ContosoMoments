@@ -209,12 +209,12 @@
 
     app.factory('uploadService', ['azureBlob', '$http', 'appConfig', '$rootScope', function (azureBlob, $http, appConfig, $rootScope) {
         var getSasUrl = function () {
-            return $http.get(appConfig.DefaultServiceUrl + "/api/GetSasUrl").then(function (res) {
+            return $http.get( "/api/GetSasUrl").then(function (res) {
                 return res.data;
             });
         }
         var commit = function (sasurl,options) {
-            return $http.post(appConfig.DefaultServiceUrl + 'api/CommitBlob', {
+            return $http.post('/api/CommitBlob', {
                 isMobile: false,
                 UserId: options.userId,
                 AlbumId:options.albumId,

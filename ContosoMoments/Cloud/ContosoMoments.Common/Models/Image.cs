@@ -13,8 +13,15 @@ namespace ContosoMoments.Common.Models
 
         public string ContainerName { get; set; }
         public string FileName { get; set; }
+
+        [Column("Album_Id")]
+        public string AlbumId { get; set; }
+
       // public string SasUrl { get; set; }
         public virtual Album Album { get; set; }
+
+        [Column("User_Id")]
+        public string UserId { get; set; }
         public User User { get; set; }
 
         public IEnumerable<Like> Likes { get; set; }
