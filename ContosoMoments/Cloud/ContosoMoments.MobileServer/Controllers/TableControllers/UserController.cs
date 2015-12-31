@@ -7,6 +7,8 @@ using System.Web.Http.OData;
 using ContosoMoments.Common.Models;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
+using System.Configuration;
+using System;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -14,9 +16,10 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
     {
         protected override void Initialize(HttpControllerContext controllerContext)
         {
+            var softDeleteEnabled=Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
-            DomainManager = new EntityDomainManager<User>(context, Request ,enableSoftDelete: true);
+            DomainManager = new EntityDomainManager<User>(context, Request ,enableSoftDelete: softDeleteEnabled);
         }
 
         // GET tables/User

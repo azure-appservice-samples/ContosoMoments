@@ -7,6 +7,8 @@ using System.Web.Http.OData;
 using ContosoMoments.Common.Models;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
+using System.Configuration;
+using System;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -15,9 +17,10 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         protected override void Initialize(HttpControllerContext controllerContext)
         {
             base.Initialize(controllerContext);
+            var softDeleteEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
             MobileServiceContext context = new MobileServiceContext();
             controllerContext.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            DomainManager = new EntityDomainManager<Album>(context, Request, enableSoftDelete: true);
+            DomainManager = new EntityDomainManager<Album>(context, Request, enableSoftDelete: softDeleteEnabled);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]

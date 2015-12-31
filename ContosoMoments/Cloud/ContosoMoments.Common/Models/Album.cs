@@ -19,7 +19,5 @@ namespace ContosoMoments.Common.Models
 
         [Column("User_Id")]
         public string UserId { get; set; }
-
-
     }
 }
