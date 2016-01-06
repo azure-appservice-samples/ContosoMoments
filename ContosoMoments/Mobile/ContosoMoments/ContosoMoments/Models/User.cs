@@ -35,5 +35,14 @@ namespace ContosoMoments.Models
 
         [Version]
         public string Version { get; set; }
+
+        [CreatedAt]
+        public DateTime CreatedAt { get; set; }
+
+        [UpdatedAt]
+        public DateTime UpdatedAt { get; set; }
+
+        [Deleted]
+        public bool Deleted { get; set; }
     }
 }

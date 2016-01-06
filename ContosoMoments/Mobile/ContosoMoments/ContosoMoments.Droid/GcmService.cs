@@ -46,9 +46,10 @@ namespace ContosoMoments.Droid
 
         public static void RegisterWithMobilePushNotifications()
         {
-            if (null != RegistrationID)
+            MobileServiceClient client = App.MobileService;
+
+            if (null != RegistrationID && null != client)
             {
-                MobileServiceClient client = App.MobileService;
                 var push = client.GetPush();
 
                 MainActivity.DefaultService.RunOnUiThread(async () =>

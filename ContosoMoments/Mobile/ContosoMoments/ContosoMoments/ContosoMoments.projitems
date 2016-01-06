@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Image.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IMobileClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\INetworkConnection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ISettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />

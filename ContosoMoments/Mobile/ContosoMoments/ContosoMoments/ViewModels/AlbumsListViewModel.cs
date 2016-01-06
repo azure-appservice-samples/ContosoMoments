@@ -6,6 +6,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Linq;
+
+
 namespace ContosoMoments.ViewModels
 {
     public class AlbumsListViewModel : BaseViewModel
@@ -91,8 +94,18 @@ namespace ContosoMoments.ViewModels
 
             try
             {
-                //albumTable = _client.GetTable<Album>();
-                //Albums = await albumTable.ToCollectionAsync();
+                //DEBUG - WRONG, WORKING
+                var json = await _client.GetTable<Album>().ReadAsync("$expand=User");
+                var albums = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Album>>(json.ToString());
+                var res = from album in albums
+                          select album;
+
+                var aaa = res.ToList();
+
+                //DEBUG - OK, NOT WORKING
+                var albumTable = _client.GetTable<Album>();
+                var zzz = await albumTable.ToCollectionAsync();
+
                 Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();                
             }
             catch (MobileServiceInvalidOperationException ex)

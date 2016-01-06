@@ -51,7 +51,12 @@ namespace ContosoMoments.Views
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
-                    await (App.Current as App).SyncAsync();
+                    if (Utils.IsOnline())
+                    {
+                        await (App.Current as App).SyncAsync();
+                    }
+                    else
+                        await DisplayAlert("Working Offline", "Couldn't sync data - device is offline. Using local data. Please try again when data connection is back", "OK");
 
                     if (null == viewModel.User)
                         await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
@@ -229,7 +234,15 @@ namespace ContosoMoments.Views
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
                 HideAndCleanupInput();
-                await (App.Current as App).SyncAsync();
+                if (Utils.IsOnline())
+                {
+                    await (App.Current as App).SyncAsync();
+                }
+                else
+                {
+                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline. Please try again when data connection is back", "OK");
+                }
+
                 await LoadItems();
             }
         }

@@ -27,6 +27,7 @@ namespace ContosoMoments.Views
                 App.AuthenticatedUser = user;
                 System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
 
+                //await Utils.DEBUG_GetFBUser(user.MobileServiceAuthenticationToken);
 
 #if __DROID__
                 Droid.GcmService.RegisterWithMobilePushNotifications();
