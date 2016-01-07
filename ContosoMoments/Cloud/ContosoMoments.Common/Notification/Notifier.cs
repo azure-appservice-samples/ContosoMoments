@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.ServiceBus.Notifications;
 using System.Configuration;
+using Microsoft.Azure.NotificationHubs;
 
 namespace ContosoMoments.Common.Notification
 {

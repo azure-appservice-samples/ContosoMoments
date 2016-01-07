@@ -94,17 +94,8 @@ namespace ContosoMoments.ViewModels
 
             try
             {
-                //DEBUG - WRONG, WORKING
-                var json = await _client.GetTable<Album>().ReadAsync("$expand=User");
-                var albums = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Album>>(json.ToString());
-                var res = from album in albums
-                          select album;
-
-                var aaa = res.ToList();
-
-                //DEBUG - OK, NOT WORKING
-                var albumTable = _client.GetTable<Album>();
-                var zzz = await albumTable.ToCollectionAsync();
+                //var albumTable = _client.GetTable<Album>();
+                //var zzz = await albumTable.ToCollectionAsync();
 
                 Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();                
             }

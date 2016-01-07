@@ -74,7 +74,7 @@
                 albumTable.where({
                     "User/Id": userId
                 })
-                .orderByDescending("__createdAt")
+                .orderByDescending("createdAt")
                 .read()
                 .done(function (results) {
                     defered.resolve(results);
@@ -174,7 +174,7 @@
                     imageTable.where({
                         'Album/Id': album.id
                     })
-                    .orderByDescending("__createdAt")
+                    .orderByDescending("createdAt")
                     .skip(reqOptions.start)
                     .take(reqOptions.count)
                     .read()

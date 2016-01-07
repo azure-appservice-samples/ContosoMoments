@@ -217,7 +217,7 @@
       ],
       "properties": {
         "name": "[parameters('siteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
+        "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
         {
@@ -256,6 +256,7 @@
             "DefaultUserId": "[parameters('DefaultUserId')]",
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]",
             "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net/')]",
+            "enableSoftDelete": "true",
             "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.MobileServer\\ContosoMoments.MobileServer.csproj"
           }
         },
@@ -285,7 +286,7 @@
       ],
       "properties": {
         "name": "[variables('webJobSiteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
+        "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
         {

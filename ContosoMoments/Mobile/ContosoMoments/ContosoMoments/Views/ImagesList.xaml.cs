@@ -117,7 +117,7 @@ namespace ContosoMoments.Views
             var success = false;
             try
             {
-                await SyncItemsAsync(false);
+                await SyncItemsAsync(true);
                 success = true;
             }
             catch (Exception ex)
@@ -169,6 +169,14 @@ namespace ContosoMoments.Views
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
+                if (Utils.IsOnline())
+                {
+                    await (App.Current as App).SyncAsync();
+                }
+                else
+                {
+                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline. Please try again when data connection is back", "OK");
+                }
                 //await manager.SyncImagesAsync();
                 await LoadItems();
             }

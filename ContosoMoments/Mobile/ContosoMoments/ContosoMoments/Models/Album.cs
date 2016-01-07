@@ -43,19 +43,15 @@ namespace ContosoMoments.Models
         }
 
         [Version]
-        [JsonProperty(PropertyName = "__version")]
         public string Version { get; set; }
 
         [CreatedAt]
-        [JsonProperty(PropertyName = "__createdAt")]
         public DateTime CreatedAt { get; set; }
 
         [UpdatedAt]
-        [JsonProperty(PropertyName = "__updatedAt")]
         public DateTime UpdatedAt { get; set; }
 
         [Deleted]
-        [JsonProperty(PropertyName = "__deleted")]
         public bool Deleted { get; set; }
     }
 }

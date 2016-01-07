@@ -61,6 +61,8 @@ namespace ContosoMoments.Droid
                         var jObject = Newtonsoft.Json.Linq.JObject.Parse(template);
 
                         await push.RegisterAsync(RegistrationID, jObject);
+                        Log.Verbose(PushHandlerBroadcastReceiver.TAG, "NotificationHub registration successful");
+
                     }
                     catch (Exception ex)
                     {
