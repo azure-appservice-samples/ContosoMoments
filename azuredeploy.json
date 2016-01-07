@@ -217,7 +217,7 @@
       ],
       "properties": {
         "name": "[parameters('siteName')]",
-        "serverFarm": "[parameters('hostingPlanName')]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
       },
       "resources": [
         {
@@ -225,7 +225,8 @@
           "type": "config",
           "name": "web",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('siteName'))]"
+            "[concat('Microsoft.Web/sites/', parameters('siteName'))]",
+            "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
           ],
           "properties": {
             "connectionStrings": [
@@ -242,7 +243,8 @@
           "type": "config",
           "name": "appsettings",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('siteName'))]"
+            "[concat('Microsoft.Web/sites/', parameters('siteName'))]",
+            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
           ],
           "properties": {
             "StorageAccountName": "[variables('storageAccountName')]",
@@ -258,11 +260,12 @@
           }
         },
         {
-          "apiVersion":"2015-04-01",
-          "name":"web",
-          "type":"sourcecontrols",
-          "dependsOn":[
-            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
+            "[concat('Microsoft.Web/Sites/', parameters('siteName'), '/config/appsettings')]"
           ],
           "properties":{
             "RepoUrl": "[parameters('repoUrl')]",
@@ -283,7 +286,7 @@
       ],
       "properties": {
         "name": "[variables('webJobSiteName')]",
-        "serverFarm": "[parameters('hostingPlanName')]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
       },
       "resources": [
         {
@@ -291,7 +294,8 @@
           "type": "config",
           "name": "appsettings",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('webJobSiteName'))]"
+            "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]",
+            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
           ],
           "properties": {
             "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
@@ -304,7 +308,8 @@
           "name": "web",
           "type": "sourcecontrols",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('webJobSiteName'))]"
+            "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]",
+            "[concat('Microsoft.Web/sites/', variables('webJobSiteName'), '/config/appsettings')]"
           ],
           "properties": {
             "RepoUrl": "[parameters('repoUrl')]",
