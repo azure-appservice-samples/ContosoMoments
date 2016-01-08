@@ -33,17 +33,21 @@ namespace ContosoMoments.WinPhone
 
         private void CameraCaptureTaskOnCompleted(object sender, PhotoResult e)
         {
+            bool imageReady = true;
             if (e.TaskResult == TaskResult.None)
             {
-                return;
+                imageReady = false;
             }
 
             if (e.TaskResult == TaskResult.Cancel)
             {
-                return;
+                imageReady = false;
             }
 
-            ContosoMoments.App.Instance.ShowCapturedImage(e.ChosenPhoto);
+            if (imageReady)
+                ContosoMoments.App.Instance.ShowCapturedImage(e.ChosenPhoto);
+            else
+                ContosoMoments.App.Instance.ShowCapturedImage(null);
         }
     }
 }

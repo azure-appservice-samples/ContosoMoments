@@ -37,11 +37,13 @@ namespace ContosoMoments
 
             Label label = new Label() { Text = "Loading..." };
             label.TextColor = Color.White;
-            Image img = new Image() {
+            Image img = new Image()
+            {
                 Source = Device.OnPlatform(
                     iOS: ImageSource.FromFile("Assets/logo.png"),
                     Android: ImageSource.FromFile("logo.png"),
-                    WinPhone: ImageSource.FromFile("Assets/logo.png"))};
+                    WinPhone: ImageSource.FromFile("Assets/logo.png"))
+            };
             StackLayout stack = new StackLayout();
             stack.VerticalOptions = LayoutOptions.Center;
             stack.HorizontalOptions = LayoutOptions.Center;
@@ -114,7 +116,7 @@ namespace ContosoMoments
             }
         }
 
-        
+
 
         protected override void OnSleep()
         {
@@ -126,38 +128,54 @@ namespace ContosoMoments
             // Handle when your app resumes
         }
 
+#if !__WP__
         public async void ShowCapturedImage(string filepath)
         {
-
-            FileStream fs = new FileStream(filepath, FileMode.Open);
-            if (fs.CanRead)
+            if (null != filepath)
             {
-                byte[] buffer = new byte[fs.Length];
-                await fs.ReadAsync(buffer, 0, (int)fs.Length);
+                FileStream fs = new FileStream(filepath, FileMode.Open);
+                if (fs.CanRead)
+                {
+                    byte[] buffer = new byte[fs.Length];
+                    await fs.ReadAsync(buffer, 0, (int)fs.Length);
 
-                ImageStream = new MemoryStream(buffer);
+                    ImageStream = new MemoryStream(buffer);
+                }
+
+                //DEBUG
+                //image = ImageSource.FromFile(filepath);
+
+                if (null != ImageTaken)
+                    ImageTaken(this, new EventArgs());
             }
-
-            //DEBUG
-            //image = ImageSource.FromFile(filepath);
-
-            if (null != ImageTaken)
-                ImageTaken(this, new EventArgs());
+            else
+            {
+                ImageStream = null;
+                if (null != ImageTaken)
+                    ImageTaken(this, new EventArgs());
+            }
         }
-
-#if __WP__
+#elif __WP__
         public async void ShowCapturedImage(Stream stream)
         {
             //DEBUG
             //image = ImageSource.FromStream(() => stream);
+            if (null != stream)
+            {
+                byte[] bytes = new byte[(int)stream.Length];
+                await stream.ReadAsync(bytes, 0, (int)stream.Length);
 
-            byte[] bytes = new byte[(int)stream.Length];
-            await stream.ReadAsync(bytes, 0, (int)stream.Length);
+                ImageStream = new MemoryStream(bytes);
 
-            ImageStream = new MemoryStream(bytes);
-
-            if (null != ImageTaken)
-                ImageTaken(this, new EventArgs());
+                if (null != ImageTaken)
+                    ImageTaken(this, new EventArgs());
+            }
+            else
+            {
+                ImageStream = null;
+                if (null != ImageTaken)
+                    ImageTaken(this, new EventArgs());
+            }
         }
 #endif
 
@@ -202,7 +220,7 @@ namespace ContosoMoments
         public async Task SyncAsync()
         {
             await MobileService.SyncContext.PushAsync();
-            await userTableSync.PullAsync("allUsers", userTableSync.CreateQuery() ); // query ID is used for incremental sync
+            await userTableSync.PullAsync("allUsers", userTableSync.CreateQuery()); // query ID is used for incremental sync
             await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); // query ID is used for incremental sync
             await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery()); // query ID is used for incremental sync
         }
@@ -217,7 +235,7 @@ namespace ContosoMoments
             }
             catch (Exception ex)
             {
-                
+
             }
         }
     }

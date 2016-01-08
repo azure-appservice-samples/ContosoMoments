@@ -57,12 +57,12 @@ namespace ContosoMoments.Views
                     //if (null == User)
                     //    await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
                     //else
-                        viewModel.User = User;
+                    viewModel.User = User;
 
                     //if (null == Album)
                     //    await viewModel.GetAlbumAsync(/*Guid.Parse(*/"11111111-1111-1111-1111-111111111111"/*)*/);
                     //else
-                        viewModel.Album = Album;
+                    viewModel.Album = Album;
 
                     //await manager.SyncImagesAsync();
                     await LoadItems();
@@ -83,20 +83,24 @@ namespace ContosoMoments.Views
         {
             //DEBUG
             //imgPreview.Source = App.Instance.image;
-
-            //Upload image
-            using (var scope = new ActivityIndicatorScope(syncIndicator, true))
+            if (null != App.Instance.ImageStream)
             {
-                if (await viewModel.UploadImageAsync(App.Instance.ImageStream))
+                //Upload image
+                using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
-                    await DisplayAlert("Upload succeeded", "Image uploaded and will appear in the list shortly", "Ok");
-                    OnRefresh(sender, e);
-                }
-                else
-                {
-                    await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
+                    if (await viewModel.UploadImageAsync(App.Instance.ImageStream))
+                    {
+                        await DisplayAlert("Upload succeeded", "Image uploaded and will appear in the list shortly", "Ok");
+                        OnRefresh(sender, e);
+                    }
+                    else
+                    {
+                        await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
+                    }
                 }
             }
+            else
+                await DisplayAlert("Upload cancelled", "Image upload cancelled.", "Ok");
         }
 
         private async Task LoadItems()

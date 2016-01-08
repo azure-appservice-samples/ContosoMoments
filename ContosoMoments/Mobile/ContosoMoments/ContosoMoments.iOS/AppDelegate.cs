@@ -73,7 +73,11 @@ namespace ContosoMoments.iOS
 //                app.KeyWindow.RootViewController.DismissViewController(true, null);
 //            };
 
-//            imagePicker.Canceled += (sender, e) => app.KeyWindow.RootViewController.DismissViewController(true, null);
+//            imagePicker.Canceled += (sender, e) =>
+//            {
+//                (Xamarin.Forms.Application.Current as App).ShowCapturedImage(null);
+//                app.KeyWindow.RootViewController.DismissViewController(true, null);
+//            };
 
             return base.FinishedLaunching(app, options);
         }

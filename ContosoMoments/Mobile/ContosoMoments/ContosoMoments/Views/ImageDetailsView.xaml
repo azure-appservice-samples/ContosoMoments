@@ -58,17 +58,17 @@
 
     <!--Links to external images-->
     <StackLayout Grid.Row="3" BackgroundColor="White" Padding="10,0">
-      <Button Text="Small Image" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">
+      <Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
-      <Button Text="Medium Image" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}">
+      <Button Text="Open medium image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}">
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
-      <Button Text="Large Image" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}">
+      <Button Text="Open large image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}">
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>

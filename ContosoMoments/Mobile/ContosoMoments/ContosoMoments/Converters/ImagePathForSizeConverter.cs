@@ -12,12 +12,14 @@ namespace ContosoMoments.Converters
         {
             string param = (string)parameter;
             IDictionary<string, Uri> imagePaths = (IDictionary<string, Uri>)value;
-            ImageSource retVal = null;
+            UriImageSource retVal = null;
 
             if (null != imagePaths)
             {
                 if (imagePaths.ContainsKey(param))
-                    retVal = ImageSource.FromUri(imagePaths[param]);
+                {
+                    return new UriImageSource() { Uri = imagePaths[param], CachingEnabled = false};
+                }
             }
 
             return retVal;

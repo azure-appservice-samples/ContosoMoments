@@ -68,7 +68,11 @@ namespace ContosoMoments.Droid
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            App.Instance.ShowCapturedImage(file.Path);
+
+            if (resultCode != Result.Canceled)
+                App.Instance.ShowCapturedImage(file.Path);
+            else
+                App.Instance.ShowCapturedImage(null);
         }
 
         private void CreateAndShowDialog(Exception e, string title)
