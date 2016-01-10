@@ -230,8 +230,14 @@
     }]);
     app.controller('uploadController', ['$scope', 'uploadService', '$uibModalInstance', '$timeout', 'authService', 'selectedAlbum', function ($scope, uploadService, $uibModalInstance, $timeout, authService, selectedAlbum) {
         
-        $scope.progress = -1;
-        $scope.uploading = false;
+
+        var init = function () {
+            $scope.progress = -1;
+            $scope.uploading = false;
+            $scope.hasError = false;
+            $scope.progressType = "info";
+        }
+        
         var uploadOptions = {
             complete: function () {
                 $scope.uploading = false;
@@ -245,6 +251,8 @@
             },
             error: function () {
                 $scope.uploading = false;
+                $scope.hasError = true;
+                $scope.progressType = "error";
             },
             userId: authService.currentContext().userId,
             albumId: selectedAlbum.album.id
@@ -264,6 +272,9 @@
         }
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');
+        }
+        this.reset = function () {
+            init();
         }
         $scope.$on('modal.closing', function (event) {
             if ($scope.uploading) {

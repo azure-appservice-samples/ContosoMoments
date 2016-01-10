@@ -42,7 +42,7 @@
     
     module.directive('uploader', ['azureBlob','$http','$document',function (azureBlob,$http,$document) {
         var getSasUrl=function(){
-            return $http.get("http://localhost:31475/api/GetSasUrl").then(function (res) {
+            return $http.get("http://localhost:3242/api/GetSasUrl").then(function (res) {
                 return res.data;
             });
         }

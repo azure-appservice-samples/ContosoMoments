@@ -209,7 +209,7 @@
 
     app.factory('uploadService', ['azureBlob', '$http', 'appConfig', '$rootScope', function (azureBlob, $http, appConfig, $rootScope) {
         var getSasUrl = function () {
-            return $http.get( "/api/GetSasUrl").then(function (res) {
+            return $http.get( "http://localhost:3434/api/GetSasUrl").then(function (res) {
                 return res.data;
             });
         }
@@ -251,6 +251,10 @@
                     error: config.error || angular.noop// error callback function,                       
                 });
                 //setFile($("#file")[0].files[0], res); 
+            },function(err){
+                if (typeof (config.error) === 'function') {
+                    config.error();
+                }
             });
         };
     }]);
