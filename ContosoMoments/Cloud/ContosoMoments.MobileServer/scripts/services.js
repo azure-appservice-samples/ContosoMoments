@@ -209,7 +209,7 @@
 
     app.factory('uploadService', ['azureBlob', '$http', 'appConfig', '$rootScope', function (azureBlob, $http, appConfig, $rootScope) {
         var getSasUrl = function () {
-            return $http.get( "http://localhost:3434/api/GetSasUrl").then(function (res) {
+            return $http.get( "/api/GetSasUrl").then(function (res) {
                 return res.data;
             });
         }
