@@ -44,8 +44,8 @@ namespace ContosoMoments.ViewModels
         }
 
         // View model properties
-        private MobileServiceCollection<Album, Album> _Albums;
-        public MobileServiceCollection<Album, Album> Albums
+        private /*MobileServiceCollection<Album, Album>*/ List<Album> _Albums;
+        public /*MobileServiceCollection<Album, Album>*/ List<Album> Albums
         {
             get { return _Albums; }
             set
@@ -97,7 +97,14 @@ namespace ContosoMoments.ViewModels
                 //var albumTable = _client.GetTable<Album>();
                 //var zzz = await albumTable.ToCollectionAsync();
 
-                Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();                
+                //Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();
+                var albums = await (App.Current as App).albumTableSync.ToListAsync();
+                var res = from album in albums
+                          where album.UserId == User.UserId.ToString() ||
+                                album.IsDefault
+                          select album;
+
+                _Albums = res.ToList();
             }
             catch (MobileServiceInvalidOperationException ex)
             {
