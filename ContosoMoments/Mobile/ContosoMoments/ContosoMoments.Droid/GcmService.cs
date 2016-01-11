@@ -14,6 +14,7 @@ using Gcm.Client;
 using Microsoft.WindowsAzure.MobileServices;
 using Android.Util;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 [assembly: Permission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]
 [assembly: UsesPermission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]
@@ -56,11 +57,16 @@ namespace ContosoMoments.Droid
                 {
                     try
                     {
-                        const string template = "{\"data\":{\"message\":\"$(message)\"}}";
+                        const string templateBodyGCM = "{\"data\":{\"message\":\"$(messageParam)\"}}";
 
-                        var jObject = Newtonsoft.Json.Linq.JObject.Parse(template);
+                        JObject templates = new JObject();
+                        templates["genericMessage"] = new JObject
+                        {
+                          {"body", templateBodyGCM}
+                        };
+                        //var jObject = JObject.Parse(templates);
 
-                        await push.RegisterAsync(RegistrationID, jObject);
+                        await push.RegisterAsync(RegistrationID, templates);
                         Log.Verbose(PushHandlerBroadcastReceiver.TAG, "NotificationHub registration successful");
 
                     }

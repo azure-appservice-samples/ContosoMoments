@@ -11,6 +11,8 @@ using Microsoft.Phone.Notification;
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
 using Windows.Networking.PushNotifications;
+using Microsoft.WindowsAzure.Messaging;
+using System.Collections.Generic;
 
 namespace ContosoMoments.WinPhone
 {
@@ -227,12 +229,13 @@ namespace ContosoMoments.WinPhone
             }
         }
 
-        public static async void AcquirePushChannel(MobileServiceClient client)
+        public static async void AcquirePushChannel(MobileServiceClient client/*, string hubName, string hubConnectionString*/)
         {
+            //DEBUG: Direct registration to MPNS using PushNotifcationsHub
+            //ReisterMPNS(client, hubName, hubConnectionString);
+
             Debug.WriteLine("WNS Push Notifications are not supported in WP8.1 Silverlight due to lack of support in Azure Mobile Apps Client SDK");
 
-
-            //NOT SUPPORTED IN WP SP8.1
             //var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
 
             //const string templateBodyWNS = "<toast><visual><binding template=\"ToastText01\"><text id=\"1\">$(messageParam)</text></binding></visual></toast>";
@@ -240,15 +243,65 @@ namespace ContosoMoments.WinPhone
             //JObject headers = new JObject();
             //headers["X-WNS-Type"] = "wns/toast";
 
+            //JArray tags = new JArray();
+            ////tags.Add("username:alex@sela.co.il");
+
             //JObject templates = new JObject();
             //templates["genericMessage"] = new JObject
             //{
             //  {"body", templateBodyWNS},
-            //  {"headers", headers} // Only needed for WNS & MPNS
+            //  {"headers", headers}, // Only needed for WNS & MPNS
+            //  {"tags", tags }
             //};
 
+            //NOT SUPPORTED IN WP SL8.1
             //var push = client.GetPush();
             //await push.RegisterAsync(channel.Uri, templates);
         }
+
+        #region MPNS
+        //private static void ReisterMPNS(MobileServiceClient client, string hubName, string hubConnectionString)
+        //{
+        //    var channel = HttpNotificationChannel.Find("ContosoMomentsPushChannel");
+        //    if (channel == null)
+        //    {
+        //        channel = new HttpNotificationChannel("ContosoMomentsPushChannel");
+
+        //        channel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+        //        channel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+
+        //        channel.Open();
+        //        channel.BindToShellToast();
+        //    }
+        //    else
+        //    {
+        //        channel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+        //        channel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+        //    }
+
+        //    _installationId = client.InstallationId;
+        //    _hubName = hubName;
+        //    _hubConnectionString = hubConnectionString;
+        //}
+
+        //static string _installationId;
+        //static string _hubName;
+        //static string _hubConnectionString;
+
+        //private static void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
+        //{
+        //    Debug.WriteLine("Push notification error:" + e.Message);
+        //}
+
+        //private static async void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
+        //{
+        //    var hub = new NotificationHub(_hubName, _hubConnectionString);
+
+        //    List<string> tags = new List<string>();
+        //    tags.Add(string.Format("{0}", _installationId));
+
+        //    var result = await hub.RegisterNativeAsync(e.ChannelUri.ToString(), tags);
+        //}
+        #endregion
     }
 }

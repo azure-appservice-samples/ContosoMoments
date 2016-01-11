@@ -89,13 +89,19 @@ namespace ContosoMoments.iOS
                 // Register for push with Mobile Services
                 //IEnumerable<string> tag = new List<string>() { "uniqueTag" };
 
-                const string notificationTemplate = "{\"aps\":{\"alert\":\"$(message)\"}}";
+                const string templateBodyAPNS = "{\"aps\":{\"alert\":\"$(messageParam)\"}}";
 
-                JObject templateBody = new JObject();
-                templateBody["body"] = notificationTemplate;
+                //JObject templateBody = new JObject();
+                //templateBody["body"] = notificationTemplate;
+
+                //JObject templates = new JObject();
+                //templates["ContosoMomentsApnsTemplate"] = templateBody;
 
                 JObject templates = new JObject();
-                templates["ContosoMomentsApnsTemplate"] = templateBody;
+                templates["genericMessage"] = new JObject
+                {
+                    {"body", templateBodyAPNS}
+                };
 
                 //var expiryDate = DateTime.Now.AddDays(90).ToString
                 //    (System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
