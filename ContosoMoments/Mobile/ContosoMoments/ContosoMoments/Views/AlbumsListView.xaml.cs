@@ -51,15 +51,21 @@ namespace ContosoMoments.Views
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
+                    string userId = "11111111-1111-1111-1111-111111111111";
                     if (Utils.IsOnline())
                     {
+                        //Call user custom controller:
+                        //controller to check user and add if new. Will return user ID anyway.
+                        //must be called prior to sync!!!
+                        userId = await App.MobileService.InvokeApiAsync<string>("ManageUser", System.Net.Http.HttpMethod.Get, null);
+
                         await (App.Current as App).SyncAsync();
                     }
                     else
                         await DisplayAlert("Working Offline", "Couldn't sync data - device is offline. Using local data. Please try again when data connection is back", "OK");
 
                     if (null == viewModel.User)
-                        await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
+                        await viewModel.GetUserAsync(Guid.Parse(userId));
 
                     await LoadItems();
                 }

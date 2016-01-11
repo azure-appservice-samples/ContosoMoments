@@ -54,17 +54,10 @@ namespace ContosoMoments.Views
             {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
-                    //if (null == User)
-                    //    await viewModel.GetUserAsync(Guid.Parse("11111111-1111-1111-1111-111111111111"));
-                    //else
                     viewModel.User = User;
 
-                    //if (null == Album)
-                    //    await viewModel.GetAlbumAsync(/*Guid.Parse(*/"11111111-1111-1111-1111-111111111111"/*)*/);
-                    //else
                     viewModel.Album = Album;
 
-                    //await manager.SyncImagesAsync();
                     await LoadItems();
                 }
             }

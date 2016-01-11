@@ -224,6 +224,7 @@
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\InitController.cs" />
+    <Compile Include="Controllers\WebAPI\ManageUserController.cs" />
     <Compile Include="Controllers\TableControllers\AlbumController.cs" />
     <Compile Include="Controllers\WebAPI\CommitBlobController.cs" />
     <Compile Include="Controllers\WebAPI\GetSasUrlController.cs" />
