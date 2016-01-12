@@ -44,30 +44,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 if (null != emailToken)
                 {
                     string email = emailToken.ToString();
-
-                    var ctx = new MobileServiceContext();
-                    var user = ctx.Users.Where(x => x.Email == email);
-
-                    if (user.Count() == 0)
-                    {
-                        var u = ctx.Users.Add(new Common.Models.User() {Id = Guid.NewGuid().ToString(), Email = email, IsEnabled = true });
-                        try
-                        {
-                            ctx.SaveChanges();
-                        }
-                        catch (System.Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine(ex.Message);
-                            //
-                        }
-
-                        retVal = u.Id;
-                    }
-                    else
-                    {
-                        var u = user.First();
-                        retVal = u.Id;
-                    }
+                    retVal = CheckAddEmailToDB(email);
                 }
                 else
                 {
@@ -82,29 +59,37 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             {
                 string email = aadCredentials.UserId;
 
-                var ctx = new MobileServiceContext();
-                var user = ctx.Users.Where(x => x.Email == email);
+                retVal = CheckAddEmailToDB(email);
+            }
 
-                if (user.Count() == 0)
-                {
-                    var u = ctx.Users.Add(new Common.Models.User() { Id = Guid.NewGuid().ToString(), Email = email, IsEnabled = true });
-                    try
-                    {
-                        ctx.SaveChanges();
-                    }
-                    catch (System.Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
-                        //
-                    }
+            return retVal;
+        }
 
-                    retVal = u.Id;
-                }
-                else
+        private static string CheckAddEmailToDB(string email)
+        {
+            string retVal;
+            var ctx = new MobileServiceContext();
+            var user = ctx.Users.Where(x => x.Email == email);
+
+            if (user.Count() == 0)
+            {
+                var u = ctx.Users.Add(new Common.Models.User() { Id = Guid.NewGuid().ToString(), Email = email, IsEnabled = true });
+                try
                 {
-                    var u = user.First();
-                    retVal = u.Id;
+                    ctx.SaveChanges();
                 }
+                catch (System.Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    //
+                }
+
+                retVal = u.Id;
+            }
+            else
+            {
+                var u = user.First();
+                retVal = u.Id;
             }
 
             return retVal;
