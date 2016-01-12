@@ -179,6 +179,23 @@ namespace ContosoMoments.ViewModels
             }
         }
 
+        public async Task<bool> DeleteImageAsync(Image selectedImage)
+        {
+            bool bRes = true; //Assume success
+
+            try
+            {
+                //await imageTable.DeleteAsync(selectedImage);
+                await (App.Current as App).imageTableSync.DeleteAsync(selectedImage);
+            }
+            catch (Exception ex)
+            {
+                bRes = false;
+            }
+
+            return bRes;
+        }
+
         public async Task<bool> UploadImageAsync(Stream imageStream)
         {
             bool retVal = false;

@@ -8,7 +8,7 @@ namespace ContosoMoments.Models
 {
     public class Image
     {
-        Guid id;
+        string id;
         Guid imageId;
         string imageFormat;
         string containerName;
@@ -18,7 +18,7 @@ namespace ContosoMoments.Models
         string userId;
 
         [JsonProperty(PropertyName = "Id")]
-        public Guid Id
+        public string Id
         {
             get { return id; }
             set { id = value; }

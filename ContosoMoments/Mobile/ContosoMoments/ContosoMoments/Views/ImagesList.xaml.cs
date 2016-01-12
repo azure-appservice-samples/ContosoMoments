@@ -179,7 +179,24 @@ namespace ContosoMoments.Views
             }
         }
 
+        public async void OnDelete(object sender, EventArgs e)
+        {
+            var res = await DisplayAlert("Delete image?", "Delete selected image?", "Yes", "No");
 
+            if (res)
+            {
+                var selectedImage = (sender as MenuItem).BindingContext as ContosoMoments.Models.Image;
+                res = await viewModel.DeleteImageAsync(selectedImage);
+
+                if (res)
+                {
+                    await DisplayAlert("Success", "Image deleted successfully", "OK");
+                    OnRefresh(sender, e);
+                }
+                else
+                    await DisplayAlert("Delete error", "Couldn't delete the image. Please try again later.", "OK");
+            }
+        }
         //private async Task AddItem(TodoItem item)
         //{
         //    await manager.SaveTaskAsync(item);

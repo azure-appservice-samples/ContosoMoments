@@ -50,7 +50,7 @@
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
         </Image.Source>
       </Image>
-      
+
       <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgUpload">
         <Image.Source>
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/upload.png" Android="upload.png" WinPhone="Assets/upload.png"/>
@@ -74,7 +74,11 @@
           <!--<ViewCell>
           <Grid Padding="8">-->
           <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"
-                   Text="{Binding ImageFormat}" TextColor="Black"/>
+                   Text="{Binding ImageFormat}" TextColor="Black">
+            <ImageCell.ContextActions>
+              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
+            </ImageCell.ContextActions>
+          </ImageCell>
           <!--<Image Source="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"/>
           </Grid>
           </ViewCell>-->
@@ -93,7 +97,7 @@
         </controls:WrapPanel.ItemTemplate>
       </controls:WrapPanel>
     </ScrollView>-->
-    
+
     <ActivityIndicator Grid.RowSpan="3" IsVisible="False" IsEnabled="True" x:Name="syncIndicator" Color="#8C0A4B">
       <ActivityIndicator.VerticalOptions>
         <OnPlatform x:TypeArguments="LayoutOptions" Android="Center" WinPhone="Fill" iOS="Fill"/>
