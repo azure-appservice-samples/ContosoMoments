@@ -77,12 +77,35 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 return retVal;
             }
 
-            //var aadCredentials = await this.User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(this.Request);
-            //if (null != aadCredentials && aadCredentials.Claims.Count > 0)
-            //{
-            //    //...
-            //    //aadCredentials.AccessToken
-            //}
+            var aadCredentials = await this.User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(this.Request);
+            if (null != aadCredentials && aadCredentials.Claims.Count > 0)
+            {
+                string email = aadCredentials.UserId;
+
+                var ctx = new MobileServiceContext();
+                var user = ctx.Users.Where(x => x.Email == email);
+
+                if (user.Count() == 0)
+                {
+                    var u = ctx.Users.Add(new Common.Models.User() { Id = Guid.NewGuid().ToString(), Email = email, IsEnabled = true });
+                    try
+                    {
+                        ctx.SaveChanges();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                        //
+                    }
+
+                    retVal = u.Id;
+                }
+                else
+                {
+                    var u = user.First();
+                    retVal = u.Id;
+                }
+            }
 
             return retVal;
         }

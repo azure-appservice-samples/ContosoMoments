@@ -31,7 +31,8 @@
     <!--Settings-->
     <Grid Grid.Row="1" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" Padding="10,15,10,5">
       <StackLayout Orientation="Vertical" Padding="10,15,10,5">
-        <Button Text="Login with Facebook" Clicked="OnLoginClicked" />
+        <Button Text="Login with Facebook" Clicked="OnFBLoginClicked" />
+        <Button Text="Login with Azure Active Directory" Clicked="OnAADLoginClicked" />
         <Label x:Name="messageLabel" TextColor="Black"/>
       </StackLayout>
     </Grid>
