@@ -45,10 +45,10 @@ namespace ContosoMoments.Views
 
         public async void OnSave(object sender, EventArgs args)
         {
-            if (System.Diagnostics.Debugger.IsAttached && null == mobileServiceUrl.Text)
-            {
-                mobileServiceUrl.Text = "http://contosomomentsmobileweb.azurewebsites.net/";
-            }
+            //if (System.Diagnostics.Debugger.IsAttached && null == mobileServiceUrl.Text)
+            //{
+            //    mobileServiceUrl.Text = "http://contosomomentsqa.azurewebsites.net/";
+            //}
 
             if (null != mobileServiceUrl.Text)
             {
