@@ -9,6 +9,9 @@ using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
+using ContosoMoments.Common.Queue;
+using ContosoMoments.Common;
+using ContosoMoments.Common.Storage;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -28,7 +31,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         // GET tables/Images
         public IQueryable<Image> GetAllImage()
         {
-            return Query();              
+            return Query();
         }
 
         // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
@@ -42,7 +45,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public Task<Image> PatchImage(string id, Delta<Image> patch)
         {
-             return UpdateAsync(id, patch);
+            return UpdateAsync(id, patch);
         }
 
         // POST tables/Images
@@ -54,10 +57,20 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
 
         // DELETE tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public Task DeleteImage(string id)
+        public async Task DeleteImage(string id)
         {
-             return DeleteAsync(id);
-        }
+            var image = Lookup(id).Queryable.First();
+            var filename = image.FileName;
+            var containerName = image.ContainerName;
 
+            var qm = new QueueManager();
+            var blobInfo = new BlobInformation();
+            blobInfo.BlobUri = new Uri(containerName);
+            blobInfo.ImageId = filename;
+            await qm.PushToDeleteQueue(blobInfo);
+
+            await DeleteAsync(id);
+            return;
+        }
     }
 }

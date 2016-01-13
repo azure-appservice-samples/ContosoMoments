@@ -50,7 +50,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName, ""));
             // blobInfo.FileGuidName = fileGuidName;
             blobInfo.ImageId = fileGuidName;
-            await qm.PushToQueue(blobInfo);
+            await qm.PushToResizeQueue(blobInfo);
             return res;
 
         }
