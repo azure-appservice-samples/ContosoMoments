@@ -7,7 +7,7 @@ using Microsoft.Azure.NotificationHubs;
 using System.Threading.Tasks;
 using System;
 
-namespace ContosoMoments.MobileServer.Controllers
+namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
     [MobileAppController]
     public class PushRegistrationController : ApiController
