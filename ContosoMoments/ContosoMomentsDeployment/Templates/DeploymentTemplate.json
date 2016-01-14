@@ -139,12 +139,30 @@
         "description": "NotificationHub name"
       }
     },
-    "NotificationHubConnectionString": {
-      "type": "string",
-      "metadata": {
-        "description": "Full access connection string to NotificationHub"
-      }
-    },
+    //"GoogleApiKey": {
+    //  "type": "string",
+    //  "metadata": {
+    //    "description": "API Key is used to authenticate with Google Cloud Messaging. You can obtain it by registering your app at the Google Developer Center."
+    //  }
+    //},
+    //"APNSCertificate": {
+    //  "type": "string",
+    //  "metadata": {
+    //    "description": "Certificate Thumbprint is used to authenticate with Apple Push Notification Services. You can obtain it by registering your app at the Apple Developer Member Center."
+    //  }
+    //},
+    //"WNSPackageSID": {
+    //  "type": "string",
+    //  "metadata": {
+    //    "description": "Package SID is first part of credentials to authenticate with Windows Notification Services. You can obtain it by registering your app at the Windows Developer Center."
+    //  }
+    //},
+    //"WNSPackageSecret": {
+    //  "type": "string",
+    //  "metadata": {
+    //    "description": "Security Key is second part of credentials to authenticate with Windows Notification Services. You can obtain it by registering your app at the Windows Developer Center."
+    //  }
+    //},
     "repoURL": {
       "type": "string",
       "metadata": {
@@ -161,7 +179,9 @@
   },
   "variables": {
     "webJobSiteName": "[concat(parameters('siteName'), '-jobs')]",
-    "storageAccountName": "[toLower(parameters('storageAccountName'))]"
+    "storageAccountName": "[toLower(parameters('storageAccountName'))]",
+    "notificationHubNamespace": "[concat(parameters('NotificationHubName'), '-ns')]",
+    "notificationHubLocation": "[parameters('siteLocation')]"
   },
   "resources": [
     {
@@ -225,6 +245,42 @@
     },
 
     {
+      "apiVersion": "2014-09-01",
+      "type": "Microsoft.NotificationHubs/namespaces",
+      "name": "[variables('notificationHubNamespace')]",
+      "location": "[variables('notificationHubLocation')]",
+      "properties": {
+        "region": "[variables('notificationHubLocation')]",
+        "namespaceType": "NotificationHub"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-09-01",
+          "name": "[parameters('NotificationHubName')]",
+          "type": "NotificationHubs",
+          "location": "[variables('notificationHubLocation')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.NotificationHubs/namespaces', variables('notificationHubNamespace'))]"
+          ],
+          "properties": {
+            "name": "[parameters('NotificationHubName')]"//,
+            //"gcmCredential": {
+            //  "googleApiKey": "[parameters('GoogleApiKey')]",
+            //  "gcmEndpoint": "https://android.googleapis.com/gcm/send"
+            //},
+            //"wnsCredential": {
+            //  "packageSid": "[parameters('WNSPackageSID')]",
+            //  "secretKey": "[parameters('WNSPackageSecret')]"
+            //},
+            //"apnsCredential": {
+            //  "apnsCertificate": "[parameters('APNSCertificate')]"
+            //}
+            }
+        }
+      ]
+    },
+
+    {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
       "name": "[parameters('siteName')]",
@@ -232,7 +288,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
         "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), parameters('NotificationHubName'))]"
       ],
       "properties": {
         "name": "[parameters('siteName')]",
@@ -255,7 +312,7 @@
                 "Type": 2
               },
               {
-                "ConnectionString": "[parameters('NotificationHubConnectionString')]",
+                "ConnectionString": "[listkeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', variables('notificationHubNamespace'), parameters('NotificationHubName'), 'DefaultFullSharedAccessSignature'), '2014-09-01').primaryConnectionString]",
                 "Name": "MS_NotificationHubConnectionString",
                 "Type": "custom"
               }
@@ -287,6 +344,18 @@
           }
         },
         {
+          "apiVersion": "2015-01-01",
+          "type": "providers/links",
+          "name": "Microsoft.Resources/mobile-notificationhub",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
+            "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), parameters('NotificationHubName'))]"
+          ],
+          "properties": {
+            "targetId": "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), parameters('NotificationHubName'))]"
+          }
+        },
+        {
           "apiVersion": "2015-04-01",
           "name": "web",
           "type": "sourcecontrols",
@@ -301,6 +370,7 @@
         }
       ]
     },
+
     {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
