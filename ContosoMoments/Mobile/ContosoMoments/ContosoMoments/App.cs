@@ -63,7 +63,7 @@ namespace ContosoMoments
             if (AppSettings.Current.GetValueOrDefault<string>("MobileAppURL") == default(string))
             {
                 //first run
-                MainPage = new SettingView() { IsDefaultUser = true };
+                MainPage = new SettingView();
             }
             else
             {
@@ -79,7 +79,7 @@ namespace ContosoMoments
 
                     if (count > 3)
                     {
-                        MainPage = new SettingView() { IsInURLTrouble = true, IsDefaultUser = true };
+                        MainPage = new SettingView() { IsInURLTrouble = true};
                         return;
                     }
                 }

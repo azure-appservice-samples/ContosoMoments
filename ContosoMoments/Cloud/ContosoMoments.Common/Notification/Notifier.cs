@@ -17,11 +17,12 @@ namespace ContosoMoments.Common.Notification
         private Notifier()
         {
             var testSend = false;
-            #if DEBUG
-                testSend = true;
-            #endif
-            var connection = ConfigurationManager.AppSettings["NotificationHubConnection"];
-            hub = NotificationHubClient.CreateClientFromConnectionString(connection, "contomo", testSend);
+#if DEBUG
+            testSend = true;
+#endif
+            var hubConnectionString = ConfigurationManager.ConnectionStrings["MS_NotificationHubConnectionString"].ToString();
+            var hubName = ConfigurationManager.AppSettings["MS_NotificationHubName"];
+            hub = NotificationHubClient.CreateClientFromConnectionString(hubConnectionString, hubName, testSend);
         }
 
 
@@ -39,38 +40,39 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
+        public async Task<Installation> GetRegistration(string installationId)
+        {
+            return await hub.GetInstallationAsync(installationId);
+        }
 
-        public async Task<bool> SendTemplateNotification(Dictionary<string, string> notification, IEnumerable<string> Tags)
+        public async Task RemoveRegistration(string installationId)
+        {
+            await hub.DeleteInstallationAsync(installationId);
+            return;
+        }
+
+        public async Task<bool> SendTemplateNotification(Dictionary<string, string> notification, IEnumerable<string> tags)
         {
             NotificationOutcome outcome = null;
             try
             {
-                //  Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
-                // Define an Android notification.
-              
-                outcome=await hub.SendTemplateNotificationAsync(notification,Tags);
-               
-
+                outcome = await hub.SendTemplateNotificationAsync(notification, tags);
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Error while sending Google notification: " + ex.Message);
+                Trace.TraceError("Error while sending template notifications: " + ex.Message);
             }
 
-            return outcome != null;
-
-             
+            return (outcome.Success > 0 && outcome.Failure == 0);
         }
 
-        public async Task sendGCMNotification(string message)
+        public async Task sendGCMNotification(string message, IEnumerable<string> tags)
         {
             try
             {
-               
-              //  Trace.TraceInformation("Sending Google notification toast to RegistrationId " + registration.RegistrationId);
                 // Define an Android notification.
                 var notification = "{\"data\":{\"msg\":\"" + message + "\"}}";
-                await hub.SendGcmNativeNotificationAsync(notification);
+                await hub.SendGcmNativeNotificationAsync(notification, tags);
             }
             catch (Exception ex)
             {
@@ -78,14 +80,13 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public  async Task sendIOSNotification(string message, RegistrationDescription registration)
+        public async Task sendIOSNotification(string message, IEnumerable<string> tags)
         {
             try
             {
-                Trace.TraceInformation("Sending iOS alert to RegistrationId " + registration.RegistrationId);
                 // Define an iOS alert.
                 var alert = "{\"aps\":{\"alert\":\"" + message + "\"}}";
-                await hub.SendAppleNativeNotificationAsync(alert);
+                await hub.SendAppleNativeNotificationAsync(alert, tags);
             }
             catch (Exception ex)
             {
@@ -93,11 +94,10 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public  async Task sendWPNotification(string message, RegistrationDescription registration)
+        public async Task sendWPNotification(string message, IEnumerable<string> tags)
         {
             try
             {
-                Trace.TraceInformation("Sending Windows Phone toast to RegistrationId " + registration.RegistrationId);
                 // Define a Windows Phone toast.
                 var mpnsToast =
                     "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
@@ -106,7 +106,7 @@ namespace ContosoMoments.Common.Notification
                             "<wp:Text1>" + message + "</wp:Text1>" +
                         "</wp:Toast> " +
                     "</wp:Notification>";
-                await hub.SendMpnsNativeNotificationAsync(mpnsToast);
+                await hub.SendMpnsNativeNotificationAsync(mpnsToast, tags);
             }
             catch (Exception ex)
             {
@@ -114,16 +114,15 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public async Task sendWindowsStoreNotification(string message, RegistrationDescription registration)
+        public async Task sendWindowsStoreNotification(string message, IEnumerable<string> tags)
         {
             try
             {
-                Trace.TraceInformation("Sending Windows Store toast to RegistrationId " + registration.RegistrationId);
                 // Define a Windows Store toast.
                 var wnsToast = "<toast><visual><binding template=\"ToastText01\">"
                     + "<text id=\"1\">" + message
                     + "</text></binding></visual></toast>";
-                await hub.SendWindowsNativeNotificationAsync(wnsToast);
+                await hub.SendWindowsNativeNotificationAsync(wnsToast, tags);
             }
             catch (Exception ex)
             {

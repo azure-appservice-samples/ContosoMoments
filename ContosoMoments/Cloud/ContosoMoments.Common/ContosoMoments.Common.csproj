@@ -228,7 +228,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="Models\DeviceRegistration.cs" />
     <Compile Include="Models\Like.cs" />
+    <Compile Include="Notification\DeviceInstallationInfo.cs" />
     <Compile Include="Notification\Notifier.cs" />
     <Compile Include="Queue\QueueManager.cs" />
     <Compile Include="Queue\ResizeQueueMessage.cs" />

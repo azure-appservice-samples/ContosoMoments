@@ -133,6 +133,18 @@
         "description": "Use any valid URL."
       }
     },
+    "NotificationHubName": {
+      "type": "string",
+      "metadata": {
+        "description": "NotificationHub name"
+      }
+    },
+    "NotificationHubConnectionString": {
+      "type": "string",
+      "metadata": {
+        "description": "Full access connection string to NotificationHub"
+      }
+    },
     "repoURL": {
       "type": "string",
       "metadata": {
@@ -241,6 +253,11 @@
                 "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('sqlServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('sqlDbName'), ';User Id=', parameters('sqlAdministratorLogin'), '@', parameters('sqlServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
                 "Name": "MS_TableConnectionString",
                 "Type": 2
+              },
+              {
+                "ConnectionString": "[parameters('NotificationHubConnectionString')]",
+                "Name": "MS_NotificationHubConnectionString",
+                "Type": "custom"
               }
             ]
           }
@@ -264,6 +281,7 @@
             "DefaultUserId": "[parameters('DefaultUserId')]",
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]",
             "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net/')]",
+            "MS_NotificationHubName": "[parameters('NotificationHubName')]",
             "enableSoftDelete": "true",
             "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.MobileServer\\ContosoMoments.MobileServer.csproj"
           }

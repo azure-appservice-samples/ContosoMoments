@@ -7,6 +7,8 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using ContosoMoments.MobileServer.Models;
 using System;
+using ContosoMoments.Common.Queue;
+using ContosoMoments.Common;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {

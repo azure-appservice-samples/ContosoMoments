@@ -1,5 +1,6 @@
 ﻿using ContosoMoments.Common.Notification;
 using ContosoMoments.MobileServer.DataLogic;
+using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Config;
 using Microsoft.Azure.NotificationHubs;
 using System;
@@ -21,22 +22,58 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             var logic = new ImageBusinessLogic();
 
             var img = logic.GetImage(image["imageId"]);
-            if (img!=null && img.User.Email != User.Identity.Name )
+            if (null != img)
             {
-                var message = new Dictionary<string, string>()
+                var ctx = new MobileServiceContext();
+                var registrations = ctx.DeviceRegistrations.Where(x => x.UserId == img.UserId);
+
+                //Send x-plat template message to all installations in tags list
+                //List<string> tags = new List<string>();
+                //foreach (var registration in registrations)
+                //    tags.Add(string.Format("$InstallationId:{{{0}}}", registration.InstallationId));
+
+                //if (tags.Count > 0)
+                //{
+                //    var message = new Dictionary<string, string>()
+                //    {
+                //        { "message", string.Format("{0} has liked your image", img.User.Email)}
+                //    };
+                //    var res = await Notifier.Instance.SendTemplateNotification(message, tags);
+
+                //    return res;
+                //}
+                //else
+                //    return true;
+
+                //Send plat-specific message to all installation one by one
+                string message = string.Format("{0} has liked your image", img.User.Email);
+                foreach (var registration in registrations)
                 {
-                    { "message",string.Format("{0} has liked your image",User.Identity.Name)}
-                };
-                //var tags = new string[1] { string.Format("uid:{0}",img.User.Email) };
-                var tags = new string[1] { "uemail:noynir@gmail.com" };
-                var res = await Notifier.Instance.SendTemplateNotification(message, tags);
-                return res;
+                    var tags = new string[1] { string.Format("$InstallationId:{{{0}}}", registration.InstallationId) };
+                    switch (registration.Platform)
+                    {
+                        case NotificationPlatform.Wns:
+                            await Notifier.Instance.sendWindowsStoreNotification(message, tags);
+                            break;
+                        case NotificationPlatform.Apns:
+                            await Notifier.Instance.sendIOSNotification(message, tags);
+                            break;
+                        case NotificationPlatform.Mpns:
+                            await Notifier.Instance.sendWPNotification(message, tags);
+                            break;
+                        case NotificationPlatform.Gcm:
+                            await Notifier.Instance.sendGCMNotification(message, tags);
+                            break;
+                        case NotificationPlatform.Adm:
+                            //NOT SUPPORTED
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
 
-            return false;
-
-     
-
+            return true;
         }
     }
 }

@@ -40,6 +40,7 @@ namespace ContosoMoments.Views
             if (IsInURLTrouble)
                 DisplayAlert("Configuration Error", "Mobile Service URL seems to be not valid anymore. Please check the URL value and try again", "OK");
 
+
             base.OnAppearing();
         }
 
