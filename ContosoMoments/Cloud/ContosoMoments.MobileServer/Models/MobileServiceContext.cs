@@ -28,7 +28,6 @@ namespace ContosoMoments.MobileServer.Models
         }
 
         public DbSet<Image> Images { get; set; }
-        public DbSet<Like> Likes { get; set; }
         public DbSet<Album> Albums { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<DeviceRegistration> DeviceRegistrations { get; set; }

@@ -24,9 +24,6 @@ namespace ContosoMoments.Common.Models
         public string UserId { get; set; }
         public User User { get; set; }
 
-        public IEnumerable<Like> Likes { get; set; }
-
-
         [NotMapped]
         public IDictionary<string, Uri> ImagePath
         {
