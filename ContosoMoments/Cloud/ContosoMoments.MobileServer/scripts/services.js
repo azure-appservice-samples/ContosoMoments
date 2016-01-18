@@ -132,7 +132,7 @@
     }]);
 
     app.factory('imageService', ['mobileServicesClient', '$interpolate', '$http', '$q', 'appConfig', function (mobileServicesClient, $interpolate, $http, $q, appConfig) {
-        var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}.jpg');
+        var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}');
         var imageDefaultOptions = {
             start: 0,
             count: 50

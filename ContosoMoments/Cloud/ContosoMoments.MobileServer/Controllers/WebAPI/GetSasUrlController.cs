@@ -15,7 +15,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         // GET api/getsasurl
         public string Get()
         {
-            var fileName = "lg/" +Guid.NewGuid() + ".jpg";
+            var fileName = "lg/" +Guid.NewGuid() + ".temp";
             var cs = new ContosoStorage();
             var result = cs.GetSasUrlAndSetCORS(AppSettings.UploadContainerName, fileName);
             return   result ;

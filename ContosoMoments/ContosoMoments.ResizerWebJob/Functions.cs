@@ -20,23 +20,27 @@ namespace ContosoMoments.ResizerWebJob
         //   private const string resizeQueue = AppSettings.ResizeQueueName;
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
-            [Blob("{BlobName}/{BlobNameLG}", FileAccess.Read)] Stream blobInput,
+            [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobInput,
             [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobOutputExtraSmall,
             [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
             [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
         {
+            Stream input = await blobInput.OpenReadAsync();
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            bool res = await scaleImage(blobInput, blobOutputMedium, Medium);
+            bool res = await scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "MEDIUM", res);
 
+            input.Position = 0;
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
-            res = await scaleImage(blobInput, blobOutputSmall, Small);
+            res = await scaleImage(input, blobOutputSmall, Small, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "SMALL", res);
 
+            input.Position = 0;
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            res = await scaleImage(blobInput, blobOutputExtraSmall, ExtraSmall);
+            res = await scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
 
+            input.Dispose();
             Trace.TraceInformation("Done processing 'resizerequest' message");
         }
 
@@ -72,71 +76,10 @@ namespace ContosoMoments.ResizerWebJob
                 Trace.TraceError("Error while deleting images: " + ex.Message);
             }
         }
-
-        //public async static Task SendPushNotificationAsync([QueueTrigger("pushnotificationrequest")] BlobInformation blobInfo)
-        //{
-        //    //TODO: use Mobile SDK to send push notification to owner user about blobInfo.ImageId
-        //    Trace.TraceInformation("Sending push notficiations for ImageId = " + blobInfo.ImageId);
-
-        //    string notificationHubConnectionString = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.ConnectionString"];
-        //    string notificationHubPath = ConfigurationManager.AppSettings["Microsoft.Azure.NotificationHubs.Path"];
-        //    string dataConnection = ConfigurationManager.ConnectionStrings["DataConnection"].ConnectionString;
-
-        //    try
-        //    {
-        //        string userName, containerName, userId, imageId;
-        //        userName = containerName = userId = imageId = null;
-
-        //        if (getInforFroDB(blobInfo, dataConnection, ref userName, ref containerName, ref userId, ref imageId))
-        //        {
-        //            //Prepare the notification and sent
-        //            NotificationHubClient hub = NotificationHubClient.CreateClientFromConnectionString(notificationHubConnectionString, notificationHubPath);
-
-        //            string imageUrl = string.Format("{0}/lg/{1}.jpg", containerName, imageId);
-        //            string messgae = string.Format("{0}! Someone likes your image at {1}", userName, imageUrl);
-
-        //            var registrations = await hub.GetRegistrationsByTagAsync(userId, 0);
-
-        //            foreach (var registration in registrations)
-        //            {
-        //                if (registration is WindowsRegistrationDescription)
-        //                {
-        //                    await sendWindowsStoreNotification(hub, messgae, registration);
-        //                }
-        //                else if (registration is MpnsRegistrationDescription)
-        //                {
-        //                    await sendWPNotification(hub, messgae, registration);
-        //                }
-        //                else if (registration is AppleRegistrationDescription)
-        //                {
-        //                    await sendIOSNotification(hub, messgae, registration);
-        //                }
-        //                else if (registration is GcmRegistrationDescription)
-        //                {
-        //                    await sendGCMNotification(hub, messgae, registration);
-        //                }
-        //                else
-        //                {
-        //                    Trace.TraceWarning("Cannot send push notification to UNSUPPORTED device type with RegistrationId " + registration.RegistrationId);
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            Trace.TraceInformation("No registered push notification users found for ImageId = " + blobInfo.ImageId);
-        //        }
-
-        //        Trace.TraceInformation("Done processing 'pushnotificationrequest' message");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Trace.TraceError("Error while sending push notifications: " + ex.Message);
-        //    }
-        //}
         #endregion
 
         #region Private functionality
-        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize)
+        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, string contentType)
         {
             bool retVal = true; //Assume success
 
@@ -146,12 +89,8 @@ namespace ContosoMoments.ResizerWebJob
                 {
                     if (doScaling(blobInput, output, imageSize))
                     {
-                        blobOutput.Properties.ContentType = "image/jpeg";
-
-
+                        blobOutput.Properties.ContentType = contentType;
                     }
-
-
                     else
                         retVal = false;
                 }
@@ -213,7 +152,7 @@ namespace ContosoMoments.ResizerWebJob
 
                     using (Bitmap bitmap = new Bitmap(img, width, height))
                     {
-                        bitmap.Save(output, ImageFormat.Jpeg);
+                        bitmap.Save(output, img.RawFormat);
                     }
                 }
             }

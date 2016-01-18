@@ -31,10 +31,10 @@ namespace ContosoMoments.Common.Models
             {
                 Dictionary<string, Uri> retVal = new Dictionary<string, Uri>();
 
-                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}.jpg", ContainerName, FileName)));
-                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}.jpg", ContainerName, FileName)));
-                retVal.Add("md", new Uri(string.Format("{0}/md/{1}.jpg", ContainerName, FileName)));
-                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}.jpg", ContainerName, FileName)));
+                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}", ContainerName, FileName)));
+                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}", ContainerName, FileName)));
+                retVal.Add("md", new Uri(string.Format("{0}/md/{1}", ContainerName, FileName)));
+                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}", ContainerName, FileName)));
 
                 return retVal;
             }

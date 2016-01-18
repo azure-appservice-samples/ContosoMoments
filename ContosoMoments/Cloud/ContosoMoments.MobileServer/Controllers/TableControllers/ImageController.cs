@@ -60,11 +60,13 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         public async Task DeleteImage(string id)
         {
             var image = Lookup(id).Queryable.First();
-            var filename = image.FileName;
+            var filenameParts = image.FileName.Split('.');
+            var filename = filenameParts[0];
+            var fileExt = filenameParts[1];
             var containerName = image.ContainerName;
 
             var qm = new QueueManager();
-            var blobInfo = new BlobInformation();
+            var blobInfo = new BlobInformation(fileExt);
             blobInfo.BlobUri = new Uri(containerName);
             blobInfo.ImageId = filename;
             await qm.PushToDeleteQueue(blobInfo);

@@ -9,7 +9,7 @@ namespace ContosoMoments.Models
     public class Image
     {
         string id;
-        Guid imageId;
+        string imageId;
         string imageFormat;
         string containerName;
         Album album;
@@ -25,7 +25,7 @@ namespace ContosoMoments.Models
         }
 
         [JsonProperty(PropertyName = "FileName")]
-        public Guid ImageId
+        public string ImageId
         {
             get { return imageId; }
             set { imageId = value; }
@@ -80,10 +80,10 @@ namespace ContosoMoments.Models
             {
                 Dictionary<string, Uri> retVal = new Dictionary<string, Uri>();
 
-                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}.jpg", containerName, imageId.ToString())));
-                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}.jpg", containerName, imageId.ToString())));
-                retVal.Add("md", new Uri(string.Format("{0}/md/{1}.jpg", containerName, imageId.ToString())));
-                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}.jpg", containerName, imageId.ToString())));
+                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}", containerName, imageId)));
+                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}", containerName, imageId)));
+                retVal.Add("md", new Uri(string.Format("{0}/md/{1}", containerName, imageId)));
+                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}", containerName, imageId)));
 
                 return retVal;
             }

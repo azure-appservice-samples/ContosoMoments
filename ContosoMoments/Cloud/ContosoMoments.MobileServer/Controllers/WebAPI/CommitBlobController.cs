@@ -21,11 +21,13 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         {
             var res = new CommitBlobResponse();
             var cs = new ContosoStorage();
-            if (!commitBlobRequest.IsMobile)
-            {
+            string fileExt = BlobInformation.DEFAULT_FILE_EXT;
 
-                cs.CommitUpload(commitBlobRequest);
-            }
+            //if (!commitBlobRequest.IsMobile)
+            //{
+
+                fileExt = cs.CommitUpload(commitBlobRequest);
+            //}
             var url = commitBlobRequest.SasUrl.Replace(AppSettings.StorageWebUri, "");
             var urldata = url.Split('?');
             var index = urldata[0].IndexOf('/');
@@ -35,18 +37,18 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
             var containerName = urldata[0].Substring(0, index);
             //  var fileName = urldata[0].Replace(containerName + "/", "");
-            string fileGuidName = urldata[0].Replace(containerName + "/lg/", "").Replace(".jpg", "");
+            string fileGuidName = urldata[0].Replace(containerName + "/lg/", "").Replace(".temp", "");
 
             
             var ibl = new ImageBusinessLogic();
-            var image = ibl.AddImageToDB(commitBlobRequest.AlbumId, commitBlobRequest.UserId, containerName, fileGuidName/* + ".jpg"*/, commitBlobRequest.IsMobile);
+            var image = ibl.AddImageToDB(commitBlobRequest.AlbumId, commitBlobRequest.UserId, containerName, fileGuidName + "." + fileExt, commitBlobRequest.IsMobile);
             if (image != null)
             {
                 res.Success = true;
                 res.ImageId = image.Id;                                                                                                                                                                                                                            
             }
             var qm = new QueueManager();
-            var blobInfo = new BlobInformation();
+            var blobInfo = new BlobInformation(fileExt);
             blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName, ""));
             // blobInfo.FileGuidName = fileGuidName;
             blobInfo.ImageId = fileGuidName;

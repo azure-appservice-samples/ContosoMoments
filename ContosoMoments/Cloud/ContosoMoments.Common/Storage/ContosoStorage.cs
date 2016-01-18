@@ -5,6 +5,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
+using System.Threading.Tasks;
 
 namespace ContosoMoments.Common.Storage
 {
@@ -33,9 +34,9 @@ namespace ContosoMoments.Common.Storage
             return url;
         }
 
-        public bool CommitUpload(CommitBlobRequest commitRequest)
+        public string CommitUpload(CommitBlobRequest commitRequest)
         {
-            var result = false;
+            var result = BlobInformation.DEFAULT_FILE_EXT;
             var url = commitRequest.SasUrl.Replace(blobEndpoint.ToString(), "");
             var urldata = url.Split('?');
             var content = urldata[0].Split('/');
@@ -52,23 +53,26 @@ namespace ContosoMoments.Common.Storage
 
             try
             {
-                blob.PutBlockList(commitRequest.blobParts);
-                blob.Properties.ContentType = "image/jpeg";
-                blob.Properties.ContentDisposition = "attachment";
-                blob.SetProperties();
+                if (null != commitRequest.blobParts)
+                    blob.PutBlockList(commitRequest.blobParts);
+                //blob.Properties.ContentType = "image/jpeg";
+                //blob.Properties.ContentDisposition = "attachment";
+                //blob.SetProperties();
 
-                result = true;
+                blob.FetchAttributes();
+                result = blob.Properties.ContentType.Replace("image/", "").ToLower();
+
+                if (result == "jpeg")
+                    result = BlobInformation.DEFAULT_FILE_EXT;
+
+                RenameBlob(container, FileName, FileName.Replace("temp", result));
             }
             catch (Exception ex)
             {
                 //Trace.TraceError("BuildFileSasUrl throw excaption", ex.Message);
             }
 
-
             return result;
-
-
-
         }
 
 
@@ -120,6 +124,22 @@ namespace ContosoMoments.Common.Storage
 
             return url;
 
+        }
+
+        private void RenameBlob(CloudBlobContainer container, string oldName, string newName)
+        {
+            var source = container.GetBlobReferenceFromServer(oldName);
+            var target = container.GetBlockBlobReference(newName);
+
+            target.StartCopy(source.Uri);
+
+            while (target.CopyState.Status == CopyStatus.Pending)
+                Task.Delay(100).Wait();
+
+            if (target.CopyState.Status != CopyStatus.Success)
+                throw new ApplicationException("Rename failed: " + target.CopyState.Status);
+
+            source.Delete();
         }
 
         private static string BuildSAS(CloudBlobContainer container)
