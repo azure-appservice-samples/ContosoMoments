@@ -133,6 +133,12 @@
         "description": "Use any valid URL."
       }
     },
+    "NotificationHubName": {
+      "type": "string",
+      "metadata": {
+        "description": "NotificationHub name"
+      }
+    },
     "repoURL": {
       "type": "string",
       "metadata": {
@@ -149,7 +155,9 @@
   },
   "variables": {
     "webJobSiteName": "[concat(parameters('siteName'), '-jobs')]",
-    "storageAccountName": "[toLower(parameters('storageAccountName'))]"
+    "storageAccountName": "[toLower(parameters('storageAccountName'))]",
+    "notificationHubNamespace": "[concat(parameters('NotificationHubName'), '-ns')]",
+    "notificationHubLocation": "[parameters('siteLocation')]"
   },
   "resources": [
     {
@@ -213,6 +221,31 @@
     },
 
     {
+      "apiVersion": "2014-09-01",
+      "type": "Microsoft.NotificationHubs/namespaces",
+      "name": "[variables('notificationHubNamespace')]",
+      "location": "[variables('notificationHubLocation')]",
+      "properties": {
+        "region": "[variables('notificationHubLocation')]",
+        "namespaceType": "NotificationHub"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-09-01",
+          "name": "[parameters('NotificationHubName')]",
+          "type": "NotificationHubs",
+          "location": "[variables('notificationHubLocation')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.NotificationHubs/namespaces', variables('notificationHubNamespace'))]"
+          ],
+          "properties": {
+            "name": "[parameters('NotificationHubName')]"
+          }
+        }
+      ]
+    },
+
+    {
       "apiVersion": "2014-04-01",
       "type": "Microsoft.Web/sites",
       "name": "[parameters('siteName')]",
@@ -220,7 +253,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
         "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), parameters('NotificationHubName'))]"
       ],
       "properties": {
         "name": "[parameters('siteName')]",
@@ -241,6 +275,11 @@
                 "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('sqlServerName'))).fullyQualifiedDomainName, ',1433;Database=', parameters('sqlDbName'), ';User Id=', parameters('sqlAdministratorLogin'), '@', parameters('sqlServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
                 "Name": "MS_TableConnectionString",
                 "Type": 2
+              },
+              {
+                "ConnectionString": "[listkeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', variables('notificationHubNamespace'), parameters('NotificationHubName'), 'DefaultFullSharedAccessSignature'), '2014-09-01').primaryConnectionString]",
+                "Name": "MS_NotificationHubConnectionString",
+                "Type": "custom"
               }
             ]
           }
@@ -264,7 +303,21 @@
             "DefaultUserId": "[parameters('DefaultUserId')]",
             "DefaultAlbumId": "[parameters('DefaultAlbumId')]",
             "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net/')]",
+            "MS_NotificationHubName": "[parameters('NotificationHubName')]",
+            "enableSoftDelete": "true",
             "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.MobileServer\\ContosoMoments.MobileServer.csproj"
+          }
+        },
+        {
+          "apiVersion": "2015-01-01",
+          "type": "providers/links",
+          "name": "Microsoft.Resources/mobile-notificationhub",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
+            "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), parameters('NotificationHubName'))]"
+          ],
+          "properties": {
+            "targetId": "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), parameters('NotificationHubName'))]"
           }
         },
         {
