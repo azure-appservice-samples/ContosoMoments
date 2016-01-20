@@ -139,30 +139,6 @@
         "description": "NotificationHub name"
       }
     },
-    //"GoogleApiKey": {
-    //  "type": "string",
-    //  "metadata": {
-    //    "description": "API Key is used to authenticate with Google Cloud Messaging. You can obtain it by registering your app at the Google Developer Center."
-    //  }
-    //},
-    //"APNSCertificate": {
-    //  "type": "string",
-    //  "metadata": {
-    //    "description": "Certificate Thumbprint is used to authenticate with Apple Push Notification Services. You can obtain it by registering your app at the Apple Developer Member Center."
-    //  }
-    //},
-    //"WNSPackageSID": {
-    //  "type": "string",
-    //  "metadata": {
-    //    "description": "Package SID is first part of credentials to authenticate with Windows Notification Services. You can obtain it by registering your app at the Windows Developer Center."
-    //  }
-    //},
-    //"WNSPackageSecret": {
-    //  "type": "string",
-    //  "metadata": {
-    //    "description": "Security Key is second part of credentials to authenticate with Windows Notification Services. You can obtain it by registering your app at the Windows Developer Center."
-    //  }
-    //},
     "repoURL": {
       "type": "string",
       "metadata": {
@@ -263,18 +239,7 @@
             "[resourceId('Microsoft.NotificationHubs/namespaces', variables('notificationHubNamespace'))]"
           ],
           "properties": {
-            "name": "[parameters('NotificationHubName')]"//,
-            //"gcmCredential": {
-            //  "googleApiKey": "[parameters('GoogleApiKey')]",
-            //  "gcmEndpoint": "https://android.googleapis.com/gcm/send"
-            //},
-            //"wnsCredential": {
-            //  "packageSid": "[parameters('WNSPackageSID')]",
-            //  "secretKey": "[parameters('WNSPackageSecret')]"
-            //},
-            //"apnsCredential": {
-            //  "apnsCertificate": "[parameters('APNSCertificate')]"
-            //}
+            "name": "[parameters('NotificationHubName')]"
             }
         }
       ]
