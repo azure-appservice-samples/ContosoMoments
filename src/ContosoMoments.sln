@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WinPhone", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Common", "Cloud\ContosoMoments.Common\ContosoMoments.Common.csproj", "{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.API", "Cloud\ContosoMoments.MobileServer\ContosoMoments.API.csproj", "{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.API", "Cloud\ContosoMoments.API\ContosoMoments.API.csproj", "{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WebJobWrapper", "Cloud\ContosoMoments.WebJobWrapper\ContosoMoments.WebJobWrapper.csproj", "{32FDB152-1D9B-4682-9869-4CEF34C3E40E}"
 EndProject
