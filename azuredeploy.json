@@ -258,7 +258,7 @@
       ],
       "properties": {
         "name": "[parameters('siteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
+        "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
         {
@@ -347,7 +347,7 @@
       ],
       "properties": {
         "name": "[variables('webJobSiteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
+        "serverFarm": "[parameters('hostingPlanName')]"
       },
       "resources": [
         {
