@@ -305,7 +305,7 @@
             "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net/')]",
             "MS_NotificationHubName": "[parameters('NotificationHubName')]",
             "enableSoftDelete": "true",
-            "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.API\\ContosoMoments.API.csproj"
+            "PROJECT": "src\\Cloud\\ContosoMoments.API\\ContosoMoments.API.csproj"
           }
         },
         {
@@ -361,7 +361,7 @@
           "properties": {
             "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
             "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-05-01-preview').key1)]",
-            "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.WebJobWrapper\\ContosoMoments.WebJobWrapper.csproj"
+            "PROJECT": "src\\Cloud\\ContosoMoments.WebJobWrapper\\ContosoMoments.WebJobWrapper.csproj"
           }
         },
         {
