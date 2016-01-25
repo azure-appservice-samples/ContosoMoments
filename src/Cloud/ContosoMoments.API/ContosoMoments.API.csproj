@@ -232,10 +232,6 @@
     <Compile Include="Controllers\TableControllers\ImageController.cs" />
     <Compile Include="Controllers\TableControllers\UserController.cs" />
     <Compile Include="Controllers\WebAPI\LikeController.cs" />
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/ContosoMoments.API.csproj
-    <Compile Include="DataLogic\FederationLogic.cs" />
-=======
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/ContosoMoments.API.csproj
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DataLogic\ImageBusinessLogic.cs" />
     <Compile Include="Models\ConfigModel.cs" />
@@ -572,19 +568,13 @@
     <Content Include="fonts\fontello.woff" />
     <Content Include="bower.json" />
     <Content Include="configHandler.ashx" />
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/ContosoMoments.API.csproj
     <Content Include="bower_components\angular-ui-router\.bower.json" />
-=======
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/ContosoMoments.API.csproj
     <Content Include="bower_components\angular-ui-router\bower.json" />
     <Content Include="bower_components\angular-ui-router\CHANGELOG.md" />
     <Content Include="bower_components\angular-ui-router\CONTRIBUTING.md" />
     <Content Include="bower_components\angular-ui-router\LICENSE" />
     <Content Include="bower_components\angular-ui-router\README.md" />
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/ContosoMoments.API.csproj
     <None Include="Properties\PublishProfiles\contosomoments - Web Deploy.pubxml" />
-=======
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/ContosoMoments.API.csproj
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\contosomomentsqa - Web Deploy.pubxml" />
@@ -593,11 +583,7 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/ContosoMoments.API.csproj
-    <TypeScriptCompile Include="bower_components\angular-ui-router\api\angular-ui-router.d.ts" />
-=======
     <Folder Include="bower_components\angular-ui-router\api\" />
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/ContosoMoments.API.csproj
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

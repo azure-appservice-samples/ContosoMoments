@@ -9,10 +9,6 @@ using ContosoMoments.MobileServer.Models;
 using System;
 using ContosoMoments.Common.Queue;
 using ContosoMoments.Common;
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/Controllers/WebAPI/ManageUserController.cs
-using ContosoMoments.MobileServer.DataLogic;
-=======
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/Controllers/WebAPI/ManageUserController.cs
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
@@ -22,21 +18,11 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         // GET api/ManageUser
         public async Task<string> Get()
         {
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/Controllers/WebAPI/ManageUserController.cs
-            var fedLogic = new FederationLogic();
-=======
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/Controllers/WebAPI/ManageUserController.cs
             Web.Models.ConfigModel config = new Web.Models.ConfigModel();
             string retVal = config.DefaultUserId;
 
             // Get the credentials for the logged-in user.
             var fbCredentials = await this.User.GetAppServiceIdentityAsync<FacebookCredentials>(this.Request);
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/Controllers/WebAPI/ManageUserController.cs
-    
-            if (null != fbCredentials && fbCredentials.Claims.Count > 0)
-            {
-                retVal = await fedLogic.GetFacebookUserInfo(fbCredentials);
-=======
 
             if (null != fbCredentials && fbCredentials.Claims.Count > 0)
             {
@@ -67,7 +53,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                     return retVal;
                 }
 
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/Controllers/WebAPI/ManageUserController.cs
                 return retVal;
             }
 

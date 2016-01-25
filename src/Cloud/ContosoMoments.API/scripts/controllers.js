@@ -110,34 +110,6 @@
 
     }]);
     
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/scripts/controllers.js
-    app.controller('deleteImageController', ['$scope', 'imageService', '$uibModalInstance', 'selectedImage', '$state', function ($scope, imageService, $uibModalInstance, selectedImage, $state) {
-        var self = this;
-       
-        self.deletingImage = false;
-        self.deleteImage = function () {
-            self.deletingImage = true;
-             imageService.deleteImage(id).then(function (res) {
-                $uibModalInstance.close(res);
-            }).finally(function () {
-                self.deletingImage = false;
-            });
-
-        }
-        self.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        }
-       
-
-        $scope.$on('modal.closing', function (event) {
-            if ($scope.uploading) {
-                event.preventDefault();
-            }
-        });
-
-    }]);
-=======
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/scripts/controllers.js
     app.controller('deleteAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum','$state', function ($scope, albumsService, $uibModalInstance, selectedAlbum,$state) {
         var self = this;
         $scope.albumName = selectedAlbum.album.albumName;
@@ -181,11 +153,6 @@
             return imageService.getImageURL(this.currentImage, size);
         }
 
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/scripts/controllers.js
-       
-
-=======
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/scripts/controllers.js
         self.hasBeenLiked = false;
         self.like = function () {
             if (!self.hasBeenLiked) {
@@ -201,19 +168,11 @@
         $scope.showUpload = false;
         $scope.showCreateAlbum = false;
         $scope.showMenu = true;
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/scripts/controllers.js
         $scope.showDelImage = false;
         $scope.$on('$stateChangeSuccess', function (e, toState) {
             $scope.navCollapsed = true;
             $scope.showUpload = toState.name === 'main.gallery';
             $scope.showDelImage = toState.name === 'main.singleImage';
-
-=======
-
-        $scope.$on('$stateChangeSuccess', function (e, toState) {
-            $scope.navCollapsed = true;
-            $scope.showUpload = toState.name === 'main.gallery';
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/scripts/controllers.js
             $scope.showCreateAlbum = toState.name === 'main.albums';
             $scope.showMenu = toState.name !== 'main.singleImage';
         });
@@ -253,7 +212,7 @@
                 controller: 'deleteAlbumController',
                 controllerAs: 'delAlbumCtrl'
             }).result.then(function (album) {
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/scripts/controllers.js
+
                 $state.go('main.albums');
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
@@ -267,19 +226,12 @@
                 controllerAs: 'delImageCtrl'
             }).result.then(function (album) {
                 $state.go('main.singleImage');
-=======
-                $state.go('main.albums')
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/scripts/controllers.js
+
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
         }
-<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/scripts/controllers.js
-=======
-      
->>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/scripts/controllers.js
-
-       
+     
 
     }]);
     app.controller('titleController', ['$scope', 'selectedAlbum', function ($scope, selectedAlbum) {
