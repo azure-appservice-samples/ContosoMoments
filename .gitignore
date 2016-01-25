@@ -359,3 +359,5 @@ gen-external-apklibs
 bin/
 obj/
 *.userprefs
+
+!**/bower_components/**/release

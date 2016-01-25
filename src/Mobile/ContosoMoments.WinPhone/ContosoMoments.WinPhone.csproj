@@ -282,8 +282,8 @@
     <SDKReference Include="Microsoft.VCLibs, Version=12.0">
       <Name>Microsoft Visual C++ 2013 Runtime Package for Windows Phone</Name>
     </SDKReference>
-    <SDKReference Include="SQLite.WP80, Version=3.10.1">
-      <Name>SQLite for Windows Phone %28SQLite.WP80, Version=3.10.1%29</Name>
+    <SDKReference Include="SQLite.WP80, Version=3.10.2">
+      <Name>SQLite for Windows Phone %28SQLite.WP80, Version=3.10.2%29</Name>
     </SDKReference>
   </ItemGroup>
   <Import Project="..\ContosoMoments\ContosoMoments.projitems" Label="Shared" Condition="Exists('..\ContosoMoments\ContosoMoments.projitems')" />

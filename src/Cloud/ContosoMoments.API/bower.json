@@ -1,0 +1,60 @@
+<<<<<<< HEAD:src/Cloud/ContosoMoments.MobileServer/bower.json
+{
+  "name": "imageGallery",
+  "version": "0.0.0",
+  "authors": [
+    "nirnoy <noynir@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "angular": "~1.4.7",
+    "angular-route": "~1.4.7",
+    "object-fit": "~0.4.2",
+    "angular-ui-router": "~0.2.15"
+  }
+}
+=======
+{
+  "name": "imageGallery",
+  "version": "0.0.0",
+  "authors": [
+    "nirnoy <noynir@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "angular": "~1.4.7",
+    "angular-route": "~1.4.7",
+    "object-fit": "~0.4.2"
+  }
+}
+>>>>>>> bf097e4738a3c271b84527580926fb9e2681021f:src/Cloud/ContosoMoments.API/bower.json

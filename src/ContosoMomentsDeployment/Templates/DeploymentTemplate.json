@@ -305,7 +305,7 @@
             "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net/')]",
             "MS_NotificationHubName": "[parameters('NotificationHubName')]",
             "enableSoftDelete": "true",
-            "PROJECT": "ContosoMoments\\Cloud\\ContosoMoments.MobileServer\\ContosoMoments.MobileServer.csproj"
+            "PROJECT": "src\\Cloud\\ContosoMoments.API\\ContosoMoments.API.csproj"
           }
         },
         {
@@ -383,7 +383,7 @@
             "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
           ],
           "properties": {
-            "PROJECT": "ContosoMoments\\ContosoMoments.WebJobs\\ContosoMoments.WebJobs.csproj"
+            "PROJECT": "src\\Cloud\\ContosoMoments.WebJobWrapper\\ContosoMoments.WebJobWrapper.csproj"
           }
         },
         {
