@@ -29,6 +29,5 @@
   },
   "_source": "git://github.com/angular-ui/ui-router.git",
   "_target": "~0.2.15",
-  "_originalSource": "angular-ui-router",
-  "_direct": true
+  "_originalSource": "angular-ui-router"
 }

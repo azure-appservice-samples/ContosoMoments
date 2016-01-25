@@ -232,6 +232,7 @@
     <Compile Include="Controllers\TableControllers\ImageController.cs" />
     <Compile Include="Controllers\TableControllers\UserController.cs" />
     <Compile Include="Controllers\WebAPI\LikeController.cs" />
+    <Compile Include="DataLogic\FederationLogic.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DataLogic\ImageBusinessLogic.cs" />
     <Compile Include="Models\ConfigModel.cs" />
@@ -568,11 +569,13 @@
     <Content Include="fonts\fontello.woff" />
     <Content Include="bower.json" />
     <Content Include="configHandler.ashx" />
+    <Content Include="bower_components\angular-ui-router\.bower.json" />
     <Content Include="bower_components\angular-ui-router\bower.json" />
     <Content Include="bower_components\angular-ui-router\CHANGELOG.md" />
     <Content Include="bower_components\angular-ui-router\CONTRIBUTING.md" />
     <Content Include="bower_components\angular-ui-router\LICENSE" />
     <Content Include="bower_components\angular-ui-router\README.md" />
+    <None Include="Properties\PublishProfiles\contosomoments - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\contosomomentsqa - Web Deploy.pubxml" />
@@ -581,7 +584,7 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bower_components\angular-ui-router\api\" />
+    <TypeScriptCompile Include="bower_components\angular-ui-router\api\angular-ui-router.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

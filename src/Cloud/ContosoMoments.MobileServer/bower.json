@@ -23,6 +23,7 @@
     "bootstrap": "~3.3.5",
     "angular": "~1.4.7",
     "angular-route": "~1.4.7",
-    "object-fit": "~0.4.2"
+    "object-fit": "~0.4.2",
+    "angular-ui-router": "~0.2.15"
   }
 }

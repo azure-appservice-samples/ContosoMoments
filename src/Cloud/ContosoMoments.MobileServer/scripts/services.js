@@ -10,7 +10,7 @@
         this.isAuthenticated = isAuthenticated;
     };
 
-    app.factory('authService', ['userService', 'appConfig', '$q', '$rootScope', function (userService, appConfig, $q, $rootScope) {
+    app.factory('authService', ['userService', 'appConfig', '$q', '$rootScope', '$http', function (userService, appConfig, $q, $rootScope, $http) {
         var context;
 
         return {
@@ -20,6 +20,20 @@
                     defered.resolve(context);
                 }
                 else {
+                //    $http.get('/api/ManageUser').then  (function(res) {}
+                    $http.get("/api/ManageUser").then(function (getRes) {
+
+                        userService.getUser(getRes.data).then(function (res) {
+                            context = new AuthContext(appConfig.DefaultUserId, true, res);
+                            defered.resolve(context);
+                            $rootScope.$broadcast('userAuthenticated', context);
+                        }, function (err) {
+                            defered.reject(context);
+                        });
+
+                        return;
+                            });
+
                     userService.getUser(appConfig.DefaultUserId).then(function (res) {
                         context = new AuthContext(appConfig.DefaultUserId, true, res);
                         defered.resolve(context);
