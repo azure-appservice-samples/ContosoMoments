@@ -216,6 +216,15 @@
                     });
                 return defered.promise;
             },
+            deleeImage : function(id) {
+                var defered = $q.defer();
+                $http.delete('/api/image/delete/' + id, []).success(function (data, status) {
+                    defered.resolve(data);
+                    console.log("***************  " + data);
+                });
+                return defered.promise;
+            },
+
             likeImage: setLikeForImage
             
         }

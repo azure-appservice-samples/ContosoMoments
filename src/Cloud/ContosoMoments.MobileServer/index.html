@@ -30,14 +30,21 @@
                         <img class="img-responsive" src="images/Web-ContosoMomentsLogo.svg">
                     </a>
                 </div>
-                <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
+                <div >
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="pull-right-sm" ng-show="showUpload">
-                            <a href="#" ng-click="navCtrl.deleteAlbumModal()">
+
+
+                        <li class="pull-right-sm"  ng-show="showDelImage">
+                            <a href="#" ng-click="navCtrl.deleteImageModal()">
                                 <span class="glyphicon glyphicon-trash"></span>
-                                <span class="hidden-sm hidden-md hidden-lg">Delete Album</span>
+                                <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
                             </a>
                         </li>
+                    </ul>
+                </div>
+                <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
+                    <ul class="nav navbar-nav navbar-right">
+                       
                         <li class="pull-right-sm" ng-show="showUpload">
                             <a href="#" ng-click="navCtrl.openAlbummModal(true)">
                                 <span class="glyphicon glyphicon-pencil"></span>

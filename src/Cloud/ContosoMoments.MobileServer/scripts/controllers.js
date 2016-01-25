@@ -110,6 +110,31 @@
 
     }]);
     
+    app.controller('deleteImageController', ['$scope', 'imageService', '$uibModalInstance', 'selectedImage', '$state', function ($scope, imageService, $uibModalInstance, selectedImage, $state) {
+        var self = this;
+       
+        self.deletingImage = false;
+        self.deleteImage = function () {
+            self.deletingImage = true;
+             imageService.deleteImage(id).then(function (res) {
+                $uibModalInstance.close(res);
+            }).finally(function () {
+                self.deletingImage = false;
+            });
+
+        }
+        self.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+       
+
+        $scope.$on('modal.closing', function (event) {
+            if ($scope.uploading) {
+                event.preventDefault();
+            }
+        });
+
+    }]);
     app.controller('deleteAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum','$state', function ($scope, albumsService, $uibModalInstance, selectedAlbum,$state) {
         var self = this;
         $scope.albumName = selectedAlbum.album.albumName;
@@ -153,6 +178,8 @@
             return imageService.getImageURL(this.currentImage, size);
         }
 
+       
+
         self.hasBeenLiked = false;
         self.like = function () {
             if (!self.hasBeenLiked) {
@@ -168,10 +195,12 @@
         $scope.showUpload = false;
         $scope.showCreateAlbum = false;
         $scope.showMenu = true;
-
+        $scope.showDelImage = false;
         $scope.$on('$stateChangeSuccess', function (e, toState) {
             $scope.navCollapsed = true;
             $scope.showUpload = toState.name === 'main.gallery';
+            $scope.showDelImage = toState.name === 'main.singleImage';
+
             $scope.showCreateAlbum = toState.name === 'main.albums';
             $scope.showMenu = toState.name !== 'main.singleImage';
         });
@@ -211,12 +240,23 @@
                 controller: 'deleteAlbumController',
                 controllerAs: 'delAlbumCtrl'
             }).result.then(function (album) {
-                $state.go('main.albums')
+                $state.go('main.albums');
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
         }
-      
+        this.deleteImageModal = function () {
+            openModal({
+                animation: true,
+                templateUrl: 'deleteImage.html',
+                controller: 'deleteImageController',
+                controllerAs: 'delImageCtrl'
+            }).result.then(function (album) {
+                $state.go('main.singleImage');
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        }
 
        
 
