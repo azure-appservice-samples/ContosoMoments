@@ -66,8 +66,9 @@
        });
 
     }]);
-    app.controller('createAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'authService', 'selectedAlbum', function ($scope, albumsService, $uibModalInstance, authService, selectedAlbum) {
+    app.controller('createAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'authService', 'selectedAlbum', '$rootScope', function ($scope, albumsService, $uibModalInstance, authService, selectedAlbum, $rootScope) {
         var self = this;
+       
         self.postingAlbum = false;
         self.modalTitle = "Create Album";
         var editAlbum = function () {
@@ -91,6 +92,7 @@
             });
 
         }
+        $rootScope.album = self.currentAlbum.Id;
         var postFunc = createAlbum;
         if (selectedAlbum.album != null) {
             self.currentAlbum = angular.copy(selectedAlbum.album);
@@ -141,8 +143,8 @@
     }]);
 
 
-    app.controller('deleteimageController', ['$scope', 'imageService', '$uibModalInstance', '$state', '$rootScope',
-                                    function ($scope, imageService, $uibModalInstance, $state, $rootScope) {
+    app.controller('deleteimageController', ['$scope', 'imageService', '$uibModalInstance', '$state', '$rootScope','$location',
+                                    function ($scope, imageService, $uibModalInstance, $state, $rootScope, $location) {
         var self = this;
         self.currantImageId = $state.params["imageid"];
      
@@ -150,7 +152,9 @@
 
             imageService.deleteImage(self.currantImageId).then(function (res) {
                 $uibModalInstance.close(res);
-                $state.go($rootScope.previousState.name);
+
+                $location.path('/album/' + $rootScope.lastAlbum.id);
+                //$state.go('main.gallery', { albumid: $rootScope.lastAlbum.id })
             }).finally(function () {
                //;
             });
