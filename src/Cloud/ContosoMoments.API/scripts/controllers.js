@@ -2,8 +2,10 @@
     'use strict';
 
     var app = angular.module('app');
-    app.controller('albumsController', ['$scope','albumsService', 'authContext','$state', function ($scope,albumsService, authContext,$state) {
+    app.controller('albumsController', ['$scope', 'albumsService', 'authContext', '$state', function ($scope, albumsService, authContext, $state) {
         var self = this;
+
+       
         self.albums=[];
         albumsService.getUserAlbums(authContext.userId).then(function (albums) {
             if (albums && angular.isArray(albums)) {
@@ -18,12 +20,13 @@
         }
 
     }]);
-    app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state','selectedAlbum',function ($scope, albumsService, imageService, appConfig, selectedImage, $state,selectedAlbum) {
+    app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state', 'selectedAlbum', '$rootScope', function ($scope, albumsService, imageService, appConfig, selectedImage, $state, selectedAlbum, $rootScope) {
         var self = this;
         this.currentIndex = 0;
         this.count = 24;
         this.curAlbum = selectedAlbum.album ;
-
+       
+        $rootScope.lastAlbum = selectedAlbum.album;
         var onImageGotten = function (images) {
             if (self.currentIndex === 0 && self.curAlbum.images.length === 0) {
                 self.curAlbum.images = images;
@@ -118,6 +121,8 @@
             self.deletingAlbum = true;
             albumsService.deleteAlbum(selectedAlbum.album.id).then(function (res) {
                 $uibModalInstance.close(res);
+                $state.go($state.previous.name);
+               
             }).finally(function () {
                 self.deletingAlbum = false;
             });
@@ -134,6 +139,37 @@
         });
 
     }]);
+
+
+    app.controller('deleteimageController', ['$scope', 'imageService', '$uibModalInstance', '$state', '$rootScope',
+                                    function ($scope, imageService, $uibModalInstance, $state, $rootScope) {
+        var self = this;
+        self.currantImageId = $state.params["imageid"];
+     
+        self.delete = function () {
+
+            imageService.deleteImage(self.currantImageId).then(function (res) {
+                $uibModalInstance.close(res);
+                $state.go($rootScope.previousState.name);
+            }).finally(function () {
+               //;
+            });
+
+            ;
+        }
+
+        self.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        $scope.$on('modal.closing', function (event) {
+            if ($scope.uploading) {
+                event.preventDefault();
+            }
+        });
+
+    }]);
+   
     app.controller('imageController', ['currentImage', 'imageService', 'authContext','$q',function (currentImage, imageService, authContext,$q) {
         var self = this;
         $q.when(currentImage).then(function (curImage) {
@@ -222,8 +258,8 @@
             openModal({
                 animation: true,
                 templateUrl: 'deleteImage.html',
-                controller: 'createAlbumController',
-                controllerAs: 'crtAlbumCtrl'
+                controller: 'deleteimageController',
+                controllerAs: 'imgCtrl'
             }).result.then(function (createdAlbum) { }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });

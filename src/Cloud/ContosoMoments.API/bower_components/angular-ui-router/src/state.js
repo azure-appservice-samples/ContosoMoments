@@ -1082,6 +1082,13 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
           $urlRouter.update();
           return TransitionPrevented;
         }
+
+          $rootScope.$on('$stateChangeStart',
+              function(event, toState, toParams, fromState, fromParams) {
+                  event.preventDefault();
+                  // transitionTo() promise will be rejected with
+                  $rootScope.previousState = fromState;
+              });
       }
 
       // Resolve locals for the remaining states, but don't update any global state just
