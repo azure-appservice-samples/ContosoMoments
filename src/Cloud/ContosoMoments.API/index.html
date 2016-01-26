@@ -47,7 +47,13 @@
                     <ul class="nav navbar-nav navbar-right">
                        
 
-               
+
+                        <li class="pull-right-sm" ng-show="showUpload">
+                            <a href="#" ng-click="navCtrl.deleteAlbumModal()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
+                            </a>
+                        </li>
                         <li class="pull-right-sm" ng-show="showUpload">
                             <a href="#" ng-click="navCtrl.openAlbummModal(true)">
                                 <span class="glyphicon glyphicon-pencil"></span>
