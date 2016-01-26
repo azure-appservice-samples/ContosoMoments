@@ -92,7 +92,7 @@
             });
 
         }
-        $rootScope.album = self.currentAlbum.Id;
+       
         var postFunc = createAlbum;
         if (selectedAlbum.album != null) {
             self.currentAlbum = angular.copy(selectedAlbum.album);
