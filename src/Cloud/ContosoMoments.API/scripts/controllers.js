@@ -221,13 +221,10 @@
         this.deleteImageModal = function () {
             openModal({
                 animation: true,
-                templateUrl: 'deleteImage.html',
-                controller: 'deleteImageController',
-                controllerAs: 'delImageCtrl'
-            }).result.then(function (album) {
-                $state.go('main.singleImage');
-
-            }, function () {
+                templateUrl: 'createAlbum.html',
+                controller: 'createAlbumController',
+                controllerAs: 'crtAlbumCtrl'
+            }).result.then(function (createdAlbum) { }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
         }

@@ -215,7 +215,7 @@
                     });
                 return defered.promise;
             },
-            deleeImage : function(id) {
+            deleteImage : function(id) {
                 var defered = $q.defer();
                 $http.delete('/api/image/delete/' + id, []).success(function (data, status) {
                     defered.resolve(data);
