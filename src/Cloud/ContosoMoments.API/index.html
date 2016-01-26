@@ -111,7 +111,19 @@
     </script>
 
 <script type="text/ng-template" id="deleteImage.html">
-       "dfsdfsdf"
+        <div class="modal-header">
+            <h4 class="modal-title" ng-bind="::crtAlbumCtrl.modalTitle">Delete Image</h4>
+        </div>
+        <div class="modal-body">
+            <div class="has-feedback">
+                <h4>Are you sure you want to delete this Image?</h4>
+                
+            </div>
+        </div>
+        <div class="modal-footer" ng-hide="uploadCtrl.showProgress()">
+            <button class="btn btn-default" type="button" ng-click="crtAlbumCtrl.cancel()" ng-disabled="crtAlbumCtrl.postingAlbum">Cancel</button>
+            <button class="btn btn-primary" type="button" ng-click="crtAlbumCtrl.post()" ng-disabled="crtAlbumCtrl.postingAlbum">Delete</button>
+        </div>
     </script>
 
 

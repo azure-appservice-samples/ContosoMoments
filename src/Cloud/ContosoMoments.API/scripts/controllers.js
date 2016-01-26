@@ -221,7 +221,7 @@
         this.deleteImageModal = function () {
             openModal({
                 animation: true,
-                templateUrl: 'createAlbum.html',
+                templateUrl: 'deleteImage.html',
                 controller: 'createAlbumController',
                 controllerAs: 'crtAlbumCtrl'
             }).result.then(function (createdAlbum) { }, function () {
