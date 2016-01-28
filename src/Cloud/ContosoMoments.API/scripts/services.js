@@ -23,7 +23,7 @@
                     $http.get("/api/ManageUser").then(function (getRes) {
 
                         userService.getUser(getRes.data).then(function (res) {
-                            context = new AuthContext(appConfig.DefaultUserId, true, res);
+                            context = new AuthContext(getRes.data, true, res);
                             defered.resolve(context);
                             $rootScope.$broadcast('userAuthenticated', context);
                         }, function (err) {
@@ -33,13 +33,13 @@
                         return;
                             });
 
-                    userService.getUser(appConfig.DefaultUserId).then(function (res) {
-                        context = new AuthContext(appConfig.DefaultUserId, true, res);
-                        defered.resolve(context);
-                        $rootScope.$broadcast('userAuthenticated', context);
-                    }, function (err) {
-                        defered.reject(context);
-                    });
+                    //userService.getUser(appConfig.DefaultUserId).then(function (res) {
+                    //    context = new AuthContext(appConfig.DefaultUserId, true, res);
+                    //    defered.resolve(context);
+                    //    $rootScope.$broadcast('userAuthenticated', context);
+                    //}, function (err) {
+                    //    defered.reject(context);
+                    //});
                 }
 
 
