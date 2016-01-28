@@ -174,7 +174,7 @@
 
     }]);
    
-    app.controller('imageController', ['currentImage', 'imageService', 'authContext','$q',function (currentImage, imageService, authContext,$q) {
+    app.controller('imageController', ['currentImage', 'imageService', 'authContext', '$q', '$scope', function (currentImage, imageService, authContext, $q, $scope) {
         var self = this;
         $q.when(currentImage).then(function (curImage) {
             if (angular.isArray(curImage)){
@@ -199,9 +199,20 @@
                 imageService.likeImage(self.currentImage.id).then(function (res) {
                     self.hasBeenLiked = res;
                 });
-            }
-           
+            }         
         }
+
+
+        $scope.$on('imageDeleted', function (e, imageId) {
+            for (var i = 0; i < self.currentAlbum.images.length; i++) {
+                if (self.currentAlbum.images[i].id == imageId) {
+                    self.currentAlbum.images.splice(i, 1);
+                    break;
+                }
+            }
+        });
+
+
     }]);
     app.controller('navController', ['$scope', '$uibModal', '$state',function ($scope, $uibModal, $state) {
 
