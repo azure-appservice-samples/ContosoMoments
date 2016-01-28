@@ -30,12 +30,28 @@
                         <img class="img-responsive" src="images/Web-ContosoMomentsLogo.svg">
                     </a>
                 </div>
+
+                <div >
+                    <ul class="nav navbar-nav navbar-right">
+
+
+                        <li class="pull-right-sm"  ng-show="showDelImage">
+                            <a href="#" ng-click="navCtrl.deleteImageModal()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
                     <ul class="nav navbar-nav navbar-right">
+                       
+
+
                         <li class="pull-right-sm" ng-show="showUpload">
                             <a href="#" ng-click="navCtrl.deleteAlbumModal()">
                                 <span class="glyphicon glyphicon-trash"></span>
-                                <span class="hidden-sm hidden-md hidden-lg">Delete Album</span>
+                                <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
                             </a>
                         </li>
                         <li class="pull-right-sm" ng-show="showUpload">
@@ -84,7 +100,7 @@
     <script src="/scripts/services.js"></script>
     <script src="/scripts/directives.js"></script>
 
-    <script type="text/ng-template" id="createAlbum.html">
+<script type="text/ng-template" id="createAlbum.html">
         <div class="modal-header">
             <h4 class="modal-title" ng-bind="::crtAlbumCtrl.modalTitle">Create Album</h4>
         </div>
@@ -99,7 +115,25 @@
             <button class="btn btn-primary" type="button" ng-click="crtAlbumCtrl.post()" ng-disabled="crtAlbumCtrl.postingAlbum">Save</button>
         </div>
     </script>
-    <script type="text/ng-template" id="uploadModal.html">
+
+<script type="text/ng-template" id="deleteImage.html">
+        <div class="modal-header">
+            <h4 class="modal-title">Delete Image</h4>
+        </div>
+        <div class="modal-body">
+            <div class="has-feedback">
+                <h4>Are you sure you want to delete this Image?</h4>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" type="button" ng-click="imgCtrl.cancel()" >Cancel</button>
+            <button class="btn btn-primary" type="button" ng-click="imgCtrl.delete()">Delete</button>
+        </div>
+    </script>
+
+
+<script type="text/ng-template" id="uploadModal.html">
         <div class="modal-header">
             <h4 class="modal-title">Image upload</h4>
         </div>

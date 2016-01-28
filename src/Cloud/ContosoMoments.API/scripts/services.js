@@ -1,4 +1,3 @@
-
 (function (angular) {
     'use strict';
 
@@ -10,7 +9,7 @@
         this.isAuthenticated = isAuthenticated;
     };
 
-    app.factory('authService', ['userService', 'appConfig', '$q', '$rootScope', function (userService, appConfig, $q, $rootScope) {
+    app.factory('authService', ['userService', 'appConfig', '$q', '$rootScope', '$http', function (userService, appConfig, $q, $rootScope, $http) {
         var context;
 
         return {
@@ -20,13 +19,27 @@
                     defered.resolve(context);
                 }
                 else {
-                    userService.getUser(appConfig.DefaultUserId).then(function (res) {
-                        context = new AuthContext(appConfig.DefaultUserId, true, res);
-                        defered.resolve(context);
-                        $rootScope.$broadcast('userAuthenticated', context);
-                    }, function (err) {
-                        defered.reject(context);
-                    });
+                //    $http.get('/api/ManageUser').then  (function(res) {}
+                    $http.get("/api/ManageUser").then(function (getRes) {
+
+                        userService.getUser(getRes.data).then(function (res) {
+                            context = new AuthContext(getRes.data, true, res);
+                            defered.resolve(context);
+                            $rootScope.$broadcast('userAuthenticated', context);
+                        }, function (err) {
+                            defered.reject(context);
+                        });
+
+                        return;
+                            });
+
+                    //userService.getUser(appConfig.DefaultUserId).then(function (res) {
+                    //    context = new AuthContext(appConfig.DefaultUserId, true, res);
+                    //    defered.resolve(context);
+                    //    $rootScope.$broadcast('userAuthenticated', context);
+                    //}, function (err) {
+                    //    defered.reject(context);
+                    //});
                 }
 
 
@@ -131,7 +144,7 @@
         return albumService;
     }]);
 
-    app.factory('imageService', ['mobileServicesClient', '$interpolate', '$http', '$q', 'appConfig', function (mobileServicesClient, $interpolate, $http, $q, appConfig) {
+    app.factory('imageService', ['mobileServicesClient', '$interpolate', '$http', '$q', 'appConfig','$rootScope', function (mobileServicesClient, $interpolate, $http, $q, appConfig,$rootScope) {
         var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}');
         var imageDefaultOptions = {
             start: 0,
@@ -202,6 +215,16 @@
                     });
                 return defered.promise;
             },
+            deleteImage : function(id) {
+                var defered = $q.defer();
+                $http.delete('/api/image/' + id, []).success(function (data, status) {
+                    defered.resolve(data);
+                    $rootScope.$broadcast('imageDeleted', id);
+                    console.log("***************  " + data);
+                });
+                return defered.promise;
+            },
+
             likeImage: setLikeForImage
             
         }
@@ -278,6 +301,7 @@
     app.value('selectedImage', { image: null, album: null });
 
     app.value('selectedAlbum', { album: null } );
+
 
 
 })(angular)

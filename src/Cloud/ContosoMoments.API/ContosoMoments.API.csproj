@@ -568,11 +568,13 @@
     <Content Include="fonts\fontello.woff" />
     <Content Include="bower.json" />
     <Content Include="configHandler.ashx" />
+    <Content Include="bower_components\angular-ui-router\.bower.json" />
     <Content Include="bower_components\angular-ui-router\bower.json" />
     <Content Include="bower_components\angular-ui-router\CHANGELOG.md" />
     <Content Include="bower_components\angular-ui-router\CONTRIBUTING.md" />
     <Content Include="bower_components\angular-ui-router\LICENSE" />
     <Content Include="bower_components\angular-ui-router\README.md" />
+    <None Include="Properties\PublishProfiles\contosomoments - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\contosomomentsqa - Web Deploy.pubxml" />

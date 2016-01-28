@@ -2,8 +2,10 @@
     'use strict';
 
     var app = angular.module('app');
-    app.controller('albumsController', ['$scope','albumsService', 'authContext','$state', function ($scope,albumsService, authContext,$state) {
+    app.controller('albumsController', ['$scope', 'albumsService', 'authContext', '$state', function ($scope, albumsService, authContext, $state) {
         var self = this;
+
+       
         self.albums=[];
         albumsService.getUserAlbums(authContext.userId).then(function (albums) {
             if (albums && angular.isArray(albums)) {
@@ -18,12 +20,13 @@
         }
 
     }]);
-    app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state','selectedAlbum',function ($scope, albumsService, imageService, appConfig, selectedImage, $state,selectedAlbum) {
+    app.controller('albumController', ['$scope', 'albumsService', 'imageService', 'appConfig', 'selectedImage', '$state', 'selectedAlbum', '$rootScope', function ($scope, albumsService, imageService, appConfig, selectedImage, $state, selectedAlbum, $rootScope) {
         var self = this;
         this.currentIndex = 0;
         this.count = 24;
         this.curAlbum = selectedAlbum.album ;
-
+       
+        $rootScope.lastAlbum = selectedAlbum.album;
         var onImageGotten = function (images) {
             if (self.currentIndex === 0 && self.curAlbum.images.length === 0) {
                 self.curAlbum.images = images;
@@ -63,8 +66,9 @@
        });
 
     }]);
-    app.controller('createAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'authService', 'selectedAlbum', function ($scope, albumsService, $uibModalInstance, authService, selectedAlbum) {
+    app.controller('createAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'authService', 'selectedAlbum', '$rootScope', function ($scope, albumsService, $uibModalInstance, authService, selectedAlbum, $rootScope) {
         var self = this;
+       
         self.postingAlbum = false;
         self.modalTitle = "Create Album";
         var editAlbum = function () {
@@ -88,6 +92,7 @@
             });
 
         }
+       
         var postFunc = createAlbum;
         if (selectedAlbum.album != null) {
             self.currentAlbum = angular.copy(selectedAlbum.album);
@@ -118,6 +123,8 @@
             self.deletingAlbum = true;
             albumsService.deleteAlbum(selectedAlbum.album.id).then(function (res) {
                 $uibModalInstance.close(res);
+                $state.go($state.previous.name);
+               
             }).finally(function () {
                 self.deletingAlbum = false;
             });
@@ -134,7 +141,40 @@
         });
 
     }]);
-    app.controller('imageController', ['currentImage', 'imageService', 'authContext','$q',function (currentImage, imageService, authContext,$q) {
+
+
+    app.controller('deleteimageController', ['$scope', 'imageService', '$uibModalInstance', '$state', '$rootScope','$location',
+                                    function ($scope, imageService, $uibModalInstance, $state, $rootScope, $location) {
+        var self = this;
+        self.currantImageId = $state.params["imageid"];
+     
+        self.delete = function () {
+
+            imageService.deleteImage(self.currantImageId).then(function (res) {
+                $uibModalInstance.close(res);
+
+                $location.path('/album/' + $rootScope.lastAlbum.id);
+                //$state.go('main.gallery', { albumid: $rootScope.lastAlbum.id })
+            }).finally(function () {
+               //;
+            });
+
+            ;
+        }
+
+        self.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        $scope.$on('modal.closing', function (event) {
+            if ($scope.uploading) {
+                event.preventDefault();
+            }
+        });
+
+    }]);
+   
+    app.controller('imageController', ['currentImage', 'imageService', 'authContext', '$q', '$scope', function (currentImage, imageService, authContext, $q, $scope) {
         var self = this;
         $q.when(currentImage).then(function (curImage) {
             if (angular.isArray(curImage)){
@@ -159,19 +199,31 @@
                 imageService.likeImage(self.currentImage.id).then(function (res) {
                     self.hasBeenLiked = res;
                 });
-            }
-           
+            }         
         }
+
+
+        $scope.$on('imageDeleted', function (e, imageId) {
+            for (var i = 0; i < self.currentAlbum.images.length; i++) {
+                if (self.currentAlbum.images[i].id == imageId) {
+                    self.currentAlbum.images.splice(i, 1);
+                    break;
+                }
+            }
+        });
+
+
     }]);
     app.controller('navController', ['$scope', '$uibModal', '$state',function ($scope, $uibModal, $state) {
 
         $scope.showUpload = false;
         $scope.showCreateAlbum = false;
         $scope.showMenu = true;
-
+        $scope.showDelImage = false;
         $scope.$on('$stateChangeSuccess', function (e, toState) {
             $scope.navCollapsed = true;
             $scope.showUpload = toState.name === 'main.gallery';
+            $scope.showDelImage = toState.name === 'main.singleImage';
             $scope.showCreateAlbum = toState.name === 'main.albums';
             $scope.showMenu = toState.name !== 'main.singleImage';
         });
@@ -211,14 +263,23 @@
                 controller: 'deleteAlbumController',
                 controllerAs: 'delAlbumCtrl'
             }).result.then(function (album) {
-                $state.go('main.albums')
+
+                $state.go('main.albums');
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
         }
-      
-
-       
+        this.deleteImageModal = function () {
+            openModal({
+                animation: true,
+                templateUrl: 'deleteImage.html',
+                controller: 'deleteimageController',
+                controllerAs: 'imgCtrl'
+            }).result.then(function (createdAlbum) { }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        }
+     
 
     }]);
     app.controller('titleController', ['$scope', 'selectedAlbum', function ($scope, selectedAlbum) {
