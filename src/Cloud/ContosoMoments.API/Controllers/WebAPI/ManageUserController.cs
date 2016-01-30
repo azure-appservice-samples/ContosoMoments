@@ -21,6 +21,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             Web.Models.ConfigModel config = new Web.Models.ConfigModel();
             string retVal = config.DefaultUserId;
 
+
             // Get the credentials for the logged-in user.
             var fbCredentials = await this.User.GetAppServiceIdentityAsync<FacebookCredentials>(this.Request);
 
@@ -66,6 +67,55 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
             return retVal;
         }
+        // POST: api/Like
+
+        public async Task<string> Get(string data, string provider)
+        {
+            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
+            string retVal = config.DefaultUserId;
+
+
+
+            if (provider == "facebook")
+            {
+                // Create a query string with the Facebook access token.
+                var fbRequestUrl = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token="
+                                   + data;
+
+                // Create an HttpClient request.
+                var client = new System.Net.Http.HttpClient();
+
+                // Request the current user info from Facebook.
+                var resp = await client.GetAsync(fbRequestUrl);
+                resp.EnsureSuccessStatusCode();
+
+                // Do something here with the Facebook user information.
+                var fbInfo = await resp.Content.ReadAsStringAsync();
+
+                JObject fbObject = JObject.Parse(fbInfo);
+                var emailToken = fbObject.GetValue("email");
+
+                if (null != emailToken)
+                {
+                    string email = emailToken.ToString();
+                    retVal = CheckAddEmailToDB(email);
+                }
+
+
+                return retVal;
+            }
+
+            //  var aadCredentials = await this.User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(this.Request);
+            if (provider == "aad")
+            {
+                string email = data;
+
+                retVal = CheckAddEmailToDB(email);
+            }
+
+            return retVal;
+        }
+
 
         private static string CheckAddEmailToDB(string email)
         {

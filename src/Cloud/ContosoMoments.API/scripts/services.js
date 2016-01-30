@@ -19,19 +19,59 @@
                     defered.resolve(context);
                 }
                 else {
-                //    $http.get('/api/ManageUser').then  (function(res) {}
-                    $http.get("/api/ManageUser").then(function (getRes) {
 
-                        userService.getUser(getRes.data).then(function (res) {
-                            context = new AuthContext(getRes.data, true, res);
-                            defered.resolve(context);
-                            $rootScope.$broadcast('userAuthenticated', context);
-                        }, function (err) {
-                            defered.reject(context);
+
+                    $http.get("/.auth/me")
+                        .then(function (returnData) {
+                            //var test = [{ "access_token": "CAAQnF6QGbqMBAIQK9ZClLwE0nB1rdr0BGclLqFwZBQTkY8FnedvKVILTYy6DOwOogH3wWp88DkSuscsp5ZBQl5pPIO9fXYFn9hot7b7F4QkuLrUe4Uz5566QLrG5Uy4ZCZArQX5Km7Lb1BrEdcYB37jgdfAZBT56NTy6TWGBv1oNGixR8caBdlKZAriRenctYXYdeZCjDJOJBQZDZD", "expires_on": "2016-03-28T18:53:36.7621289Z", "provider_name": "facebook", "user_claims": [{ "typ": "http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/nameidentifier", "val": "10153792943454216" }, { "typ": "http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/name", "val": "Rotem Or" }], "user_id": "10153792943454216" }];
+
+                        var authData = returnData.data[0];
+
+                            if (authData == null) {
+                                $http.get("/api/ManageUser")
+                                   .then(function (getRes) {
+
+                                       userService.getUser(getRes.data).then(function (res) {
+                                           context = new AuthContext(getRes.data, true, res);
+                                           defered.resolve(context);
+                                           $rootScope.$broadcast('userAuthenticated', context);
+                                       }, function (err) {
+                                           defered.reject(context);
+                                       });
+
+                                       return;
+                                   });
+                            }
+
+                            
+                        var sendData = "";
+                        if (authData.provider_name == "aad") {
+                            sendData = authData.user_id;
+
+
+                        }
+                        if (authData.provider_name == "facebook") {
+                            sendData = authData.access_token
+                        }
+
+                        $http.get("/api/ManageUser/?data=" + sendData + "&provider=" + authData.provider_name)
+                                    .then(function (getRes) {
+
+                                        userService.getUser(getRes.data).then(function (res) {
+                                            context = new AuthContext(getRes.data, true, res);
+                                            defered.resolve(context);
+                                            $rootScope.$broadcast('userAuthenticated', context);
+                                        }, function (err) {
+                                            defered.reject(context);
+                                        });
+
+                                        return;
+                                    });
+
+
+
                         });
 
-                        return;
-                            });
 
                     //userService.getUser(appConfig.DefaultUserId).then(function (res) {
                     //    context = new AuthContext(appConfig.DefaultUserId, true, res);
@@ -45,7 +85,7 @@
 
                 return defered.promise;
             },
-            currentContext:function() {
+            currentContext: function () {
                 return context;
             }
         }
@@ -59,7 +99,7 @@
 
     }]);
 
-    app.factory('albumsService', ['$http', '$q', '$cacheFactory', 'mobileServicesClient','$rootScope', function ($http, $q, $cacheFactory, mobileServicesClient,$rootScope) {
+    app.factory('albumsService', ['$http', '$q', '$cacheFactory', 'mobileServicesClient', '$rootScope', function ($http, $q, $cacheFactory, mobileServicesClient, $rootScope) {
         var albumCache = $cacheFactory('albums');
         var albumService = {
             getAlbum: function (id) {
@@ -105,7 +145,7 @@
                     isDefault: false,
                     UserId: userId
                 }).done(function (res) {
-                    $rootScope.$broadcast('albumCreated',res);
+                    $rootScope.$broadcast('albumCreated', res);
                     defered.resolve(res);
                 }, function (err) {
                     defered.reject(err);
@@ -113,12 +153,12 @@
 
                 return defered.promise;
             },
-            updateAlbum: function (albumId,name) {
+            updateAlbum: function (albumId, name) {
                 var defered = $q.defer();
                 var albumTable = mobileServicesClient.getTable('album');
                 albumTable.update({
                     id: albumId,
-                    albumName:name
+                    albumName: name
                 }).done(function (res) {
                     defered.resolve(res);
                 }, function (err) {
@@ -131,7 +171,7 @@
                 var defered = $q.defer();
                 var albumTable = mobileServicesClient.getTable('album');
                 albumTable.del({
-                    id:albumId
+                    id: albumId
                 }).done(function (res) {
                     defered.resolve(res);
                 }, function (err) {
@@ -144,7 +184,7 @@
         return albumService;
     }]);
 
-    app.factory('imageService', ['mobileServicesClient', '$interpolate', '$http', '$q', 'appConfig','$rootScope', function (mobileServicesClient, $interpolate, $http, $q, appConfig,$rootScope) {
+    app.factory('imageService', ['mobileServicesClient', '$interpolate', '$http', '$q', 'appConfig', '$rootScope', function (mobileServicesClient, $interpolate, $http, $q, appConfig, $rootScope) {
         var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}');
         var imageDefaultOptions = {
             start: 0,
@@ -206,7 +246,7 @@
             getImageById: function (id) {
                 var defered = $q.defer();
                 var imageTable = mobileServicesClient.getTable('image');
-                imageTable.read('$expand=Album&$filter=id eq \''+id+'\'')
+                imageTable.read('$expand=Album&$filter=id eq \'' + id + '\'')
                     .done(function (results) {
                         defered.resolve(results);
                     }, function (error) {
@@ -215,7 +255,7 @@
                     });
                 return defered.promise;
             },
-            deleteImage : function(id) {
+            deleteImage: function (id) {
                 var defered = $q.defer();
                 $http.delete('/api/image/' + id, []).success(function (data, status) {
                     defered.resolve(data);
@@ -226,21 +266,21 @@
             },
 
             likeImage: setLikeForImage
-            
+
         }
     }]);
 
     app.factory('uploadService', ['azureBlob', '$http', 'appConfig', '$rootScope', function (azureBlob, $http, appConfig, $rootScope) {
         var getSasUrl = function () {
-            return $http.get( "/api/GetSasUrl").then(function (res) {
+            return $http.get("/api/GetSasUrl").then(function (res) {
                 return res.data;
             });
         }
-        var commit = function (sasurl,options) {
+        var commit = function (sasurl, options) {
             return $http.post('/api/CommitBlob', {
                 isMobile: false,
                 UserId: options.userId,
-                AlbumId:options.albumId,
+                AlbumId: options.albumId,
                 SasUrl: sasurl,
                 //sendNotification: store.sendNotification(blobface.selectedFile.name)
             }).then(function (res) {
@@ -259,7 +299,7 @@
                     file: currentFile, // File object using the HTML5 File API,
                     progress: config.progress || angular.noop, // progress callback function,
                     complete: function () {
-                        commit(sasurl,config).then(function (res) {
+                        commit(sasurl, config).then(function (res) {
                             if (angular.isFunction(config.complete)) {
                                 config.complete(res);
                             }
@@ -274,7 +314,7 @@
                     error: config.error || angular.noop// error callback function,                       
                 });
                 //setFile($("#file")[0].files[0], res); 
-            },function(err){
+            }, function (err) {
                 if (typeof (config.error) === 'function') {
                     config.error();
                 }
@@ -300,7 +340,7 @@
 
     app.value('selectedImage', { image: null, album: null });
 
-    app.value('selectedAlbum', { album: null } );
+    app.value('selectedAlbum', { album: null });
 
 
 

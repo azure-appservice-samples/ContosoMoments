@@ -40,7 +40,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             catch (System.Exception ex)
             {
                 
-                throw ex;
+                 throw ex;
             }
             
         }
