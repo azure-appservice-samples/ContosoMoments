@@ -25,7 +25,7 @@
                         .then(function (returnData) {
                             //var test = [{ "access_token": "CAAQnF6QGbqMBAIQK9ZClLwE0nB1rdr0BGclLqFwZBQTkY8FnedvKVILTYy6DOwOogH3wWp88DkSuscsp5ZBQl5pPIO9fXYFn9hot7b7F4QkuLrUe4Uz5566QLrG5Uy4ZCZArQX5Km7Lb1BrEdcYB37jgdfAZBT56NTy6TWGBv1oNGixR8caBdlKZAriRenctYXYdeZCjDJOJBQZDZD", "expires_on": "2016-03-28T18:53:36.7621289Z", "provider_name": "facebook", "user_claims": [{ "typ": "http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/nameidentifier", "val": "10153792943454216" }, { "typ": "http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/name", "val": "Rotem Or" }], "user_id": "10153792943454216" }];
 
-                        var authData = returnData.data[0];
+                            var authData = returnData.data[0];
 
                             if (authData == null) {
                                 $http.get("/api/ManageUser")
@@ -43,30 +43,30 @@
                                    });
                             }
 
-                            
-                        var sendData = "";
-                        if (authData.provider_name == "aad") {
-                            sendData = authData.user_id;
+
+                            var sendData = "";
+                            if (authData.provider_name == "aad") {
+                                sendData = authData.user_id;
 
 
-                        }
-                        if (authData.provider_name == "facebook") {
-                            sendData = authData.access_token
-                        }
+                            }
+                            if (authData.provider_name == "facebook") {
+                                sendData = authData.access_token
+                            }
 
-                        $http.get("/api/ManageUser/?data=" + sendData + "&provider=" + authData.provider_name)
-                                    .then(function (getRes) {
+                            $http.get("/api/ManageUser/?data=" + sendData + "&provider=" + authData.provider_name)
+                                        .then(function (getRes) {
 
-                                        userService.getUser(getRes.data).then(function (res) {
-                                            context = new AuthContext(getRes.data, true, res);
-                                            defered.resolve(context);
-                                            $rootScope.$broadcast('userAuthenticated', context);
-                                        }, function (err) {
-                                            defered.reject(context);
+                                            userService.getUser(getRes.data).then(function (res) {
+                                                context = new AuthContext(getRes.data, true, res);
+                                                defered.resolve(context);
+                                                $rootScope.$broadcast('userAuthenticated', context);
+                                            }, function (err) {
+                                                defered.reject(context);
+                                            });
+
+                                            return;
                                         });
-
-                                        return;
-                                    });
 
 
 
@@ -124,12 +124,15 @@
             getUserAlbums: function (userId) {
                 var defered = $q.defer();
                 var albumTable = mobileServicesClient.getTable('album');
-                albumTable.where({
-                    "User/Id": userId
-                })
+
+                albumTable.where(function (currentUserId) {
+                    return this.userId == currentUserId || this.id == "11111111-1111-1111-1111-111111111111";
+                }, userId)
+
                 .orderByDescending("createdAt")
                 .read()
                 .done(function (results) {
+                    albumTable.where
                     defered.resolve(results);
                 }, function (error) {
                     console.log(error);
