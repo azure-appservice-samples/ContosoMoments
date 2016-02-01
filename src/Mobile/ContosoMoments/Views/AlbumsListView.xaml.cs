@@ -186,35 +186,52 @@ namespace ContosoMoments.Views
 
         public async void OnDelete(object sender, EventArgs e)
         {
-            var res = await DisplayAlert("Delete album?", "Delete album and all associated images?", "Yes", "No");
+            var selectedAlbum = (sender as MenuItem).BindingContext as ContosoMoments.Models.Album;
 
-            if (res)
+            if (null != selectedAlbum)
             {
-                var selectedAlbum = (sender as MenuItem).BindingContext as ContosoMoments.Models.Album;
-                res = await viewModel.DeleteAlbumAsync(selectedAlbum);
-
-                if (res)
+                if (!selectedAlbum.IsDefault)
                 {
-                    await DisplayAlert("Success", "Album deleted successfully", "OK");
-                    HideAndCleanupInput();
-                    OnRefresh(sender, e);
+                    var res = await DisplayAlert("Delete album?", "Delete album and all associated images?", "Yes", "No");
+
+                    if (res)
+                    {
+                        res = await viewModel.DeleteAlbumAsync(selectedAlbum);
+
+                        if (res)
+                        {
+                            await DisplayAlert("Success", "Album deleted successfully", "OK");
+                            HideAndCleanupInput();
+                            OnRefresh(sender, e);
+                        }
+                        else
+                            await DisplayAlert("Delete error", "Couldn't delete the album. Please try again later.", "OK");
+                    }
                 }
                 else
-                    await DisplayAlert("Delete error", "Couldn't delete the album. Please try again later.", "OK");
+                    await DisplayAlert("Delete album", "Can't delete default album", "OK");
             }
         }
 
-        public void OnRename(object sender, EventArgs e)
+        public async void OnRename(object sender, EventArgs e)
         {
             isNew = false;
 
             var selectedAlbum = (sender as MenuItem).BindingContext as ContosoMoments.Models.Album;
 
-            editedAlbum = selectedAlbum;
-            entAlbumName.Text = selectedAlbum.AlbumName;
-            grdInput.IsVisible = true;
-            btnCancel.IsVisible = true;
-            btnUpdate.Text = "Update";
+            if (null != selectedAlbum)
+            {
+                if (!selectedAlbum.IsDefault)
+                {
+                    editedAlbum = selectedAlbum;
+                    entAlbumName.Text = selectedAlbum.AlbumName;
+                    grdInput.IsVisible = true;
+                    btnCancel.IsVisible = true;
+                    btnUpdate.Text = "Update";
+                }
+                else
+                    await DisplayAlert("Rename album", "Can't rename default album.", "OK");
+            }
         }
 
         public async void OnAdd(object sender, EventArgs e)
