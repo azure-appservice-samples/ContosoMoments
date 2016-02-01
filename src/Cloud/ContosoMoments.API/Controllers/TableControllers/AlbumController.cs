@@ -61,6 +61,18 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         // DELETE tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public Task DeleteAlbum(string id)
         {
+            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
+            string defaultAlbumId  = config.DefaultAlbumId;
+            if (id == defaultAlbumId)
+            {
+               return  Task.Run(() => {
+                   return "Default Album cannot be deleted !!";
+                }
+                
+                );
+            }
+
+          
             var imgCtrl = new ImageController();
             var album  = Lookup(id).Queryable.First();
             foreach (var img in album.Images)

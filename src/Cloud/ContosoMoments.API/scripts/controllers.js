@@ -116,10 +116,29 @@
     }]);
     
     app.controller('deleteAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum','$state', function ($scope, albumsService, $uibModalInstance, selectedAlbum,$state) {
+
         var self = this;
-        $scope.albumName = selectedAlbum.album.albumName;
+
         self.deletingAlbum = false;
-        self.deleteAlbum = function () { 
+        self.enableDelete = true;
+
+        $scope.albumName = selectedAlbum.album.albumName;
+
+        if (selectedAlbum.album.id == "11111111-1111-1111-1111-111111111111") {
+            self.deleteMessage = "Default Album cannot be deleted !";
+            self.enableDelete = false;
+        }
+        else {
+            self.deleteMessage = "You are about to delete " + selectedAlbum.album.albumName + " album, Are you sure? ";
+
+        }
+      
+        
+
+
+        self.deleteAlbum = function () {
+           
+
             self.deletingAlbum = true;
             albumsService.deleteAlbum(selectedAlbum.album.id).then(function (res) {
                 $uibModalInstance.close(res);
@@ -132,6 +151,8 @@
         }
         self.cancel = function () {
             $uibModalInstance.dismiss('cancel');
+            self.enableDelete = true;
+
         }
 
         $scope.$on('modal.closing', function (event) {

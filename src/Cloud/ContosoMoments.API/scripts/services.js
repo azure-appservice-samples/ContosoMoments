@@ -73,13 +73,6 @@
                         });
 
 
-                    //userService.getUser(appConfig.DefaultUserId).then(function (res) {
-                    //    context = new AuthContext(appConfig.DefaultUserId, true, res);
-                    //    defered.resolve(context);
-                    //    $rootScope.$broadcast('userAuthenticated', context);
-                    //}, function (err) {
-                    //    defered.reject(context);
-                    //});
                 }
 
 
