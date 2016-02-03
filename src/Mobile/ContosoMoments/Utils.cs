@@ -247,17 +247,14 @@ namespace ContosoMoments
 
             try
             {
-                var getwayService = Constants.ApplicationURL + "api/Getway";
+                var res = await App.MobileService.InvokeApiAsync<string>("Getway", System.Net.Http.HttpMethod.Get, null);
 
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(getwayService));
-                request.Method = "GET";
-
-                using (WebResponse response = await request.GetResponseAsync())
+                if (res == null && res.Length == 0)
                 {
-                    //nothing to do - authentication is not required
+                    retVal = false;
                 }
             }
-            catch
+            catch //(Exception ex)
             {
                 retVal = false;
             }
