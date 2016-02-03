@@ -9,6 +9,10 @@
       <Configuration>Release</Configuration>
       <Platform>AnyCPU</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="VSTS Build|AnyCPU">
+      <Configuration>VSTS Build</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>b96ff9b9-03cb-48a9-8e02-450fb649d9ed</ProjectGuid>
