@@ -52,7 +52,7 @@ namespace ContosoMoments.Views
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true))
                 {
                     string userId = "11111111-1111-1111-1111-111111111111";
-                    if (Utils.IsOnline())
+                    if (Utils.IsOnline() && await Utils.SiteIsOnline())
                     {
                         //Call user custom controller:
                         //controller to check user and add if new. Will return user ID anyway.
@@ -64,7 +64,7 @@ namespace ContosoMoments.Views
                         await (App.Current as App).SyncAsync();
                     }
                     else
-                        await DisplayAlert("Working Offline", "Couldn't sync data - device is offline. Using local data. Please try again when data connection is back", "OK");
+                        await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Using local data. Please try again when data connection is back", "OK");
 
                     if (null == viewModel.User)
                         await viewModel.GetUserAsync(Guid.Parse(userId));
@@ -259,13 +259,13 @@ namespace ContosoMoments.Views
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
                 HideAndCleanupInput();
-                if (Utils.IsOnline())
+                if (Utils.IsOnline() && await Utils.SiteIsOnline())
                 {
                     await (App.Current as App).SyncAsync();
                 }
                 else
                 {
-                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline. Please try again when data connection is back", "OK");
+                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
                 }
 
                 await LoadItems();

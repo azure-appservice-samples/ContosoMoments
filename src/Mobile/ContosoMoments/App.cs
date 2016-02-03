@@ -90,6 +90,12 @@ namespace ContosoMoments
                 MobileService = new MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
                 AuthenticatedUser = MobileService.CurrentUser;
 
+                if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))
+                {
+                    ClearLocalStorage(DB_LOCAL_FILENAME);
+                    AppSettings.Current.AddOrUpdateValue<bool>("ConfigChanged", false);
+                }
+
                 await InitLocalStoreAsync(DB_LOCAL_FILENAME);
                 InitLocalTables();
 
@@ -116,7 +122,19 @@ namespace ContosoMoments
             }
         }
 
+        private void ClearLocalStorage(string localDbFilename)
+        {
+#if !__WP__
+            string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), localDbFilename);
+#else
+            string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, localDbFilename);
+#endif
 
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
 
         protected override void OnSleep()
         {

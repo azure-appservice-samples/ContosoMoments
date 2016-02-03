@@ -241,6 +241,30 @@ namespace ContosoMoments
             return networkConnection.IsConnected;
         }
 
+        public static async Task<bool> SiteIsOnline()
+        {
+            bool retVal = true;
+
+            try
+            {
+                var getwayService = Constants.ApplicationURL + "api/Getway";
+
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(getwayService));
+                request.Method = "GET";
+
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    //nothing to do - authentication is not required
+                }
+            }
+            catch
+            {
+                retVal = false;
+            }
+
+            return retVal;
+        }
+
         private static bool IsUrlValid(string url)
         {
             //string pattern = @"^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$";

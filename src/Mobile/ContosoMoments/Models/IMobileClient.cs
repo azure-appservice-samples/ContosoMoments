@@ -10,5 +10,6 @@ namespace ContosoMoments.Models
     {
         Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider);
         void Logout();
+        void ForceCloseApp();
     }
 }

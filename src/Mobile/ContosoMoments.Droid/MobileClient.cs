@@ -42,5 +42,10 @@ namespace ContosoMoments.Droid
             CookieManager.Instance.RemoveAllCookie();
             await App.MobileService.LogoutAsync();
         }
+
+        public void ForceCloseApp()
+        {
+            Process.KillProcess(Process.MyPid());
+        }
     }
 }

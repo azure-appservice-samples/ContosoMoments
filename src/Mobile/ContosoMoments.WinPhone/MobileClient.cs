@@ -29,5 +29,10 @@ namespace ContosoMoments.WinPhone
         {
             //ContosoMoments.App.MobileService.LoginComplete(args);
         }
+
+        public void ForceCloseApp()
+        {
+            App.Current.Terminate();
+        }
     }
 }

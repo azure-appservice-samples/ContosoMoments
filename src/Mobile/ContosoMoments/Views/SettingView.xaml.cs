@@ -76,34 +76,49 @@ namespace ContosoMoments.Views
 
                     if (ValidURL)
                     {
+                        bool isNewURL = false;
+
+                        if (AppSettings.Current.GetValueOrDefault<string>("MobileAppURL") != null && mobileServiceUrl.Text != AppSettings.Current.GetValueOrDefault<string>("MobileAppURL"))
+                            isNewURL = true;
+
                         AppSettings.Current.AddOrUpdateValue<string>("MobileAppURL", mobileServiceUrl.Text);
                         Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
 
-                        bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
-
-                        App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
-                        App.AuthenticatedUser = App.MobileService.CurrentUser;
-
-                        await (App.Current as App).InitLocalStoreAsync(App.DB_LOCAL_FILENAME);
-                        (App.Current as App).InitLocalTables();
-
-                        if (isAuthRequred && App.AuthenticatedUser == null)
+                        if (!isNewURL)
                         {
-                            App.Current.MainPage = new NavigationPage(new Login());
-                        }
-                        else
-                        {
+                            bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
+
+                            App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
+                            App.AuthenticatedUser = App.MobileService.CurrentUser;
+
+                            await (App.Current as App).InitLocalStoreAsync(App.DB_LOCAL_FILENAME);
+                            (App.Current as App).InitLocalTables();
+
+                            if (isAuthRequred && App.AuthenticatedUser == null)
+                            {
+                                App.Current.MainPage = new NavigationPage(new Login());
+                            }
+                            else
+                            {
 #if __DROID__
                             Droid.GcmService.RegisterWithMobilePushNotifications();
 #elif __IOS__
                             iOS.AppDelegate.IsAfterLogin = true;
                             await iOS.AppDelegate.RegisterWithMobilePushNotifications();
 #elif __WP__
-                            ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+                                ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
 #endif
-                            // The root page of your application
-                            //App.Current.MainPage = new NavigationPage(new ImagesList());
-                            App.Current.MainPage = new NavigationPage(new AlbumsListView());
+                                // The root page of your application
+                                //App.Current.MainPage = new NavigationPage(new ImagesList());
+                                App.Current.MainPage = new NavigationPage(new AlbumsListView());
+                            }
+                        }
+                        else
+                        {
+                            AppSettings.Current.AddOrUpdateValue<bool>("ConfigChanged", true);
+
+                            await DisplayAlert("Configuration changed", "Mobile Service URL changed, the application must restart. App will close now.", "OK");
+                            DependencyService.Get<Models.IMobileClient>().ForceCloseApp();
                         }
                     }
                     else

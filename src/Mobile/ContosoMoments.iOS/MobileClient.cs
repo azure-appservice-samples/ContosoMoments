@@ -41,5 +41,10 @@ namespace ContosoMoments.iOS
 
             await App.MobileService.LogoutAsync();
         }
+
+        public void ForceCloseApp()
+        {
+            System.Threading.Thread.CurrentThread.Abort();
+        }
     }
 }
