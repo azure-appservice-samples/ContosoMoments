@@ -353,7 +353,7 @@ captures/
 
 ### Android Patch ###
 gen-external-apklibs
-
+Components/
 
 ### XamarinStudio ###
 bin/
