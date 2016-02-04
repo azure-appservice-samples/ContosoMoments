@@ -204,7 +204,7 @@
         "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
         "[resourceId('Microsoft.Sql/servers/', variables('sqlServerName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('sqlServerName'))]"
+        "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
       ],
       "properties": {
         "name": "[parameters('siteName')]",
@@ -227,7 +227,7 @@
                 "Type": 2
               },
               {
-                "ConnectionString": "[listkeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', variables('notificationHubNamespace'), variables('sqlServerName'), 'DefaultFullSharedAccessSignature'), '2014-09-01').primaryConnectionString]",
+                "ConnectionString": "[listkeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', variables('notificationHubNamespace'), variables('NotificationHubName'), 'DefaultFullSharedAccessSignature'), '2014-09-01').primaryConnectionString]",
                 "Name": "MS_NotificationHubConnectionString",
                 "Type": "custom"
               }
@@ -264,10 +264,10 @@
           "name": "Microsoft.Resources/mobile-notificationhub",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
-            "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('sqlServerName'))]"
+            "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
           ],
           "properties": {
-            "targetId": "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('sqlServerName'))]"
+            "targetId": "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
           }
         },
         {
