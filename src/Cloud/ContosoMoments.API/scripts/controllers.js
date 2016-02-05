@@ -237,6 +237,7 @@
     }]);
     app.controller('navController', ['$scope', '$uibModal', '$state',function ($scope, $uibModal, $state) {
 
+        $scope.showAuth = true;
         $scope.showUpload = false;
         $scope.showCreateAlbum = false;
         $scope.showMenu = true;
