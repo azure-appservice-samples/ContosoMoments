@@ -9,7 +9,7 @@
 ![Windows Universal](https://img.shields.io/badge/platform-Windows-0078D7.svg?style=flat-square)
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
-![VSTS Build](https://cfowler.visualstudio.com/DefaultCollection/_apis/public/build/definitions/6a1734d8-b06d-4591-8240-ef2ce88d8250/1/badge)
+![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/1.svg?style=flat-square)
 
 ## What is Contoso Moments
 
