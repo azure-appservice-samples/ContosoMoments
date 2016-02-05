@@ -80,7 +80,11 @@
                                 <span class="glyphicon glyphicon-user"></span>
                                 <span class="hidden-sm hidden-md">Profile</span>
                             </a>
-                        </li>
+                            <ul ng-show="showAuthOptions">
+                                <li><a href="/.auth/login/facebook">Login with Facebook</a></li>
+                                <li><a href="/.auth/login/aad">Login with AzureAD</a></li>
+                            </ul>
+                        </ul>
                     </ul>
                 </div>
 

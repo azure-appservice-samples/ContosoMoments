@@ -237,7 +237,6 @@
     }]);
     app.controller('navController', ['$scope', '$uibModal', '$state',function ($scope, $uibModal, $state) {
 
-        $scope.showAuth = true;
         $scope.showUpload = false;
         $scope.showCreateAlbum = false;
         $scope.showMenu = true;
@@ -249,6 +248,8 @@
             $scope.showCreateAlbum = toState.name === 'main.albums';
             $scope.showMenu = toState.name !== 'main.singleImage';
         });
+        $scope.showAuth = true;
+        $scope.showAuthOptions = false;
 
         var openModal = function (options) {
             return $uibModal.open(options);
@@ -302,6 +303,9 @@
             });
         }
      
+        this.openLoginOptions = function () {
+            $scope.showAuthOptions = true;
+        }
 
     }]);
     app.controller('titleController', ['$scope', 'selectedAlbum', function ($scope, selectedAlbum) {
