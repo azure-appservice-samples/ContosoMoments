@@ -248,8 +248,6 @@
             $scope.showCreateAlbum = toState.name === 'main.albums';
             $scope.showMenu = toState.name !== 'main.singleImage';
         });
-        $scope.showAuth = true;
-        $scope.showAuthOptions = false;
 
         var openModal = function (options) {
             return $uibModal.open(options);
@@ -301,10 +299,6 @@
             }).result.then(function (createdAlbum) { }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
-        }
-     
-        this.openLoginOptions = function () {
-            $scope.showAuthOptions = true;
         }
 
     }]);
