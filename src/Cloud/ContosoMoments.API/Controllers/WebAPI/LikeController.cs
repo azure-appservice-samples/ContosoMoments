@@ -28,7 +28,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 var registrations = ctx.DeviceRegistrations.Where(x => x.UserId == img.UserId);
 
                 //Send plat-specific message to all installation one by one
-                string message = string.Format("{0} has liked your image", img.User.Email);
+                string message = "Someone has liked your image";
                 foreach (var registration in registrations)
                 {
                     var tags = new string[1] { string.Format("$InstallationId:{{{0}}}", registration.InstallationId) };

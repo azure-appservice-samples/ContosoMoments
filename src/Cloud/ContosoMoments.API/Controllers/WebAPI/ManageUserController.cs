@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Security.Principal;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -21,7 +22,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
 
             // Get the credentials for the logged-in user.
-            var fbCredentials = await this.User.GetAppServiceIdentityAsync<FacebookCredentials>(this.Request);
+            var fbCredentials = await User.GetAppServiceIdentityAsync<FacebookCredentials>(Request);
 
             if (null != fbCredentials && fbCredentials.Claims.Count > 0)
             {
@@ -47,19 +48,14 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                     string email = emailToken.ToString();
                     retVal = CheckAddEmailToDB(email);
                 }
-                else
-                {
-                    return retVal;
-                }
 
                 return retVal;
             }
 
-            var aadCredentials = await this.User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(this.Request);
+            var aadCredentials = await User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(Request);
             if (null != aadCredentials && aadCredentials.Claims.Count > 0)
             {
                 string email = aadCredentials.UserId;
-
                 retVal = CheckAddEmailToDB(email);
             }
 
@@ -111,31 +107,58 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
         private static string CheckAddEmailToDB(string email)
         {
-            string retVal;
-            var ctx = new MobileServiceContext();
-            var user = ctx.Users.Where(x => x.Email == email);
+            var identifier = GenerateHashFromEmail(email);
 
-            if (user.Count() == 0)
+            using (var ctx = new MobileServiceContext())
             {
-                var u = ctx.Users.Add(new Common.Models.User() { Id = Guid.NewGuid().ToString(), Email = email, IsEnabled = true });
-                try
-                {
-                    ctx.SaveChanges();
-                }
-                catch (System.Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
-                }
+                var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
 
-                retVal = u.Id;
+                if (default(Common.Models.User) != user)
+                    return user.Id; // User Found, Exit
+
+                // New User, Create
+                return AddUser(identifier, ctx);
             }
-            else
+        }
+
+        private static string AddUser(string email, MobileServiceContext ctx)
+        {
+            var u = ctx.Users.Add(
+                new Common.Models.User
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Email = email,
+                    IsEnabled = true
+                });
+
+            try
             {
-                var u = user.First();
-                retVal = u.Id;
+                ctx.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
-            return retVal;
+            return u.Id;
+        }
+
+        private static string GenerateHashFromEmail(string email)
+        {
+            StringBuilder hashString = new StringBuilder();
+
+            using (var generator = System.Security.Cryptography.SHA256.Create())
+            {
+                var emailBytes = Encoding.UTF8.GetBytes(email);
+                var hash = generator.ComputeHash(emailBytes);
+
+                foreach (var b in hash)
+                {
+                    hashString.AppendFormat("{0:x2}", b);
+                }
+            }
+
+            return hashString.ToString();
         }
     }
 }

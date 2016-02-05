@@ -12,8 +12,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ContosoMoments.MobileServer</RootNamespace>
-    <AssemblyName>ContosoMoments.MobileServer</AssemblyName>
+    <RootNamespace>ContosoMoments.API</RootNamespace>
+    <AssemblyName>ContosoMoments.API</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -34,7 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\ContosoMoments.MobileServer.xml</DocumentationFile>
+    <DocumentationFile>bin\ContosoMoments.API.xml</DocumentationFile>
     <NoWarn>1591,0618</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>..\..\src\Src.ruleset</CodeAnalysisRuleSet>
@@ -46,7 +46,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\ContosoMoments.MobileServer.xml</DocumentationFile>
+    <DocumentationFile>bin\ContosoMoments.API.xml</DocumentationFile>
     <NoWarn>1591,0618</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -592,7 +592,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'VSTS Build|AnyCPU'">
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\ContosoMoments.MobileServer.xml</DocumentationFile>
+    <DocumentationFile>bin\ContosoMoments.API.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591,0618</NoWarn>
