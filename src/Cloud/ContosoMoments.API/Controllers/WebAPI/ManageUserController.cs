@@ -1,14 +1,12 @@
-﻿using System.Web.Http;
-using Microsoft.Azure.Mobile.Server.Config;
-using System.Threading.Tasks;
-using System.Security.Principal;
+﻿using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Authentication;
-using System.Linq;
+using Microsoft.Azure.Mobile.Server.Config;
 using Newtonsoft.Json.Linq;
-using ContosoMoments.MobileServer.Models;
 using System;
-using ContosoMoments.Common.Queue;
-using ContosoMoments.Common;
+using System.Linq;
+using System.Security.Principal;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
@@ -74,8 +72,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             Web.Models.ConfigModel config = new Web.Models.ConfigModel();
             string retVal = config.DefaultUserId;
 
-
-
             if (provider == "facebook")
             {
                 // Create a query string with the Facebook access token.
@@ -101,7 +97,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                     retVal = CheckAddEmailToDB(email);
                 }
 
-
                 return retVal;
             }
 
@@ -109,13 +104,10 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             if (provider == "aad")
             {
                 string email = data;
-
                 retVal = CheckAddEmailToDB(email);
             }
-
             return retVal;
         }
-
 
         private static string CheckAddEmailToDB(string email)
         {
@@ -133,7 +125,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 catch (System.Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine(ex.Message);
-                    //
                 }
 
                 retVal = u.Id;

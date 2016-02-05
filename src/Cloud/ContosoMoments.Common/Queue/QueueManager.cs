@@ -16,15 +16,6 @@ namespace ContosoMoments.Common.Queue
     {
         public async Task PushToResizeQueue(BlobInformation blobInformation)
         {
-            //var namespaceManager = NamespaceManager.CreateFromConnectionString(AppSettings.ServiceBusConnectionString);
-
-            //if (!namespaceManager.QueueExists(AppSettings.ResizeQueueName))
-            //{
-            //    namespaceManager.CreateQueue(AppSettings.ResizeQueueName);
-            //}
-            //QueueClient Client = QueueClient.CreateFromConnectionString(AppSettings.ServiceBusConnectionString, AppSettings.ResizeQueueName);
-            //Client.Send(new BrokeredMessage(blobInformation));
-
             try
             {
                 CloudStorageAccount account;

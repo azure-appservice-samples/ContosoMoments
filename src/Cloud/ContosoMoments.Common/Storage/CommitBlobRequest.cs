@@ -14,8 +14,6 @@ namespace ContosoMoments.Common.Storage
         public string AlbumId { get; set; }
         public string SasUrl { get; set; }
         public string[] blobParts { get; set; }
-       
-       
     }
     public class CommitBlobResponse
     {

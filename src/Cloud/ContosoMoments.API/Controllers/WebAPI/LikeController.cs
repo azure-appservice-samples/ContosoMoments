@@ -27,24 +27,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 var ctx = new MobileServiceContext();
                 var registrations = ctx.DeviceRegistrations.Where(x => x.UserId == img.UserId);
 
-                //Send x-plat template message to all installations in tags list
-                //List<string> tags = new List<string>();
-                //foreach (var registration in registrations)
-                //    tags.Add(string.Format("$InstallationId:{{{0}}}", registration.InstallationId));
-
-                //if (tags.Count > 0)
-                //{
-                //    var message = new Dictionary<string, string>()
-                //    {
-                //        { "message", string.Format("{0} has liked your image", img.User.Email)}
-                //    };
-                //    var res = await Notifier.Instance.SendTemplateNotification(message, tags);
-
-                //    return res;
-                //}
-                //else
-                //    return true;
-
                 //Send plat-specific message to all installation one by one
                 string message = string.Format("{0} has liked your image", img.User.Email);
                 foreach (var registration in registrations)

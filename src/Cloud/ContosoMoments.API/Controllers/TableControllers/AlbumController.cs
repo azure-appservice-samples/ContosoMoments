@@ -71,7 +71,6 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
                 
                 );
             }
-
           
             var imgCtrl = new ImageController();
             var album  = Lookup(id).Queryable.First();

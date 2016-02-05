@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
+﻿using System.Configuration;
 
 namespace ContosoMoments.Web.Models
 {
@@ -14,25 +10,16 @@ namespace ContosoMoments.Web.Models
         }
         public string DefaultAlbumId
         {
-            get
-            {
-                return GetConfigValue("DefaultAlbumId");
-            }
+            get { return GetConfigValue("DefaultAlbumId"); }
         }
         public string DefaultUserId
         {
-            get
-            {
-                return GetConfigValue("DefaultUserId");
-            }
+            get { return GetConfigValue("DefaultUserId"); }
         }
 
         public string DefaultServiceUrl
         {
-            get
-            {
-                return GetConfigValue("DefaultServiceUrl");
-            }
+            get { return GetConfigValue("DefaultServiceUrl"); }
         }
     }
 }

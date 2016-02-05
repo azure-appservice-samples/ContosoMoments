@@ -40,6 +40,7 @@ namespace ContosoMoments.ResizerWebJob
             res = await scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
 
+
             input.Dispose();
             Trace.TraceInformation("Done processing 'resizerequest' message");
         }

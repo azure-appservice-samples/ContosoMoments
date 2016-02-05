@@ -3,6 +3,8 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server.Tables;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace ContosoMoments.MobileServer.Models
 {
@@ -22,16 +24,12 @@ namespace ContosoMoments.MobileServer.Models
 
         private const string connectionStringName = "Name=MS_TableConnectionString";
 
-        public MobileServiceContext() : base(connectionStringName)
-        {
-
-        }
+        public MobileServiceContext() : base(connectionStringName) {}
 
         public DbSet<Image> Images { get; set; }
         public DbSet<Album> Albums { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<DeviceRegistration> DeviceRegistrations { get; set; }
-
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -45,23 +43,23 @@ namespace ContosoMoments.MobileServer.Models
 
     public class ContosoMomentsDBInitializer : DropCreateDatabaseIfModelChanges<MobileServiceContext>
     {
+        private NameValueCollection appSettings = ConfigurationManager.AppSettings;
+
         protected override void Seed(MobileServiceContext context)
         {
-            var userid = "11111111-1111-1111-1111-111111111111";
+            var userid = appSettings["DefaultUserId"];
             var defaultAlbum = new Album
             {
-                Id = "11111111-1111-1111-1111-111111111111",
+                Id = appSettings["DefaultAlbumId"],
                 AlbumName = "Default Album",
                 IsDefault=true,
                 User = new User
                 {
-                    Email = "demo@contoso.com",
+                    Email = "demo@contoso.com", // Do we need this? We should avoid PII issues in demos.
                     Id = userid,
                     IsEnabled = true
                 },
                 UserId = userid
-                
-
             };
 
             context.Albums.Add(defaultAlbum);
@@ -69,6 +67,4 @@ namespace ContosoMoments.MobileServer.Models
             base.Seed(context);
         }
     }
-
-
 }

@@ -30,7 +30,7 @@ namespace ContosoMoments.Common.Storage
             var sas = BuildSAS(container);
             var url = blobEndpoint.OriginalString + blob.Uri.PathAndQuery + sas;
             Trace.TraceInformation("End - GetSasUrlWithUploadCors for containerName: {0} and filename {1} ", sasContainerName, fileName);
-            
+
             return url;
         }
 
@@ -43,7 +43,7 @@ namespace ContosoMoments.Common.Storage
 
             var ContainerName = content[0];
             var FileName = urldata[0].Replace(ContainerName + "/", "");
-            
+
             var accountAndKey = new StorageCredentials(AppSettings.StorageAccountName, AppSettings.StorageAccountKey);
             var storageaccount = new CloudStorageAccount(accountAndKey, true);
             var blobClient = storageaccount.CreateCloudBlobClient();
@@ -55,9 +55,6 @@ namespace ContosoMoments.Common.Storage
             {
                 if (null != commitRequest.blobParts)
                     blob.PutBlockList(commitRequest.blobParts);
-                //blob.Properties.ContentType = "image/jpeg";
-                //blob.Properties.ContentDisposition = "attachment";
-                //blob.SetProperties();
 
                 blob.FetchAttributes();
                 result = blob.Properties.ContentType.Replace("image/", "").ToLower();
@@ -168,9 +165,7 @@ namespace ContosoMoments.Common.Storage
             return blobClient;
         }
 
-      
-
-        private  void ConfigureCors(ServiceProperties serviceProperties)
+        private void ConfigureCors(ServiceProperties serviceProperties)
         {
             serviceProperties.Cors = new CorsProperties();
             serviceProperties.Cors.CorsRules.Add(new CorsRule()
@@ -183,29 +178,20 @@ namespace ContosoMoments.Common.Storage
             });
         }
 
-        private  void SetCors(CloudBlobClient blobClient)
+        private void SetCors(CloudBlobClient blobClient)
         {
             var newProperties = blobClient.GetServiceProperties();
             try
             {
-
-           
-            ConfigureCors(newProperties);
-            var blobprop = blobClient.GetServiceProperties();
-            // "2011-08-18"; // null;
-                    blobClient.SetServiceProperties(newProperties);
-                
-
-                }
-                catch (Exception ex)
-                {
-
-                    //throw;
-                }
-                
-            
+                ConfigureCors(newProperties);
+                var blobprop = blobClient.GetServiceProperties();
+                // "2011-08-18"; // null;
+                blobClient.SetServiceProperties(newProperties);
+            }
+            catch (Exception ex)
+            {
+                //throw;
+            }
         }
-
-
     }
 }

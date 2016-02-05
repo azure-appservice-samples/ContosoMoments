@@ -12,9 +12,8 @@ namespace ContosoMoments.MobileServer.DataLogic
 
         public Image AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, bool IsMobile)
         {
-
             var uploadFormat = IsMobile ? "Mobile Image" : "Web Image";
-            return AddImageToDB(AlbumId, UserId, containerName,  fileName, uploadFormat);
+            return AddImageToDB(AlbumId, UserId, containerName, fileName, uploadFormat);
         }
 
         public Image AddImageToDB(string AlbumId, string UserId, string containerName, string fileName, string UploadFormat)
@@ -25,18 +24,18 @@ namespace ContosoMoments.MobileServer.DataLogic
             {
                 Album = ctx.Albums.Where(x => x.Id == AlbumId).FirstOrDefault(),
                 User = ctx.Users.Where(x => x.Id == UserId).FirstOrDefault(),
+
                 Id = Guid.NewGuid().ToString(),
+
                 UploadFormat = UploadFormat,
                 ContainerName = AppSettings.StorageWebUri + containerName,
                 FileName = fileName,
-                
-              
             };
             ctx.Images.Add(img);
             try
             {
-               ctx.SaveChanges();
-               return img;
+                ctx.SaveChanges();
+                return img;
             }
             catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
             {
@@ -59,12 +58,10 @@ namespace ContosoMoments.MobileServer.DataLogic
 
         public Image GetImage(string id)
         {
-            using (var ctx=new MobileServiceContext())
+            using (var ctx = new MobileServiceContext())
             {
                 return ctx.Images.Include("User").SingleOrDefault(x => x.Id == id);
             }
-            
-           
         }
     }
 }

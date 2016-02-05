@@ -11,7 +11,6 @@ using System.Configuration;
 using System;
 using ContosoMoments.Common.Queue;
 using ContosoMoments.Common;
-using ContosoMoments.Common.Storage;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
