@@ -1,4 +1,4 @@
-3# ContosoMoments
+# ContosoMoments
 
 ![Microsoft Azure](https://img.shields.io/badge/platform-Azure-00abec.svg?style=flat-square)
 ![Visual Studio 2015](https://img.shields.io/badge/Visual%20Studio-2015-373277.svg?style=flat-square)
