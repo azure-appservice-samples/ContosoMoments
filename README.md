@@ -9,7 +9,7 @@
 ![Windows Universal](https://img.shields.io/badge/platform-Windows-0078D7.svg?style=flat-square)
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
-![VSTS Build](https://cfowler.visualstudio.com/DefaultCollection/_apis/public/build/definitions/6a1734d8-b06d-4591-8240-ef2ce88d8250/1/badge)
+![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/1.svg?style=flat-square)
 
 ## What is Contoso Moments
 
@@ -17,9 +17,8 @@ Contoso Moments is a photo sharing application.
 
 ## How To: Deploy the Demo
 
-<a href="https://azuredeploy.net" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net)
+[![ARM Visualization](http://armviz.io/visualizebutton.png)](http://armviz.io/#/?load=https://raw.githubusercontent.com/azure-appservice-samples/ContosoMoments/master/azuredeploy.json)
 
 ## How To: Install the Mobile Client App
 
