@@ -409,8 +409,6 @@
     <Content Include="images\img9.jpg" />
     <Content Include="images\Web-ContosoMomentsLogo.svg" />
     <Content Include="index.html" />
-    <Content Include="JavaScript\jquery-1.11.3.min.js" />
-    <Content Include="JavaScript\Upload.js" />
     <Content Include="scripts\app.js" />
     <Content Include="scripts\azure-blob-upload.js" />
     <Content Include="scripts\controllers.js" />

@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Contoso Moments</title>
+    <title>ContosoMoments</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <script src="https://ajax.aspnetcdn.com/ajax/mobileservices/MobileServices.Web-1.2.7.min.js"></script>
     <script src="/bower_components/angular/angular.min.js"></script>
@@ -31,11 +31,11 @@
                     </a>
                 </div>
 
-                <div >
+                <div>
                     <ul class="nav navbar-nav navbar-right">
 
 
-                        <li class="pull-right-sm"  ng-show="showDelImage">
+                        <li class="pull-right-sm" ng-show="showDelImage">
                             <a href="#" ng-click="navCtrl.deleteImageModal()">
                                 <span class="glyphicon glyphicon-trash"></span>
                                 <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
@@ -45,7 +45,7 @@
                 </div>
                 <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
                     <ul class="nav navbar-nav navbar-right">
-                       
+
 
 
                         <li class="pull-right-sm" ng-show="showUpload">
@@ -61,16 +61,16 @@
                             </a>
                         </li>
                         <li class="pull-right-sm" ng-show="showUpload">
-                            <a  href="#" ng-click="navCtrl.openUploadModal()">
+                            <a href="#" ng-click="navCtrl.openUploadModal()">
                                 <span class="glyphicon glyphicon-cloud-upload"></span>
-                                <span class="hidden-sm hidden-md hidden-lg" >Upload Image</span>
+                                <span class="hidden-sm hidden-md hidden-lg">Upload Image</span>
                             </a>
                         </li>
-                        
-                        
+
+
                         <li class="pull-right-sm" ng-show="showCreateAlbum">
-                            <a  href="#" ng-click="navCtrl.openAlbummModal()">
-                                <span class="glyphicon glyphicon-plus" ></span>
+                            <a href="#" ng-click="navCtrl.openAlbummModal()">
+                                <span class="glyphicon glyphicon-plus"></span>
                                 <span class="hidden-sm hidden-md hidden-lg">Create Album</span>
                             </a>
                         </li>
@@ -81,13 +81,8 @@
         </nav>
         <div class="container" ng-controller="titleController as titleCtrl">
 
-            <div ng-show="userEmail" class="page-header">
-                <span class="glyphicon glyphicon-user">
-                </span>
-                <span ng-bind="userEmail" ></span>
-                <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
-            </div>
-            
+            <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
+
         </div>
     </header>
     <route-loader></route-loader>
@@ -100,7 +95,7 @@
     <script src="/scripts/services.js"></script>
     <script src="/scripts/directives.js"></script>
 
-<script type="text/ng-template" id="createAlbum.html">
+    <script type="text/ng-template" id="createAlbum.html">
         <div class="modal-header">
             <h4 class="modal-title" ng-bind="::crtAlbumCtrl.modalTitle">Create Album</h4>
         </div>
@@ -116,24 +111,24 @@
         </div>
     </script>
 
-<script type="text/ng-template" id="deleteImage.html">
+    <script type="text/ng-template" id="deleteImage.html">
         <div class="modal-header">
             <h4 class="modal-title">Delete Image</h4>
         </div>
         <div class="modal-body">
             <div class="has-feedback">
                 <h4>Are you sure you want to delete this Image?</h4>
-                
+
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-default" type="button" ng-click="imgCtrl.cancel()" >Cancel</button>
+            <button class="btn btn-default" type="button" ng-click="imgCtrl.cancel()">Cancel</button>
             <button class="btn btn-primary" type="button" ng-click="imgCtrl.delete()">Delete</button>
         </div>
     </script>
 
 
-<script type="text/ng-template" id="uploadModal.html">
+    <script type="text/ng-template" id="uploadModal.html">
         <div class="modal-header">
             <h4 class="modal-title">Image upload</h4>
         </div>
@@ -143,10 +138,10 @@
             </div>
             <div class="row" ng-show="uploadCtrl.showProgress()">
                 <div class="col-xs-12 text-center">
-                    <h4 ng-show="!hasError && progress>=0 && progress<100" >Uploading</h4>
+                    <h4 ng-show="!hasError && progress>=0 && progress<100">Uploading</h4>
                     <h4 ng-show="!hasError && progress>=100">Upload complete</h4>
-                    <h4 ng-show="hasError" class="text-danger" >Upload Error</h4>
-                    <uib-progressbar value="progress" type="progressType" animate="!hasError" ></uib-progressbar>
+                    <h4 ng-show="hasError" class="text-danger">Upload Error</h4>
+                    <uib-progressbar value="progress" type="progressType" animate="!hasError"></uib-progressbar>
                 </div>
             </div>
         </div>
@@ -156,10 +151,10 @@
             <button class="btn btn-primary" type="button" ng-show="hasError" ng-click="uploadCtrl.reset()">Try again</button>
         </div>
     </script>
-    <script type="text/ng-template" id="deleteAlbum.html">  
+    <script type="text/ng-template" id="deleteAlbum.html">
         <div class="modal-body">
-            <div class="text-center" >
-               <b> {{ delAlbumCtrl.deleteMessage  }} </b>
+            <div class="text-center">
+                <b> {{ delAlbumCtrl.deleteMessage  }} </b>
             </div>
         </div>
         <div class="modal-footer">
@@ -170,3 +165,4 @@
 </body>
 
 </html>
+    
