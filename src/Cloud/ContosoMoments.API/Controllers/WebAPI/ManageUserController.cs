@@ -14,95 +14,84 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
     [MobileAppController]
     public class ManageUserController : ApiController
     {
+        protected readonly string _defaultUserId;
+        protected const string FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token=";
+
+        public ManageUserController()
+        {
+            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
+            _defaultUserId = config.DefaultUserId;
+        }
+
         // GET api/ManageUser
         public async Task<string> Get()
         {
-            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
-            string retVal = config.DefaultUserId;
-
+            string retVal = default(string);
 
             // Get the credentials for the logged-in user.
             var fbCredentials = await User.GetAppServiceIdentityAsync<FacebookCredentials>(Request);
-
             if (null != fbCredentials && fbCredentials.Claims.Count > 0)
             {
-                // Create a query string with the Facebook access token.
-                var fbRequestUrl = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token="
-                    + fbCredentials.AccessToken;
-
-                // Create an HttpClient request.
-                var client = new System.Net.Http.HttpClient();
-
-                // Request the current user info from Facebook.
-                var resp = await client.GetAsync(fbRequestUrl);
-                resp.EnsureSuccessStatusCode();
-
-                // Do something here with the Facebook user information.
-                var fbInfo = await resp.Content.ReadAsStringAsync();
-
-                JObject fbObject = JObject.Parse(fbInfo);
-                var emailToken = fbObject.GetValue("email");
-
-                if (null != emailToken)
-                {
-                    string email = emailToken.ToString();
-                    retVal = CheckAddEmailToDB(email);
-                }
-
-                return retVal;
+                retVal = CheckAddEmailToDB(await GetEmailFromFacebookGraph(fbCredentials.AccessToken));
             }
 
             var aadCredentials = await User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(Request);
             if (null != aadCredentials && aadCredentials.Claims.Count > 0)
             {
-                string email = aadCredentials.UserId;
-                retVal = CheckAddEmailToDB(email);
+                retVal = CheckAddEmailToDB(aadCredentials.UserId);
+            }
+
+            return UserOrDefault(retVal);
+        }
+
+        // POST: api/Like
+        public async Task<string> Get(string data, string provider)
+        {
+            string retVal = default(string);
+
+            if (provider.Equals("facebook"))
+            {
+                retVal = CheckAddEmailToDB(await GetEmailFromFacebookGraph(data));
+            }
+
+            if (provider.Equals("aad"))
+            {
+                retVal = CheckAddEmailToDB(data);
+            }
+
+            return UserOrDefault(retVal);
+        }
+
+        private string UserOrDefault(string retVal)
+        {
+            if (string.IsNullOrWhiteSpace(retVal))
+            {
+                retVal = _defaultUserId;
             }
 
             return retVal;
         }
-        // POST: api/Like
 
-        public async Task<string> Get(string data, string provider)
+        private static async Task<string> GetEmailFromFacebookGraph(string credentials)
         {
-            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
-            string retVal = config.DefaultUserId;
+            string fbInfo = default(string);
+            // Create a query string with the Facebook access token.
+            var fbRequestUrl = FACEBOOK_GRAPH_URL + credentials;
 
-            if (provider == "facebook")
+            using (var client = new System.Net.Http.HttpClient())
             {
-                // Create a query string with the Facebook access token.
-                var fbRequestUrl = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token="
-                                   + data;
-
-                // Create an HttpClient request.
-                var client = new System.Net.Http.HttpClient();
-
                 // Request the current user info from Facebook.
                 var resp = await client.GetAsync(fbRequestUrl);
                 resp.EnsureSuccessStatusCode();
 
                 // Do something here with the Facebook user information.
-                var fbInfo = await resp.Content.ReadAsStringAsync();
-
-                JObject fbObject = JObject.Parse(fbInfo);
-                var emailToken = fbObject.GetValue("email");
-
-                if (null != emailToken)
-                {
-                    string email = emailToken.ToString();
-                    retVal = CheckAddEmailToDB(email);
-                }
-
-                return retVal;
+                fbInfo = await resp.Content.ReadAsStringAsync();
             }
 
-            //  var aadCredentials = await this.User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(this.Request);
-            if (provider == "aad")
-            {
-                string email = data;
-                retVal = CheckAddEmailToDB(email);
-            }
-            return retVal;
+            JObject fbObject = JObject.Parse(fbInfo);
+            var emailToken = fbObject.GetValue("email");
+
+            return emailToken.ToString();
         }
 
         private static string CheckAddEmailToDB(string email)
@@ -113,8 +102,9 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             {
                 var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
 
+                // User Found, Exit
                 if (default(Common.Models.User) != user)
-                    return user.Id; // User Found, Exit
+                    return user.Id;
 
                 // New User, Create
                 return AddUser(identifier, ctx);
