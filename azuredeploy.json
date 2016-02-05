@@ -95,18 +95,19 @@
     }
   },
   "variables": {
-    "webJobSiteName": "[concat(parameters('siteName'), '-jobs')]",
-    "storageAccountName": "[toLower(parameters('siteName'))]",
-    "NotificationHubName": "[parameters('siteName')]",
-    "notificationHubNamespace": "[concat(parameters('siteName'), '-ns')]",
+    "lcSiteName": "[toLower(parameters('siteName'))]",
+    "webJobSiteName": "[concat(variables('lcSiteName'), '-jobs')]",
+    "storageAccountName": "[variables('lcSiteName')]",
+    "NotificationHubName": "[variables('lcSiteName')]",
+    "notificationHubNamespace": "[concat(variables('lcSiteName'), '-ns')]",
     "notificationHubLocation": "[parameters('siteLocation')]",
     "DefaultAlbumId": "11111111-1111-1111-1111-111111111111",
     "DefaultUserId": "11111111-1111-1111-1111-111111111111",
     "FacebookAuthString": "http://www.facebook.com",
     "DeleteQueueName": "deleterequest",
     "ResizeQueueName": "resizerequest",
-    "sqlDbName": "[parameters('siteName')]",
-    "sqlServerName": "[concat(parameters('siteName'), '-dbserver')]"
+    "sqlDbName": "[variables('lcSiteName')]",
+    "sqlServerName": "[concat(variables('lcSiteName'), '-dbserver')]"
 
   },
   "resources": [
