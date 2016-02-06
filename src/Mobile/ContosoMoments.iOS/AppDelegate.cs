@@ -55,7 +55,7 @@ namespace ContosoMoments.iOS
 
             LoadApplication(new ContosoMoments.App());
 
-#error COMMENT WHEN DEBUGGING ON EMULATOR!
+            #error COMMENT WHEN DEBUGGING ON EMULATOR!
             var imagePicker = new UIImagePickerController { SourceType = UIImagePickerControllerSourceType.Camera };
             (Xamarin.Forms.Application.Current as App).ShouldTakePicture += () =>
                 app.KeyWindow.RootViewController.PresentViewController(imagePicker, true, null);
