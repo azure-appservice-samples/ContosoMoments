@@ -1,0 +1,1 @@
+. C:\Xamarin\xamarin-components.exe restore $args[0]
