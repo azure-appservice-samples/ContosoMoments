@@ -223,6 +223,7 @@
     <Compile Include="configHandler.ashx.cs">
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\WebAPI\GetwayController.cs" />
     <Compile Include="Controllers\WebAPI\PushRegistrationController.cs" />
     <Compile Include="Controllers\WebAPI\ManageUserController.cs" />
     <Compile Include="Controllers\TableControllers\AlbumController.cs" />
