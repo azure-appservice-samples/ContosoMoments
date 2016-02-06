@@ -59,36 +59,38 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            // Handle when your app starts
-            if (AppSettings.Current.GetValueOrDefault<string>("MobileAppURL") == default(string))
-            {
-                //first run
-                MainPage = new SettingView();
-            }
-            else
-            {
-                Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+            //// Handle when your app starts
+            //if (AppSettings.Current.GetValueOrDefault<string>("MobileAppURL") == default(string))
+            //{
+            //    //first run
+            //    MainPage = new SettingView();
+            //}
+            //else
+            //{
+                //Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
 
-                if (await Utils.ExposesContosoMomentsWebAPIs(Constants.ApplicationURL))
-                    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", 0);
-                else
-                {
-                    int count = AppSettings.Current.GetValueOrDefault<int>("MobileAppURLInvalidCount");
-                    count++;
-                    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", count);
+                //if (await Utils.ExposesContosoMomentsWebAPIs(Constants.ApplicationURL))
+                //    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", 0);
+                //else
+                //{
+                //    int count = AppSettings.Current.GetValueOrDefault<int>("MobileAppURLInvalidCount");
+                //    count++;
+                //    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", count);
 
-                    if (count > 3)
-                    {
-                        MainPage = new SettingView() { IsInURLTrouble = true};
-                        return;
-                    }
-                }
+                //    if (count > 3)
+                //    {
+                //        MainPage = new SettingView() { IsInURLTrouble = true};
+                //        return;
+                //    }
+                //}
 
-                //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
-                bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
+            //MainPage = new SettingView();
 
-                MobileService = new MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
-                AuthenticatedUser = MobileService.CurrentUser;
+            ////Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
+            //bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
+
+            MobileService = new MobileServiceClient(Constants.ApplicationURL);
+            AuthenticatedUser = MobileService.CurrentUser;
 
                 if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))
                 {
@@ -100,26 +102,18 @@ namespace ContosoMoments
                 InitLocalTables();
 
                 //DEBUG
-                //await SyncAsync();
 
-                if (isAuthRequred && AuthenticatedUser == null)
-                {
-                    MainPage = new NavigationPage(new Login());
-                }
-                else
-                {
-#if __DROID__
-                    Droid.GcmService.RegisterWithMobilePushNotifications();
-#elif __IOS__
-                    iOS.AppDelegate.IsAfterLogin = true;
-                    await iOS.AppDelegate.RegisterWithMobilePushNotifications();
-#elif __WP__
-                    ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
-#endif
+//#if __DROID__
+//                    Droid.GcmService.RegisterWithMobilePushNotifications();
+//#elif __IOS__
+//                    iOS.AppDelegate.IsAfterLogin = true;
+//                    await iOS.AppDelegate.RegisterWithMobilePushNotifications();
+//#elif __WP__
+//                    ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+//#endif
 
                     MainPage = new NavigationPage(new AlbumsListView());
-                }
-            }
+            
         }
 
         private void ClearLocalStorage(string localDbFilename)

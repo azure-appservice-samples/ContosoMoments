@@ -59,7 +59,7 @@ namespace ContosoMoments.Views
                         //must be called prior to sync!!!
                         userId = await App.MobileService.InvokeApiAsync<string>("ManageUser", System.Net.Http.HttpMethod.Get, null);
 #if !__WP__ || (__WP__ && DEBUG)
-                        viewModel.CheckUpdateNotificationRegistrationAsync(userId);
+                        //viewModel.CheckUpdateNotificationRegistrationAsync(userId);
 #endif
                         await (App.Current as App).SyncAsync();
                     }

@@ -39,25 +39,25 @@ namespace ContosoMoments.Droid
             };
 
             instance = this;
-            try
-            {
-                // Check to ensure everything's setup right
-                GcmClient.CheckDevice(this);
-                GcmClient.CheckManifest(this);
+            //try
+            //{
+            //    // Check to ensure everything's setup right
+            //    GcmClient.CheckDevice(this);
+            //    GcmClient.CheckManifest(this);
 
-                // Register for push notifications
-                System.Diagnostics.Debug.WriteLine("Registering...");
-                GcmClient.Register(this, PushHandlerBroadcastReceiver.SENDER_IDS);
-            }
-            catch (Java.Net.MalformedURLException)
-            {
+            //    // Register for push notifications
+            //    System.Diagnostics.Debug.WriteLine("Registering...");
+            //    GcmClient.Register(this, PushHandlerBroadcastReceiver.SENDER_IDS);
+            //}
+            //catch (Java.Net.MalformedURLException)
+            //{
 
-                CreateAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
-            }
-            catch (Exception e)
-            {
-                CreateAndShowDialog(e, "Error");
-            }
+            //    CreateAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
+            //}
+            //catch (Exception e)
+            //{
+            //    CreateAndShowDialog(e, "Error");
+            //}
         }
 
         public static MainActivity DefaultService
