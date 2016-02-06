@@ -36,28 +36,6 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        //private MobileServiceCollection<Album, Album> _Albums;
-        //public MobileServiceCollection<Album, Album> Albums
-        //{
-        //    get { return _Albums; }
-        //    set
-        //    {
-        //        _Albums = value;
-        //        OnPropertyChanged("Albums");
-        //    }
-        //}
-
-        //private MobileServiceCollection<User, User> _Users;
-        //public MobileServiceCollection<User, User> Users
-        //{
-        //    get { return _Users; }
-        //    set
-        //    {
-        //        _Users = value;
-        //        OnPropertyChanged("Users");
-        //    }
-        //}
-
         private bool _IsPending;
         public bool IsPending
         {
@@ -102,62 +80,13 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-
-        //public async Task GetUserAsync(Guid userId)
-        //{
-        //    try
-        //    {
-        //        var table = _client.GetTable<User>();
-        //        var user = await table.LookupAsync(userId);
-
-        //        if (null != user)
-        //            User = user;
-        //    }
-        //    catch (MobileServiceInvalidOperationException ex)
-        //    {
-        //        ErrorMessage = ex.Message;
-        //    }
-        //    catch (HttpRequestException ex2)
-        //    {
-        //        ErrorMessage = ex2.Message;
-        //    }
-        //}
-
-        //public async Task GetAlbumAsync(string albumId)
-        //{
-        //    try
-        //    {
-        //        var table = _client.GetTable<Album>();
-        //        var album = await table.LookupAsync(albumId);
-
-        //        if (null != album)
-        //            Album = album;
-        //    }
-        //    catch (MobileServiceInvalidOperationException ex)
-        //    {
-        //        ErrorMessage = ex.Message;
-        //    }
-        //    catch (HttpRequestException ex2)
-        //    {
-        //        ErrorMessage = ex2.Message;
-        //    }
-        //}
-
         public async Task GetImagesAsync(string albumId)
         {
             IsPending = true;
             ErrorMessage = null;
 
             try
-            {
-                //var json = await _client.GetTable<Image>().ReadAsync("$expand=Album");
-                //var images = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Image>>(json.ToString());
-                //var res = from image in images
-                //          where image.Album.AlbumId == albumId
-                //          select image;
-
-                //_Images = res.ToList();
-                
+            {                
                 var images = await (App.Current as App).imageTableSync.ToListAsync();
                 var res = from image in images
                           where image.AlbumId == albumId

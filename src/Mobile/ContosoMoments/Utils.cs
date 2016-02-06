@@ -207,33 +207,7 @@ namespace ContosoMoments
             return bRes;
         }
 
-        //public static async Task<bool> DEBUG_GetFBUser(string sid)
-        //{
-        //    bool bRes = true;
-
-        //    try
-        //    {
-        //        var fbRequestUrl = "https://graph.facebook.com/me/feed?access_token=" + sid;
-
-        //        // Create an HttpClient request.
-        //        var client = new System.Net.Http.HttpClient();
-
-        //        // Request the current user info from Facebook.
-        //        var resp = await client.GetAsync(fbRequestUrl);
-        //        resp.EnsureSuccessStatusCode();
-
-        //        // Do something here with the Facebook user information.
-        //        var fbInfo = await resp.Content.ReadAsStringAsync();
-
-        //    }
-        //    catch (WebException ex)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(ex.ToString());
-        //    }
-
-        //    return bRes;
-        //}
-
+        
         public static bool IsOnline()
         {
             var networkConnection = DependencyService.Get<INetworkConnection>();
