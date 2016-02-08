@@ -27,51 +27,52 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
 
-        // GET tables/Images
+        // GET tables/Image
         public IQueryable<Image> GetAllImage()
         {
             return Query();
         }
 
-        // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // GET tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public SingleResult<Image> GetImage(string id)
         {
             return Lookup(id);
         }
 
-        // PATCH tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // PATCH tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public Task<Image> PatchImage(string id, Delta<Image> patch)
         {
             return UpdateAsync(id, patch);
         }
 
-        // POST tables/Images
+        // POST tables/Image
         public async Task<IHttpActionResult> PostImage(Image item)
         {
             Image current = await InsertAsync(item);
             return CreatedAtRoute("Tables", new { id = current.Id }, current);
         }
 
-        // DELETE tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // DELETE tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task DeleteImage(string id)
         {
-            var image = Lookup(id).Queryable.First();
-            var filenameParts = image.FileName.Split('.');
-            var filename = filenameParts[0];
-            var fileExt = filenameParts[1];
-            var containerName = image.ContainerName;
+            // TODO: delete images associated with the record
 
-            var qm = new QueueManager();
-            var blobInfo = new BlobInformation(fileExt);
-            blobInfo.BlobUri = new Uri(containerName);
-            blobInfo.ImageId = filename;
-            await qm.PushToDeleteQueue(blobInfo);
+            //var image = Lookup(id).Queryable.First();
+            //var filenameParts = image.FileName.Split('.');
+            //var filename = filenameParts[0];
+            //var fileExt = filenameParts[1];
+            //var containerName = image.ContainerName;
+
+            //var qm = new QueueManager();
+            //var blobInfo = new BlobInformation(fileExt);
+            //blobInfo.BlobUri = new Uri(containerName);
+            //blobInfo.ImageId = filename;
+            //await qm.PushToDeleteQueue(blobInfo);
 
             await DeleteAsync(id);
-            return;
         }
     }
 }

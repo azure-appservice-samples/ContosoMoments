@@ -87,6 +87,10 @@
       <HintPath>..\..\packages\Microsoft.Azure.Mobile.Server.Entity.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Entity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Azure.Mobile.Server.Files, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Azure.Mobile.Server.Files.1.0.0-beta-2\lib\net45\Microsoft.Azure.Mobile.Server.Files.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Azure.Mobile.Server.Home, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Azure.Mobile.Server.Home.1.0.119.0\lib\net45\Microsoft.Azure.Mobile.Server.Home.dll</HintPath>
       <Private>True</Private>
@@ -223,6 +227,7 @@
     <Compile Include="configHandler.ashx.cs">
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\TableControllers\ImageStorageController.cs" />
     <Compile Include="Controllers\WebAPI\GetwayController.cs" />
     <Compile Include="Controllers\WebAPI\PushRegistrationController.cs" />
     <Compile Include="Controllers\WebAPI\ManageUserController.cs" />
