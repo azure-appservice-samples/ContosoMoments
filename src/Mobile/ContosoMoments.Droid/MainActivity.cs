@@ -14,14 +14,14 @@ using Gcm.Client;
 
 namespace ContosoMoments.Droid
 {
-	[Activity (Label = "Contoso Moments", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
-	{
+    [Activity (Label = "Contoso Moments", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
+    {
         static readonly File file = new File(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures), "tmp.jpg");
         static MainActivity instance;
 
         protected override void OnCreate (Bundle bundle)
-		{
+        {
             base.OnCreate (bundle);
 
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
@@ -39,25 +39,25 @@ namespace ContosoMoments.Droid
             };
 
             instance = this;
-            //try
-            //{
-            //    // Check to ensure everything's setup right
-            //    GcmClient.CheckDevice(this);
-            //    GcmClient.CheckManifest(this);
 
-            //    // Register for push notifications
-            //    System.Diagnostics.Debug.WriteLine("Registering...");
-            //    GcmClient.Register(this, PushHandlerBroadcastReceiver.SENDER_IDS);
-            //}
-            //catch (Java.Net.MalformedURLException)
-            //{
+#if PUSH // need to use a Google image on an Android emulator
+            try {
+                // Check to ensure everything's setup right
+                GcmClient.CheckDevice(this);
+                GcmClient.CheckManifest(this);
 
-            //    CreateAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
-            //}
-            //catch (Exception e)
-            //{
-            //    CreateAndShowDialog(e, "Error");
-            //}
+                // Register for push notifications
+                System.Diagnostics.Debug.WriteLine("Registering...");
+                GcmClient.Register(this, PushHandlerBroadcastReceiver.SENDER_IDS);
+            }
+            catch (Java.Net.MalformedURLException) {
+
+                CreateAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
+            }
+            catch (Exception e) {
+                CreateAndShowDialog(e, "Error");
+            }
+#endif 
         }
 
         public static MainActivity DefaultService

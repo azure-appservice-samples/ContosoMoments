@@ -219,19 +219,17 @@ namespace ContosoMoments
         {
             bool retVal = true;
 
-            //try
-            //{
-            //    var res = await App.MobileService.InvokeApiAsync<string>("Getway", System.Net.Http.HttpMethod.Get, null);
+            try {
+                var res = await App.MobileService.InvokeApiAsync<string>("Getway", System.Net.Http.HttpMethod.Get, null);
 
-            //    if (res == null && res.Length == 0)
-            //    {
-            //        retVal = false;
-            //    }
-            //}
-            //catch //(Exception ex)
-            //{
-            //    retVal = false;
-            //}
+                if (res == null && res.Length == 0) {
+                    retVal = false;
+                }
+            }
+            catch //(Exception ex)
+            {
+                retVal = false;
+            }
 
             return retVal;
         }
