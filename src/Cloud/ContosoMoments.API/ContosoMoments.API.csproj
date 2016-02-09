@@ -421,6 +421,7 @@
     <Content Include="scripts\ui-bootstrap-custom\ui-bootstrap-custom-tpls-0.14.3.min.js" />
     <Content Include="scripts\uploader.js" />
     <Content Include="templates\albums.html" />
+    <Content Include="templates\auth.html" />
     <Content Include="templates\gallery.html" />
     <Content Include="templates\singleimage.html" />
     <Content Include="Web.config">
