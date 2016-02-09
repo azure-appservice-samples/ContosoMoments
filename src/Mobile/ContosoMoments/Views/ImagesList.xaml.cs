@@ -98,7 +98,7 @@ namespace ContosoMoments.Views
 
         private async Task LoadItems()
         {
-            await viewModel.GetImagesAsync(viewModel.Album.AlbumId);
+            await viewModel.LoadImageNamesAsync(viewModel.Album.AlbumId);
 
             if (null != viewModel.Images)
             {

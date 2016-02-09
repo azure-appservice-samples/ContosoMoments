@@ -20,14 +20,11 @@ namespace ContosoMoments.ViewModels
         public ImagesListViewModel(MobileServiceClient client)
         {
             _client = client;
-
-            //_UserName = "Demo User";
-            //_AlbumName = "Demo Album";
         }
 
         // View model properties
-        private /*MobileServiceCollection<Image, Image>*/List<Image> _Images;
-        public /*MobileServiceCollection<Image, Image>*/List<Image> Images
+        private List<Image> _Images;
+        public List<Image> Images
         {
             get { return _Images; }
             set
@@ -37,13 +34,13 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        private bool _IsPending;
-        public bool IsPending
+        private bool _IsLoading;
+        public bool IsLoading
         {
-            get { return _IsPending; }
+            get { return _IsLoading; }
             set
             {
-                _IsPending = value;
+                _IsLoading = value;
                 OnPropertyChanged("IsPending");
             }
         }
@@ -81,9 +78,9 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        public async Task GetImagesAsync(string albumId)
+        public async Task LoadImageNamesAsync(string albumId)
         {
-            IsPending = true;
+            IsLoading = true;
             ErrorMessage = null;
 
             try
@@ -105,7 +102,7 @@ namespace ContosoMoments.ViewModels
             }
             finally
             {
-                IsPending = false;
+                IsLoading = false;
             }
         }
 
@@ -134,8 +131,7 @@ namespace ContosoMoments.ViewModels
                 {
                     UserId = User.UserId.ToString(),
                     AlbumId = Album.AlbumId,
-                    ImageFormat = "Mobile Image",
-                    ContainerName = "https://donnamcontosomoments.blob.core.windows.net/" // TODO: fix hardcode
+                    ImageFormat = "Mobile Image"
                 };
 
                 await app.imageTableSync.InsertAsync(image); // create a new image record
