@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Linq;
+using System.Diagnostics;
 
 namespace ContosoMoments.ViewModels
 {
@@ -127,31 +128,54 @@ namespace ContosoMoments.ViewModels
 
         public async Task<bool> UploadImageAsync(Stream imageStream)
         {
-            bool retVal = false;
+            try {
+                var app = App.Current as App;
+                var image = new Models.Image 
+                {
+                    UserId = User.UserId.ToString(),
+                    AlbumId = Album.AlbumId,
+                    ImageFormat = "Mobile Image",
+                    ContainerName = "https://donnamcontosomoments.blob.core.windows.net/" // TODO: fix hardcode
+                };
 
-            try
-            {
-                var sasToken = await App.MobileService.InvokeApiAsync<string>("GetSasUrl", HttpMethod.Get, null);
-                string token = sasToken.Substring(sasToken.IndexOf("?")).TrimEnd('"');
-                StorageCredentials credentials = new StorageCredentials(token);
-                string blobUri = sasToken.Substring(0, sasToken.IndexOf("?"));
-                CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
-                blobFromSASCredential.Properties.ContentType = "image/jpeg";
-                byte[] bytes = new byte[imageStream.Length];
-                await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
-                await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
-                string json = string.Format("{{\"UserId\":\"{1}\", \"IsMobile\":true, \"AlbumId\":\"{2}\", \"SasUrl\": \"{0}\", \"blobParts\":null }}", sasToken, User.UserId, Album.AlbumId);
+                await app.imageTableSync.InsertAsync(image); // create a new image record
+                await app.AddImage(image, imageStream); // add the image file to the record
 
-                Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
-
-                var res = await App.MobileService.InvokeApiAsync<Newtonsoft.Json.Linq.JToken, Newtonsoft.Json.Linq.JObject>("CommitBlob", body, HttpMethod.Post, null);
-                retVal = (bool)res["success"];
+                return true;
             }
-            catch (Exception ex)
-            {
+            catch (Exception e) {
+                Trace.WriteLine(e);
+                return false;
             }
-
-            return retVal;
         }
+
+        //public async Task<bool> UploadImageAsync(Stream imageStream)
+        //{
+        //    bool retVal = false;
+
+        //    try
+        //    {
+        //        var sasToken = await App.MobileService.InvokeApiAsync<string>("GetSasUrl", HttpMethod.Get, null);
+        //        string token = sasToken.Substring(sasToken.IndexOf("?")).TrimEnd('"');
+        //        StorageCredentials credentials = new StorageCredentials(token);
+        //        string blobUri = sasToken.Substring(0, sasToken.IndexOf("?"));
+        //        CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
+        //        blobFromSASCredential.Properties.ContentType = "image/jpeg";
+        //        byte[] bytes = new byte[imageStream.Length];
+        //        await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
+        //        await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
+        //        string json = string.Format("{{\"UserId\":\"{1}\", \"IsMobile\":true, \"AlbumId\":\"{2}\", \"SasUrl\": \"{0}\", \"blobParts\":null }}", sasToken, User.UserId, Album.AlbumId);
+
+        //        Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
+
+        //        var res = await App.MobileService.InvokeApiAsync<Newtonsoft.Json.Linq.JToken, Newtonsoft.Json.Linq.JObject>("CommitBlob", body, HttpMethod.Post, null);
+        //        retVal = (bool)res["success"];
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    }
+
+        //    return retVal;
+        //}
     }
 }

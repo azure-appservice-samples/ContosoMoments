@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.MobileServices;
 #if __WP__
 using Windows.Networking.Sockets;
 #elif __DROID__
@@ -66,13 +67,8 @@ namespace ContosoMoments.Views
                         return;
                     }
 
-#if __WP__
-                    ValidURL = await Utils.CheckServerAddressWP(mobileServiceUrl.Text);
-#elif __IOS__
-                    ValidURL = await Utils.CheckServerAddressIOS(mobileServiceUrl.Text);
-#elif __DROID__
-                    ValidURL = await Utils.CheckServerAddressDroid(mobileServiceUrl.Text);
-#endif
+                    // TODO: validate URL
+                    ValidURL = true;
 
                     if (ValidURL)
                     {
@@ -82,13 +78,12 @@ namespace ContosoMoments.Views
                             isNewURL = true;
 
                         AppSettings.Current.AddOrUpdateValue<string>("MobileAppURL", mobileServiceUrl.Text);
-                        Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
+                        App.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
 
                         if (!isNewURL)
                         {
-                            bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
-
-                            App.MobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
+                            bool isAuthRequred = false;
+                            App.MobileService = new MobileServiceClient(App.ApplicationURL);
                             App.AuthenticatedUser = App.MobileService.CurrentUser;
 
                             await (App.Current as App).InitLocalStoreAsync(App.DB_LOCAL_FILENAME);

@@ -11,11 +11,15 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Microsoft.WindowsAzure.MobileServices.Files;
+using System.Diagnostics;
 
 namespace ContosoMoments
 {
     public class App : Application
     {
+        public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
+
         public const string DB_LOCAL_FILENAME = "localDb.sqlite";
         public static MobileServiceClient MobileService;
         public static MobileServiceUser AuthenticatedUser;
@@ -59,66 +63,38 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            // Handle when your app starts
-            if (AppSettings.Current.GetValueOrDefault<string>("MobileAppURL") == default(string))
+            //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
+            // TODO: auth
+            bool isAuthRequred = false; 
+
+            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true));
+            AuthenticatedUser = MobileService.CurrentUser;
+
+            if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))
             {
-                //first run
-                MainPage = new SettingView();
+                ClearLocalStorage(DB_LOCAL_FILENAME);
+                AppSettings.Current.AddOrUpdateValue<bool>("ConfigChanged", false);
+            }
+
+            await InitLocalStoreAsync(DB_LOCAL_FILENAME);
+            InitLocalTables();
+
+            if (isAuthRequred && AuthenticatedUser == null)
+            {
+                MainPage = new NavigationPage(new Login());
             }
             else
             {
-                Constants.ApplicationURL = AppSettings.Current.GetValueOrDefault<string>("MobileAppURL");
-
-                if (await Utils.ExposesContosoMomentsWebAPIs(Constants.ApplicationURL))
-                    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", 0);
-                else
-                {
-                    int count = AppSettings.Current.GetValueOrDefault<int>("MobileAppURLInvalidCount");
-                    count++;
-                    AppSettings.Current.AddOrUpdateValue<int>("MobileAppURLInvalidCount", count);
-
-                    if (count > 3)
-                    {
-                        MainPage = new SettingView() { IsInURLTrouble = true};
-                        return;
-                    }
-                }
-
-                //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
-                bool isAuthRequred = await Utils.IsAuthRequired(Constants.ApplicationURL);
-
-                MobileService = new MobileServiceClient((!isAuthRequred ? Constants.ApplicationURL : Constants.ApplicationURL.Replace("http://", "https://")));
-                AuthenticatedUser = MobileService.CurrentUser;
-
-                if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))
-                {
-                    ClearLocalStorage(DB_LOCAL_FILENAME);
-                    AppSettings.Current.AddOrUpdateValue<bool>("ConfigChanged", false);
-                }
-
-                await InitLocalStoreAsync(DB_LOCAL_FILENAME);
-                InitLocalTables();
-
-                //DEBUG
-                //await SyncAsync();
-
-                if (isAuthRequred && AuthenticatedUser == null)
-                {
-                    MainPage = new NavigationPage(new Login());
-                }
-                else
-                {
 #if __DROID__ && PUSH
-                    Droid.GcmService.RegisterWithMobilePushNotifications();
+                Droid.GcmService.RegisterWithMobilePushNotifications();
 #elif __IOS__ && PUSH
-                    iOS.AppDelegate.IsAfterLogin = true;
-                    await iOS.AppDelegate.RegisterWithMobilePushNotifications();
+                iOS.AppDelegate.IsAfterLogin = true;
+                await iOS.AppDelegate.RegisterWithMobilePushNotifications();
 #elif __WP__ && PUSH
-                    ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+                ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
 #endif
 
-                    MainPage = new NavigationPage(new AlbumsListView());
-                }
+                MainPage = new NavigationPage(new AlbumsListView());
             }
         }
 
@@ -206,37 +182,34 @@ namespace ContosoMoments
         {
             if (!MobileService.SyncContext.IsInitialized)
             {
-                try
-                {
-                    // new code to initialize the SQLite store
+                // new code to initialize the SQLite store
 #if !__WP__
-                    string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), localDbFilename);
+                string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), localDbFilename);
 #else
-                    string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, localDbFilename);
+                string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, localDbFilename);
 #endif
 
-                    if (!File.Exists(path))
-                    {
-                        File.Create(path).Dispose();
-                    }
-
-                    var store = new MobileServiceSQLiteStore(path);
-                    store.DefineTable<Models.User>();
-                    store.DefineTable<Models.Album>();
-                    store.DefineTable<Models.Image>();
-
-                    // Uses the default conflict handler, which fails on conflict
-                    await MobileService.SyncContext.InitializeAsync(store);
-                }
-                catch (Exception ex)
+                if (!File.Exists(path))
                 {
-                    throw;
+                    File.Create(path).Dispose();
                 }
+
+                var store = new MobileServiceSQLiteStore(path);
+                store.DefineTable<Models.User>();
+                store.DefineTable<Models.Album>();
+                store.DefineTable<Models.Image>();
+
+                // Initialize file sync
+                MobileService.InitializeFileSyncContext(new FileSyncHandler(this), store, new FileSyncTriggerFactory(MobileService, true));
+
+                // Uses the default conflict handler, which fails on conflict
+                await MobileService.SyncContext.InitializeAsync(store, StoreTrackingOptions.NotifyLocalAndServerOperations);
             }
         }
 
         public async Task SyncAsync()
         {
+            await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
             await userTableSync.PullAsync("allUsers", userTableSync.CreateQuery()); // query ID is used for incremental sync
             await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); // query ID is used for incremental sync
@@ -253,8 +226,33 @@ namespace ContosoMoments
             }
             catch (Exception ex)
             {
-
+                Trace.WriteLine(ex);
             }
+        }
+
+        internal async Task DownloadFileAsync(MobileServiceFile file)
+        {
+            var todoItem = await imageTableSync.LookupAsync(file.ParentId);
+            IPlatform platform = DependencyService.Get<IPlatform>();
+
+            string filePath = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+            await platform.DownloadFileAsync(imageTableSync, file, filePath);
+        }
+
+        internal async Task<MobileServiceFile> AddImage(Models.Image image, Stream imageStream)
+        {
+            string targetPath = await FileHelper.SaveStreamAsync(itemId: image.Id, filename: image.Id, sourceStream: imageStream);
+            return await imageTableSync.AddFileAsync(image, Path.GetFileName(targetPath));
+        }
+
+        internal async Task DeleteImage(Image todoItem, MobileServiceFile file)
+        {
+            await imageTableSync.DeleteFileAsync(file);
+        }
+
+        internal async Task<IEnumerable<MobileServiceFile>> GetImageFilesAsync(Models.Image image)
+        {
+            return await imageTableSync.GetFilesAsync(image);
         }
     }
 }
