@@ -23,7 +23,8 @@ Download and Install the following tools to be able to be able to build and/or d
 
 ## How To: Deploy the Demo
 
-1. Check to ensure that the bulid is passing  ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/1.svg?style=flat-square)
+1. Check to ensure that the bulid is passing 
+    ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/1.svg?style=flat-square)
 1. Fork this repository to your GitHub account 
 1. Click on the **Deploy to Azure** Button
 
@@ -35,7 +36,11 @@ Download and Install the following tools to be able to be able to build and/or d
 
 ## How To: Install the Mobile Client App
 
-currently unavailable.
+| Platform  | Build Status |
+|-----------|----------------------------------------------------------------------------------------------------------------------|
+| Android   | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/2.svg?style=flat-square) |
+| iOS       | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/3.svg?style=flat-square) |
+| Windows Phone | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/4.svg?style=flat-square) |
 
 ## Change Log
 
