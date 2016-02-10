@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ContosoMoments.API.Helpers;
 using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server.Files;
 using Microsoft.Azure.Mobile.Server.Files.Controllers;
@@ -13,12 +13,20 @@ namespace ContosoMoments.API.Controllers.TableControllers
 {
     public class ImageStorageController : StorageController<Image>
     {
+        private ImageNameResolver nameResolver;
+
+        public ImageStorageController() : 
+            base(new CustomAzureStorageProvider(GetConnectionString()))
+        {
+            nameResolver = new ImageNameResolver();
+        }
+
         [HttpPost]
         [Route("tables/Image/{id}/StorageToken")]
-        public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest value)
+        public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest request)
         {
             // return a storage token that can be used for blob upload or download
-            StorageToken token = await GetStorageTokenAsync(id, value);
+            StorageToken token = await GetStorageTokenAsync(id, request, nameResolver);
             return Request.CreateResponse(token);
         }
 
@@ -27,7 +35,7 @@ namespace ContosoMoments.API.Controllers.TableControllers
         [Route("tables/Image/{id}/MobileServiceFiles")]
         public async Task<HttpResponseMessage> GetFiles(string id)
         {
-            IEnumerable<MobileServiceFile> files = await GetRecordFilesAsync(id);
+            IEnumerable<MobileServiceFile> files = await GetRecordFilesAsync(id, nameResolver);
             return Request.CreateResponse(files);
         }
 
@@ -35,7 +43,26 @@ namespace ContosoMoments.API.Controllers.TableControllers
         [Route("tables/Image/{id}/MobileServiceFiles/{name}")]
         public Task Delete(string id, string name)
         {
-            return base.DeleteFileAsync(id, name);
+            return base.DeleteFileAsync(id, name, nameResolver);
+        }
+
+        private static string GetConnectionString(string connectionStringName = Constants.StorageConnectionStringName)
+        {
+            if (connectionStringName == null) {
+                throw new ArgumentNullException("connectionStringName");
+            }
+
+            if (connectionStringName.Length == 0) {
+                throw new ArgumentException("Connection string should not be empty");
+            }
+
+            var connectionStringSettings = ConfigurationManager.ConnectionStrings[connectionStringName];
+
+            if (connectionStringSettings == null) {
+                throw new ConfigurationErrorsException(string.Format("Connection string is missing", connectionStringName));
+            }
+
+            return connectionStringSettings.ConnectionString;
         }
     }
 }

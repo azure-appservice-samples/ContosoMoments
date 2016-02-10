@@ -228,6 +228,8 @@
     <Compile Include="configHandler.ashx.cs">
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CustomAzureStorageProvider.cs" />
+    <Compile Include="Helpers\ImageNameResolver.cs" />
     <Compile Include="Controllers\TableControllers\ImageStorageController.cs" />
     <Compile Include="Controllers\WebAPI\GetwayController.cs" />
     <Compile Include="Controllers\WebAPI\PushRegistrationController.cs" />

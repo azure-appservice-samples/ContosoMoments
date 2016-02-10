@@ -18,7 +18,6 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
     {
         protected override void Initialize(HttpControllerContext controllerContext)
         {
-
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
             var softDeleteEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);

@@ -9,6 +9,7 @@ namespace ContosoMoments.Common.Models
     {
         public string UploadFormat { get; set; }
 
+        // TOOD: remove ContainerName field
         public string ContainerName { get; set; }
         public string FileName { get; set; }
 
