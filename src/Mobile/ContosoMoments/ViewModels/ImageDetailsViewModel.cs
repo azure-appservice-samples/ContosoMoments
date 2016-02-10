@@ -17,8 +17,7 @@ namespace ContosoMoments.ViewModels
             _client = client;
             this.Image = image;
 
-            this.OpenImageCommand = new Command<ImageSource>((source) =>
-            {
+            this.OpenImageCommand = new Command<ImageSource>((source) => {
                 Device.OpenUri((Uri)source.GetValue(UriImageSource.UriProperty));
             });
         }
@@ -48,23 +47,10 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        public async Task<bool> LikeImageAsync()
+        public async Task LikeImageAsync()
         {
-            bool bRes = true; //Assume success
-            try
-            {
-                string body = string.Format("{{'imageId':'{0}'}}", Image.Id.ToString());
-
-                var res = await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
-
-                bRes = res;
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            string body = string.Format("{{'imageId':'{0}'}}", Image.Id.ToString());
+            var res = await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
         }
     }
 }

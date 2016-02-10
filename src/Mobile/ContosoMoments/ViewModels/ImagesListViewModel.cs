@@ -1,35 +1,33 @@
 ﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 using System.Linq;
 using System.Diagnostics;
+using Microsoft.WindowsAzure.MobileServices.Files;
 
 namespace ContosoMoments.ViewModels
 {
     public class ImagesListViewModel : BaseViewModel
     {
-        public ImagesListViewModel(MobileServiceClient client)
+        private App _app;
+
+        public ImagesListViewModel(MobileServiceClient client, App app)
         {
             _client = client;
+            _app = app;
         }
 
-        // View model properties
-        private List<Image> _Images;
+        private List<Image> _images;
         public List<Image> Images
         {
-            get { return _Images; }
+            get { return _images; }
             set
             {
-                _Images = value;
+                _images = value;
                 OnPropertyChanged("Images");
             }
         }
@@ -78,100 +76,42 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        public async Task LoadImageNamesAsync(string albumId)
-        {
-            IsLoading = true;
-            ErrorMessage = null;
-
-            try
-            {                
-                var images = await (App.Current as App).imageTableSync.ToListAsync();
-                var res = from image in images
-                          where image.AlbumId == albumId
-                          select image;
-
-                _Images = res.ToList();
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
-        public async Task<bool> DeleteImageAsync(Image selectedImage)
-        {
-            bool bRes = true; //Assume success
-
-            try
-            {
-                //await imageTable.DeleteAsync(selectedImage);
-                await (App.Current as App).imageTableSync.DeleteAsync(selectedImage);
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
-        }
-
-        public async Task<bool> UploadImageAsync(Stream imageStream)
+        public async Task LoadImagesAsync(string albumId)
         {
             try {
-                var app = App.Current as App;
-                var image = new Models.Image 
-                {
+                this.Images = await _app.imageTableSync.Where(i => i.AlbumId == albumId).ToListAsync();
+
+                foreach (var im in this.Images) {
+                    var result = await _app.imageTableSync.GetFilesAsync(im);
+                    im.File = result.FirstOrDefault();
+                }
+            }
+            catch (Exception ex) {
+                ErrorMessage = ex.Message;
+            }
+        }
+
+        public async Task DeleteImageAsync(Image selectedImage)
+        {
+            await _app.imageTableSync.DeleteAsync(selectedImage);
+        }
+
+        public async Task UploadImageAsync(Stream imageStream)
+        {
+            try {
+                var image = new Models.Image {
                     UserId = User.UserId.ToString(),
                     AlbumId = Album.AlbumId,
-                    ImageFormat = "Mobile Image"
+                    UploadFormat = "Mobile Image",
+                    FileName = Guid.NewGuid.ToString()
                 };
 
-                await app.imageTableSync.InsertAsync(image); // create a new image record
-                await app.AddImage(image, imageStream); // add the image file to the record
-
-                return true;
+                await _app.imageTableSync.InsertAsync(image); // create a new image record
+                await _app.AddImage(image, imageStream); // add the image file to the record
             }
             catch (Exception e) {
                 Trace.WriteLine(e);
-                return false;
             }
         }
-
-        //public async Task<bool> UploadImageAsync(Stream imageStream)
-        //{
-        //    bool retVal = false;
-
-        //    try
-        //    {
-        //        var sasToken = await App.MobileService.InvokeApiAsync<string>("GetSasUrl", HttpMethod.Get, null);
-        //        string token = sasToken.Substring(sasToken.IndexOf("?")).TrimEnd('"');
-        //        StorageCredentials credentials = new StorageCredentials(token);
-        //        string blobUri = sasToken.Substring(0, sasToken.IndexOf("?"));
-        //        CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
-        //        blobFromSASCredential.Properties.ContentType = "image/jpeg";
-        //        byte[] bytes = new byte[imageStream.Length];
-        //        await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
-        //        await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
-        //        string json = string.Format("{{\"UserId\":\"{1}\", \"IsMobile\":true, \"AlbumId\":\"{2}\", \"SasUrl\": \"{0}\", \"blobParts\":null }}", sasToken, User.UserId, Album.AlbumId);
-
-        //        Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
-
-        //        var res = await App.MobileService.InvokeApiAsync<Newtonsoft.Json.Linq.JToken, Newtonsoft.Json.Linq.JObject>("CommitBlob", body, HttpMethod.Post, null);
-        //        retVal = (bool)res["success"];
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //    }
-
-        //    return retVal;
-        //}
     }
 }

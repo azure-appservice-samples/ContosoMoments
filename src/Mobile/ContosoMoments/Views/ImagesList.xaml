@@ -22,7 +22,6 @@
     <Grid Grid.Row="0" Padding="10,30,10,5">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
-        <!--<ColumnDefinition Width="Auto"/>-->
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="45"/>
         <ColumnDefinition Width="45"/>
@@ -64,15 +63,12 @@
 
     <!--List of images-->
     <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="2" BackgroundColor="White">
-      <!--<ListView.RowHeight>
-        <OnPlatform x:TypeArguments="x:Int32" iOS="128" Android="136" WinPhone="144" />
-      </ListView.RowHeight>-->
       <ListView.ItemTemplate>
         <DataTemplate>
-          <!--<ViewCell>
-          <Grid Padding="8">-->
-          <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"
-                   Text="{Binding ImageFormat}" TextColor="Black">
+          <ImageCell 
+              ImageSource="{Binding Uri}"
+              Text="{Binding UploadFormat}" 
+              TextColor="Black">
             <ImageCell.ContextActions>
               <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
             </ImageCell.ContextActions>

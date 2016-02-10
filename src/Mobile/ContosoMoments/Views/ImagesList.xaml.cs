@@ -12,14 +12,18 @@ namespace ContosoMoments.Views
 {
     public partial class ImagesList : ContentPage
     {
-        ImagesListViewModel viewModel = new ImagesListViewModel(App.MobileService);
-
         public User User { get; set; }
         public Album Album { get; set; }
 
-        public ImagesList()
+        private App _app;
+        private ImagesListViewModel viewModel;
+
+        public ImagesList(App app)
         {
             InitializeComponent();
+
+            _app = app;
+            viewModel = new ImagesListViewModel(App.MobileService, App.Current as App);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -39,8 +43,7 @@ namespace ContosoMoments.Views
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ErrorMessage" && viewModel.ErrorMessage != null)
-            {
+            if (e.PropertyName == "ErrorMessage" && viewModel.ErrorMessage != null) {
                 DisplayAlert("Error occurred", viewModel.ErrorMessage, "Close");
             }
         }
@@ -49,20 +52,15 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
-            //if (imagesWrap.ItemsSource == null)
-            if (imagesList.ItemsSource == null)
-            {
-                using (var scope = new ActivityIndicatorScope(syncIndicator, true))
-                {
+            if (imagesList.ItemsSource == null) {
+                using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
                     viewModel.User = User;
-
                     viewModel.Album = Album;
-
                     await LoadItems();
                 }
             }
-            App.Instance.ImageTaken += App_ImageTaken;
 
+            App.Instance.ImageTaken += App_ImageTaken;
         }
 
         protected override void OnDisappearing()
@@ -74,20 +72,13 @@ namespace ContosoMoments.Views
 
         private async void App_ImageTaken(object sender, EventArgs e)
         {
-            //DEBUG
-            //imgPreview.Source = App.Instance.image;
-            if (null != App.Instance.ImageStream)
-            {
-                //Upload image
-                using (var scope = new ActivityIndicatorScope(syncIndicator, true))
-                {
-                    if (await viewModel.UploadImageAsync(App.Instance.ImageStream))
-                    {
-                        await DisplayAlert("Upload succeeded", "Image uploaded and will appear in the list shortly", "Ok");
+            if (App.Instance.ImageStream != null) {
+                using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
+                    try {
+                        await viewModel.UploadImageAsync(App.Instance.ImageStream);
                         OnRefresh(sender, e);
                     }
-                    else
-                    {
+                    catch (Exception) {
                         await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
                     }
                 }
@@ -98,27 +89,22 @@ namespace ContosoMoments.Views
 
         private async Task LoadItems()
         {
-            await viewModel.LoadImageNamesAsync(viewModel.Album.AlbumId);
+            await viewModel.LoadImagesAsync(viewModel.Album.AlbumId);
 
-            if (null != viewModel.Images)
-            {
+            if (null != viewModel.Images) {
                 imagesList.ItemsSource = null;
                 imagesList.ItemsSource = viewModel.Images.ToList();
-                //imagesWrap.ItemsSource = viewModel.Images.ToList();
             }
         }
 
         public async void OnRefresh(object sender, EventArgs e)
         {
-            //var list = (ListView)sender;
             var success = false;
-            try
-            {
+            try {
                 await SyncItemsAsync(true);
                 success = true;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 await DisplayAlert("Refresh Error", "Couldn't refresh data (" + ex.Message + ")", "OK");
             }
             imagesList.EndRefresh();
@@ -132,8 +118,7 @@ namespace ContosoMoments.Views
         {
             var selectedImage = e.SelectedItem as ContosoMoments.Models.Image;
 
-            if (selectedImage != null)
-            {
+            if (selectedImage != null) {
                 var detailsView = new ImageDetailsView();
                 var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
                 detailsVM.Album = viewModel.Album;
@@ -147,14 +132,14 @@ namespace ContosoMoments.Views
             imagesList.SelectedItem = null;
         }
 
-        public async void OnAdd(object sender, EventArgs e)
+        public void OnAdd(object sender, EventArgs e)
         {
             App.Instance.TakePicture();
         }
 
         public async void OnSettings(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new SettingView());
+            await Navigation.PushModalAsync(new SettingView(_app));
         }
 
         public async void OnSyncItems(object sender, EventArgs e)
@@ -164,14 +149,11 @@ namespace ContosoMoments.Views
 
         private async Task SyncItemsAsync(bool showActivityIndicator)
         {
-            using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
-            {
-                if (Utils.IsOnline() && await Utils.SiteIsOnline())
-                {
+            using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
+                if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
                     await (App.Current as App).SyncAsync();
                 }
-                else
-                {
+                else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
                 }
                 //await manager.SyncImagesAsync();
@@ -183,25 +165,19 @@ namespace ContosoMoments.Views
         {
             var res = await DisplayAlert("Delete image?", "Delete selected image?", "Yes", "No");
 
-            if (res)
-            {
+            if (res) {
                 var selectedImage = (sender as MenuItem).BindingContext as ContosoMoments.Models.Image;
-                res = await viewModel.DeleteImageAsync(selectedImage);
 
-                if (res)
-                {
+                try {
+                    await viewModel.DeleteImageAsync(selectedImage);
                     await DisplayAlert("Success", "Image deleted successfully", "OK");
                     OnRefresh(sender, e);
                 }
-                else
+                catch (Exception) {
                     await DisplayAlert("Delete error", "Couldn't delete the image. Please try again later.", "OK");
+                }
             }
         }
-        //private async Task AddItem(TodoItem item)
-        //{
-        //    await manager.SaveTaskAsync(item);
-        //    await LoadItems();
-        //}
 
         private class ActivityIndicatorScope : IDisposable
         {
@@ -214,13 +190,11 @@ namespace ContosoMoments.Views
                 this.indicator = indicator;
                 this.showIndicator = showIndicator;
 
-                if (showIndicator)
-                {
+                if (showIndicator) {
                     indicatorDelay = Task.Delay(2000);
                     SetIndicatorActivity(true);
                 }
-                else
-                {
+                else {
                     indicatorDelay = Task.FromResult(0);
                 }
             }
@@ -233,8 +207,7 @@ namespace ContosoMoments.Views
 
             public void Dispose()
             {
-                if (showIndicator)
-                {
+                if (showIndicator) {
                     indicatorDelay.ContinueWith(t => SetIndicatorActivity(false), TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }

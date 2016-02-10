@@ -23,17 +23,6 @@ namespace ContosoMoments.Droid
     {
         public async Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
-            //MobileServiceUser user = null;
-
-            //try
-            //{
-            //    user = await App.MobileService.LoginAsync(Forms.Context, provider);
-            //}
-            //catch (Exception ex)
-            //{
-            //}
-
-            //return user;
             return await App.MobileService.LoginAsync(Forms.Context, provider);
         }
 

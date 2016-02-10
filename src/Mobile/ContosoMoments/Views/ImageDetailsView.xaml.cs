@@ -9,11 +9,11 @@ using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
-	public partial class ImageDetailsView : ContentPage
-	{
-		public ImageDetailsView ()
-		{
-			InitializeComponent ();
+    public partial class ImageDetailsView : ContentPage
+    {
+        public ImageDetailsView()
+        {
+            InitializeComponent();
 
             var tapLikeImage = new TapGestureRecognizer();
             tapLikeImage.Tapped += OnLike;
@@ -27,12 +27,11 @@ namespace ContosoMoments.Views
         public async void OnLike(object sender, EventArgs e)
         {
             ImageDetailsViewModel vm = this.BindingContext as ImageDetailsViewModel;
-            if (await vm.LikeImageAsync())
-            {
-                await DisplayAlert("Success", "Your like sent to image author.", "OK");
+
+            try {
+                await vm.LikeImageAsync();
             }
-            else
-            {
+            catch (Exception) {
                 await DisplayAlert("Error", "'Like' functionality is not available at the moment. Please try again later", "OK");
             }
         }
@@ -40,7 +39,7 @@ namespace ContosoMoments.Views
         public async void OnSettings(object sender, EventArgs e)
         {
             ImageDetailsViewModel vm = this.BindingContext as ImageDetailsViewModel;
-            await Navigation.PushModalAsync(new SettingView());
+            await Navigation.PushModalAsync(new SettingView(App.Current as App));
         }
     }
 }

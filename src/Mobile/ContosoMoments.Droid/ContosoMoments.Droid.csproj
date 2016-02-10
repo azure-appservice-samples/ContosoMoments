@@ -129,7 +129,7 @@
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.1-beta2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PCLStorage, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -204,7 +204,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DroidPlatform.cs" />
-    <Compile Include="FileSyncTriggerFactory.cs" />
     <Compile Include="GcmService.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MobileClient.cs" />

@@ -11,13 +11,17 @@ namespace ContosoMoments.Views
 {
     public partial class AlbumsListView : ContentPage
     {
-        AlbumsListViewModel viewModel = new AlbumsListViewModel(App.MobileService);
+        AlbumsListViewModel viewModel;
         bool? isNew = null;
         ContosoMoments.Models.Album editedAlbum = null;
+        private App _app;
 
-        public AlbumsListView()
+        public AlbumsListView(App app)
         {
             InitializeComponent();
+            this._app = app;
+
+            viewModel = new AlbumsListViewModel(App.MobileService, app);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -37,8 +41,7 @@ namespace ContosoMoments.Views
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ErrorMessage" && viewModel.ErrorMessage != null)
-            {
+            if (e.PropertyName == "ErrorMessage" && viewModel.ErrorMessage != null) {
                 DisplayAlert("Error occurred", viewModel.ErrorMessage, "Close");
             }
         }
@@ -47,13 +50,10 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
-            if (albumsList.ItemsSource == null)
-            {
-                using (var scope = new ActivityIndicatorScope(syncIndicator, true))
-                {
+            if (albumsList.ItemsSource == null) {
+                using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
                     string userId = "11111111-1111-1111-1111-111111111111";
-                    if (Utils.IsOnline() && await Utils.SiteIsOnline())
-                    {
+                    if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
                         //Call user custom controller:
                         //controller to check user and add if new. Will return user ID anyway.
                         //must be called prior to sync!!!
@@ -61,7 +61,7 @@ namespace ContosoMoments.Views
 #if (!__WP__ && PUSH) || (__WP__ && DEBUG)
                         await viewModel.CheckUpdateNotificationRegistrationAsync(userId);
 #endif
-                        await (App.Current as App).SyncAsync();
+                        await _app.SyncAsync();
                     }
                     else
                         await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Using local data. Please try again when data connection is back", "OK");
@@ -83,8 +83,7 @@ namespace ContosoMoments.Views
         {
             await viewModel.GetAlbumsAsync();
 
-            if (null != viewModel.Albums)
-            {
+            if (viewModel.Albums != null) {
                 albumsList.ItemsSource = null;
                 albumsList.ItemsSource = viewModel.Albums.ToList();
             }
@@ -93,13 +92,11 @@ namespace ContosoMoments.Views
         public async void OnRefresh(object sender, EventArgs e)
         {
             var success = false;
-            try
-            {
+            try {
                 await SyncItemsAsync(true);
                 success = true;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 await DisplayAlert("Refresh Error", "Couldn't refresh data (" + ex.Message + ")", "OK");
             }
             albumsList.EndRefresh();
@@ -113,9 +110,8 @@ namespace ContosoMoments.Views
         {
             var selectedAlbum = e.SelectedItem as ContosoMoments.Models.Album;
 
-            if (selectedAlbum != null)
-            {
-                var imagesListView = new ImagesList();
+            if (selectedAlbum != null) {
+                var imagesListView = new ImagesList(this._app);
                 imagesListView.User = viewModel.User;
                 imagesListView.Album = selectedAlbum;
 
@@ -135,43 +131,38 @@ namespace ContosoMoments.Views
 
         public async void OnCreateClick(object sender, EventArgs e)
         {
-            if (null != entAlbumName.Text)
-            {
-                if (entAlbumName.Text.Length > 0)
-                {
-                    if (isNew.Value)
-                    {
-                        bool res = await viewModel.AddNewAlbumAsync(entAlbumName.Text);
+            string successMessage = "";
+            string errorMessage = "";
 
-                        if (res)
-                        {
-                            await DisplayAlert("Success", "Album created successfully and will appear in the list shortly", "OK");
-                            HideAndCleanupInput();
-                            OnRefresh(sender, e);
-                        }
-                        else
-                            await DisplayAlert("Album creation error", "Couldn't create new album. Please try again later.", "OK");
+            if (entAlbumName.Text != null && entAlbumName.Text.Length > 0) {
+                try {
+
+                    if (isNew.Value) {
+                        successMessage = "Album created successfully";
+                        errorMessage = "Couldn't create new album. Please try again later.";
+
+                        await viewModel.AddNewAlbumAsync(entAlbumName.Text);
                     }
-                    else if (!isNew.Value)
-                    {
+                    else {
+                        successMessage = "Album renamed successfully";
+                        errorMessage = "Couldn't rename album. Please try again later.";
+
                         editedAlbum.AlbumName = entAlbumName.Text;
-                        bool res = await viewModel.UpdateAlbumAsync(editedAlbum);
-
-                        if (res)
-                        {
-                            await DisplayAlert("Success", "Album renamed successfully and will appear in the list shortly", "OK");
-                            HideAndCleanupInput();
-                            OnRefresh(sender, e);
-                        }
-                        else
-                            await DisplayAlert("Album update error", "Couldn't rename album. Please try again later.", "OK");
+                        await viewModel.UpdateAlbumAsync(editedAlbum);
                     }
+
+                    await DisplayAlert("Success", successMessage, "OK");
+                    HideAndCleanupInput();
+                    OnRefresh(sender, e);
                 }
-                else
-                    await DisplayAlert("Album creation error", "New album name is empty. Please enter new album name and try again later.", "OK");
+
+                catch (Exception) {
+                    await DisplayAlert("Album error", errorMessage, "OK");
+                }
             }
-            else
-                await DisplayAlert("Album creation error", "New album name is empty. Please enter new album name and try again later.", "OK");
+            else {
+                await DisplayAlert("Album creation error", "New album name is empty. Please enter new album name and try again.", "OK");
+            }
         }
 
         private void HideAndCleanupInput()
@@ -188,24 +179,20 @@ namespace ContosoMoments.Views
         {
             var selectedAlbum = (sender as MenuItem).BindingContext as ContosoMoments.Models.Album;
 
-            if (null != selectedAlbum)
-            {
-                if (!selectedAlbum.IsDefault)
-                {
+            if (selectedAlbum != null) {
+                if (!selectedAlbum.IsDefault) {
                     var res = await DisplayAlert("Delete album?", "Delete album and all associated images?", "Yes", "No");
 
-                    if (res)
-                    {
-                        res = await viewModel.DeleteAlbumAsync(selectedAlbum);
-
-                        if (res)
-                        {
+                    if (res) {
+                        try {
+                            await viewModel.DeleteAlbumAsync(selectedAlbum);
                             await DisplayAlert("Success", "Album deleted successfully", "OK");
                             HideAndCleanupInput();
                             OnRefresh(sender, e);
                         }
-                        else
+                        catch (Exception) {
                             await DisplayAlert("Delete error", "Couldn't delete the album. Please try again later.", "OK");
+                        }
                     }
                 }
                 else
@@ -219,10 +206,8 @@ namespace ContosoMoments.Views
 
             var selectedAlbum = (sender as MenuItem).BindingContext as ContosoMoments.Models.Album;
 
-            if (null != selectedAlbum)
-            {
-                if (!selectedAlbum.IsDefault)
-                {
+            if (null != selectedAlbum) {
+                if (!selectedAlbum.IsDefault) {
                     editedAlbum = selectedAlbum;
                     entAlbumName.Text = selectedAlbum.AlbumName;
                     grdInput.IsVisible = true;
@@ -234,7 +219,7 @@ namespace ContosoMoments.Views
             }
         }
 
-        public async void OnAdd(object sender, EventArgs e)
+        public void OnAdd(object sender, EventArgs e)
         {
             isNew = true;
             entAlbumName.Text = "";
@@ -251,20 +236,17 @@ namespace ContosoMoments.Views
         public async void OnSettings(object sender, EventArgs e)
         {
             HideAndCleanupInput();
-            await Navigation.PushModalAsync(new SettingView());
+            await Navigation.PushModalAsync(new SettingView(this._app));
         }
 
         private async Task SyncItemsAsync(bool showActivityIndicator)
         {
-            using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
-            {
+            using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 HideAndCleanupInput();
-                if (Utils.IsOnline() && await Utils.SiteIsOnline())
-                {
-                    await (App.Current as App).SyncAsync();
+                if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
+                    await _app.SyncAsync();
                 }
-                else
-                {
+                else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
                 }
 
@@ -283,13 +265,11 @@ namespace ContosoMoments.Views
                 this.indicator = indicator;
                 this.showIndicator = showIndicator;
 
-                if (showIndicator)
-                {
+                if (showIndicator) {
                     indicatorDelay = Task.Delay(2000);
                     SetIndicatorActivity(true);
                 }
-                else
-                {
+                else {
                     indicatorDelay = Task.FromResult(0);
                 }
             }
@@ -302,8 +282,7 @@ namespace ContosoMoments.Views
 
             public void Dispose()
             {
-                if (showIndicator)
-                {
+                if (showIndicator) {
                     indicatorDelay.ContinueWith(t => SetIndicatorActivity(false), TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }

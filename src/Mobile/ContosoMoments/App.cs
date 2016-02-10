@@ -4,11 +4,7 @@ using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Microsoft.WindowsAzure.MobileServices.Files;
@@ -29,8 +25,7 @@ namespace ContosoMoments
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
 
         public static App Instance;
-        //DEBUG
-        //public ImageSource image = null;
+
         public Stream ImageStream = null;
         public event Action ShouldTakePicture = () => { };
         public event EventHandler ImageTaken;
@@ -58,13 +53,10 @@ namespace ContosoMoments
             page.BackgroundColor = Color.FromHex("#8C0A4B");
             page.Content = stack;
             MainPage = page;
-
         }
 
         protected override async void OnStart()
         {
-            //Constants.GatewayURL = AppSettings.Current.GetValueOrDefault<string>("GatewayURL");
-            // TODO: auth
             bool isAuthRequred = false; 
 
             MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true));
@@ -93,33 +85,19 @@ namespace ContosoMoments
 #elif __WP__ && PUSH
                 ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
 #endif
-
-                MainPage = new NavigationPage(new AlbumsListView());
+                MainPage = new NavigationPage(new AlbumsListView(this));
             }
         }
 
         private void ClearLocalStorage(string localDbFilename)
         {
-#if !__WP__
-            string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), localDbFilename);
-#else
-            string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, localDbFilename);
-#endif
+            string dataDir = DependencyService.Get<IPlatform>().GetDataPathAsync();
+            string path = Path.Combine(dataDir, localDbFilename);
 
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
         }
 
 #if !__WP__
@@ -135,9 +113,6 @@ namespace ContosoMoments
 
                     ImageStream = new MemoryStream(buffer);
                 }
-
-                //DEBUG
-                //image = ImageSource.FromFile(filepath);
 
                 if (null != ImageTaken)
                     ImageTaken(this, new EventArgs());
@@ -182,19 +157,7 @@ namespace ContosoMoments
         {
             if (!MobileService.SyncContext.IsInitialized)
             {
-                // new code to initialize the SQLite store
-#if !__WP__
-                string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), localDbFilename);
-#else
-                string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, localDbFilename);
-#endif
-
-                if (!File.Exists(path))
-                {
-                    File.Create(path).Dispose();
-                }
-
-                var store = new MobileServiceSQLiteStore(path);
+                var store = new MobileServiceSQLiteStore(localDbFilename);
                 store.DefineTable<Models.User>();
                 store.DefineTable<Models.Album>();
                 store.DefineTable<Models.Image>();
@@ -232,7 +195,6 @@ namespace ContosoMoments
 
         internal async Task DownloadFileAsync(MobileServiceFile file)
         {
-            var todoItem = await imageTableSync.LookupAsync(file.ParentId);
             IPlatform platform = DependencyService.Get<IPlatform>();
 
             string filePath = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
@@ -245,14 +207,9 @@ namespace ContosoMoments
             return await imageTableSync.AddFileAsync(image, Path.GetFileName(targetPath));
         }
 
-        internal async Task DeleteImage(Image todoItem, MobileServiceFile file)
+        internal async Task DeleteImage(Image item, MobileServiceFile file)
         {
             await imageTableSync.DeleteFileAsync(file);
-        }
-
-        internal async Task<IEnumerable<MobileServiceFile>> GetImageFilesAsync(Models.Image image)
-        {
-            return await imageTableSync.GetFilesAsync(image);
         }
     }
 }
