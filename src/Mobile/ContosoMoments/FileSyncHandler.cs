@@ -3,6 +3,7 @@ using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace ContosoMoments
 {
@@ -27,7 +28,11 @@ namespace ContosoMoments
                 await FileHelper.DeleteLocalFileAsync(file);
             }
             else { // Create or update. We're aggressively downloading all files.
-                await this.theApp.DownloadFileAsync(file);
+                Trace.WriteLine(string.Format("File - storeUri: {1}", file.Name, file.StoreUri));
+
+                if (file.StoreUri.Contains("lg")) {
+                    await this.theApp.DownloadFileAsync(file);                    
+                }
             }
         }
     }

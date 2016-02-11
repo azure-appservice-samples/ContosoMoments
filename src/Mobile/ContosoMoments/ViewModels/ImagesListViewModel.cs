@@ -32,17 +32,6 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        private bool _IsLoading;
-        public bool IsLoading
-        {
-            get { return _IsLoading; }
-            set
-            {
-                _IsLoading = value;
-                OnPropertyChanged("IsPending");
-            }
-        }
-
         private User _user;
         public User User
         {
@@ -103,7 +92,7 @@ namespace ContosoMoments.ViewModels
                     UserId = User.UserId.ToString(),
                     AlbumId = Album.AlbumId,
                     UploadFormat = "Mobile Image",
-                    FileName = Guid.NewGuid.ToString()
+                    FileName = Guid.NewGuid().ToString()
                 };
 
                 await _app.imageTableSync.InsertAsync(image); // create a new image record

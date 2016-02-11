@@ -12,10 +12,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AppSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImagePathForSizeConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FileHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FileSyncTriggerFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileSyncTriggerFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\LoggingHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\QueuedTaskScheduler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPlatform.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LoggingHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Image.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IMobileClient.cs" />
@@ -23,7 +25,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ISettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FileSyncHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AlbumsListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ImageDetailsViewModel.cs" />

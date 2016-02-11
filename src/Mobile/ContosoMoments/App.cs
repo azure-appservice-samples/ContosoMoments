@@ -16,7 +16,7 @@ namespace ContosoMoments
     {
         public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
 
-        public const string DB_LOCAL_FILENAME = "localDb.sqlite";
+        public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public static MobileServiceClient MobileService;
         public static MobileServiceUser AuthenticatedUser;
 
@@ -29,6 +29,9 @@ namespace ContosoMoments
         public Stream ImageStream = null;
         public event Action ShouldTakePicture = () => { };
         public event EventHandler ImageTaken;
+
+        private static Object currentDownloadTaskLock = new Object();
+        private static Task currentDownloadTask = Task.FromResult(0);
 
         public App()
         {
@@ -59,7 +62,7 @@ namespace ContosoMoments
         {
             bool isAuthRequred = false; 
 
-            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true));
+            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(false));
             AuthenticatedUser = MobileService.CurrentUser;
 
             if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))
@@ -193,12 +196,22 @@ namespace ContosoMoments
             }
         }
 
-        internal async Task DownloadFileAsync(MobileServiceFile file)
+        internal Task DownloadFileAsync(MobileServiceFile file)
         {
             IPlatform platform = DependencyService.Get<IPlatform>();
 
-            string filePath = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
-            await platform.DownloadFileAsync(imageTableSync, file, filePath);
+            lock (currentDownloadTaskLock) {
+                return currentDownloadTask =
+                    currentDownloadTask.ContinueWith(
+                    x => {
+                        var path = FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name).Result;
+
+                        Debug.WriteLine("Starting file download - " + file.Name);
+                        platform.DownloadFileAsync(imageTableSync, file, file.Name).Wait();
+                        Debug.WriteLine("Completed file download - " + file.Name);
+                    }
+                );
+            }
         }
 
         internal async Task<MobileServiceFile> AddImage(Models.Image image, Stream imageStream)

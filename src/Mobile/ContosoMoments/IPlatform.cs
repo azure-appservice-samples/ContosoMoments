@@ -8,7 +8,7 @@ namespace ContosoMoments
 {
     public interface IPlatform
     {
-        Task<string> GetTodoFilesPathAsync();
+        Task<string> GetDataFilesPath();
 
         Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata);
 

@@ -33,7 +33,7 @@ namespace ContosoMoments
         {
             IPlatform platform = DependencyService.Get<IPlatform>();
 
-            string recordFilesPath = System.IO.Path.Combine(await platform.GetTodoFilesPathAsync(), itemId);
+            string recordFilesPath = System.IO.Path.Combine(await platform.GetDataFilesPath(), itemId);
 
             var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
             if (checkExists == ExistenceCheckResult.NotFound) {
