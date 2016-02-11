@@ -13,20 +13,16 @@ namespace ContosoMoments.API.Controllers.TableControllers
 {
     public class ImageStorageController : StorageController<Image>
     {
-        private ImageNameResolver nameResolver;
-
         public ImageStorageController() : 
             base(new CustomAzureStorageProvider(GetConnectionString()))
-        {
-            nameResolver = new ImageNameResolver();
-        }
+        { }
 
         [HttpPost]
         [Route("tables/Image/{id}/StorageToken")]
         public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest request)
         {
             // return a storage token that can be used for blob upload or download
-            StorageToken token = await GetStorageTokenAsync(id, request, nameResolver);
+            StorageToken token = await GetStorageTokenAsync(id, request, new ImageNameResolver(request.TargetFile.StoreUri));
             return Request.CreateResponse(token);
         }
 
@@ -35,16 +31,16 @@ namespace ContosoMoments.API.Controllers.TableControllers
         [Route("tables/Image/{id}/MobileServiceFiles")]
         public async Task<HttpResponseMessage> GetFiles(string id)
         {
-            IEnumerable<MobileServiceFile> files = await GetRecordFilesAsync(id, nameResolver);
+            IEnumerable<MobileServiceFile> files = await GetRecordFilesAsync(id, new ImageNameResolver());
             return Request.CreateResponse(files);
         }
 
-        [HttpDelete]
-        [Route("tables/Image/{id}/MobileServiceFiles/{name}")]
-        public Task Delete(string id, string name)
-        {
-            return base.DeleteFileAsync(id, name, nameResolver);
-        }
+        //[HttpDelete]
+        //[Route("tables/Image/{id}/MobileServiceFiles/{name}")]
+        //public Task Delete(string id, string name)
+        //{
+        //    return base.DeleteFileAsync(id, name, new ImageNameResolver());
+        //}
 
         private static string GetConnectionString(string connectionStringName = Constants.StorageConnectionStringName)
         {

@@ -12,19 +12,19 @@ namespace ContosoMoments.API.Controllers.TableControllers
     public class ImageNameResolver : IContainerNameResolver
     {
         private MobileServiceContext dbContext;
-        private string sizeKey;
+        private string storeUri;
 
-        public ImageNameResolver(string sizeKey = "lg")
+        public ImageNameResolver(string storeUri = "")
         {
             this.dbContext = new MobileServiceContext();
-            this.sizeKey = sizeKey;
+            this.storeUri = storeUri;
         }
 
-        public async Task<string> GetFileContainerNameAsync(string tableName, string recordId, string fileName)
+        public Task<string> GetFileContainerNameAsync(string tableName, string recordId, string fileName)
         {
-            // filename parameter is not used, since it is always stored in the database
-            var imageRecord = await dbContext.Images.FindAsync(recordId);
-            return GetContainerAndImageName(imageRecord, sizeKey);
+            // use the storeUri parameter to get the file container            
+            var result = storeUri.Split( new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            return Task.FromResult(result[0]);
         }
 
         public async Task<IEnumerable<string>> GetRecordContainerNames(string tableName, string recordId)
