@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using System.Diagnostics;
+using ContosoMoments.Models;
 
 namespace ContosoMoments
 {
@@ -61,9 +62,11 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            bool isAuthRequred = false; 
+            bool isAuthRequred = false;
 
-            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true));
+            var authHandler = new AuthHandler(DependencyService.Get<IMobileClient>());
+            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true), authHandler);
+            authHandler.Client = MobileService;
             AuthenticatedUser = MobileService.CurrentUser;
 
             if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))
