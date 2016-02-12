@@ -53,7 +53,6 @@ namespace ContosoMoments.Views
 
             var vm = this.BindingContext as ImageDetailsViewModel;
 
-            var downloadStream = new MemoryStream();
             IFileSyncContext context = App.MobileService.GetFileSyncContext();
 
             var recordFiles = await context.MobileServiceFilesClient.GetFilesAsync(App.Instance.imageTableSync.TableName, vm.Image.Id);
@@ -83,13 +82,15 @@ namespace ContosoMoments.Views
         {
             var imagePage = new ContentPage {
                 Content = new StackLayout() {
+                    VerticalOptions = LayoutOptions.Center,
                     Children = {
                         new Xamarin.Forms.Image {
-                            VerticalOptions = LayoutOptions.CenterAndExpand,
-                            HorizontalOptions = LayoutOptions.CenterAndExpand,
+                            Aspect = Aspect.AspectFill,
+                            VerticalOptions = LayoutOptions.Center,
+                            HorizontalOptions = LayoutOptions.Center,
                             Source = ImageSource.FromFile(uri)
-                        }
-                    }
+                       }
+                   }
                 }
             };
 

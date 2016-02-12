@@ -17,7 +17,7 @@ namespace ContosoMoments
         public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
 
         //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
-        public static string DB_LOCAL_FILENAME = "localDb1.sqlite";
+        public static string DB_LOCAL_FILENAME = "localDb.sqlite";
         public static MobileServiceClient MobileService;
         public static MobileServiceUser AuthenticatedUser;
 

@@ -123,6 +123,7 @@
     <Compile Include="MobileClient.cs" />
     <Compile Include="NetworkConnection.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TouchPlatform.cs" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
     <None Include="app.config" />
     <None Include="Entitlements.plist" />
