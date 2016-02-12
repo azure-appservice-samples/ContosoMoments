@@ -58,8 +58,11 @@
 
     <!--Links to external images-->
     <StackLayout Grid.Row="3" BackgroundColor="White" Padding="10,0">
-        <Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}"
-                CommandParameter="{Binding Image, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">
+        
+        <Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="xs" >
+        
+        <!--<Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}"
+                CommandParameter="{Binding Image, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">-->
          
           <!--<Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.Uri, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">-->
         <Button.Image>

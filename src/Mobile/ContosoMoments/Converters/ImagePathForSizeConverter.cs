@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using Microsoft.WindowsAzure.MobileServices.Files;
+using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Xamarin.Forms;
 
 namespace ContosoMoments.Converters
@@ -18,10 +20,7 @@ namespace ContosoMoments.Converters
                 StoreUri = image.File.StoreUri.Replace("lg", param)
             };
 
-            //App.Instance.imageTableSync.DownloadFileAsync()
-            //App.Instance.DownloadFileAsync(toDownload);
-
-            return new UriImageSource() { Uri = new Uri(image.Uri) };
+            return toDownload;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

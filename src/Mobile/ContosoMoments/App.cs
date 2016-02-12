@@ -63,7 +63,7 @@ namespace ContosoMoments
         {
             bool isAuthRequred = false; 
 
-            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(false));
+            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true));
             AuthenticatedUser = MobileService.CurrentUser;
 
             if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))

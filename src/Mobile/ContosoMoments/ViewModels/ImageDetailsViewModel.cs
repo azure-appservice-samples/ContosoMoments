@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using System.Diagnostics;
+using Microsoft.WindowsAzure.MobileServices.Files;
+using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+using System.IO;
 
 namespace ContosoMoments.ViewModels
 {
@@ -17,10 +20,6 @@ namespace ContosoMoments.ViewModels
         {
             _client = client;
             this.Image = image;
-
-            this.OpenImageCommand = new Command<ImageSource>((source) => {
-                Device.OpenUri((Uri)source.GetValue(UriImageSource.UriProperty));
-            });
         }
 
         public Models.Image Image { get; set; }
