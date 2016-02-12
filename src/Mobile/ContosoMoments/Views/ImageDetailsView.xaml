@@ -48,7 +48,7 @@
 
     <!--Image preview-->
     <Grid Grid.Row="2" Padding="10,0">
-      <Image Source="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+      <Image Source="{Binding Image.Uri}" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill"/>
       <Image x:Name="imgLike" VerticalOptions="End" HorizontalOptions="End">
         <Image.Source>
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/like.png" Android="like.png" WinPhone="Assets/like.png"/>
@@ -58,21 +58,24 @@
 
     <!--Links to external images-->
     <StackLayout Grid.Row="3" BackgroundColor="White" Padding="10,0">
-      <Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">
+        <Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}"
+                CommandParameter="{Binding Image, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">
+         
+          <!--<Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.Uri, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">-->
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
-      <Button Text="Open medium image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}">
+      <!--<Button Text="Open medium image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.Uri, Converter={StaticResource cnvInvert}, ConverterParameter='md'}">
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
-      <Button Text="Open large image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}">
+      <Button Text="Open large image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.Uri, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}">
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
-      </Button>
+      </Button>-->
     </StackLayout>
   </Grid>
 

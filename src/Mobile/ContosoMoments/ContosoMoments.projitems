@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileSyncTriggerFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LoggingHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\QueuedTaskScheduler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPlatform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />

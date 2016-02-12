@@ -119,8 +119,8 @@ namespace ContosoMoments.Views
             var selectedImage = e.SelectedItem as ContosoMoments.Models.Image;
 
             if (selectedImage != null) {
-                var detailsView = new ImageDetailsView();
                 var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
+                var detailsView = new ImageDetailsView();
                 detailsVM.Album = viewModel.Album;
                 detailsVM.User = viewModel.User;
                 detailsView.BindingContext = detailsVM;

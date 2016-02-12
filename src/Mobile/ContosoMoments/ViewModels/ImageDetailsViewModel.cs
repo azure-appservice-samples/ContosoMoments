@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace ContosoMoments.ViewModels
 {
@@ -23,7 +24,7 @@ namespace ContosoMoments.ViewModels
         }
 
         public Models.Image Image { get; set; }
-        public ICommand OpenImageCommand { protected set; get; }
+        public ICommand OpenImageCommand { set; get; }
 
         private User _user;
         public User User

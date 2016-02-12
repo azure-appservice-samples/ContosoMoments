@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Microsoft.WindowsAzure.MobileServices.Files;
 using Xamarin.Forms;
 
 namespace ContosoMoments.Converters
@@ -10,19 +11,17 @@ namespace ContosoMoments.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string param = (string)parameter;
-            IDictionary<string, Uri> imagePaths = (IDictionary<string, Uri>)value;
-            UriImageSource retVal = null;
+            var param = (string)parameter;
+            var image = (Models.Image)value;
 
-            if (null != imagePaths)
-            {
-                if (imagePaths.ContainsKey(param))
-                {
-                    return new UriImageSource() { Uri = imagePaths[param], CachingEnabled = false};
-                }
-            }
+            var toDownload = new MobileServiceFile(image.File.Id, image.File.Name, image.File.TableName, image.File.ParentId) {
+                StoreUri = image.File.StoreUri.Replace("lg", param)
+            };
 
-            return retVal;
+            //App.Instance.imageTableSync.DownloadFileAsync()
+            //App.Instance.DownloadFileAsync(toDownload);
+
+            return new UriImageSource() { Uri = new Uri(image.Uri) };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
