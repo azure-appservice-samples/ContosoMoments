@@ -14,7 +14,7 @@ namespace ContosoMoments.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
         static readonly File file = new File(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures), "tmp.jpg");
-        static MainActivity instance;
+        public static MainActivity instance;
 
         protected override void OnCreate (Bundle bundle)
         {

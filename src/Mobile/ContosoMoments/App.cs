@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using System.Diagnostics;
-using ContosoMoments.Models;
 
 namespace ContosoMoments
 {
@@ -62,9 +61,9 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            bool isAuthRequred = false;
+            bool isAuthRequred = true;
 
-            var authHandler = new AuthHandler(DependencyService.Get<IMobileClient>());
+            var authHandler = new AuthHandler(DependencyService.Get<Models.IMobileClient>());
             MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true), authHandler);
             authHandler.Client = MobileService;
             AuthenticatedUser = MobileService.CurrentUser;
@@ -224,7 +223,7 @@ namespace ContosoMoments
             return await imageTableSync.AddFileAsync(image, Path.GetFileName(targetPath));
         }
 
-        internal async Task DeleteImage(Image item, MobileServiceFile file)
+        internal async Task DeleteImage(Models.Image item, MobileServiceFile file)
         {
             await imageTableSync.DeleteFileAsync(file);
         }
