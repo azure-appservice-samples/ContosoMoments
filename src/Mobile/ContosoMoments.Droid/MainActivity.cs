@@ -26,13 +26,8 @@ namespace ContosoMoments.Droid
 
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
 
+            App.UIContext = this;
             LoadApplication(new ContosoMoments.App ());
-
-            App.Instance.ShouldTakePicture += () => {
-                var intent = new Intent(MediaStore.ActionImageCapture);
-                intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(file));
-                StartActivityForResult(intent, 0);
-            };
 
             instance = this;
 
@@ -59,16 +54,6 @@ namespace ContosoMoments.Droid
         public static MainActivity DefaultService
         {
             get { return instance; }
-        }
-
-        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
-        {
-            base.OnActivityResult(requestCode, resultCode, data);
-
-            if (resultCode != Result.Canceled)
-                App.Instance.ShowCapturedImage(file.Path);
-            else
-                App.Instance.ShowCapturedImage(null);
         }
 
         private void CreateAndShowDialog(Exception e, string title)

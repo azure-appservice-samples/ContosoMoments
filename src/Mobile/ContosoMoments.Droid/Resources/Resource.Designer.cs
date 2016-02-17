@@ -27,6 +27,8 @@ namespace ContosoMoments.Droid
 		public static void UpdateIdValues()
 		{
 			global::Gcm.Client.Resource.String.library_name = global::ContosoMoments.Droid.Resource.String.library_name;
+			global::Microsoft.WindowsAzure.Mobile.Files.Resource.String.ApplicationName = global::ContosoMoments.Droid.Resource.String.ApplicationName;
+			global::Microsoft.WindowsAzure.Mobile.Files.Resource.String.Hello = global::ContosoMoments.Droid.Resource.String.Hello;
 			global::PCLStorage.Resource.String.ApplicationName = global::ContosoMoments.Droid.Resource.String.ApplicationName;
 			global::PCLStorage.Resource.String.Hello = global::ContosoMoments.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Resource.Animation.abc_fade_in = global::ContosoMoments.Droid.Resource.Animation.abc_fade_in;

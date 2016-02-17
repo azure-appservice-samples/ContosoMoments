@@ -236,6 +236,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="Xamarin.Mobile">
+      <HintPath>..\..\Components\xamarin.mobile-0.7.7\lib\ios-unified\Xamarin.Mobile.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Assets\save.png" />
@@ -314,6 +317,12 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Assets\plus%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="xamarin.mobile">
+      <Visible>False</Visible>
+      <Version>0.7.7</Version>
+    </XamarinComponentReference>
   </ItemGroup>
   <Import Project="..\ContosoMoments\ContosoMoments.projitems" Label="Shared" Condition="Exists('..\ContosoMoments\ContosoMoments.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

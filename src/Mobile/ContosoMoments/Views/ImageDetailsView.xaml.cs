@@ -78,7 +78,7 @@ namespace ContosoMoments.Views
             return toDownload;
         }
 
-        private static ContentPage CreateDetailsPage(string uri) // (Stream imageStream)
+        private static ContentPage CreateDetailsPage(string uri) 
         {
             var imagePage = new ContentPage {
                 Content = new StackLayout() {

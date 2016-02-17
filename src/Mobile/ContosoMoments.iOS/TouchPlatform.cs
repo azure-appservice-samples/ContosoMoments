@@ -6,6 +6,7 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
+using Xamarin.Media;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ContosoMoments.iOS.TouchPlatform))]
 namespace ContosoMoments.iOS
@@ -38,6 +39,18 @@ namespace ContosoMoments.iOS
         public string GetDataPathAsync()
         {
             return Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        }
+
+        public async Task<string> TakePhotoAsync(object context)
+        {
+            try {
+                var mediaPicker = new MediaPicker();
+                var mediaFile = await mediaPicker.PickPhotoAsync();
+                return mediaFile.Path;
+            }
+            catch (TaskCanceledException) {
+                return null;
+            }
         }
     }
 }

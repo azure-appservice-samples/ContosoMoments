@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Foundation;
 using UIKit;
-using System.IO;
 using Microsoft.WindowsAzure.MobileServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Xamarin.Media;
 
 namespace ContosoMoments.iOS
 {
@@ -55,58 +51,10 @@ namespace ContosoMoments.iOS
             }
                 
             var formsApp = new ContosoMoments.App();
-            ChoosePhotoAsync(Xamarin.Forms.Application.Current as App);
-
             LoadApplication(formsApp);
-
-            // comment when running on emulator
-            // TakePhotoAsync(Xamarin.Forms.Application.Current as App);
         
             return base.FinishedLaunching(app, options);
-        }
-
-        private void TakePhotoAsync(UIApplication app, App formsApp)
-        {
-            var imagePicker = new UIImagePickerController { SourceType = UIImagePickerControllerSourceType.Camera };
-            formsApp.ShouldTakePicture += () =>
-                app.KeyWindow.RootViewController.PresentViewController(imagePicker, true, null);
-
-            imagePicker.FinishedPickingMedia += (sender, e) =>
-            {
-                var filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "tmp.png");
-                var image = (UIImage)e.Info.ObjectForKey(new NSString("UIImagePickerControllerOriginalImage"));
-                InvokeOnMainThread(() =>
-                {
-                    image.AsJPEG().Save(filepath, false);
-                    formsApp.ShowCapturedImage(filepath);
-                });
-                app.KeyWindow.RootViewController.DismissViewController(true, null);
-            };
-
-            imagePicker.Canceled += (sender, e) =>
-            {
-                formsApp.ShowCapturedImage(null);
-                app.KeyWindow.RootViewController.DismissViewController(true, null);
-            };
-        }
-
-        public void ChoosePhotoAsync(App app)
-        {
-            app.ShouldTakePicture += async () =>
-            {
-                try
-                {
-                    var mediaPicker = new MediaPicker();
-                    var mediaFile = await mediaPicker.PickPhotoAsync();
-
-                    app.ShowCapturedImage(mediaFile.Path);
-                }
-                catch (TaskCanceledException)
-                {
-                    app.ShowCapturedImage(null);
-                }
-            };
-        }
+        }              
 
         public static async Task RegisterWithMobilePushNotifications()
         {

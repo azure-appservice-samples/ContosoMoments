@@ -8,14 +8,13 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
+using Xamarin.Media;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ContosoMoments.Droid.DroidPlatform))]
 namespace ContosoMoments.Droid
 {
     public class DroidPlatform : IPlatform
     {
-        //static QueuedTaskScheduler qts = new QueuedTaskScheduler(TaskScheduler.Default, 2);
-
         public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
         {
             var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
@@ -45,5 +44,23 @@ namespace ContosoMoments.Droid
 
             return Task.FromResult(filesPath);
         }
+
+        public async Task<string> TakePhotoAsync(object context)
+        {
+            try {
+                var uiContext = context as Context;
+                if (uiContext != null) {
+                    var mediaPicker = new MediaPicker(uiContext);
+                    var photo = await mediaPicker.TakePhotoAsync(new StoreCameraMediaOptions());
+
+                    return photo.Path;
+                }
+            }
+            catch (TaskCanceledException) {
+            }
+
+            return null;
+        }
+
     }
 }

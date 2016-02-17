@@ -26,10 +26,7 @@ namespace ContosoMoments
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
 
         public static App Instance;
-
-        public Stream ImageStream = null;
-        public event Action ShouldTakePicture = () => { };
-        public event EventHandler ImageTaken;
+        public static object UIContext { get; set; }
 
         private static Object currentDownloadTaskLock = new Object();
         private static Task currentDownloadTask = Task.FromResult(0);
@@ -61,7 +58,7 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            bool isAuthRequred = true;
+            bool isAuthRequred = false;
 
             var authHandler = new AuthHandler(DependencyService.Get<Models.IMobileClient>());
             MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true), authHandler);
@@ -104,59 +101,6 @@ namespace ContosoMoments
             {
                 File.Delete(path);
             }
-        }
-
-#if !__WP__
-        public async void ShowCapturedImage(string filepath)
-        {
-            if (null != filepath)
-            {
-                FileStream fs = new FileStream(filepath, FileMode.Open);
-                if (fs.CanRead)
-                {
-                    byte[] buffer = new byte[fs.Length];
-                    await fs.ReadAsync(buffer, 0, (int)fs.Length);
-
-                    ImageStream = new MemoryStream(buffer);
-                }
-
-                if (null != ImageTaken)
-                    ImageTaken(this, new EventArgs());
-            }
-            else
-            {
-                ImageStream = null;
-                if (null != ImageTaken)
-                    ImageTaken(this, new EventArgs());
-            }
-        }
-#elif __WP__
-        public async void ShowCapturedImage(Stream stream)
-        {
-            //DEBUG
-            //image = ImageSource.FromStream(() => stream);
-            if (null != stream)
-            {
-                byte[] bytes = new byte[(int)stream.Length];
-                await stream.ReadAsync(bytes, 0, (int)stream.Length);
-
-                ImageStream = new MemoryStream(bytes);
-
-                if (null != ImageTaken)
-                    ImageTaken(this, new EventArgs());
-            }
-            else
-            {
-                ImageStream = null;
-                if (null != ImageTaken)
-                    ImageTaken(this, new EventArgs());
-            }
-        }
-#endif
-
-        public void TakePicture()
-        {
-            ShouldTakePicture();
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
@@ -217,10 +161,20 @@ namespace ContosoMoments
             }
         }
 
-        internal async Task<MobileServiceFile> AddImage(Models.Image image, Stream imageStream)
+        internal async Task<MobileServiceFile> AddImage(Models.User user, Models.Album album, string sourceFile)
         {
-            string targetPath = await FileHelper.SaveStreamAsync(itemId: image.Id, filename: image.Id, sourceStream: imageStream);
-            return await imageTableSync.AddFileAsync(image, Path.GetFileName(targetPath));
+            var image = new Models.Image {
+                UserId = user.UserId.ToString(),
+                AlbumId = album.AlbumId,
+                UploadFormat = "Mobile Image",
+                FileName = Guid.NewGuid().ToString()
+            };
+
+            await imageTableSync.InsertAsync(image); // create a new image record
+
+            // add image to the record
+            string copiedFile = await FileHelper.CopyFileAsync(image.Id, sourceFile);
+            return await imageTableSync.AddFileAsync(image, copiedFile);
         }
 
         internal async Task DeleteImage(Models.Image item, MobileServiceFile file)

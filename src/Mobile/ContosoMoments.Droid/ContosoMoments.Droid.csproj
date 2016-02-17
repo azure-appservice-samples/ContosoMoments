@@ -201,6 +201,9 @@
       <HintPath>..\..\packages\Xamarin.Forms.2.0.1.6505\lib\MonoAndroid10\Xamarin.Forms.Xaml.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Xamarin.Mobile">
+      <HintPath>..\..\Components\xamarin.mobile-0.7.7\lib\android\Xamarin.Mobile.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DroidPlatform.cs" />
@@ -276,6 +279,10 @@
     <XamarinComponentReference Include="GCMClient">
       <Visible>False</Visible>
       <Version>1.0</Version>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="xamarin.mobile">
+      <Visible>False</Visible>
+      <Version>0.7.7</Version>
     </XamarinComponentReference>
   </ItemGroup>
   <Import Project="..\ContosoMoments\ContosoMoments.projitems" Label="Shared" Condition="Exists('..\ContosoMoments\ContosoMoments.projitems')" />

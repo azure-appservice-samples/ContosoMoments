@@ -29,7 +29,7 @@ namespace ContosoMoments.Views
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             var tapUploadImage = new TapGestureRecognizer();
-            tapUploadImage.Tapped += OnAdd;
+            tapUploadImage.Tapped += OnAddImage;
             imgUpload.GestureRecognizers.Add(tapUploadImage);
 
             var tapSyncImage = new TapGestureRecognizer();
@@ -59,32 +59,27 @@ namespace ContosoMoments.Views
                     await LoadItems();
                 }
             }
-
-            App.Instance.ImageTaken += App_ImageTaken;
         }
 
-        protected override void OnDisappearing()
+        private async void OnAddImage(object sender, EventArgs e)
         {
-            base.OnDisappearing();
+            using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
+                try {
+                    IPlatform mediaProvider = DependencyService.Get<IPlatform>();
+                    string sourceImagePath = await mediaProvider.TakePhotoAsync(App.UIContext);
 
-            App.Instance.ImageTaken -= App_ImageTaken;
-        }
+                    if (sourceImagePath != null) {
+                        await _app.AddImage(viewModel.User, viewModel.Album, sourceImagePath);
 
-        private async void App_ImageTaken(object sender, EventArgs e)
-        {
-            if (App.Instance.ImageStream != null) {
-                using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
-                    try {
-                        await viewModel.UploadImageAsync(App.Instance.ImageStream);
+                        // TODO: don't call OnRefresh
                         OnRefresh(sender, e);
                     }
-                    catch (Exception) {
-                        await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
-                    }
+
+                }
+                catch (Exception) {
+                    await DisplayAlert("Upload failed", "Image upload failed. Please try again later", "Ok");
                 }
             }
-            else
-                await DisplayAlert("Upload cancelled", "Image upload cancelled.", "Ok");
         }
 
         private async Task LoadItems()
@@ -130,11 +125,6 @@ namespace ContosoMoments.Views
 
             // prevents background getting highlighted
             imagesList.SelectedItem = null;
-        }
-
-        public void OnAdd(object sender, EventArgs e)
-        {
-            App.Instance.TakePicture();
         }
 
         public async void OnSettings(object sender, EventArgs e)

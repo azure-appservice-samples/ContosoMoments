@@ -84,23 +84,5 @@ namespace ContosoMoments.ViewModels
         {
             await _app.imageTableSync.DeleteAsync(selectedImage);
         }
-
-        public async Task UploadImageAsync(Stream imageStream)
-        {
-            try {
-                var image = new Models.Image {
-                    UserId = User.UserId.ToString(),
-                    AlbumId = Album.AlbumId,
-                    UploadFormat = "Mobile Image",
-                    FileName = Guid.NewGuid().ToString()
-                };
-
-                await _app.imageTableSync.InsertAsync(image); // create a new image record
-                await _app.AddImage(image, imageStream); // add the image file to the record
-            }
-            catch (Exception e) {
-                Trace.WriteLine(e);
-            }
-        }
     }
 }
