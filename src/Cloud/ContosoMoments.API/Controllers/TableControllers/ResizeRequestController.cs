@@ -25,13 +25,15 @@ namespace ContosoMoments.API.Controllers.TableController
             base.Initialize(controllerContext);
         }
 
-        public IHttpActionResult PostImage(ResizeRequest item)
+        public async Task<IHttpActionResult> PostRequest(ResizeRequest item)
         {
-            item.Deleted = true;
+            item.Deleted = true; // mark as deleted so that the client removes it from the local store
+            await PostToQueue(item.BlobName);
+
             return CreatedAtRoute("Tables", new { id = item.Id }, item);
         }
 
-        public IEnumerable<ResizeRequest> GetAllImage()
+        public IEnumerable<ResizeRequest> GetAll()
         {
             return Enumerable.Empty<ResizeRequest>();
         }
