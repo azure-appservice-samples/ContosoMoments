@@ -16,17 +16,6 @@ namespace ContosoMoments.Common
 
         public string FileGuidName { get; set; }
 
-        public string BlobName
-        {
-            get
-            {
-                if (null != BlobUri)
-                    return BlobUri.Segments[BlobUri.Segments.Length - 1];
-                else
-                    return string.Empty;
-            }
-        }
-
         public string ImageId { get; set; }
 
         public string FileExt { get; set; }
@@ -35,7 +24,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? FormatBlob("xs", ImageId, FileExt) : String.Empty;
+                return BlobUri != null ? String.Format("{0}-{1}", "xs") : String.Empty;
             }
         }
 
@@ -43,7 +32,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? FormatBlob("sm", ImageId, FileExt) : String.Empty;
+                return BlobUri != null ? String.Format("{0}-{1}", "sm") : String.Empty;
             }
         }
 
@@ -51,7 +40,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? FormatBlob("md", ImageId, FileExt) : String.Empty;
+                return BlobUri != null ? String.Format("{0}-{1}", "md") : String.Empty;
             }
         }
 
@@ -59,13 +48,16 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? FormatBlob("lg", ImageId, FileExt) : String.Empty;
+                return BlobUri != null ? String.Format("{0}-{1}", "lg") : String.Empty;
             }
         }
 
-        private static string FormatBlob(string sizeKey, string imageID, string fileExt)
+        public string Filename
         {
-            return string.Format("{0}-{1}/{2}.{3}", ContainerPrefix, sizeKey, imageID, fileExt);
+            get
+            {
+                return string.Format("{0}.{2}", ImageId, FileExt);
+            }
         }
     }
 }
