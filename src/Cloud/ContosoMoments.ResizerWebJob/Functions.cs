@@ -25,6 +25,11 @@ namespace ContosoMoments.ResizerWebJob
             [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
             [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
         {
+            Trace.TraceInformation("Blob URI: " + blobInfo.BlobUri);
+            Trace.TraceInformation("Blob guid: " + blobInfo.FileGuidName);
+            Trace.TraceInformation("Blob imageID: " + blobInfo.ImageId);
+            Trace.TraceInformation("Blob extension: " + blobInfo.FileExt);
+
             Stream input = await blobInput.OpenReadAsync();
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
             bool res = await scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
