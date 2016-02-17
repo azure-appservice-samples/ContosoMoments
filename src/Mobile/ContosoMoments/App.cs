@@ -12,9 +12,16 @@ using System.Diagnostics;
 
 namespace ContosoMoments
 {
+    public class ResizeRequest
+    {
+        public string Id { get; set; }
+        public string BlobName { get; set; }
+    }
+
     public class App : Application
     {
         public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
+        //public static string ApplicationURL = @"http://localhost:31478";
 
         //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public static string DB_LOCAL_FILENAME = "localDb.sqlite";
@@ -24,6 +31,7 @@ namespace ContosoMoments
         public IMobileServiceSyncTable<Models.Album> albumTableSync;
         public IMobileServiceSyncTable<Models.User> userTableSync;
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
+        public IMobileServiceSyncTable<ResizeRequest> resizeRequestSync;
 
         public static App Instance;
         public static object UIContext { get; set; }
@@ -111,6 +119,7 @@ namespace ContosoMoments
                 store.DefineTable<Models.User>();
                 store.DefineTable<Models.Album>();
                 store.DefineTable<Models.Image>();
+                store.DefineTable<ResizeRequest>();
 
                 // Initialize file sync
                 MobileService.InitializeFileSyncContext(new FileSyncHandler(this), store, new FileSyncTriggerFactory(MobileService, true));
@@ -122,11 +131,19 @@ namespace ContosoMoments
 
         public async Task SyncAsync()
         {
+            foreach (var r in await resizeRequestSync.CreateQuery().ToEnumerableAsync()) {
+                Debug.WriteLine($"Resize request: {r.BlobName}");
+            }
+
             await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
             await userTableSync.PullAsync("allUsers", userTableSync.CreateQuery()); // query ID is used for incremental sync
-            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); // query ID is used for incremental sync
-            await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery()); // query ID is used for incremental sync
+            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); 
+            await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery());
+
+            foreach (var r in await resizeRequestSync.CreateQuery().ToEnumerableAsync()) {
+                Debug.WriteLine($"Resize request: {r.BlobName}");
+            }
         }
 
         public void InitLocalTables()
@@ -136,6 +153,7 @@ namespace ContosoMoments
                 userTableSync = MobileService.GetSyncTable<Models.User>(); // offline sync
                 albumTableSync = MobileService.GetSyncTable<Models.Album>(); // offline sync
                 imageTableSync = MobileService.GetSyncTable<Models.Image>(); // offline sync
+                resizeRequestSync = MobileService.GetSyncTable<ResizeRequest>();
             }
             catch (Exception ex)
             {
@@ -173,8 +191,14 @@ namespace ContosoMoments
             await imageTableSync.InsertAsync(image); // create a new image record
 
             // add image to the record
-            string copiedFile = await FileHelper.CopyFileAsync(image.Id, sourceFile);
-            return await imageTableSync.AddFileAsync(image, copiedFile);
+            string copiedFilePath = await FileHelper.CopyFileAsync(image.Id, sourceFile);
+            string copiedFileName = Path.GetFileName(copiedFilePath);
+
+            // add an object representing a resize request for the blob
+            // it will be synced after all images have been uploaded
+            await resizeRequestSync.InsertAsync(new ResizeRequest { BlobName = copiedFileName });
+
+            return await imageTableSync.AddFileAsync(image, copiedFileName);
         }
 
         internal async Task DeleteImage(Models.Image item, MobileServiceFile file)
