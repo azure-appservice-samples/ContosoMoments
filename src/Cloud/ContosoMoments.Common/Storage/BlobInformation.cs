@@ -4,15 +4,12 @@ namespace ContosoMoments.Common
 {
     public class BlobInformation
     {
-        public const string DEFAULT_FILE_EXT = "jpg";
-        public BlobInformation(string fileExt)
+        public const string DefaultFileExtension = "jpg";
+        public const string ContainerPrefix = "images";
+
+        public BlobInformation(string fileExt = DefaultFileExtension)
         {
             FileExt = fileExt;
-        }
-
-        public BlobInformation()
-        {
-            //FileExt = DEFAULT_FILE_EXT;
         }
 
         public Uri BlobUri { get; set; }
@@ -30,14 +27,15 @@ namespace ContosoMoments.Common
             }
         }
 
+        public string ImageId { get; set; }
+
+        public string FileExt { get; set; }
+
         public string BlobNameXS
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("xs/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return BlobUri != null ? FormatBlob("xs", ImageId, FileExt) : String.Empty;
             }
         }
 
@@ -45,10 +43,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("sm/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return BlobUri != null ? FormatBlob("sm", ImageId, FileExt) : String.Empty;
             }
         }
 
@@ -56,10 +51,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("md/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return BlobUri != null ? FormatBlob("md", ImageId, FileExt) : String.Empty;
             }
         }
 
@@ -67,24 +59,13 @@ namespace ContosoMoments.Common
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("lg/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return BlobUri != null ? FormatBlob("lg", ImageId, FileExt) : String.Empty;
             }
         }
 
-        public string ImageId { get; set; }
-
-        string _fileExt = DEFAULT_FILE_EXT;
-        public string FileExt
+        private static string FormatBlob(string sizeKey, string imageID, string fileExt)
         {
-            get
-            {
-                return _fileExt;
-            }
-
-            set { _fileExt = value; }
+            return string.Format("{0}-{1}/{2}.{3}", ContainerPrefix, sizeKey, imageID, fileExt);
         }
     }
 }

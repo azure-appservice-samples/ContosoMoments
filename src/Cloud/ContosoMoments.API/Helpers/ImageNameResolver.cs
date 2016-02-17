@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Files;
 
-namespace ContosoMoments.API.Controllers.TableControllers
+namespace ContosoMoments.API.Helpers
 {
     public class ImageNameResolver : IContainerNameResolver
     {
@@ -15,7 +16,6 @@ namespace ContosoMoments.API.Controllers.TableControllers
         private string storeUri;
 
         public const string DefaultSizeKey = "lg";
-        public const string ContainerPrefix = "images";
 
         public ImageNameResolver(string storeUri = null)
         {
@@ -34,7 +34,7 @@ namespace ContosoMoments.API.Controllers.TableControllers
             }
             else {
                 // use the default container
-                result = string.Format("{0}-{1}", ContainerPrefix, DefaultSizeKey);
+                result = string.Format("{0}-{1}", BlobInformation.ContainerPrefix, DefaultSizeKey);
             }
 
             return Task.FromResult(result);
@@ -52,7 +52,7 @@ namespace ContosoMoments.API.Controllers.TableControllers
         {
             // image container is in the format images-xs
             // There is a custom storage provider that will filter to only that file within the container
-            return string.Format("{0}-{1}/{2}", ContainerPrefix, sizeKey, recordId);
+            return string.Format("{0}-{1}/{2}", BlobInformation.ContainerPrefix, sizeKey, recordId);
         }
     }
 }

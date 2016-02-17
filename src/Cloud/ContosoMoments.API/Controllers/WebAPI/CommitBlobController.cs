@@ -1,48 +1,31 @@
 using ContosoMoments.Common;
 using ContosoMoments.Common.Queue;
-using ContosoMoments.Common.Storage;
-using ContosoMoments.MobileServer.DataLogic;
 using Microsoft.Azure.Mobile.Server.Config;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using ContosoMoments.API.Controllers.TableControllers;
+using System;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
-
     [MobileAppController]
     public class CommitBlobController : ApiController
     {
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<CommitBlobResponse> Post([FromBody]CommitBlobRequest commitBlobRequest)
+        public void Post(JObject body)
         {
-            var res = new CommitBlobResponse();
-            var cs = new ContosoStorage();
-            string fileExt = BlobInformation.DEFAULT_FILE_EXT;
-
-            fileExt = cs.CommitUpload(commitBlobRequest);
-
-            var url = commitBlobRequest.SasUrl.Replace(AppSettings.StorageWebUri, "");
-            var urldata = url.Split('?');
-            var index = urldata[0].IndexOf('/');
-            var content = urldata[0].Split('/');
-            var containerName = urldata[0].Substring(0, index);
-            string fileGuidName = urldata[0].Replace(containerName + "/lg/", "").Replace(".temp", "");
-
-            var ibl = new ImageBusinessLogic();
-            var image = ibl.AddImageToDB(commitBlobRequest.AlbumId, commitBlobRequest.UserId, containerName, fileGuidName + "." + fileExt, commitBlobRequest.IsMobile);
-            if (image != null)
-            {
-                res.Success = true;
-                res.ImageId = image.Id;                                                                                                                                                                                                                            
-            }
-
+            string imageId = body["imageId"].ToString();
+            string extension = body["extension"].ToString();
             var qm = new QueueManager();
-            var blobInfo = new BlobInformation(fileExt);
-            blobInfo.BlobUri = cs.GetBlobUri(containerName, urldata[0].Replace(containerName, ""));
-            blobInfo.ImageId = fileGuidName;
-            await qm.PushToResizeQueue(blobInfo);
-            return res;
+            var blobInfo = new BlobInformation(extension);
+            blobInfo.BlobUri = new Uri(string.Format("https://{0}.blob.core.windows.net", AppSettings.StorageAccountName));
+            blobInfo.ImageId = imageId;
+            //await qm.PushToResizeQueue(blobInfo);            
+            Debug.WriteLine("ImageID: {0}, extension: {1}", imageId, extension);
+            Debug.WriteLine(blobInfo);
         }
 
     }

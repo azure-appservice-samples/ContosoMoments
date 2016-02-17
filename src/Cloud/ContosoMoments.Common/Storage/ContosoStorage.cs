@@ -36,7 +36,7 @@ namespace ContosoMoments.Common.Storage
 
         public string CommitUpload(CommitBlobRequest commitRequest)
         {
-            var result = BlobInformation.DEFAULT_FILE_EXT;
+            var result = BlobInformation.DefaultFileExtension;
             var url = commitRequest.SasUrl.Replace(blobEndpoint.ToString(), "");
             var urldata = url.Split('?');
             var content = urldata[0].Split('/');
@@ -60,7 +60,7 @@ namespace ContosoMoments.Common.Storage
                 result = blob.Properties.ContentType.Replace("image/", "").ToLower();
 
                 if (result == "jpeg")
-                    result = BlobInformation.DEFAULT_FILE_EXT;
+                    result = BlobInformation.DefaultFileExtension;
 
                 RenameBlob(container, FileName, FileName.Replace("temp", result));
             }
