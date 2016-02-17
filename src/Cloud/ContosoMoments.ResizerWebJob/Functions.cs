@@ -20,10 +20,10 @@ namespace ContosoMoments.ResizerWebJob
         //   private const string resizeQueue = AppSettings.ResizeQueueName;
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
-            [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobInput,
-            [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobOutputExtraSmall,
-            [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
-            [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
+            [Blob("{BlobNameLG}")] CloudBlockBlob blobInput,
+            [Blob("{BlobNameXS}")] CloudBlockBlob blobOutputExtraSmall,
+            [Blob("{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
+            [Blob("{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
         {
             Trace.TraceInformation("Blob URI: " + blobInfo.BlobUri);
             Trace.TraceInformation("Blob guid: " + blobInfo.FileGuidName);
