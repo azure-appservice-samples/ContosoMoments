@@ -24,7 +24,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             blobInfo.ImageId = imageId;
 
             await qm.PushToResizeQueue(blobInfo);
-            Debug.WriteLine("Sent resize request for blob: " + imageId);
+            Trace.WriteLine("Sent resize request for blob: " + imageId);
         }
     }
 }

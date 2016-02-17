@@ -19,9 +19,9 @@ namespace ContosoMoments.API.Controllers.TableControllers
 
         [HttpPost]
         [Route("tables/Image/{id}/StorageToken")]
+        // return a storage token that can be used for blob upload or download
         public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest request)
-        {
-            // return a storage token that can be used for blob upload or download
+        {            
             StorageToken token = await GetStorageTokenAsync(id, request, new ImageNameResolver(request.TargetFile.StoreUri));
             return Request.CreateResponse(token);
         }

@@ -24,7 +24,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? String.Format("{0}-{1}", "xs") : String.Empty;
+                return $"{ContainerPrefix}-xs";
             }
         }
 
@@ -32,7 +32,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? String.Format("{0}-{1}", "sm") : String.Empty;
+                return $"{ContainerPrefix}-sm";
             }
         }
 
@@ -40,7 +40,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? String.Format("{0}-{1}", "md") : String.Empty;
+                return $"{ContainerPrefix}-md";
             }
         }
 
@@ -48,7 +48,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return BlobUri != null ? String.Format("{0}-{1}", "lg") : String.Empty;
+                return $"{ContainerPrefix}-lg";
             }
         }
 
@@ -56,7 +56,10 @@ namespace ContosoMoments.Common
         {
             get
             {
-                return string.Format("{0}.{2}", ImageId, FileExt);
+                if (FileExt.Length > 0)
+                    return $"{ImageId}.{FileExt}";
+
+                return ImageId;
             }
         }
     }
