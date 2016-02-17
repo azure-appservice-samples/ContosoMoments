@@ -14,7 +14,10 @@ namespace ContosoMoments.API.Controllers.TableControllers
         private MobileServiceContext dbContext;
         private string storeUri;
 
-        public ImageNameResolver(string storeUri = "")
+        public const string DefaultSizeKey = "lg";
+        public const string ContainerPrefix = "images";
+
+        public ImageNameResolver(string storeUri = null)
         {
             this.dbContext = new MobileServiceContext();
             this.storeUri = storeUri;
@@ -22,24 +25,34 @@ namespace ContosoMoments.API.Controllers.TableControllers
 
         public Task<string> GetFileContainerNameAsync(string tableName, string recordId, string fileName)
         {
-            // use the storeUri parameter to get the file container            
-            var result = storeUri.Split( new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            return Task.FromResult(result[0]);
+            string result;
+
+            if (storeUri != null) {
+                // use the storeUri parameter to get the file container          
+                var split = storeUri.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                result = split[0];
+            }
+            else {
+                // use the default container
+                result = string.Format("{0}-{1}", ContainerPrefix, DefaultSizeKey);
+            }
+
+            return Task.FromResult(result);
         }
 
-        public async Task<IEnumerable<string>> GetRecordContainerNames(string tableName, string recordId)
+        public Task<IEnumerable<string>> GetRecordContainerNames(string tableName, string recordId)
         {
-            var imageRecord = await dbContext.Images.FindAsync(recordId);
-
             var sizes = new string[] { "lg", "md", "sm", "xs" };
-            return sizes.Select(x => GetContainerAndImageName(imageRecord, x));            
+            var result = sizes.Select(x => GetContainerAndImageName(recordId: recordId, sizeKey: x));
+
+            return Task.FromResult(result);
         }
 
-        private string GetContainerAndImageName(Image image, string sizeKey)
+        public static string GetContainerAndImageName(string recordId, string sizeKey)
         {
             // image container is in the format images-xs
             // There is a custom storage provider that will filter to only that file within the container
-            return string.Format("images-{0}/{1}", sizeKey, image.FileName);            
+            return string.Format("{0}-{1}/{2}", ContainerPrefix, sizeKey, recordId);
         }
     }
 }
