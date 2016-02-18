@@ -26,7 +26,7 @@ namespace ContosoMoments
             var sourceStream = await sourceFile.OpenAsync(FileAccess.Read);
             string fileExt = System.IO.Path.GetExtension(filePath);
             
-            return await SaveStreamAsync(itemId, itemId + fileExt, sourceStream);
+            return await SaveStreamAsync(itemId, itemId/* + fileExt*/, sourceStream);
         }
 
         public static async Task<string> GetLocalFilePathAsync(string itemId, string fileName)
