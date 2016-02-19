@@ -143,7 +143,7 @@ namespace ContosoMoments
             // ContinueWith is used along with Wait() so that only one thread downloads at a time
             lock (currentDownloadTaskLock) {
                 return currentDownloadTask =
-                    currentDownloadTask.ContinueWith(x => DoFileDownload(file).Wait());
+                    currentDownloadTask.ContinueWith(x => DoFileDownload(file)).Unwrap();
             }
         }
 
