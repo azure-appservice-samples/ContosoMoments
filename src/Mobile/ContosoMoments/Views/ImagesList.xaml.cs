@@ -67,7 +67,8 @@ namespace ContosoMoments.Views
 
                     if (sourceImagePath != null) {
                         var image = await _app.AddImage(viewModel.User, viewModel.Album, sourceImagePath);
-                        await SyncItemsAsync(true, refreshView: true);
+                        await SyncItemsAsync(true, refreshView: false);
+                        viewModel.Images.Add(image);
                     }
 
                 }
@@ -80,11 +81,6 @@ namespace ContosoMoments.Views
         private async Task LoadItems()
         {
             await viewModel.LoadImagesAsync(viewModel.Album.AlbumId);
-
-            if (null != viewModel.Images) {
-                imagesList.ItemsSource = null;
-                imagesList.ItemsSource = viewModel.Images.ToList();
-            }
         }
 
         public async void OnRefresh(object sender, EventArgs e)

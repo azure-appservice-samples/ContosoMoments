@@ -49,7 +49,12 @@
     </StackLayout>
 
     <!--List of images-->
-    <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="2" BackgroundColor="White">
+    <ListView x:Name="imagesList" Grid.Row="2"
+              ItemsSource="{Binding Images}"
+              ItemSelected="OnSelected"
+              IsPullToRefreshEnabled="true"
+              Refreshing="OnRefresh"  
+              BackgroundColor="White">
       <ListView.ItemTemplate>
         <DataTemplate>
           <ImageCell 

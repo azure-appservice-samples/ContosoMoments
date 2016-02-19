@@ -69,5 +69,9 @@ namespace ContosoMoments.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public override string ToString()
+        {
+            return $"+++Image -- Id: {Id}    File: {File?.Name}   Uri: {Uri}   ImageLoaded: {ImageLoaded}";
+        }
     }
 }

@@ -189,7 +189,8 @@ namespace ContosoMoments
             // add an object representing a resize request for the blob
             // it will be synced after all images have been uploaded
             await resizeRequestSync.InsertAsync(new ResizeRequest { BlobName = copiedFileName });
-            await imageTableSync.AddFileAsync(image, copiedFileName);
+            var file = await imageTableSync.AddFileAsync(image, copiedFileName);
+            image.File = file;
 
             return image;
         }
