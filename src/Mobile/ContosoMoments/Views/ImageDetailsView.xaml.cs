@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using PCLStorage;
 using System.Diagnostics;
+using Microsoft.WindowsAzure.Storage;
 
 namespace ContosoMoments.Views
 {
@@ -71,6 +72,9 @@ namespace ContosoMoments.Views
                 // delete the file
                 var fileRef = await FileSystem.Current.LocalStorage.GetFileAsync(path);
                 await fileRef.DeleteAsync();
+            }
+            catch (StorageException) {
+                await DisplayAlert("Error downloading image", "Error downloading, image size might not be available yet", "OK");
             }
             catch (Exception e) {
                 Debug.WriteLine("Exception downloading file: " + e.Message);                
