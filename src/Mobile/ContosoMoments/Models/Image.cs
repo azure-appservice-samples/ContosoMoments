@@ -9,7 +9,6 @@ namespace ContosoMoments.Models
     public class Image : INotifyPropertyChanged
     {
         public string Id { get; set; }
-        public string FileName { get; set; }
         public string UploadFormat { get; set; }
         public Album Album { get; set; }
         public string AlbumId { get; set; }

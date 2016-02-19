@@ -177,8 +177,7 @@ namespace ContosoMoments
             var image = new Models.Image {
                 UserId = user.UserId.ToString(),
                 AlbumId = album.AlbumId,
-                UploadFormat = "Mobile Image",
-                FileName = Guid.NewGuid().ToString()
+                UploadFormat = "Mobile Image"
             };
 
             await imageTableSync.InsertAsync(image); // create a new image record
