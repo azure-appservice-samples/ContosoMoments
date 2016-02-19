@@ -1,16 +1,15 @@
 ﻿using PCLStorage;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace ContosoMoments
 {
     public class FileHelper
     {
-        public static async Task<string> SaveStreamAsync(string itemId, string filename, System.IO.Stream sourceStream)
+        public static async Task<string> SaveStreamAsync(string itemId, string filename, System.IO.Stream sourceStream, string dataFilesPath)
         {
             IFolder localStorage = FileSystem.Current.LocalStorage;
 
-            string targetPath = await GetLocalFilePathAsync(itemId, filename);
+            string targetPath = await GetLocalFilePathAsync(itemId, filename, dataFilesPath);
             var targetFile = await localStorage.CreateFileAsync(targetPath, CreationCollisionOption.ReplaceExisting);
 
             using (var targetStream = await targetFile.OpenAsync(FileAccess.ReadAndWrite)) {
@@ -20,20 +19,18 @@ namespace ContosoMoments
             return targetPath;
         }
 
-        public static async Task<string> CopyFileAsync(string itemId, string filePath)
+        public static async Task<string> CopyFileAsync(string itemId, string filePath, string dataFilesPath)
         {
             var sourceFile = await FileSystem.Current.LocalStorage.GetFileAsync(filePath);
             var sourceStream = await sourceFile.OpenAsync(FileAccess.Read);
             string fileExt = System.IO.Path.GetExtension(filePath);
             
-            return await SaveStreamAsync(itemId, itemId/* + fileExt*/, sourceStream);
+            return await SaveStreamAsync(itemId, itemId/* + fileExt*/, sourceStream, dataFilesPath);
         }
 
-        public static async Task<string> GetLocalFilePathAsync(string itemId, string fileName)
+        public static async Task<string> GetLocalFilePathAsync(string itemId, string fileName, string dataFilesPath)
         {
-            IPlatform platform = DependencyService.Get<IPlatform>();
-
-            string recordFilesPath = System.IO.Path.Combine(await platform.GetDataFilesPath(), itemId);
+            string recordFilesPath = System.IO.Path.Combine(dataFilesPath, itemId);
 
             var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(recordFilesPath);
             if (checkExists == ExistenceCheckResult.NotFound) {
@@ -43,9 +40,9 @@ namespace ContosoMoments
             return System.IO.Path.Combine(recordFilesPath, fileName);
         }
 
-        public static async Task DeleteLocalFileAsync(Microsoft.WindowsAzure.MobileServices.Files.MobileServiceFile fileName)
+        public static async Task DeleteLocalFileAsync(Microsoft.WindowsAzure.MobileServices.Files.MobileServiceFile fileName, string dataFilesPath)
         {
-            string localPath = await GetLocalFilePathAsync(fileName.ParentId, fileName.Name);
+            string localPath = await GetLocalFilePathAsync(fileName.ParentId, fileName.Name, dataFilesPath);
             var checkExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(localPath);
 
             if (checkExists == ExistenceCheckResult.FileExists) {

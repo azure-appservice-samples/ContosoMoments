@@ -25,7 +25,7 @@ namespace ContosoMoments
         public async Task ProcessFileSynchronizationAction(MobileServiceFile file, FileSynchronizationAction action)
         {
             if (action == FileSynchronizationAction.Delete) {
-                await FileHelper.DeleteLocalFileAsync(file);
+                await FileHelper.DeleteLocalFileAsync(file, theApp.DataFilesPath);
             }
             else { // Create or update. We're aggressively downloading all files.
                 Trace.WriteLine(string.Format("File - storeUri: {1}", file.Name, file.StoreUri));

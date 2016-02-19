@@ -55,7 +55,7 @@ namespace ContosoMoments.Views
         private async Task DownloadAndDisplayImage(MobileServiceFile file, string imageSize)
         {
             try {
-                var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, imageSize + "-" + file.Name);
+                var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, imageSize + "-" + file.Name, App.Instance.DataFilesPath);
                 await App.Instance.imageTableSync.DownloadFileAsync(file, path);
                 await Navigation.PushAsync(CreateDetailsPage(path));
 

@@ -35,6 +35,8 @@ namespace ContosoMoments
         private static Object currentDownloadTaskLock = new Object();
         private static Task currentDownloadTask = Task.FromResult(0);
 
+        public string DataFilesPath { get; set; }
+
         public App()
         {
             Instance = this;
@@ -71,6 +73,9 @@ namespace ContosoMoments
 
             await InitLocalStoreAsync(DB_LOCAL_FILENAME);
             InitLocalTables();
+
+            IPlatform platform = DependencyService.Get<IPlatform>();
+            DataFilesPath = await platform.GetDataFilesPath();
 
             if (isAuthRequred && AuthenticatedUser == null)
             {
@@ -147,7 +152,7 @@ namespace ContosoMoments
             Debug.WriteLine("Starting file download - " + file.Name);
 
             IPlatform platform = DependencyService.Get<IPlatform>();
-            var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+            var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name, DataFilesPath);
             var tempPath = Path.ChangeExtension(path, ".temp");
 
             await platform.DownloadFileAsync(imageTableSync, file, tempPath);
@@ -170,7 +175,7 @@ namespace ContosoMoments
             await imageTableSync.InsertAsync(image); // create a new image record
 
             // add image to the record
-            string copiedFilePath = await FileHelper.CopyFileAsync(image.Id, sourceFile);
+            string copiedFilePath = await FileHelper.CopyFileAsync(image.Id, sourceFile, DataFilesPath);
             string copiedFileName = Path.GetFileName(copiedFilePath);
 
             // add an object representing a resize request for the blob
