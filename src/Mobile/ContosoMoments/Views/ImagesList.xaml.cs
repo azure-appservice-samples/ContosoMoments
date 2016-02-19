@@ -160,7 +160,6 @@ namespace ContosoMoments.Views
 
                 try {
                     await viewModel.DeleteImageAsync(selectedImage);
-                    await DisplayAlert("Success", "Image deleted successfully", "OK");
                     OnRefresh(sender, e);
                 }
                 catch (Exception) {

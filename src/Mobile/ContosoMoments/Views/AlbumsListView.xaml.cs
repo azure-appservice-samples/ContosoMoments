@@ -131,27 +131,23 @@ namespace ContosoMoments.Views
 
         public async void OnCreateClick(object sender, EventArgs e)
         {
-            string successMessage = "";
             string errorMessage = "";
 
             if (entAlbumName.Text != null && entAlbumName.Text.Length > 0) {
                 try {
 
                     if (isNew.Value) {
-                        successMessage = "Album created successfully";
                         errorMessage = "Couldn't create new album. Please try again later.";
 
                         await viewModel.AddNewAlbumAsync(entAlbumName.Text);
                     }
                     else {
-                        successMessage = "Album renamed successfully";
                         errorMessage = "Couldn't rename album. Please try again later.";
 
                         editedAlbum.AlbumName = entAlbumName.Text;
                         await viewModel.UpdateAlbumAsync(editedAlbum);
                     }
 
-                    await DisplayAlert("Success", successMessage, "OK");
                     HideAndCleanupInput();
                     OnRefresh(sender, e);
                 }
@@ -186,7 +182,6 @@ namespace ContosoMoments.Views
                     if (res) {
                         try {
                             await viewModel.DeleteAlbumAsync(selectedAlbum);
-                            await DisplayAlert("Success", "Album deleted successfully", "OK");
                             HideAndCleanupInput();
                             OnRefresh(sender, e);
                         }
