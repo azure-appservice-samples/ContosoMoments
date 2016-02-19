@@ -53,7 +53,7 @@ namespace ContosoMoments.Views
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
                     viewModel.User = User;
                     viewModel.Album = Album;
-                    await LoadItems();
+                    await LoadItemsAsync();
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace ContosoMoments.Views
                     string sourceImagePath = await platform.TakePhotoAsync(App.UIContext);
 
                     if (sourceImagePath != null) {
-                        var image = await _app.AddImage(viewModel.User, viewModel.Album, sourceImagePath);
+                        var image = await _app.AddImageAsync(viewModel.User, viewModel.Album, sourceImagePath);
                         await SyncItemsAsync(true, refreshView: false);
                         viewModel.Images.Add(image);
                     }
@@ -78,26 +78,21 @@ namespace ContosoMoments.Views
             }
         }
 
-        private async Task LoadItems()
+        private async Task LoadItemsAsync()
         {
             await viewModel.LoadImagesAsync(viewModel.Album.AlbumId);
         }
 
-        public async void OnRefresh(object sender, EventArgs e)
+        public async Task RefreshAsync()
         {
-            var success = false;
             try {
                 await SyncItemsAsync(true, refreshView: true);
-                success = true;
             }
-            catch (Exception ex) {
-                await DisplayAlert("Refresh Error", "Couldn't refresh data (" + ex.Message + ")", "OK");
-            }
-            imagesList.EndRefresh();
-
-            if (!success)
+            catch (Exception) {
                 await DisplayAlert("Refresh Error", "Couldn't refresh data", "OK");
+            }
 
+            imagesList.EndRefresh();
         }
 
         public async void OnSelected(object sender, SelectedItemChangedEventArgs e)
@@ -134,7 +129,7 @@ namespace ContosoMoments.Views
                 }
 
                 if (refreshView) {
-                    await LoadItems();
+                    await LoadItemsAsync();
                 }
             }
         }
@@ -148,44 +143,10 @@ namespace ContosoMoments.Views
 
                 try {
                     await viewModel.DeleteImageAsync(selectedImage);
-                    OnRefresh(sender, e);
+                    await RefreshAsync();
                 }
                 catch (Exception) {
                     await DisplayAlert("Delete error", "Couldn't delete the image. Please try again later.", "OK");
-                }
-            }
-        }
-
-        private class ActivityIndicatorScope : IDisposable
-        {
-            private bool showIndicator;
-            private ActivityIndicator indicator;
-            private Task indicatorDelay;
-
-            public ActivityIndicatorScope(ActivityIndicator indicator, bool showIndicator)
-            {
-                this.indicator = indicator;
-                this.showIndicator = showIndicator;
-
-                if (showIndicator) {
-                    indicatorDelay = Task.Delay(2000);
-                    SetIndicatorActivity(true);
-                }
-                else {
-                    indicatorDelay = Task.FromResult(0);
-                }
-            }
-
-            private void SetIndicatorActivity(bool isActive)
-            {
-                this.indicator.IsVisible = isActive;
-                this.indicator.IsRunning = isActive;
-            }
-
-            public void Dispose()
-            {
-                if (showIndicator) {
-                    indicatorDelay.ContinueWith(t => SetIndicatorActivity(false), TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }
         }

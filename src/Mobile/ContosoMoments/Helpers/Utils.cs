@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using ContosoMoments.Models;
 using Xamarin.Forms;
+using System;
 
 namespace ContosoMoments
 {
@@ -9,6 +9,31 @@ namespace ContosoMoments
     {
         public string Id { get; set; }
         public string BlobName { get; set; }
+    }
+
+    public class ActivityIndicatorScope : IDisposable
+    {
+        private bool showIndicator;
+        private ActivityIndicator indicator;
+
+        public ActivityIndicatorScope(ActivityIndicator indicator, bool showIndicator)
+        {
+            this.indicator = indicator;
+            this.showIndicator = showIndicator;
+
+            SetIndicatorActivity(showIndicator);
+        }
+
+        private void SetIndicatorActivity(bool isActive)
+        {
+            this.indicator.IsVisible = isActive;
+            this.indicator.IsRunning = isActive;
+        }
+
+        public void Dispose()
+        {
+            SetIndicatorActivity(false);
+        }
     }
 
     public static class Utils

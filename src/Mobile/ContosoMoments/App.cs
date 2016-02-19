@@ -143,11 +143,11 @@ namespace ContosoMoments
             // ContinueWith is used along with Wait() so that only one thread downloads at a time
             lock (currentDownloadTaskLock) {
                 return currentDownloadTask =
-                    currentDownloadTask.ContinueWith(x => DoFileDownload(file)).Unwrap();
+                    currentDownloadTask.ContinueWith(x => DoFileDownloadAsync(file)).Unwrap();
             }
         }
 
-        private async Task DoFileDownload(MobileServiceFile file)
+        private async Task DoFileDownloadAsync(MobileServiceFile file)
         {
             Debug.WriteLine("Starting file download - " + file.Name);
 
@@ -164,7 +164,7 @@ namespace ContosoMoments
             await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
         }
 
-        internal async Task<Models.Image> AddImage(Models.User user, Models.Album album, string sourceFile)
+        internal async Task<Models.Image> AddImageAsync(Models.User user, Models.Album album, string sourceFile)
         {
             var image = new Models.Image {
                 UserId = user.UserId.ToString(),
@@ -188,7 +188,7 @@ namespace ContosoMoments
             return image;
         }
 
-        internal async Task DeleteImage(Models.Image item, MobileServiceFile file)
+        internal async Task DeleteImageAsync(Models.Image item, MobileServiceFile file)
         {
             await imageTableSync.DeleteFileAsync(file);
         }

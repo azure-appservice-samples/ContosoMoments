@@ -29,7 +29,7 @@ namespace ContosoMoments
             }
 
             // Cloning the request, in case we need to send it again
-            var clonedRequest = await CloneRequest(request);
+            var clonedRequest = await CloneRequestAsync(request);
             var response = await base.SendAsync(clonedRequest, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.Unauthorized) {
@@ -37,7 +37,7 @@ namespace ContosoMoments
                     var platform = DependencyService.Get<IPlatform>();
                     var user = await platformClient.LoginAsync(MobileServiceAuthenticationProvider.Facebook);
 
-                    clonedRequest = await CloneRequest(request);
+                    clonedRequest = await CloneRequestAsync(request);
 
                     clonedRequest.Headers.Remove("X-ZUMO-AUTH");
                     clonedRequest.Headers.Add("X-ZUMO-AUTH", user.MobileServiceAuthenticationToken);
@@ -54,7 +54,7 @@ namespace ContosoMoments
             return response;
         }
 
-        private async Task<HttpRequestMessage> CloneRequest(HttpRequestMessage request)
+        private async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage request)
         {
             var result = new HttpRequestMessage(request.Method, request.RequestUri);
             foreach (var header in request.Headers) {
