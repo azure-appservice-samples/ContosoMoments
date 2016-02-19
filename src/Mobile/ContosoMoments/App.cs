@@ -35,8 +35,6 @@ namespace ContosoMoments
         private static Object currentDownloadTaskLock = new Object();
         private static Task currentDownloadTask = Task.FromResult(0);
 
-        private ISet<string> activeDownloads = new HashSet<string>();
-
         public App()
         {
             Instance = this;
@@ -136,23 +134,16 @@ namespace ContosoMoments
 
         internal Task DownloadFileAsync(MobileServiceFile file)
         {
+            // should only download one file at a time, since it's possible to get duplicate notifications for the same file
+            // ContinueWith is used along with Wait() so that only one thread downloads at a time
             lock (currentDownloadTaskLock) {
-                return currentDownloadTask = 
-                    currentDownloadTask.ContinueWith(x => DoFileDownload(file));
+                return currentDownloadTask =
+                    currentDownloadTask.ContinueWith(x => DoFileDownload(file).Wait());
             }
         }
 
         private async Task DoFileDownload(MobileServiceFile file)
         {
-            lock (activeDownloads) {
-                if (activeDownloads.Contains(file.Id)) {
-                    Debug.WriteLine($"!! Already downloading {file.Id}");
-                    return;
-                }
-
-                activeDownloads.Add(file.Id);
-            }
-
             Debug.WriteLine("Starting file download - " + file.Name);
 
             IPlatform platform = DependencyService.Get<IPlatform>();
@@ -164,10 +155,6 @@ namespace ContosoMoments
             var fileRef = await FileSystem.Current.LocalStorage.GetFileAsync(tempPath);
             await fileRef.RenameAsync(path, NameCollisionOption.ReplaceExisting);
             Debug.WriteLine("Renamed file to - " + path);
-
-            lock (activeDownloads) {
-                activeDownloads.Remove(file.Id);
-            }
 
             await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
         }
@@ -189,6 +176,7 @@ namespace ContosoMoments
             // add an object representing a resize request for the blob
             // it will be synced after all images have been uploaded
             await resizeRequestSync.InsertAsync(new ResizeRequest { BlobName = copiedFileName });
+
             var file = await imageTableSync.AddFileAsync(image, copiedFileName);
             image.File = file;
 
