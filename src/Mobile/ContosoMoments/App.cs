@@ -11,15 +11,11 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using System.Diagnostics;
 using Microsoft.WindowsAzure.MobileServices.Eventing;
 using PCLStorage;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ContosoMoments
 {
-    public class ResizeRequest
-    {
-        public string Id { get; set; }
-        public string BlobName { get; set; }
-    }
-
     public class App : Application
     {
         public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
@@ -39,6 +35,8 @@ namespace ContosoMoments
 
         private static Object currentDownloadTaskLock = new Object();
         private static Task currentDownloadTask = Task.FromResult(0);
+
+        private ISet<string> activeDownloads = new HashSet<string>();
 
         public App()
         {
@@ -132,15 +130,11 @@ namespace ContosoMoments
 
         public async Task SyncAsync()
         {
-            Debug.WriteLine($"Pending resize requests: { (await resizeRequestSync.CreateQuery().ToListAsync()).Count }");
-
             await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
             await userTableSync.PullAsync("allUsers", userTableSync.CreateQuery()); // query ID is used for incremental sync
             await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); 
             await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery());
-
-            Debug.WriteLine($"Pending resize requests: { (await resizeRequestSync.CreateQuery().ToListAsync()).Count }");
         }
 
         public void InitLocalTables()
@@ -160,20 +154,40 @@ namespace ContosoMoments
 
         internal Task DownloadFileAsync(MobileServiceFile file)
         {
-            IPlatform platform = DependencyService.Get<IPlatform>();
-
             lock (currentDownloadTaskLock) {
-                return currentDownloadTask =
-                    currentDownloadTask.ContinueWith(
-                    x => {
-                        var path = FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name).Result;
-
-                        Debug.WriteLine("Starting file download - " + file.Name);
-                        platform.DownloadFileAsync(imageTableSync, file, file.Name).Wait();
-                        Debug.WriteLine("Completed file download - " + file.Name);
-                    }
-                );
+                return currentDownloadTask = 
+                    currentDownloadTask.ContinueWith(x => DoFileDownload(file));
             }
+        }
+
+        private async Task DoFileDownload(MobileServiceFile file)
+        {
+            lock (activeDownloads) {
+                if (activeDownloads.Contains(file.Id)) {
+                    Debug.WriteLine($"!! Already downloading {file.Id}");
+                    return;
+                }
+
+                activeDownloads.Add(file.Id);
+            }
+
+            Debug.WriteLine("Starting file download - " + file.Name);
+
+            IPlatform platform = DependencyService.Get<IPlatform>();
+            var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
+            var tempPath = Path.ChangeExtension(path, ".temp");
+
+            await platform.DownloadFileAsync(imageTableSync, file, tempPath);
+
+            var fileRef = await FileSystem.Current.LocalStorage.GetFileAsync(tempPath);
+            await fileRef.RenameAsync(path, NameCollisionOption.ReplaceExisting);
+            Debug.WriteLine("Renamed file to - " + path);
+
+            lock (activeDownloads) {
+                activeDownloads.Remove(file.Id);
+            }
+
+            await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
         }
 
         internal async Task<MobileServiceFile> AddImage(Models.User user, Models.Album album, string sourceFile)

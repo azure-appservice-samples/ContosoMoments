@@ -5,6 +5,12 @@ using Xamarin.Forms;
 
 namespace ContosoMoments
 {
+    public class ResizeRequest
+    {
+        public string Id { get; set; }
+        public string BlobName { get; set; }
+    }
+
     public static class Utils
     {       
         public static bool IsOnline()

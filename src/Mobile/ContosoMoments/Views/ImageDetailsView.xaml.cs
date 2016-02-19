@@ -1,15 +1,13 @@
 ﻿using ContosoMoments.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Microsoft.WindowsAzure.MobileServices.Files;
-using System.IO;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using PCLStorage;
+using System.Diagnostics;
 
 namespace ContosoMoments.Views
 {
@@ -59,6 +57,13 @@ namespace ContosoMoments.Views
             var file = recordFiles.First(f => f.StoreUri.Contains(imageSize));
 
             if (file != null) {
+                await DownloadAndDisplayImage(file, imageSize);
+            }
+        }
+
+        private async Task DownloadAndDisplayImage(MobileServiceFile file, string imageSize)
+        {
+            try {
                 var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, imageSize + "-" + file.Name);
                 await App.Instance.imageTableSync.DownloadFileAsync(file, path);
                 await Navigation.PushAsync(CreateDetailsPage(path));
@@ -66,6 +71,9 @@ namespace ContosoMoments.Views
                 // delete the file
                 var fileRef = await FileSystem.Current.LocalStorage.GetFileAsync(path);
                 await fileRef.DeleteAsync();
+            }
+            catch (Exception e) {
+                Debug.WriteLine("Exception downloading file: " + e.Message);                
             }
         }
 
