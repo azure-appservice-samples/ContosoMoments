@@ -4,11 +4,6 @@
              x:Class="ContosoMoments.Views.ImageDetailsView"
              xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments"
              BackgroundColor="#8C0A4B">
-  <ContentPage.Resources>
-    <ResourceDictionary>
-      <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
-    </ResourceDictionary>
-  </ContentPage.Resources>
 
   <Grid>
     <Grid.RowDefinitions>

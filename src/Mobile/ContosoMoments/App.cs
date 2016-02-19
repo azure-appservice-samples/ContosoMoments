@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using System.Diagnostics;
+using Microsoft.WindowsAzure.MobileServices.Eventing;
+using PCLStorage;
 
 namespace ContosoMoments
 {
@@ -21,7 +23,6 @@ namespace ContosoMoments
     public class App : Application
     {
         public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
-        //public static string ApplicationURL = @"http://localhost:31478";
 
         //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public static string DB_LOCAL_FILENAME = "localDb.sqlite";
@@ -131,9 +132,7 @@ namespace ContosoMoments
 
         public async Task SyncAsync()
         {
-            foreach (var r in await resizeRequestSync.CreateQuery().ToEnumerableAsync()) {
-                Debug.WriteLine($"Resize request: {r.BlobName}");
-            }
+            Debug.WriteLine($"Pending resize requests: { (await resizeRequestSync.CreateQuery().ToListAsync()).Count }");
 
             await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
@@ -141,9 +140,7 @@ namespace ContosoMoments
             await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); 
             await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery());
 
-            foreach (var r in await resizeRequestSync.CreateQuery().ToEnumerableAsync()) {
-                Debug.WriteLine($"Resize request: {r.BlobName}");
-            }
+            Debug.WriteLine($"Pending resize requests: { (await resizeRequestSync.CreateQuery().ToListAsync()).Count }");
         }
 
         public void InitLocalTables()

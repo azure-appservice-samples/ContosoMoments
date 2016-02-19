@@ -12,7 +12,7 @@ namespace ContosoMoments
 
         Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata);
 
-        Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename);
+        Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string fullPath);
 
         string GetDataPathAsync();
 

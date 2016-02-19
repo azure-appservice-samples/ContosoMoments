@@ -5,11 +5,6 @@
              xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments"
              xmlns:controls="clr-namespace:ContosoMoments.Controls;assembly=ContosoMoments"
              BackgroundColor="#8C0A4B">
-  <ContentPage.Resources>
-    <ResourceDictionary>
-      <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
-    </ResourceDictionary>
-  </ContentPage.Resources>
 
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>

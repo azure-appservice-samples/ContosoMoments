@@ -23,7 +23,7 @@ namespace ContosoMoments.Views
             InitializeComponent();
 
             _app = app;
-            viewModel = new ImagesListViewModel(App.MobileService, App.Current as App);
+            viewModel = new ImagesListViewModel(App.MobileService, _app);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -141,7 +141,7 @@ namespace ContosoMoments.Views
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-                    await (App.Current as App).SyncAsync();
+                    await _app.SyncAsync();
                 }
                 else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");

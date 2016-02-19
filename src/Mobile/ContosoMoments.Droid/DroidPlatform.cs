@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using Microsoft.WindowsAzure.MobileServices.Sync;
+using PCLStorage;
 using Xamarin.Media;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ContosoMoments.Droid.DroidPlatform))]
@@ -15,10 +16,9 @@ namespace ContosoMoments.Droid
 {
     public class DroidPlatform : IPlatform
     {
-        public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string filename)
+        public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string fullPath)
         {
-            var path = await FileHelper.GetLocalFilePathAsync(file.ParentId, file.Name);
-            await table.DownloadFileAsync(file, path);
+            await table.DownloadFileAsync(file, fullPath);
         }
 
         public async Task<IMobileServiceFileDataSource> GetFileDataSource(MobileServiceFileMetadata metadata)
