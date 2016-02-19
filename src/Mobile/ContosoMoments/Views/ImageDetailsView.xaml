@@ -29,8 +29,8 @@
 
     <!--User and Album info-->
     <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0">
-      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
-      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
+      <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
+      <Label TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
     </StackLayout>
 
     <!--Image preview-->

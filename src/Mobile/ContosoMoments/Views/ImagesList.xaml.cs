@@ -116,6 +116,7 @@ namespace ContosoMoments.Views
         public async void OnSyncItems(object sender, EventArgs e)
         {
             await SyncItemsAsync(false, refreshView: true);
+            imagesList.EndRefresh();
         }
 
         private async Task SyncItemsAsync(bool showActivityIndicator, bool refreshView)

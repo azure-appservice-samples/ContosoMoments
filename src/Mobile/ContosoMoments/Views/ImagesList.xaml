@@ -34,7 +34,7 @@
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/sync.png" Android="sync.png" WinPhone="Assets/sync.png"/>
         </Image.Source>
       </Image>
-      
+
       <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgUpload">
         <Image.Source>
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/upload.png" Android="upload.png" WinPhone="Assets/upload.png"/>
@@ -44,27 +44,32 @@
 
     <!--User and Album info-->
     <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0,10,5">
-      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
-      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
+      <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
+      <Label TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
     </StackLayout>
 
     <!--List of images-->
+
     <ListView x:Name="imagesList" Grid.Row="2"
               ItemsSource="{Binding Images}"
               ItemSelected="OnSelected"
               IsPullToRefreshEnabled="true"
-              Refreshing="OnRefresh"  
-              BackgroundColor="White">
+              Refreshing="OnSyncItems"
+              BackgroundColor="White"
+              SeparatorVisibility="None">
       <ListView.ItemTemplate>
         <DataTemplate>
-          <ImageCell 
-              ImageSource="{Binding Uri}"
-              Text="{Binding UploadFormat}" 
-              TextColor="Black">
-            <ImageCell.ContextActions>
-              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
-            </ImageCell.ContextActions>
-          </ImageCell>
+          <ViewCell>
+            <Grid Padding="5">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0" Source="{Binding Uri}" Aspect="AspectFill" />
+              <Label Grid.Column="1" Text="{Binding UploadFormat}" FontSize="Small" TextColor="Black"/>
+            </Grid>
+          </ViewCell>
+
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
