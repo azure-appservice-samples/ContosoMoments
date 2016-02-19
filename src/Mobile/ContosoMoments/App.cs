@@ -172,7 +172,7 @@ namespace ContosoMoments
             await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
         }
 
-        internal async Task<MobileServiceFile> AddImage(Models.User user, Models.Album album, string sourceFile)
+        internal async Task<Models.Image> AddImage(Models.User user, Models.Album album, string sourceFile)
         {
             var image = new Models.Image {
                 UserId = user.UserId.ToString(),
@@ -190,8 +190,9 @@ namespace ContosoMoments
             // add an object representing a resize request for the blob
             // it will be synced after all images have been uploaded
             await resizeRequestSync.InsertAsync(new ResizeRequest { BlobName = copiedFileName });
+            await imageTableSync.AddFileAsync(image, copiedFileName);
 
-            return await imageTableSync.AddFileAsync(image, copiedFileName);
+            return image;
         }
 
         internal async Task DeleteImage(Models.Image item, MobileServiceFile file)

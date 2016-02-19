@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using System.ComponentModel;
 
 namespace ContosoMoments.Views
 {
@@ -61,14 +62,12 @@ namespace ContosoMoments.Views
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
                 try {
-                    IPlatform mediaProvider = DependencyService.Get<IPlatform>();
-                    string sourceImagePath = await mediaProvider.TakePhotoAsync(App.UIContext);
+                    IPlatform platform = DependencyService.Get<IPlatform>();
+                    string sourceImagePath = await platform.TakePhotoAsync(App.UIContext);
 
                     if (sourceImagePath != null) {
-                        await _app.AddImage(viewModel.User, viewModel.Album, sourceImagePath);
-
-                        // TODO: don't call OnRefresh
-                        OnRefresh(sender, e);
+                        var image = await _app.AddImage(viewModel.User, viewModel.Album, sourceImagePath);
+                        await SyncItemsAsync(true, refreshView: true);
                     }
 
                 }
@@ -92,7 +91,7 @@ namespace ContosoMoments.Views
         {
             var success = false;
             try {
-                await SyncItemsAsync(true);
+                await SyncItemsAsync(true, refreshView: true);
                 success = true;
             }
             catch (Exception ex) {
@@ -125,10 +124,10 @@ namespace ContosoMoments.Views
 
         public async void OnSyncItems(object sender, EventArgs e)
         {
-            await SyncItemsAsync(true);
+            await SyncItemsAsync(false, refreshView: true);
         }
 
-        private async Task SyncItemsAsync(bool showActivityIndicator)
+        private async Task SyncItemsAsync(bool showActivityIndicator, bool refreshView)
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
@@ -137,8 +136,10 @@ namespace ContosoMoments.Views
                 else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
                 }
-                //await manager.SyncImagesAsync();
-                await LoadItems();
+
+                if (refreshView) {
+                    await LoadItems();
+                }
             }
         }
 

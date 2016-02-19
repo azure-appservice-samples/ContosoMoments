@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using Microsoft.WindowsAzure.MobileServices.Eventing;
 using PCLStorage;
+using System.Collections.ObjectModel;
 
 namespace ContosoMoments.ViewModels
 {
@@ -23,8 +24,8 @@ namespace ContosoMoments.ViewModels
             _app = app;
         }
 
-        private List<Image> _images;
-        public List<Image> Images
+        private ObservableCollection<Image> _images;
+        public ObservableCollection<Image> Images
         {
             get { return _images; }
             set
@@ -70,7 +71,11 @@ namespace ContosoMoments.ViewModels
         public async Task LoadImagesAsync(string albumId)
         {
             try {
-                this.Images = await _app.imageTableSync.Where(i => i.AlbumId == albumId).ToListAsync();
+                this.Images = new ObservableCollection<Image>();
+                         
+                foreach (var i in await _app.imageTableSync.Where(i => i.AlbumId == albumId).ToEnumerableAsync()) {
+                    this.Images.Add(i);
+                }
 
                 foreach (var im in this.Images) {
                     var result = await _app.imageTableSync.GetFilesAsync(im);
@@ -91,7 +96,7 @@ namespace ContosoMoments.ViewModels
 
         private void DownloadStatusObserver(MobileServiceEvent obj)
         {
-            var image = Images.Find(x => x.Id == obj.Name);
+            var image = Images.Where(x => x.Id == obj.Name).FirstOrDefault();
             Debug.WriteLine($"Image download event: {image?.Id}");
 
             if (image != null) {
