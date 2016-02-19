@@ -33,10 +33,6 @@ namespace ContosoMoments.Views
             var tapSyncImage = new TapGestureRecognizer();
             tapSyncImage.Tapped += OnSyncItems;
             imgSync.GestureRecognizers.Add(tapSyncImage);
-
-            var tapSettingsImage = new TapGestureRecognizer();
-            tapSettingsImage.Tapped += OnSettings;
-            imgSettings.GestureRecognizers.Add(tapSettingsImage);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -226,12 +222,6 @@ namespace ContosoMoments.Views
         public async void OnSyncItems(object sender, EventArgs e)
         {
             await SyncItemsAsync(true);
-        }
-
-        public async void OnSettings(object sender, EventArgs e)
-        {
-            HideAndCleanupInput();
-            await Navigation.PushModalAsync(new SettingView(this._app));
         }
 
         private async Task SyncItemsAsync(bool showActivityIndicator)

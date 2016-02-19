@@ -21,10 +21,6 @@ namespace ContosoMoments.Views
             var tapLikeImage = new TapGestureRecognizer();
             tapLikeImage.Tapped += OnLike;
             imgLike.GestureRecognizers.Add(tapLikeImage);
-
-            var tapSettingsImage = new TapGestureRecognizer();
-            tapSettingsImage.Tapped += OnSettings;
-            imgSettings.GestureRecognizers.Add(tapSettingsImage);
         }
 
         public async void OnLike(object sender, EventArgs e)
@@ -37,12 +33,6 @@ namespace ContosoMoments.Views
             catch (Exception) {
                 await DisplayAlert("Error", "'Like' functionality is not available at the moment. Please try again later", "OK");
             }
-        }
-
-        public async void OnSettings(object sender, EventArgs e)
-        {
-            ImageDetailsViewModel vm = this.BindingContext as ImageDetailsViewModel;
-            await Navigation.PushModalAsync(new SettingView(App.Current as App));
         }
 
         public async void OnOpenImage(object sender, EventArgs args)

@@ -1,18 +1,17 @@
-﻿using ContosoMoments.Settings;
-using ContosoMoments.Views;
-using Microsoft.WindowsAzure.MobileServices;
-using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
-using Microsoft.WindowsAzure.MobileServices.Sync;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Xamarin.Forms;
-using Microsoft.WindowsAzure.MobileServices.Files;
-using System.Diagnostics;
+using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.Eventing;
+using Microsoft.WindowsAzure.MobileServices.Files;
+using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
+using Microsoft.WindowsAzure.MobileServices.Sync;
+
 using PCLStorage;
-using System.Collections;
-using System.Collections.Generic;
+using Xamarin.Forms;
+using ContosoMoments.Views;
 
 namespace ContosoMoments
 {
@@ -72,12 +71,6 @@ namespace ContosoMoments
             authHandler.Client = MobileService;
             AuthenticatedUser = MobileService.CurrentUser;
 
-            if (AppSettings.Current.GetValueOrDefault<bool>("ConfigChanged"))
-            {
-                ClearLocalStorage(DB_LOCAL_FILENAME);
-                AppSettings.Current.AddOrUpdateValue<bool>("ConfigChanged", false);
-            }
-
             await InitLocalStoreAsync(DB_LOCAL_FILENAME);
             InitLocalTables();
 
@@ -96,17 +89,6 @@ namespace ContosoMoments
                 ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
 #endif
                 MainPage = new NavigationPage(new AlbumsListView(this));
-            }
-        }
-
-        private void ClearLocalStorage(string localDbFilename)
-        {
-            string dataDir = DependencyService.Get<IPlatform>().GetDataPathAsync();
-            string path = Path.Combine(dataDir, localDbFilename);
-
-            if (File.Exists(path))
-            {
-                File.Delete(path);
             }
         }
 
