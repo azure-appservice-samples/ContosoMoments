@@ -67,6 +67,9 @@
               <Image Grid.Column="0" Source="{Binding Uri}" Aspect="AspectFill" />
               <Label Grid.Column="1" Text="{Binding UploadFormat}" FontSize="Small" TextColor="Black"/>
             </Grid>
+            <ViewCell.ContextActions>
+              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
+            </ViewCell.ContextActions>
           </ViewCell>
 
         </DataTemplate>
