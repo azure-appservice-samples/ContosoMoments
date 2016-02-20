@@ -63,11 +63,11 @@ namespace ContosoMoments.Views
                 var fileRef = await FileSystem.Current.LocalStorage.GetFileAsync(path);
                 await fileRef.DeleteAsync();
             }
-            catch (StorageException) {
-                await DisplayAlert("Error downloading image", "Error downloading, image size might not be available yet", "OK");
-            }
             catch (Exception e) {
-                Debug.WriteLine("Exception downloading file: " + e.Message);                
+                // Note: we should be catching a WrappedStorageException and StorageException here, but WrappedStorageException is
+                // internal in the current version of the Azure Storage library
+                Debug.WriteLine("Exception downloading file: " + e.Message);
+                await DisplayAlert("Error downloading image", "Error downloading, image size might not be available yet", "OK");
             }
         }
 
