@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImageDetailsView"
-             BackgroundColor="#8C0A4B">
+             BackgroundColor="White">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -46,19 +46,19 @@
     <!--Links to external images-->
     <StackLayout Grid.Row="3" BackgroundColor="White" Padding="10,0">
 
-      <Button Text="View small version" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="sm" >
+      <Button BackgroundColor="White" Text="View extra small" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="xs" >
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
 
-      <Button Text="View medium version" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="md" >
+      <Button BackgroundColor="White" Text="View small" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="sm" >
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
 
-      <Button Text="View large version" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="lg" >
+      <Button BackgroundColor="White" Text="View medium" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="md" >
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>      
