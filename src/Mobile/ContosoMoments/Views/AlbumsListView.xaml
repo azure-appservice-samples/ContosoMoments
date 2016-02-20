@@ -44,7 +44,7 @@
 
     <!--User and Album info-->
     <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0,10,15">
-      <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
+      <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding UserEmail}"/>
       <Label TextColor="Black" FontAttributes="Italic" Text="My Albums"/>
 
       <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10,0,10,10" >

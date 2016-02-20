@@ -42,6 +42,7 @@ namespace ContosoMoments.Views
             }
         }
 
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -57,13 +58,18 @@ namespace ContosoMoments.Views
 #if (!__WP__ && PUSH) || (__WP__ && DEBUG)
                         await viewModel.CheckUpdateNotificationRegistrationAsync(userId);
 #endif
-                        await _app.SyncAsync();
+                        await _app.SyncAlbumsAsync();
+                        
+                        if (viewModel.UserEmail == null) {
+                            viewModel.UserEmail = await _app.LoadUserIdAsync(userId);
+                        }
+
+                        #pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
+                        _app.SyncAsync();
+                        #pragma warning restore CS4014  
                     }
                     else
                         await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Using local data. Please try again when data connection is back", "OK");
-
-                    if (null == viewModel.User)
-                        await viewModel.GetUserAsync(Guid.Parse(userId));
 
                     await LoadItemsAsync();
                 }
@@ -77,7 +83,7 @@ namespace ContosoMoments.Views
 
         private async Task LoadItemsAsync()
         {
-            await viewModel.GetAlbumsAsync();
+            await viewModel.GetAlbumsAsync(_app.CurrentUserId);
 
             if (viewModel.Albums != null) {
                 albumsList.ItemsSource = null;
@@ -108,7 +114,6 @@ namespace ContosoMoments.Views
 
             if (selectedAlbum != null) {
                 var imagesListView = new ImagesList(this._app);
-                imagesListView.User = viewModel.User;
                 imagesListView.Album = selectedAlbum;
 
                 await Navigation.PushAsync(imagesListView);
@@ -229,7 +234,11 @@ namespace ContosoMoments.Views
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 HideAndCleanupInput();
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-                    await _app.SyncAsync();
+                    await _app.SyncAlbumsAsync();
+                    
+                    #pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
+                    _app.SyncAsync();
+                    #pragma warning restore CS4014
                 }
                 else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");

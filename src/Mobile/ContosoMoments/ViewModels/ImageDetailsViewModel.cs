@@ -25,17 +25,6 @@ namespace ContosoMoments.ViewModels
         public Models.Image Image { get; set; }
         public ICommand OpenImageCommand { set; get; }
 
-        private User _user;
-        public User User
-        {
-            get { return _user; }
-            set
-            {
-                _user = value;
-                OnPropertyChanged("User");
-            }
-        }
-
         private Album _album;
         public Album Album
         {

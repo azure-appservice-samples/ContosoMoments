@@ -35,17 +35,6 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        private User _user;
-        public User User
-        {
-            get { return _user; }
-            set
-            {
-                _user = value;
-                OnPropertyChanged("User");
-            }
-        }
-
         private Album _album;
         public Album Album
         {
@@ -55,6 +44,11 @@ namespace ContosoMoments.ViewModels
                 _album = value;
                 OnPropertyChanged("Album");
             }
+        }
+
+        public string UserName
+        {
+            get { return _app.CurrentUserEmail; }
         }
 
         private string _ErrorMessage = null;

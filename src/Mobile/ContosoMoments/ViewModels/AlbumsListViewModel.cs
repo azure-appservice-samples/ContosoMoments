@@ -11,6 +11,7 @@ namespace ContosoMoments.ViewModels
     public class AlbumsListViewModel : BaseViewModel
     {
         App _app;
+        string _userEmail;       
 
         public AlbumsListViewModel(MobileServiceClient client, App app)
         {
@@ -25,7 +26,7 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _ErrorMessage = value;
-                OnPropertyChanged("ErrorMessage");
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 
@@ -36,27 +37,18 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _Albums = value;
-                OnPropertyChanged("Albums");
+                OnPropertyChanged(nameof(Albums));
             }
         }
 
-        private User _user;
-        public User User
+        public string UserEmail
         {
-            get { return _user; }
+            get { return _userEmail; }
             set
             {
-                _user = value;
-                OnPropertyChanged("User");
+                _userEmail = value;
+                OnPropertyChanged(nameof(UserEmail));
             }
-        }
-
-        public async Task GetUserAsync(Guid userId)
-        {
-            var user = await _app.userTableSync.LookupAsync(userId.ToString());
-
-            if (user != null)
-                this.User = user;
         }
 
         public async Task CheckUpdateNotificationRegistrationAsync(string userId)
@@ -75,17 +67,17 @@ namespace ContosoMoments.ViewModels
 #endif
         }
 
-        public async Task GetAlbumsAsync()
+        public async Task GetAlbumsAsync(string userId)
         {
             _Albums =
                 await _app.albumTableSync
-                .Where(a => a.UserId == User.UserId.ToString() || a.IsDefault)
+                .Where(a => a.UserId == userId || a.IsDefault)
                 .ToListAsync();
         }
 
         public async Task AddNewAlbumAsync(string albumName)
         {
-            var album = new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() };
+            var album = new Album() { AlbumName = albumName, IsDefault = false, UserId = App.Instance.CurrentUserId };
             await _app.albumTableSync.InsertAsync(album);
         }
 

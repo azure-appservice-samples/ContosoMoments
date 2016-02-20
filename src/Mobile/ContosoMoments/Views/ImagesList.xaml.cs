@@ -13,7 +13,6 @@ namespace ContosoMoments.Views
 {
     public partial class ImagesList : ContentPage
     {
-        public User User { get; set; }
         public Album Album { get; set; }
 
         private App _app;
@@ -51,7 +50,6 @@ namespace ContosoMoments.Views
 
             if (imagesList.ItemsSource == null) {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
-                    viewModel.User = User;
                     viewModel.Album = Album;
                     await LoadItemsAsync();
                 }
@@ -66,7 +64,7 @@ namespace ContosoMoments.Views
                     string sourceImagePath = await platform.TakePhotoAsync(App.UIContext);
 
                     if (sourceImagePath != null) {
-                        var image = await _app.AddImageAsync(viewModel.User, viewModel.Album, sourceImagePath);
+                        var image = await _app.AddImageAsync(_app.CurrentUserId, viewModel.Album, sourceImagePath);
                         await SyncItemsAsync(true, refreshView: false);
                         viewModel.Images.Add(image);
                     }
@@ -103,7 +101,6 @@ namespace ContosoMoments.Views
                 var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
                 var detailsView = new ImageDetailsView();
                 detailsVM.Album = viewModel.Album;
-                detailsVM.User = viewModel.User;
                 detailsView.BindingContext = detailsVM;
 
                 await Navigation.PushAsync(detailsView);

@@ -12,20 +12,20 @@ using Microsoft.WindowsAzure.MobileServices.Sync;
 using PCLStorage;
 using Xamarin.Forms;
 using ContosoMoments.Views;
+using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments
 {
     public class App : Application
     {
         public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
-
+        
         //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public static string DB_LOCAL_FILENAME = "localDb.sqlite";
         public static MobileServiceClient MobileService;
         public static MobileServiceUser AuthenticatedUser;
 
         public IMobileServiceSyncTable<Models.Album> albumTableSync;
-        public IMobileServiceSyncTable<Models.User> userTableSync;
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
         public IMobileServiceSyncTable<ResizeRequest> resizeRequestSync;
 
@@ -36,6 +36,9 @@ namespace ContosoMoments
         private static Task currentDownloadTask = Task.FromResult(0);
 
         public string DataFilesPath { get; set; }
+
+        public string CurrentUserId { get; set; }
+        public string CurrentUserEmail { get; set; }
 
         public App()
         {
@@ -100,7 +103,6 @@ namespace ContosoMoments
             if (!MobileService.SyncContext.IsInitialized)
             {
                 var store = new MobileServiceSQLiteStore(localDbFilename);
-                store.DefineTable<Models.User>();
                 store.DefineTable<Models.Album>();
                 store.DefineTable<Models.Image>();
                 store.DefineTable<ResizeRequest>();
@@ -113,11 +115,17 @@ namespace ContosoMoments
             }
         }
 
+        public async Task SyncAlbumsAsync()
+        {
+            await MobileService.SyncContext.PushAsync();
+            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery());
+        }
+
         public async Task SyncAsync()
         {
             await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
-            await userTableSync.PullAsync("allUsers", userTableSync.CreateQuery()); // query ID is used for incremental sync
+
             await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery()); 
             await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery());
         }
@@ -126,9 +134,8 @@ namespace ContosoMoments
         {
             try
             {
-                userTableSync = MobileService.GetSyncTable<Models.User>(); // offline sync
-                albumTableSync = MobileService.GetSyncTable<Models.Album>(); // offline sync
-                imageTableSync = MobileService.GetSyncTable<Models.Image>(); // offline sync
+                albumTableSync = MobileService.GetSyncTable<Models.Album>(); 
+                imageTableSync = MobileService.GetSyncTable<Models.Image>(); 
                 resizeRequestSync = MobileService.GetSyncTable<ResizeRequest>();
             }
             catch (Exception ex)
@@ -164,10 +171,10 @@ namespace ContosoMoments
             await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
         }
 
-        internal async Task<Models.Image> AddImageAsync(Models.User user, Models.Album album, string sourceFile)
+        internal async Task<Models.Image> AddImageAsync(string userId, Models.Album album, string sourceFile)
         {
             var image = new Models.Image {
-                UserId = user.UserId.ToString(),
+                UserId = userId,
                 AlbumId = album.AlbumId,
                 UploadFormat = "Mobile Image"
             };
@@ -192,5 +199,13 @@ namespace ContosoMoments
         {
             await imageTableSync.DeleteFileAsync(file);
         }
+
+        internal async Task<string> LoadUserIdAsync(string userId)
+        {
+            var userInfo = await MobileService.GetTable("User").LookupAsync(userId);
+            CurrentUserEmail = userInfo["email"].ToString();
+            return CurrentUserEmail;
+        }
+
     }
 }
