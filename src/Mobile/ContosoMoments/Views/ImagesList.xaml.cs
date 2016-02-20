@@ -65,7 +65,11 @@ namespace ContosoMoments.Views
 
                     if (sourceImagePath != null) {
                         var image = await _app.AddImageAsync(_app.CurrentUserId, viewModel.Album, sourceImagePath);
-                        await SyncItemsAsync(true, refreshView: false);
+
+                        #pragma warning disable CS4014  // should not await call so that it happens in the background
+                        SyncItemsAsync(true, refreshView: false);
+                        #pragma warning restore CS4014
+
                         viewModel.Images.Add(image);
                     }
 
