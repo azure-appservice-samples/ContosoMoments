@@ -29,6 +29,7 @@ namespace ContosoMoments.Views
 
             try {
                 await vm.LikeImageAsync();
+                await DisplayAlert("Like sent!", "Like was sent to the image author", "OK");
             }
             catch (Exception) {
                 await DisplayAlert("Error", "'Like' functionality is not available at the moment. Please try again later", "OK");

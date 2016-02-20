@@ -12,7 +12,7 @@
     </Grid.RowDefinitions>
 
     <!--Header-->
-    <Grid Grid.Row="0" Padding="10,30,10,5">
+    <Grid Grid.Row="0" Padding="10">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="*"/>
@@ -20,7 +20,7 @@
         <ColumnDefinition Width="45"/>
         <ColumnDefinition Width="45"/>
       </Grid.ColumnDefinitions>
-      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center">
+      <Image Grid.Column="0" HeightRequest="40" VerticalOptions="Center">
         <Image.Source>
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
         </Image.Source>
@@ -43,9 +43,8 @@
     </Grid>
 
     <!--User and Album info-->
-    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0,10,15">
+    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="5,10,5,15">
       <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding UserEmail}"/>
-      <Label TextColor="Black" FontAttributes="Italic" Text="My Albums"/>
 
       <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10,0,10,10" >
         <Grid.RowDefinitions>
