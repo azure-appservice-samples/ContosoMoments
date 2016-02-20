@@ -37,7 +37,7 @@ namespace ContosoMoments.Views
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ErrorMessage" && viewModel.ErrorMessage != null) {
+            if (e.PropertyName == nameof(AlbumsListViewModel.ErrorMessage) && viewModel.ErrorMessage != null) {
                 DisplayAlert("Error occurred", viewModel.ErrorMessage, "Close");
             }
         }

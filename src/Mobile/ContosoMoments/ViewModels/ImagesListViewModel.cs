@@ -31,7 +31,7 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _images = value;
-                OnPropertyChanged("Images");
+                OnPropertyChanged(nameof(Images));
             }
         }
 
@@ -42,7 +42,7 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _album = value;
-                OnPropertyChanged("Album");
+                OnPropertyChanged(nameof(Album));
             }
         }
 
@@ -58,7 +58,7 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _ErrorMessage = value;
-                OnPropertyChanged("ErrorMessage");
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 

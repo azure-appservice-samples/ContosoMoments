@@ -32,7 +32,7 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _album = value;
-                OnPropertyChanged("Album");
+                OnPropertyChanged(nameof(Album));
             }
         }
 
