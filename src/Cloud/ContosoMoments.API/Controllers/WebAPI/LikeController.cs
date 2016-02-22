@@ -3,11 +3,8 @@ using ContosoMoments.MobileServer.DataLogic;
 using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Config;
 using Microsoft.Azure.NotificationHubs;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 

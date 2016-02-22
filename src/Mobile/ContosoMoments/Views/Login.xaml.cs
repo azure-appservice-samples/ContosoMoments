@@ -1,15 +1,12 @@
 ﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
-	public partial class Login : ContentPage
+    public partial class Login : ContentPage
 	{
 		public Login ()
 		{

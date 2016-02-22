@@ -1,7 +1,5 @@
 ﻿using ContosoMoments.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ContosoMoments.Settings
 {

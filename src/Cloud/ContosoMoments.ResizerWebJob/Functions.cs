@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ContosoMoments.Common;
+using ContosoMoments.Common.Enums;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
-using ContosoMoments.Common;
+using System;
 using System.Diagnostics;
-using static ContosoMoments.Common.Enums.ImageSizes;
-using ContosoMoments.Common.Enums;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.IO;
+using System.Threading.Tasks;
+using static ContosoMoments.Common.Enums.ImageSizes;
 
 namespace ContosoMoments.ResizerWebJob
 {

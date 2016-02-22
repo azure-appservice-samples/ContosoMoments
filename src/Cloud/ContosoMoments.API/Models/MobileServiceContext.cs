@@ -1,10 +1,10 @@
-﻿using System.Data.Entity;
+﻿using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server.Tables;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
-using ContosoMoments.Common.Models;
-using Microsoft.Azure.Mobile.Server.Tables;
-using System.Configuration;
-using System.Collections.Specialized;
 
 namespace ContosoMoments.MobileServer.Models
 {

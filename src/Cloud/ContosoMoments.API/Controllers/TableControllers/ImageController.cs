@@ -1,16 +1,15 @@
-﻿using System.Linq;
+﻿using ContosoMoments.Common;
+using ContosoMoments.Common.Models;
+using ContosoMoments.Common.Queue;
+using ContosoMoments.MobileServer.Models;
+using Microsoft.Azure.Mobile.Server;
+using System;
+using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using System.Web.Http.Cors;
 using System.Web.Http.OData;
-using ContosoMoments.Common.Models;
-using ContosoMoments.MobileServer.Models;
-using Microsoft.Azure.Mobile.Server;
-using System.Configuration;
-using System;
-using ContosoMoments.Common.Queue;
-using ContosoMoments.Common;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -18,14 +17,11 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
     {
         protected override void Initialize(HttpControllerContext controllerContext)
         {
-
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
             var softDeleteEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
             DomainManager = new EntityDomainManager<Image>(context, Request, enableSoftDelete: softDeleteEnabled);
         }
-
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
 
         // GET tables/Images
         public IQueryable<Image> GetAllImage()
@@ -34,14 +30,12 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public SingleResult<Image> GetImage(string id)
         {
             return Lookup(id);
         }
 
         // PATCH tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public Task<Image> PatchImage(string id, Delta<Image> patch)
         {
             return UpdateAsync(id, patch);
@@ -55,7 +49,6 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         // DELETE tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task DeleteImage(string id)
         {
             var image = Lookup(id).Queryable.First();

@@ -97,7 +97,6 @@ Global
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Android|Any CPU.Deploy.0 = Android|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Android|ARM.ActiveCfg = Android|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Android|ARM.Build.0 = Android|Any CPU
-		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Android|ARM.Deploy.0 = Android|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Android|iPhone.ActiveCfg = Android|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Android|iPhone.Build.0 = Android|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Android|iPhone.Deploy.0 = Android|Any CPU
@@ -241,8 +240,6 @@ Global
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|Any CPU.Build.0 = Android|Any CPU
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|Any CPU.Deploy.0 = Android|Any CPU
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|ARM.ActiveCfg = Android|ARM
-		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|ARM.Build.0 = Android|ARM
-		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|ARM.Deploy.0 = Android|ARM
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|iPhone.ActiveCfg = Android|Any CPU
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|iPhone.Build.0 = Android|Any CPU
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Android|iPhone.Deploy.0 = Android|Any CPU
@@ -329,7 +326,6 @@ Global
 		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|Any CPU.ActiveCfg = Android|Any CPU
 		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|Any CPU.Build.0 = Android|Any CPU
 		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|ARM.ActiveCfg = Android|Any CPU
-		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|ARM.Build.0 = Android|Any CPU
 		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|iPhone.ActiveCfg = Android|Any CPU
 		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|iPhone.Build.0 = Android|Any CPU
 		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|iPhoneSimulator.ActiveCfg = Android|Any CPU
@@ -397,7 +393,6 @@ Global
 		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|Any CPU.ActiveCfg = Android|Any CPU
 		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|Any CPU.Build.0 = Android|Any CPU
 		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|ARM.ActiveCfg = Android|Any CPU
-		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|ARM.Build.0 = Android|Any CPU
 		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|iPhone.ActiveCfg = Android|Any CPU
 		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|iPhone.Build.0 = Android|Any CPU
 		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|iPhoneSimulator.ActiveCfg = Android|Any CPU
@@ -465,7 +460,6 @@ Global
 		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|Any CPU.ActiveCfg = Android|Any CPU
 		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|Any CPU.Build.0 = Android|Any CPU
 		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|ARM.ActiveCfg = Android|Any CPU
-		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|ARM.Build.0 = Android|Any CPU
 		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|iPhone.ActiveCfg = Android|Any CPU
 		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|iPhone.Build.0 = Android|Any CPU
 		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|iPhoneSimulator.ActiveCfg = Android|Any CPU
@@ -533,7 +527,6 @@ Global
 		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|Any CPU.ActiveCfg = Android|Any CPU
 		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|Any CPU.Build.0 = Android|Any CPU
 		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|ARM.ActiveCfg = Android|Any CPU
-		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|ARM.Build.0 = Android|Any CPU
 		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|iPhone.ActiveCfg = Android|Any CPU
 		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|iPhone.Build.0 = Android|Any CPU
 		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|iPhoneSimulator.ActiveCfg = Android|Any CPU
@@ -601,7 +594,6 @@ Global
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|Any CPU.ActiveCfg = Android|Any CPU
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|Any CPU.Build.0 = Android|Any CPU
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|ARM.ActiveCfg = Android|Any CPU
-		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|ARM.Build.0 = Android|Any CPU
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|iPhone.ActiveCfg = Android|Any CPU
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|iPhone.Build.0 = Android|Any CPU
 		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|iPhoneSimulator.ActiveCfg = Android|Any CPU

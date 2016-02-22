@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Microsoft.Azure.NotificationHubs;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
-using Microsoft.Azure.NotificationHubs;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ContosoMoments.Common.Notification
 {

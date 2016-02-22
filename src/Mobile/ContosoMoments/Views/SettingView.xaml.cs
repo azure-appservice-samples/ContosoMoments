@@ -1,11 +1,6 @@
 ﻿using ContosoMoments.Settings;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 #if __WP__
 using Windows.Networking.Sockets;
 #elif __DROID__

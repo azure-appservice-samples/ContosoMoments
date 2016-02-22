@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ContosoMoments.Models;
+using System;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using ContosoMoments.Models;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 #if __WP__
 using Windows.Networking.Sockets;

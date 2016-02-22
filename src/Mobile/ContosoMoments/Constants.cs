@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ContosoMoments
+﻿namespace ContosoMoments
 {
     public static class Constants
     {

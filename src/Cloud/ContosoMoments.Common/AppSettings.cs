@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Microsoft.Azure;
+﻿using Microsoft.Azure;
 
 namespace ContosoMoments.Common
 {
@@ -13,6 +12,6 @@ namespace ContosoMoments.Common
         public static string DefaultAlbumId = CloudConfigurationManager.GetSetting("DefaultAlbumId");
         public static string DefaultUserId = CloudConfigurationManager.GetSetting("DefaultUserId");
         public static string ServiceBusConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
-        public static string StorageWebUri = string.Format("https://{0}.blob.core.windows.net/", AppSettings.StorageAccountName);
+        public static string StorageWebUri = string.Format("https://{0}.blob.core.windows.net/", StorageAccountName);
     }
 }

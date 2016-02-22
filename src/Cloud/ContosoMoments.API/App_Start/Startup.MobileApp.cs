@@ -2,12 +2,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // ---------------------------------------------------------------------------- 
 
+using ContosoMoments.MobileServer.Models;
+using Microsoft.Azure.Mobile.Server.Config;
+using Newtonsoft.Json;
+using Owin;
 using System.Data.Entity;
 using System.Web.Http;
-using Microsoft.Azure.Mobile.Server.Config;
-using Owin;
-using ContosoMoments.MobileServer.Models;
-using Newtonsoft.Json;
 
 namespace ContosoMoments.MobileServer
 {
@@ -16,7 +16,7 @@ namespace ContosoMoments.MobileServer
         public static void ConfigureMobileApp(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
-            config.EnableCors();
+            config.EnableCors(new System.Web.Http.Cors.EnableCorsAttribute("*", "*", "*", "*"));
             config.MapHttpAttributeRoutes();
             config.EnableSystemDiagnosticsTracing();
             config.Formatters.JsonFormatter.SerializerSettings.Re‌​ferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -26,10 +26,10 @@ namespace ContosoMoments.MobileServer
                 .ApplyTo(config);
 
             Database.SetInitializer(new ContosoMomentsDBInitializer());
-          
-            app.UseWebApi(config);          
+
+            app.UseWebApi(config);
         }
     }
 
-   
+
 }

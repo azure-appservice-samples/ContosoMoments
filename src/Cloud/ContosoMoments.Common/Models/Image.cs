@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Azure.Mobile.Server;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Azure.Mobile.Server;
 
 namespace ContosoMoments.Common.Models
 {

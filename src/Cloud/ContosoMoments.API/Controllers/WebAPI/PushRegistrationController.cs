@@ -25,10 +25,13 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
                 if (null != plat)
                 {
-                    ctx.DeviceRegistrations.Add(new Common.Models.DeviceRegistration() { Id = Guid.NewGuid().ToString(),
-                                                                                         InstallationId = deviceInstallInfo.InstallationId,
-                                                                                         UserId = deviceInstallInfo.UserId,
-                                                                                         Platform = plat.Value });
+                    ctx.DeviceRegistrations.Add(new Common.Models.DeviceRegistration()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        InstallationId = deviceInstallInfo.InstallationId,
+                        UserId = deviceInstallInfo.UserId,
+                        Platform = plat.Value
+                    });
                     isChanged = true;
                 }
             }

@@ -1,20 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+using Android.Webkit;
 using ContosoMoments.Droid;
 using ContosoMoments.Models;
-using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices;
+using System.Threading.Tasks;
 using Xamarin.Forms;
-using Android.Webkit;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MobileClient))]
 namespace ContosoMoments.Droid

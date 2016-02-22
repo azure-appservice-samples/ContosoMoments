@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ContosoMoments.Models
+﻿namespace ContosoMoments.Models
 {
     public interface ISettings
     {

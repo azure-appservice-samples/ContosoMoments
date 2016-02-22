@@ -1,20 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
+using Android.Util;
 using Gcm.Client;
 using Microsoft.WindowsAzure.MobileServices;
-using Android.Util;
-using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Text;
 
 [assembly: Permission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]
 [assembly: UsesPermission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]

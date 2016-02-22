@@ -5,7 +5,6 @@ using ContosoMoments.MobileServer.DataLogic;
 using Microsoft.Azure.Mobile.Server.Config;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Cors;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
@@ -13,7 +12,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
     [MobileAppController]
     public class CommitBlobController : ApiController
     {
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task<CommitBlobResponse> Post([FromBody]CommitBlobRequest commitBlobRequest)
         {
             var res = new CommitBlobResponse();
