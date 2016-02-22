@@ -9,10 +9,6 @@ namespace ContosoMoments.Common.Models
     {
         public string UploadFormat { get; set; }
 
-        // TOOD: remove ContainerName field
-        public string ContainerName { get; set; }
-        public string FileName { get; set; }
-
         [Column("Album_Id")]
         public string AlbumId { get; set; }
 
