@@ -50,13 +50,13 @@ namespace ContosoMoments
             bool retVal = true;
 
             try {
-                var res = await App.MobileService.InvokeApiAsync<string>("Getway", System.Net.Http.HttpMethod.Get, null);
+                var res = await App.MobileService.InvokeApiAsync<string>("Defaults", System.Net.Http.HttpMethod.Get, null);
 
-                if (res == null && res.Length == 0) {
+                if (res == null) {
                     retVal = false;
                 }
             }
-            catch //(Exception ex)
+            catch (Exception)
             {
                 retVal = false;
             }
