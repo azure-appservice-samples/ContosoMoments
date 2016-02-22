@@ -8,6 +8,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Diagnostics;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
@@ -86,28 +87,30 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
                 // Do something here with the Facebook user information.
                 fbInfo = await resp.Content.ReadAsStringAsync();
+                Trace.WriteLine("fbInfo: " + fbInfo);
             }
 
             JObject fbObject = JObject.Parse(fbInfo);
             var emailToken = fbObject.GetValue("email");
+            Trace.WriteLine("email: " + emailToken);
 
             return emailToken.ToString();
         }
 
         private static string CheckAddEmailToDB(string email)
         {
-            var identifier = GenerateHashFromEmail(email);
+            //var identifier = GenerateHashFromEmail(email);
 
             using (var ctx = new MobileServiceContext())
             {
-                var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
+                var user = ctx.Users.FirstOrDefault(x => x.Email == email);
 
                 // User Found, Exit
                 if (default(Common.Models.User) != user)
                     return user.Id;
 
                 // New User, Create
-                return AddUser(identifier, ctx);
+                return AddUser(email, ctx);
             }
         }
 

@@ -16,11 +16,16 @@ namespace ContosoMoments.ResizerWebJob
         //   private const string resizeQueue = AppSettings.ResizeQueueName;
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
-            [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobInput,
-            [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobOutputExtraSmall,
-            [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
-            [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
+            [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobInput,
+            [Blob("{BlobNameXS}/{Filename}")] CloudBlockBlob blobOutputExtraSmall,
+            [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobOutputSmall,
+            [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobOutputMedium)
         {
+            Trace.TraceInformation("Blob URI: " + blobInfo.BlobUri);
+            Trace.TraceInformation("Blob guid: " + blobInfo.FileGuidName);
+            Trace.TraceInformation("Blob imageID: " + blobInfo.ImageId);
+            Trace.TraceInformation("Blob extension: " + blobInfo.FileExt);
+
             Stream input = await blobInput.OpenReadAsync();
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
             bool res = await scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
@@ -41,6 +46,7 @@ namespace ContosoMoments.ResizerWebJob
             Trace.TraceInformation("Done processing 'resizerequest' message");
         }
 
+
         private static void TraceInfo(string imageId, string size, bool res)
         {
             if (res)
@@ -49,30 +55,30 @@ namespace ContosoMoments.ResizerWebJob
                 Trace.TraceWarning("Scaling " + imageId + " to " + size + " size failed. Please see previous errors in log");
         }
 
-        public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
-            [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobLarge,
-            [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobExtraSmall,
-            [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobSmall,
-            [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobMedium)
-        {
-            try
-            {
-                Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
-                await blobLarge.DeleteAsync();
-                Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
-                await blobExtraSmall.DeleteAsync();
-                Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
-                await blobSmall.DeleteAsync();
-                Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
-                await blobMedium.DeleteAsync();
+        //public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
+        //    [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobLarge,
+        //    [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobExtraSmall,
+        //    [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobSmall,
+        //    [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobMedium)
+        //{
+        //    try
+        //    {
+        //        Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
+        //        await blobLarge.DeleteAsync();
+        //        Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
+        //        await blobExtraSmall.DeleteAsync();
+        //        Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
+        //        await blobSmall.DeleteAsync();
+        //        Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
+        //        await blobMedium.DeleteAsync();
 
-                Trace.TraceInformation("Done processing 'deleterequest' message");
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError("Error while deleting images: " + ex.Message);
-            }
-        }
+        //        Trace.TraceInformation("Done processing 'deleterequest' message");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Trace.TraceError("Error while deleting images: " + ex.Message);
+        //    }
+        //}
         #endregion
 
         #region Private functionality

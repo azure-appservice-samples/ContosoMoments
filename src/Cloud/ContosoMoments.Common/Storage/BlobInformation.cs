@@ -4,40 +4,27 @@ namespace ContosoMoments.Common
 {
     public class BlobInformation
     {
-        public const string DEFAULT_FILE_EXT = "jpg";
-        public BlobInformation(string fileExt)
+        public const string DefaultFileExtension = "jpg";
+        public const string ContainerPrefix = "images";
+
+        public BlobInformation(string fileExt = DefaultFileExtension)
         {
             FileExt = fileExt;
-        }
-
-        public BlobInformation()
-        {
-            //FileExt = DEFAULT_FILE_EXT;
         }
 
         public Uri BlobUri { get; set; }
 
         public string FileGuidName { get; set; }
 
-        public string BlobName
-        {
-            get
-            {
-                if (null != BlobUri)
-                    return BlobUri.Segments[BlobUri.Segments.Length - 1];
-                else
-                    return string.Empty;
-            }
-        }
+        public string ImageId { get; set; }
+
+        public string FileExt { get; set; }
 
         public string BlobNameXS
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("xs/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return $"{ContainerPrefix}-xs";
             }
         }
 
@@ -45,10 +32,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("sm/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return $"{ContainerPrefix}-sm";
             }
         }
 
@@ -56,10 +40,7 @@ namespace ContosoMoments.Common
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("md/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return $"{ContainerPrefix}-md";
             }
         }
 
@@ -67,24 +48,19 @@ namespace ContosoMoments.Common
         {
             get
             {
-                if (null != BlobUri)
-                    return string.Format("lg/{0}.{1}", ImageId, FileExt);
-                else
-                    return string.Empty;
+                return $"{ContainerPrefix}-lg";
             }
         }
 
-        public string ImageId { get; set; }
-
-        string _fileExt = DEFAULT_FILE_EXT;
-        public string FileExt
+        public string Filename
         {
             get
             {
-                return _fileExt;
-            }
+                if (FileExt.Length > 0)
+                    return $"{ImageId}.{FileExt}";
 
-            set { _fileExt = value; }
+                return ImageId;
+            }
         }
     }
 }

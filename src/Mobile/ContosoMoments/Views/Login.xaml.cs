@@ -42,8 +42,7 @@ namespace ContosoMoments.Views
                 ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
 #endif
 
-                //Navigation.InsertPageBefore(new ImagesList(), this);
-                Navigation.InsertPageBefore(new AlbumsListView(), this);
+                Navigation.InsertPageBefore(new AlbumsListView(App.Current as App), this);
                 await Navigation.PopAsync();
             }
             catch (InvalidOperationException ex)
@@ -53,7 +52,7 @@ namespace ContosoMoments.Views
                     messageLabel.Text = "Authentication cancelled by the user";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 messageLabel.Text = "Authentication failed";
             }

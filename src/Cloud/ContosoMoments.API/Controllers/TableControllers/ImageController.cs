@@ -41,7 +41,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             return UpdateAsync(id, patch);
         }
 
-        // POST tables/Images
+        // POST tables/Image
         public async Task<IHttpActionResult> PostImage(Image item)
         {
             Image current = await InsertAsync(item);
@@ -51,20 +51,21 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         // DELETE tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public async Task DeleteImage(string id)
         {
-            var image = Lookup(id).Queryable.First();
-            var filenameParts = image.FileName.Split('.');
-            var filename = filenameParts[0];
-            var fileExt = filenameParts[1];
-            var containerName = image.ContainerName;
+            // TODO: delete images associated with the record
 
-            var qm = new QueueManager();
-            var blobInfo = new BlobInformation(fileExt);
-            blobInfo.BlobUri = new Uri(containerName);
-            blobInfo.ImageId = filename;
-            await qm.PushToDeleteQueue(blobInfo);
+            //var image = Lookup(id).Queryable.First();
+            //var filenameParts = image.FileName.Split('.');
+            //var filename = filenameParts[0];
+            //var fileExt = filenameParts[1];
+            //var containerName = image.ContainerName;
+
+            //var qm = new QueueManager();
+            //var blobInfo = new BlobInformation(fileExt);
+            //blobInfo.BlobUri = new Uri(containerName);
+            //blobInfo.ImageId = filename;
+            //await qm.PushToDeleteQueue(blobInfo);
 
             await DeleteAsync(id);
-            return;
         }
     }
 }

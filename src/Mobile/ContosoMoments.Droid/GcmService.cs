@@ -1,8 +1,12 @@
+using System;
+using System.Text;
+
 using Android.App;
 using Android.Content;
-using Android.Util;
+
 using Gcm.Client;
 using Microsoft.WindowsAzure.MobileServices;
+using Android.Util;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Text;
@@ -40,29 +44,24 @@ namespace ContosoMoments.Droid
         {
             MobileServiceClient client = App.MobileService;
 
-            if (null != RegistrationID && null != client)
-            {
+            if (null != RegistrationID && null != client) {
                 var push = client.GetPush();
 
-                MainActivity.DefaultService.RunOnUiThread(async () =>
-                {
-                    try
-                    {
+                MainActivity.DefaultService.RunOnUiThread(async () => {
+                    try {
                         const string templateBodyGCM = "{\"data\":{\"message\":\"$(messageParam)\"}}";
 
                         JObject templates = new JObject();
                         templates["genericMessage"] = new JObject
                         {
-                          {"body", templateBodyGCM}
+                            { "body", templateBodyGCM }
                         };
-                        //var jObject = JObject.Parse(templates);
 
                         await push.RegisterAsync(RegistrationID, templates);
                         Log.Verbose(PushHandlerBroadcastReceiver.TAG, "NotificationHub registration successful");
 
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex) {
                         Log.Error(PushHandlerBroadcastReceiver.TAG, "RegisterWithMobilePushNotifications: " + ex.Message);
                     }
                 });
@@ -76,23 +75,7 @@ namespace ContosoMoments.Droid
 
             if (null != registrationId)
                 RegisterWithMobilePushNotifications();
-            //createNotification("GcmService Registered...", "The device has been Registered, Tap to View!");
         }
-
-        //public async void Register(Microsoft.WindowsAzure.MobileServices.Push push, IEnumerable<string> tags)
-        //{
-        //    try
-        //    {
-        //        const string template = "{\"data\":{\"message\":\"$(message)\"}}";
-
-        //        await push.RegisterAsync(RegistrationID, Newtonsoft.Json.Linq.JObject.Parse(template));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(ex.Message);
-        //        Debugger.Break();
-        //    }
-        //}
 
         protected override void OnMessage(Context context, Intent intent)
         {
@@ -100,8 +83,7 @@ namespace ContosoMoments.Droid
 
             var msg = new StringBuilder();
 
-            if (intent != null && intent.Extras != null)
-            {
+            if (intent != null && intent.Extras != null) {
                 foreach (var key in intent.Extras.KeySet())
                     msg.AppendLine(key + "=" + intent.Extras.Get(key).ToString());
             }
@@ -113,15 +95,13 @@ namespace ContosoMoments.Droid
             edit.Commit();
 
             string message = intent.Extras.GetString("message");
-            if (!string.IsNullOrEmpty(message))
-            {
+            if (!string.IsNullOrEmpty(message)) {
                 createNotification("New like received!", "Liked image: " + message);
                 return;
             }
 
             string msg2 = intent.Extras.GetString("msg");
-            if (!string.IsNullOrEmpty(msg2))
-            {
+            if (!string.IsNullOrEmpty(msg2)) {
                 createNotification("New hub message!", msg2);
                 return;
             }

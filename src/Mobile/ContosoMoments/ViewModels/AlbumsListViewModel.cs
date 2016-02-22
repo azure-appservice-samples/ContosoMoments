@@ -11,11 +11,12 @@ namespace ContosoMoments.ViewModels
 {
     public class AlbumsListViewModel : BaseViewModel
     {
-        //IMobileServiceTable<Album> albumTable;
-        //IMobileServiceTable<User> userTable;
+        App _app;
+        string _userEmail;       
 
-        public AlbumsListViewModel(MobileServiceClient client)
+        public AlbumsListViewModel(MobileServiceClient client, App app)
         {
+            _app = app;
             _client = client;
         }
 
@@ -26,62 +27,28 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _ErrorMessage = value;
-                OnPropertyChanged("ErrorMessage");
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 
-        private bool _IsPending;
-        public bool IsPending
-        {
-            get { return _IsPending; }
-            set
-            {
-                _IsPending = value;
-                OnPropertyChanged("IsPending");
-            }
-        }
-
-        // View model properties
-        private /*MobileServiceCollection<Album, Album>*/ List<Album> _Albums;
-        public /*MobileServiceCollection<Album, Album>*/ List<Album> Albums
+        private List<Album> _Albums;
+        public List<Album> Albums
         {
             get { return _Albums; }
             set
             {
                 _Albums = value;
-                OnPropertyChanged("Albums");
+                OnPropertyChanged(nameof(Albums));
             }
         }
 
-        private User _user;
-        public User User
+        public string UserEmail
         {
-            get { return _user; }
+            get { return _userEmail; }
             set
             {
-                _user = value;
-                OnPropertyChanged("User");
-            }
-        }
-
-        public async Task GetUserAsync(Guid userId)
-        {
-            try
-            {
-                //userTable = _client.GetTable<User>();
-                //var user = await userTable.LookupAsync(userId);
-                var user = await (App.Current as App).userTableSync.LookupAsync(userId.ToString());
-
-                if (null != user)
-                    User = user;
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
+                _userEmail = value;
+                OnPropertyChanged(nameof(UserEmail));
             }
         }
 
@@ -101,88 +68,28 @@ namespace ContosoMoments.ViewModels
 #endif
         }
 
-        public async Task GetAlbumsAsync()
+        public async Task GetAlbumsAsync(string userId)
         {
-            IsPending = true;
-            ErrorMessage = null;
-
-            try
-            {
-                //var albumTable = _client.GetTable<Album>();
-                //var zzz = await albumTable.ToCollectionAsync();
-
-                //Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();
-                var albums = await (App.Current as App).albumTableSync.ToListAsync();
-                var res = from album in albums
-                          where album.UserId == User.UserId.ToString() ||
-                                album.IsDefault
-                          select album;
-
-                _Albums = res.ToList();
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
-            }
-            finally
-            {
-                IsPending = false;
-            }
+            _Albums =
+                await _app.albumTableSync
+                .Where(a => a.UserId == userId || a.IsDefault)
+                .ToListAsync();
         }
 
-        public async Task<bool> AddNewAlbumAsync(string albumName)
-        {
-            bool bRes = true; //Assume success
-
-            try
+        public async Task AddNewAlbumAsync(string albumName)
             {
-                //await albumTable.InsertAsync(new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() });
-                await (App.Current as App).albumTableSync.InsertAsync(new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() });
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            var album = new Album() { AlbumName = albumName, IsDefault = false, UserId = App.Instance.CurrentUserId };
+            await _app.albumTableSync.InsertAsync(album);
         }
 
-        public async Task<bool> DeleteAlbumAsync(Album selectedAlbum)
-        {
-            bool bRes = true; //Assume success
-
-            try
+        public async Task DeleteAlbumAsync(Album selectedAlbum)
             {
-                //await albumTable.DeleteAsync(selectedAlbum);
-                await (App.Current as App).albumTableSync.DeleteAsync(selectedAlbum);
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            await _app.albumTableSync.DeleteAsync(selectedAlbum);
         }
 
-        public async Task<bool> UpdateAlbumAsync(Album selectedAlbum)
-        {
-            bool bRes = true; //Assume success
-
-            try
+        public async Task UpdateAlbumAsync(Album selectedAlbum)
             {
-                //await albumTable.UpdateAsync(selectedAlbum);
-                await (App.Current as App).albumTableSync.UpdateAsync(selectedAlbum);
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            await _app.albumTableSync.UpdateAsync(selectedAlbum);
         }
     }
 }

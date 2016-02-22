@@ -1,103 +1,77 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using Microsoft.WindowsAzure.MobileServices.Files;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+using PCLStorage;
 
 namespace ContosoMoments.Models
 {
-    public class Image
+    public class Image : INotifyPropertyChanged
     {
-        string id;
-        string imageId;
-        string imageFormat;
-        string containerName;
-        Album album;
-        User user;
-        string albumId;
-        string userId;
+        public string Id { get; set; }
+        public string UploadFormat { get; set; }
+        public Album Album { get; set; }
+        public string AlbumId { get; set; }
+        public string UserId { get; set; }
 
-        [JsonProperty(PropertyName = "Id")]
-        public string Id
+        private string _uri;
+        private MobileServiceFile _file;
+        private bool _imageLoaded;
+
+        [JsonIgnore]
+        public MobileServiceFile File
         {
-            get { return id; }
-            set { id = value; }
+            get { return _file; }
+            set
+        {
+                _file = value;
+
+                if (_file != null) {
+                    FileHelper.GetLocalFilePathAsync(Id, _file.Name, App.Instance.DataFilesPath)
+                        .ContinueWith(x => this.Uri = x.Result);
         }
 
-        [JsonProperty(PropertyName = "FileName")]
-        public string ImageId
-        {
-            get { return imageId; }
-            set { imageId = value; }
+                OnPropertyChanged(nameof(File));
         }
-
-        [JsonProperty(PropertyName = "UploadFormat")]
-        public string ImageFormat
-        {
-            get { return imageFormat; }
-            set { imageFormat = value; }
-        }
-
-        [JsonProperty(PropertyName = "ContainerName")]
-        public string ContainerName
-        {
-            get { return containerName; }
-            set { containerName = value; }
-        }
-
-        [JsonProperty(PropertyName = "Album")]
-        public Album Album
-        {
-            get { return album; }
-            set { album = value; }
-        }
-
-        [JsonProperty(PropertyName = "AlbumId")]
-        public string AlbumId
-        {
-            get { return albumId; }
-            set { albumId = value; }
-        }
-
-        [JsonProperty(PropertyName = "User")]
-        public User User
-        {
-            get { return user; }
-            set { user = value; }
-        }
-
-        [JsonProperty(PropertyName = "UserId")]
-        public string UserId
-        {
-            get { return userId; }
-            set { userId = value; }
         }
 
         [JsonIgnore]
-        public IDictionary<string, Uri> ImagePath
+        public string Uri
         {
             get
+        {
+                return ImageLoaded ? _uri : "";
+        }
+
+            set
+        {
+                _uri = value;
+                OnPropertyChanged(nameof(Uri));
+        }
+        }
+
+        [JsonIgnore]
+        public bool ImageLoaded
+        {
+            get { return _imageLoaded; }
+            set
             {
-                Dictionary<string, Uri> retVal = new Dictionary<string, Uri>();
-
-                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}", containerName, imageId)));
-                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}", containerName, imageId)));
-                retVal.Add("md", new Uri(string.Format("{0}/md/{1}", containerName, imageId)));
-                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}", containerName, imageId)));
-
-                return retVal;
+                _imageLoaded = value;
+                OnPropertyChanged(nameof(ImageLoaded));
+                OnPropertyChanged(nameof(Uri));
             }
         }
 
-        [Version]
-        public string Version { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        [CreatedAt]
-        public DateTime CreatedAt { get; set; }
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
-        [UpdatedAt]
-        public DateTime UpdatedAt { get; set; }
-
-        [Deleted]
-        public bool Deleted { get; set; }
+        public override string ToString()
+        {
+            return $"+++Image -- Id: {Id}    File: {File?.Name}   Uri: {Uri}   ImageLoaded: {ImageLoaded}";
+        }
     }
 }

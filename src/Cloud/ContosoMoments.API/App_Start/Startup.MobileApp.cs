@@ -26,10 +26,10 @@ namespace ContosoMoments.MobileServer
                 .ApplyTo(config);
 
             Database.SetInitializer(new ContosoMomentsDBInitializer());
-
-            app.UseWebApi(config);
+          
+            app.UseWebApi(config);          
         }
     }
 
-
+   
 }

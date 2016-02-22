@@ -2,13 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImageDetailsView"
-             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments"
-             BackgroundColor="#8C0A4B">
-  <ContentPage.Resources>
-    <ResourceDictionary>
-      <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
-    </ResourceDictionary>
-  </ContentPage.Resources>
+             BackgroundColor="White">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -31,24 +25,17 @@
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
         </Image.Source>
       </Image>
-
-      <!--<Label Text="Contoso Moments" FontSize="28" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>-->
-      <Image VerticalOptions="Center" Grid.Column="2" HeightRequest="30" WidthRequest="30" x:Name="imgSettings">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
-        </Image.Source>
-      </Image>
     </Grid>
-    
+
     <!--User and Album info-->
     <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0">
-      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
-      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
+      <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
+      <Label TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
     </StackLayout>
 
     <!--Image preview-->
     <Grid Grid.Row="2" Padding="10,0">
-      <Image Source="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+      <Image Source="{Binding Image.Uri}" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill"/>
       <Image x:Name="imgLike" VerticalOptions="End" HorizontalOptions="End">
         <Image.Source>
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/like.png" Android="like.png" WinPhone="Assets/like.png"/>
@@ -58,21 +45,25 @@
 
     <!--Links to external images-->
     <StackLayout Grid.Row="3" BackgroundColor="White" Padding="10,0">
-      <Button Text="Open small image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='sm'}">
+
+      <Button BackgroundColor="White" Text="View extra small" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="xs" >
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
-      <Button Text="Open medium image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='md'}">
+
+      <Button BackgroundColor="White" Text="View small" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="sm" >
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
         </Button.Image>
       </Button>
-      <Button Text="Open large image in browser" TextColor="Black" HorizontalOptions="Start" Command="{Binding OpenImageCommand}" CommandParameter="{Binding Image.ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='lg'}">
+
+      <Button BackgroundColor="White" Text="View medium" TextColor="Black" HorizontalOptions="Start" Clicked="OnOpenImage" CommandParameter="md" >
         <Button.Image>
           <OnPlatform x:TypeArguments="FileImageSource" iOS="Assets/link.png" Android="link.png" WinPhone="Assets/link.png"/>
-        </Button.Image>
+        </Button.Image>      
       </Button>
+      
     </StackLayout>
   </Grid>
 

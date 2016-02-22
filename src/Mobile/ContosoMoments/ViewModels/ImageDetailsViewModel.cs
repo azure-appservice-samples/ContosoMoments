@@ -5,6 +5,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using System.Diagnostics;
+using Microsoft.WindowsAzure.MobileServices.Files;
+using Microsoft.WindowsAzure.MobileServices.Files.Sync;
+using System.IO;
 
 namespace ContosoMoments.ViewModels
 {
@@ -14,26 +18,10 @@ namespace ContosoMoments.ViewModels
         {
             _client = client;
             this.Image = image;
-
-            this.OpenImageCommand = new Command<ImageSource>((source) =>
-            {
-                Device.OpenUri((Uri)source.GetValue(UriImageSource.UriProperty));
-            });
         }
 
         public Models.Image Image { get; set; }
-        public ICommand OpenImageCommand { protected set; get; }
-
-        private User _user;
-        public User User
-        {
-            get { return _user; }
-            set
-            {
-                _user = value;
-                OnPropertyChanged("User");
-            }
-        }
+        public ICommand OpenImageCommand { set; get; }
 
         private Album _album;
         public Album Album
@@ -42,27 +30,14 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _album = value;
-                OnPropertyChanged("Album");
+                OnPropertyChanged(nameof(Album));
             }
         }
 
-        public async Task<bool> LikeImageAsync()
+        public async Task LikeImageAsync()
         {
-            bool bRes = true; //Assume success
-            try
-            {
-                string body = string.Format("{{'imageId':'{0}'}}", Image.Id.ToString());
-
-                var res = await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
-
-                bRes = res;
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            string body = string.Format("{{'imageId':'{0}'}}", Image.Id.ToString());
+            var res = await App.MobileService.InvokeApiAsync<string, bool>("Like", body, HttpMethod.Post, null);
         }
     }
 }
