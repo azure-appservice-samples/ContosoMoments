@@ -238,8 +238,6 @@
     <Compile Include="Controllers\WebAPI\PushRegistrationController.cs" />
     <Compile Include="Controllers\WebAPI\ManageUserController.cs" />
     <Compile Include="Controllers\TableControllers\AlbumController.cs" />
-    <Compile Include="Controllers\WebAPI\CommitBlobController.cs" />
-    <Compile Include="Controllers\WebAPI\GetSasUrlController.cs" />
     <Compile Include="Controllers\TableControllers\ImageController.cs" />
     <Compile Include="Controllers\TableControllers\UserController.cs" />
     <Compile Include="Controllers\WebAPI\LikeController.cs" />
