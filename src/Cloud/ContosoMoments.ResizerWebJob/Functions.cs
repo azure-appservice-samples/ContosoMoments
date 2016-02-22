@@ -32,17 +32,17 @@ namespace ContosoMoments.ResizerWebJob
 
             Stream input = await blobInput.OpenReadAsync();
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            bool res = await scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
+            bool res = scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "MEDIUM", res);
 
             input.Position = 0;
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
-            res = await scaleImage(input, blobOutputSmall, Small, blobInput.Properties.ContentType);
+            res = scaleImage(input, blobOutputSmall, Small, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "SMALL", res);
 
             input.Position = 0;
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            res = await scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
+            res = scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
 
 
@@ -86,7 +86,7 @@ namespace ContosoMoments.ResizerWebJob
         #endregion
 
         #region Private functionality
-        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, string contentType)
+        private static bool scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, string contentType)
         {
             bool retVal = true; //Assume success
 
