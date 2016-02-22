@@ -34,7 +34,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             {
                 return Lookup(id);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

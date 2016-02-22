@@ -1,11 +1,9 @@
 ﻿using ContosoMoments.Models;
 using ContosoMoments.ViewModels;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
-using System.ComponentModel;
 
 namespace ContosoMoments.Views
 {

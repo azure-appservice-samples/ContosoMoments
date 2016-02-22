@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
+﻿using ContosoMoments.Views;
 using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.Eventing;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using Microsoft.WindowsAzure.MobileServices.Sync;
-
 using PCLStorage;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 using Xamarin.Forms;
-using ContosoMoments.Views;
-using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments
 {

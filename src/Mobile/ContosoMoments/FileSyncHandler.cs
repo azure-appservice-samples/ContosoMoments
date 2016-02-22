@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.WindowsAzure.MobileServices.Files.Sync;
-using Microsoft.WindowsAzure.MobileServices.Files;
+﻿using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
-using Xamarin.Forms;
+using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace ContosoMoments
 {

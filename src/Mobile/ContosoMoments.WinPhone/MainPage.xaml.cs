@@ -20,34 +20,34 @@ namespace ContosoMoments.WinPhone
 
 			global::Xamarin.Forms.Forms.Init ();
 
-           
-            LoadApplication(new ContosoMoments.App ());
+		   
+			LoadApplication(new ContosoMoments.App ());
 
-            ContosoMoments.App.Instance.ShouldTakePicture += () => {
-                CameraCaptureTask cameraCaptureTask = new CameraCaptureTask();
-                cameraCaptureTask.Completed += CameraCaptureTaskOnCompleted;
+			ContosoMoments.App.Instance.ShouldTakePicture += () => {
+				CameraCaptureTask cameraCaptureTask = new CameraCaptureTask();
+				cameraCaptureTask.Completed += CameraCaptureTaskOnCompleted;
 
-                cameraCaptureTask.Show();
-            };
-        }
+				cameraCaptureTask.Show();
+			};
+		}
 
-        private void CameraCaptureTaskOnCompleted(object sender, PhotoResult e)
-        {
-            bool imageReady = true;
-            if (e.TaskResult == TaskResult.None)
-            {
-                imageReady = false;
-            }
+		private void CameraCaptureTaskOnCompleted(object sender, PhotoResult e)
+		{
+			bool imageReady = true;
+			if (e.TaskResult == TaskResult.None)
+			{
+				imageReady = false;
+			}
 
-            if (e.TaskResult == TaskResult.Cancel)
-            {
-                imageReady = false;
-            }
+			if (e.TaskResult == TaskResult.Cancel)
+			{
+				imageReady = false;
+			}
 
-            if (imageReady)
-                ContosoMoments.App.Instance.ShowCapturedImage(e.ChosenPhoto);
-            else
-                ContosoMoments.App.Instance.ShowCapturedImage(null);
-        }
-    }
+			if (imageReady)
+				ContosoMoments.App.Instance.ShowCapturedImage(e.ChosenPhoto);
+			else
+				ContosoMoments.App.Instance.ShowCapturedImage(null);
+		}
+	}
 }

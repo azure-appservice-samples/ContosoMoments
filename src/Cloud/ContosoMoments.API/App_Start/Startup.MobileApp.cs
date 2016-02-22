@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Owin;
 using System.Data.Entity;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace ContosoMoments.MobileServer
 {
@@ -16,7 +17,7 @@ namespace ContosoMoments.MobileServer
         public static void ConfigureMobileApp(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
-            config.EnableCors(new System.Web.Http.Cors.EnableCorsAttribute("*", "*", "*", "*"));
+            config.EnableCors(new EnableCorsAttribute("*", "*", "*", "*"));
             config.MapHttpAttributeRoutes();
             config.EnableSystemDiagnosticsTracing();
             config.Formatters.JsonFormatter.SerializerSettings.Re‌​ferenceLoopHandling = ReferenceLoopHandling.Ignore;

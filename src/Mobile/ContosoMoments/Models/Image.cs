@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using Microsoft.WindowsAzure.MobileServices.Files;
+﻿using Microsoft.WindowsAzure.MobileServices.Files;
 using Newtonsoft.Json;
-using PCLStorage;
+using System.ComponentModel;
 
 namespace ContosoMoments.Models
 {

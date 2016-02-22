@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using ContosoMoments.Models;
-using Xamarin.Forms;
+﻿using ContosoMoments.Models;
 using System;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace ContosoMoments
 {

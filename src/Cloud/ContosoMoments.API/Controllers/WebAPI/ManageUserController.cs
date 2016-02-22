@@ -130,12 +130,17 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
 
             return u.Id;
         }
 
+        /// <summary>
+        /// We are using Hashes so that we do not store PII.
+        /// </summary>
+        /// <param name="email">Real email address coming from Identity Provider</param>
+        /// <returns>SHA256 Hash of email to ensure privacy</returns>
         private static string GenerateHashFromEmail(string email)
         {
             StringBuilder hashString = new StringBuilder();

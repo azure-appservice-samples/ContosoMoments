@@ -1,10 +1,9 @@
-﻿using System;
-
-using Foundation;
-using UIKit;
+﻿using Foundation;
 using Microsoft.WindowsAzure.MobileServices;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Threading.Tasks;
+using UIKit;
 
 namespace ContosoMoments.iOS
 {
