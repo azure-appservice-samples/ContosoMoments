@@ -99,17 +99,18 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
         private static string CheckAddEmailToDB(string email)
         {
-            //var identifier = GenerateHashFromEmail(email);
+            var identifier = GenerateHashFromEmail(email);
 
             using (var ctx = new MobileServiceContext())
             {
-                var user = ctx.Users.FirstOrDefault(x => x.Email == email);
+                var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
 
-                // User Found, Exit
-                if (default(Common.Models.User) != user)
+                // user was found, return it
+                if (user != default(Common.Models.User)) {
                     return user.Id;
+                }
 
-                // New User, Create
+                // create new user
                 return AddUser(email, ctx);
             }
         }
