@@ -14,7 +14,7 @@ namespace ContosoMoments.API.Controllers.TableControllers
     public class ImageStorageController : StorageController<Image>
     {
         public ImageStorageController() : 
-            base(new CustomAzureStorageProvider(GetConnectionString()))
+            base(new CustomAzureStorageProvider())
         { }
 
         [HttpPost]
@@ -35,30 +35,11 @@ namespace ContosoMoments.API.Controllers.TableControllers
             return Request.CreateResponse(files);
         }
 
-        //[HttpDelete]
-        //[Route("tables/Image/{id}/MobileServiceFiles/{name}")]
-        //public Task Delete(string id, string name)
-        //{
-        //    return base.DeleteFileAsync(id, name, new ImageNameResolver());
-        //}
-
-        private static string GetConnectionString(string connectionStringName = Constants.StorageConnectionStringName)
+        [HttpDelete]
+        [Route("tables/Image/{id}/MobileServiceFiles/{name}")]
+        public Task Delete(string id, string name)
         {
-            if (connectionStringName == null) {
-                throw new ArgumentNullException("connectionStringName");
-            }
-
-            if (connectionStringName.Length == 0) {
-                throw new ArgumentException("Connection string should not be empty");
-            }
-
-            var connectionStringSettings = ConfigurationManager.ConnectionStrings[connectionStringName];
-
-            if (connectionStringSettings == null) {
-                throw new ConfigurationErrorsException(string.Format("Connection string is missing", connectionStringName));
-            }
-
-            return connectionStringSettings.ConnectionString;
+            return base.DeleteFileAsync(id, name, new ImageNameResolver());
         }
     }
 }

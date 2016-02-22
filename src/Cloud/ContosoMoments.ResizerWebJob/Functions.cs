@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -11,7 +8,6 @@ using System.Diagnostics;
 using static ContosoMoments.Common.Enums.ImageSizes;
 using ContosoMoments.Common.Enums;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace ContosoMoments.ResizerWebJob
 {
@@ -59,30 +55,28 @@ namespace ContosoMoments.ResizerWebJob
                 Trace.TraceWarning("Scaling " + imageId + " to " + size + " size failed. Please see previous errors in log");
         }
 
-        //public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
-        //    [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobLarge,
-        //    [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobExtraSmall,
-        //    [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobSmall,
-        //    [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobMedium)
-        //{
-        //    try
-        //    {
-        //        Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
-        //        await blobLarge.DeleteAsync();
-        //        Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
-        //        await blobExtraSmall.DeleteAsync();
-        //        Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
-        //        await blobSmall.DeleteAsync();
-        //        Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
-        //        await blobMedium.DeleteAsync();
+        public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
+            [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobLarge,
+            [Blob("{BlobNameXS}/{Filename}")] CloudBlockBlob blobExtraSmall,
+            [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobSmall,
+            [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobMedium)
+        {
+            try {
+                Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
+                await blobLarge.DeleteAsync();
+                Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
+                await blobExtraSmall.DeleteAsync();
+                Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
+                await blobSmall.DeleteAsync();
+                Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
+                await blobMedium.DeleteAsync();
 
-        //        Trace.TraceInformation("Done processing 'deleterequest' message");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Trace.TraceError("Error while deleting images: " + ex.Message);
-        //    }
-        //}
+                Trace.TraceInformation("Done processing 'deleterequest' message");
+            }
+            catch (Exception ex) {
+                Trace.TraceError("Error while deleting images: " + ex.Message);
+            }
+        }
         #endregion
 
         #region Private functionality

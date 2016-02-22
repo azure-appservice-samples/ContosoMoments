@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using ContosoMoments.Common;
 using Microsoft.Azure.Mobile.Server.Files;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -10,8 +12,7 @@ namespace ContosoMoments.API.Helpers
 {
     public class CustomAzureStorageProvider : AzureStorageProvider
     {
-        public CustomAzureStorageProvider(string connectionString)
-            : base(connectionString)
+        public CustomAzureStorageProvider() : base(GetConnectionString())
         { }
 
         protected override Task<IEnumerable<CloudBlockBlob>> GetContainerFilesAsync(string containerString)
@@ -25,6 +26,30 @@ namespace ContosoMoments.API.Helpers
 
             IEnumerable<CloudBlockBlob> result = new CloudBlockBlob[] { container.GetBlockBlobReference(blobName) };
             return Task.FromResult(result);
+        }
+
+        internal static string GetConnectionString(string connectionStringName = Constants.StorageConnectionStringName)
+        {
+            if (connectionStringName == null) {
+                throw new ArgumentNullException("connectionStringName");
+            }
+
+            if (connectionStringName.Length == 0) {
+                throw new ArgumentException("Connection string should not be empty");
+            }
+
+            var connectionStringSettings = ConfigurationManager.ConnectionStrings[connectionStringName];
+
+            if (connectionStringSettings == null) {
+                throw new ConfigurationErrorsException(string.Format("Connection string is missing", connectionStringName));
+            }
+
+            return connectionStringSettings.ConnectionString;
+        }
+
+        public static Uri GetContainerUri()
+        {
+            return new Uri(string.Format("https://{0}.blob.core.windows.net", AppSettings.StorageAccountName));
         }
     }
 }

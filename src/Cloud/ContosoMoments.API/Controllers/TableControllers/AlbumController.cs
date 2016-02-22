@@ -9,47 +9,43 @@ using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
+using System.Diagnostics;
+using System.Net.Http;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
     public class AlbumController : TableController<Album>
     {
+        private MobileServiceContext dbContext;
+
         protected override void Initialize(HttpControllerContext controllerContext)
         {
             base.Initialize(controllerContext);
-            var softDeleteEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
-            MobileServiceContext context = new MobileServiceContext();
+
+            dbContext = new MobileServiceContext();
             controllerContext.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            DomainManager = new EntityDomainManager<Album>(context, Request, enableSoftDelete: softDeleteEnabled);
+            DomainManager = new EntityDomainManager<Album>(dbContext, Request, enableSoftDelete: IsSoftDeleteEnabled());
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-
-        // GET tables/Album
         public IQueryable<Album> GetAllAlbum()
         {
-            return Query(); 
+            return Query();
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-
-        // GET tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public SingleResult<Album> GetAlbum(string id)
         {
             return Lookup(id);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-
-        // PATCH tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public Task<Album> PatchAlbum(string id, Delta<Album> patch)
         {
-             return UpdateAsync(id, patch);
+            return UpdateAsync(id, patch);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-
-        // POST tables/Album
         public async Task<IHttpActionResult> PostAlbum(Album item)
         {
             Album current = await InsertAsync(item);
@@ -57,30 +53,32 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-
-        // DELETE tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        public Task DeleteAlbum(string id)
+        public async Task DeleteAlbum(string albumId)
         {
             Web.Models.ConfigModel config = new Web.Models.ConfigModel();
-            string defaultAlbumId  = config.DefaultAlbumId;
-            if (id == defaultAlbumId)
-            {
-               return  Task.Run(() => {
-                   return "Default Album cannot be deleted !!";
-                }
-                
-                );
+            string defaultAlbumId = config.DefaultAlbumId;
+            if (albumId == defaultAlbumId) {
+                var message =
+                    new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest) 
+                    { ReasonPhrase = "Cannot delete default album" };
+                throw new HttpResponseException(message);
             }
-          
-            var imgCtrl = new ImageController();
-            var album  = Lookup(id).Queryable.First();
-            foreach (var img in album.Images)
-            {
-               var res =  imgCtrl.DeleteImage(img.Id);
+
+            var album = await dbContext.Albums.FindAsync(albumId);
+
+            var domainManager = new EntityDomainManager<Image>(dbContext, Request, IsSoftDeleteEnabled());
+
+            foreach (var img in album.Images) {
+                await domainManager.DeleteAsync(img.Id);
+                await ImageController.DeleteBlobAsync(img.Id);
             }
-            
-            return DeleteAsync(id);
+
+            await DeleteAsync(albumId);
         }
 
+        public static bool IsSoftDeleteEnabled()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
+        }
     }
 }

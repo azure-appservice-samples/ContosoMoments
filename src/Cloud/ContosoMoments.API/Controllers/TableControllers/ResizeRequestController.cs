@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using ContosoMoments.API.Helpers;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Queue;
 using Microsoft.Azure.Mobile.Server;
@@ -46,7 +47,7 @@ namespace ContosoMoments.API.Controllers.TableController
 
             var qm = new QueueManager();
             var blobInfo = new BlobInformation(extension);
-            blobInfo.BlobUri = new Uri(string.Format("https://{0}.blob.core.windows.net", AppSettings.StorageAccountName));
+            blobInfo.BlobUri = CustomAzureStorageProvider.GetContainerUri();
             blobInfo.ImageId = imageId;
 
             await qm.PushToResizeQueue(blobInfo);

@@ -11,6 +11,7 @@ using System.Configuration;
 using System;
 using ContosoMoments.Common.Queue;
 using ContosoMoments.Common;
+using ContosoMoments.API.Helpers;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -57,21 +58,19 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task DeleteImage(string id)
         {
-            // TODO: delete images associated with the record
+            await DeleteBlobAsync(id);  // delete blobs associated with the image
+            await DeleteAsync(id);      // delete the image record itself
+        }
 
-            //var image = Lookup(id).Queryable.First();
-            //var filenameParts = image.FileName.Split('.');
-            //var filename = filenameParts[0];
-            //var fileExt = filenameParts[1];
-            //var containerName = image.ContainerName;
+        public static async Task DeleteBlobAsync(string imageId)
+        {
+            var qm = new QueueManager();
+            var blobInfo = new BlobInformation("");
 
-            //var qm = new QueueManager();
-            //var blobInfo = new BlobInformation(fileExt);
-            //blobInfo.BlobUri = new Uri(containerName);
-            //blobInfo.ImageId = filename;
-            //await qm.PushToDeleteQueue(blobInfo);
+            blobInfo.BlobUri = CustomAzureStorageProvider.GetContainerUri();
+            blobInfo.ImageId = imageId;
 
-            await DeleteAsync(id);
+            await qm.PushToDeleteQueue(blobInfo);
         }
     }
 }
