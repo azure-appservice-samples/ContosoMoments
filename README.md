@@ -8,7 +8,6 @@
 ![Andriod](https://img.shields.io/badge/platform-Andriod-green.svg?style=flat-square)
 ![Windows Universal](https://img.shields.io/badge/platform-Windows-0078D7.svg?style=flat-square)
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
-![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/1.svg?style=flat-square)
 
 ## What is Contoso Moments
 
@@ -24,7 +23,8 @@ Download and Install the following tools to be able to be able to build and/or d
 
 ## How To: Deploy the Demo
 
-1. Check to ensure that the bulid is <span style="color: #FFF; background-color: brightgreen">passing</span>
+1. Check to ensure that the bulid is passing 
+    ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/1.svg?style=flat-square)
 1. Fork this repository to your GitHub account 
 1. Click on the **Deploy to Azure** Button
 
@@ -36,7 +36,11 @@ Download and Install the following tools to be able to be able to build and/or d
 
 ## How To: Install the Mobile Client App
 
-currently unavailable.
+| Platform  | Build Status |
+|-----------|----------------------------------------------------------------------------------------------------------------------|
+| Android   | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/2.svg?style=flat-square) |
+| iOS       | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/3.svg?style=flat-square) |
+| Windows Phone | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/4.svg?style=flat-square) |
 
 ## Change Log
 

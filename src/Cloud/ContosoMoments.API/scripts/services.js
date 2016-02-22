@@ -20,62 +20,52 @@
                 }
                 else {
 
+                    $http({
+                        method: 'GET',
+                        url: '/.auth/me'
+                    }).then(function successCallback(returnData) {
 
-                    $http.get("/.auth/me")
-                        .then(function (returnData) {
-                            //var test = [{ "access_token": "CAAQnF6QGbqMBAIQK9ZClLwE0nB1rdr0BGclLqFwZBQTkY8FnedvKVILTYy6DOwOogH3wWp88DkSuscsp5ZBQl5pPIO9fXYFn9hot7b7F4QkuLrUe4Uz5566QLrG5Uy4ZCZArQX5Km7Lb1BrEdcYB37jgdfAZBT56NTy6TWGBv1oNGixR8caBdlKZAriRenctYXYdeZCjDJOJBQZDZD", "expires_on": "2016-03-28T18:53:36.7621289Z", "provider_name": "facebook", "user_claims": [{ "typ": "http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/nameidentifier", "val": "10153792943454216" }, { "typ": "http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/name", "val": "Rotem Or" }], "user_id": "10153792943454216" }];
+                        var authData = returnData.data[0];
+                        var sendData = "";
+                        if (authData.provider_name == "aad") {
+                            sendData = authData.user_id;
+                        }
+                        if (authData.provider_name == "facebook") {
+                            sendData = authData.access_token
+                        }
 
-                            var authData = returnData.data[0];
+                        $http.get("/api/ManageUser/?data=" + sendData + "&provider=" + authData.provider_name)
+                                    .then(function (getRes) {
 
-                            if (authData == null) {
-                                $http.get("/api/ManageUser")
-                                   .then(function (getRes) {
-
-                                       userService.getUser(getRes.data).then(function (res) {
-                                           context = new AuthContext(getRes.data, true, res);
-                                           defered.resolve(context);
-                                           $rootScope.$broadcast('userAuthenticated', context);
-                                       }, function (err) {
-                                           defered.reject(context);
-                                       });
-
-                                       return;
-                                   });
-                            }
-
-
-                            var sendData = "";
-                            if (authData.provider_name == "aad") {
-                                sendData = authData.user_id;
-
-
-                            }
-                            if (authData.provider_name == "facebook") {
-                                sendData = authData.access_token
-                            }
-
-                            $http.get("/api/ManageUser/?data=" + sendData + "&provider=" + authData.provider_name)
-                                        .then(function (getRes) {
-
-                                            userService.getUser(getRes.data).then(function (res) {
-                                                context = new AuthContext(getRes.data, true, res);
-                                                defered.resolve(context);
-                                                $rootScope.$broadcast('userAuthenticated', context);
-                                            }, function (err) {
-                                                defered.reject(context);
-                                            });
-
-                                            return;
+                                        userService.getUser(getRes.data).then(function (res) {
+                                            context = new AuthContext(getRes.data, true, res);
+                                            defered.resolve(context);
+                                            $rootScope.$broadcast('userAuthenticated', context);
+                                        }, function (err) {
+                                            defered.reject(context);
                                         });
 
+                                        return;
+                                    });
 
+                    }, function errorCallback(response) {
+                        $http.get("/api/ManageUser")
+                                  .then(function (getRes) {
 
-                        });
+                                      userService.getUser(getRes.data).then(function (res) {
+                                          context = new AuthContext(getRes.data, true, res);
+                                          defered.resolve(context);
+                                          $rootScope.$broadcast('userAuthenticated', context);
+                                          $rootScope.$broadcast('$noneAuthenticatedUser', context);
 
+                                      }, function (err) {
+                                          defered.reject(context);
+                                      });
 
+                                      return;
+                                  });
+                    });
                 }
-
-
                 return defered.promise;
             },
             currentContext: function () {

@@ -81,7 +81,13 @@
         </nav>
         <div class="container" ng-controller="titleController as titleCtrl">
 
-            <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
+            <div ng-show="userEmail" class="page-header">
+                <span class="glyphicon glyphicon-user">
+                </span>
+                <span ng-bind="userEmail"></span>
+                <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
+            </div>
+           
 
         </div>
     </header>

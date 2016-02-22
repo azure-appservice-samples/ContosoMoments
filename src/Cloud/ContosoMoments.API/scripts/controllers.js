@@ -235,7 +235,7 @@
 
 
     }]);
-    app.controller('navController', ['$scope', '$uibModal', '$state',function ($scope, $uibModal, $state) {
+    app.controller('navController', ['$scope', '$uibModal', '$state', '$location', function ($scope, $uibModal, $state, $location) {
 
         $scope.showUpload = false;
         $scope.showCreateAlbum = false;
@@ -249,6 +249,9 @@
             $scope.showMenu = toState.name !== 'main.singleImage';
         });
 
+        $scope.$on('$noneAuthenticatedUser', function (e, toState) {
+            $location.path('/auth');
+        });
         var openModal = function (options) {
             return $uibModal.open(options);
         }
@@ -309,6 +312,10 @@
         $scope.curAlbum = selectedAlbum;
       
     }]);
+
+
+
+
     app.controller('uploadController', ['$scope', 'uploadService', '$uibModalInstance', '$timeout', 'authService', 'selectedAlbum', function ($scope, uploadService, $uibModalInstance, $timeout, authService, selectedAlbum) {
         
 
