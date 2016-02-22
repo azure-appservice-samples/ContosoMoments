@@ -46,10 +46,5 @@ namespace ContosoMoments.API.Helpers
 
             return connectionStringSettings.ConnectionString;
         }
-
-        public static Uri GetContainerUri()
-        {
-            return new Uri(string.Format("https://{0}.blob.core.windows.net", AppSettings.StorageAccountName));
-        }
     }
 }

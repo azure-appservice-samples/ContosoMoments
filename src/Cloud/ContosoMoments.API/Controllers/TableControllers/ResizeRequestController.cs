@@ -47,7 +47,7 @@ namespace ContosoMoments.API.Controllers.TableController
 
             var qm = new QueueManager();
             var blobInfo = new BlobInformation(extension);
-            blobInfo.BlobUri = CustomAzureStorageProvider.GetContainerUri();
+            blobInfo.BlobUri = new Uri(AppSettings.StorageWebUri);
             blobInfo.ImageId = imageId;
 
             await qm.PushToResizeQueue(blobInfo);

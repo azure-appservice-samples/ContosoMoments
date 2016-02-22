@@ -67,7 +67,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             var qm = new QueueManager();
             var blobInfo = new BlobInformation("");
 
-            blobInfo.BlobUri = CustomAzureStorageProvider.GetContainerUri();
+            blobInfo.BlobUri = new Uri(AppSettings.StorageWebUri);
             blobInfo.ImageId = imageId;
 
             await qm.PushToDeleteQueue(blobInfo);
