@@ -41,7 +41,7 @@ namespace ContosoMoments.MobileServer.Models
 
     }
 
-    public class ContosoMomentsDBInitializer : DropCreateDatabaseIfModelChanges<MobileServiceContext>
+    public class ContosoMomentsDBInitializer : CreateDatabaseIfNotExists<MobileServiceContext>
     {
         private NameValueCollection appSettings = ConfigurationManager.AppSettings;
 
