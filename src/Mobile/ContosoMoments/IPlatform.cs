@@ -14,7 +14,7 @@ namespace ContosoMoments
 
         Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string fullPath);
 
-        string GetDataPathAsync();
+        string GetRootDataPath();
 
         Task<string> TakePhotoAsync(object context);
     }

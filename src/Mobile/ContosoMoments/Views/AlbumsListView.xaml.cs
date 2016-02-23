@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using ContosoMoments.Helpers;
 
 namespace ContosoMoments.Views
 {
@@ -33,6 +34,10 @@ namespace ContosoMoments.Views
             var tapSyncImage = new TapGestureRecognizer();
             tapSyncImage.Tapped += OnSyncItems;
             imgSync.GestureRecognizers.Add(tapSyncImage);
+
+            var tapSettingsImage = new TapGestureRecognizer();
+            tapSettingsImage.Tapped += OnSettings;
+            imgSettings.GestureRecognizers.Add(tapSettingsImage);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -49,7 +54,7 @@ namespace ContosoMoments.Views
 
             if (albumsList.ItemsSource == null) {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
-                    string userId = "11111111-1111-1111-1111-111111111111";
+                    string userId = Settings.DefaultUserId;
                     if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
                         //Call user custom controller:
                         //controller to check user and add if new. Will return user ID anyway.
@@ -227,6 +232,12 @@ namespace ContosoMoments.Views
         public async void OnSyncItems(object sender, EventArgs e)
         {
             await SyncItemsAsync(true);
+        }
+
+        public async void OnSettings(object sender, EventArgs e)
+        {
+            HideAndCleanupInput();
+            await Navigation.PushModalAsync(new SettingsView(this._app));
         }
 
         private async Task SyncItemsAsync(bool showActivityIndicator)

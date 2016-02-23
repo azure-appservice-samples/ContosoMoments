@@ -193,6 +193,14 @@
       <HintPath>..\..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Plugin.Settings, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xam.Plugins.Settings.2.1.0\lib\Xamarin.iOS10\Plugin.Settings.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plugin.Settings.Abstractions, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xam.Plugins.Settings.2.1.0\lib\Xamarin.iOS10\Plugin.Settings.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SQLitePCL, Version=3.8.7.2, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SQLitePCL.3.8.7.2\lib\Xamarin.iOS10\SQLitePCL.dll</HintPath>
       <Private>True</Private>

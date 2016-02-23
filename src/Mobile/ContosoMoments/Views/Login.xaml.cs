@@ -33,7 +33,7 @@ namespace ContosoMoments.Views
             try
             {
                 user = await DependencyService.Get<IMobileClient>().LoginAsync(provider);
-                App.AuthenticatedUser = user;
+                App.Instance.AuthenticatedUser = user;
                 System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
 
 #if __DROID__

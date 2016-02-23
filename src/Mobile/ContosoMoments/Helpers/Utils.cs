@@ -65,5 +65,13 @@ namespace ContosoMoments
 
             return retVal;
         }
+
+        public static async Task PopulateDefaultsAsync()
+        {
+            var defaults = await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
+ 
+            Settings.DefaultUserId   = defaults["DefaultUserId"].ToString();
+            Settings.DefaultAlbumId  = defaults["DefaultAlbumId"].ToString();
+        }
     }
 }

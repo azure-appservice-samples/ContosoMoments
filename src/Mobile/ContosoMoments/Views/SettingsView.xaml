@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ContosoMoments.Views.SettingsView"
+             BackgroundColor="#8C0A4B">
+
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--Header-->
+        <Grid Grid.Row="0" Padding="10,30,10,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center">
+                <Image.Source>
+                    <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logo.png" Android="logo.png" WinPhone="Assets/logo.png"/>
+                </Image.Source>
+            </Image>
+
+            <Label Text="Settings" FontSize="28" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
+
+            <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End">
+                <Image.Source>
+                    <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/save.png" Android="save.png" WinPhone="Assets/save.png"/>
+                </Image.Source>
+            </Image>
+        </Grid>
+
+        <!--Settings-->
+        <Grid Grid.Row="1" BackgroundColor="White" VerticalOptions="FillAndExpand" >
+            <StackLayout Orientation="Vertical" Padding="10,15,10,5">
+                <Label Text="Mobile Service URL" TextColor="Black"/>
+                <Entry x:Name="mobileServiceUrl" Placeholder="Url" TextColor="Black"/>
+            </StackLayout>
+        </Grid>
+
+    </Grid>
+</ContentPage>

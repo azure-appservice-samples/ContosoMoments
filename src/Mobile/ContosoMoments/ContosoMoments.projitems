@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileSyncTriggerFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LoggingHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPlatform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Album.cs" />
@@ -41,6 +42,9 @@
       <DependentUpon>Login.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\ImagesList.xaml">
@@ -62,6 +66,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AlbumsListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

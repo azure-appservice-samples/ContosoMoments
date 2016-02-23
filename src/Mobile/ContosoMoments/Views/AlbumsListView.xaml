@@ -2,9 +2,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.AlbumsListView"
-             BackgroundColor="#8C0A4B" 
+             BackgroundColor="#8C0A4B"
              NavigationPage.HasNavigationBar="false">
-  
+
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -35,7 +35,13 @@
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/sync.png" Android="sync.png" WinPhone="Assets/sync.png"/>
         </Image.Source>
       </Image>
-      
+
+      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings">
+        <Image.Source>
+          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
+        </Image.Source>
+      </Image>
+
       <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgAddAlbum">
         <Image.Source>
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/plus.png" Android="plus.png" WinPhone="Assets/plus.png"/>
@@ -43,11 +49,8 @@
       </Image>
     </Grid>
 
-    <!--User and Album info-->
-    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="5,10,5,15">
-      <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding UserEmail}"/>
-
-      <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10,0,10,10" >
+    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical">
+      <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10" >
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="Auto"/>
@@ -66,7 +69,7 @@
         <Button x:Name="btnUpdate" Text="Create" Grid.Row="1" Grid.Column="1" Clicked="OnCreateClick" TextColor="White"/>
         <Button x:Name="btnCancel" Text="Cancel" Grid.Row="1" Grid.Column="2" Clicked="OnCancelClick" TextColor="White" IsVisible="False"/>
       </Grid>
-      
+
     </StackLayout>
 
     <!--List of albums-->
