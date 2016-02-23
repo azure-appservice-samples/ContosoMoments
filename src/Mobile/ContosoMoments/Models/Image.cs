@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System;
+using System.ComponentModel;
+
+using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Newtonsoft.Json;
-using PCLStorage;
 
 namespace ContosoMoments.Models
 {
@@ -13,6 +14,16 @@ namespace ContosoMoments.Models
         public Album Album { get; set; }
         public string AlbumId { get; set; }
         public string UserId { get; set; }
+
+        [UpdatedAt]
+        public DateTimeOffset UpdatedAt { get; set; }
+        
+        [JsonIgnore]
+        public string ImageInfo
+        {
+            get { return string.Format("{0:MMMM d, yyyy}", UpdatedAt); }
+        }
+
 
         private string _uri;
         private MobileServiceFile _file;

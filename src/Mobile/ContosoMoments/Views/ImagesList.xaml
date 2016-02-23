@@ -65,13 +65,15 @@
       <ListView.ItemTemplate>
         <DataTemplate>
           <ViewCell>
-            <Grid Padding="5">
+            <Grid Padding="10,5,5,5">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="*"/>
               </Grid.ColumnDefinitions>
               <Image Grid.Column="0" Source="{Binding Uri}" Aspect="AspectFill" />
-              <Label Grid.Column="1" Text="{Binding UploadFormat}" FontSize="Small" TextColor="Black"/>
+              <ContentView Grid.Column="1" Padding="10,0,0,0">
+                <Label Text="{Binding ImageInfo}" FontSize="Small" TextColor="Black" VerticalTextAlignment="Center"/>
+              </ContentView>
             </Grid>
             <ViewCell.ContextActions>
               <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
