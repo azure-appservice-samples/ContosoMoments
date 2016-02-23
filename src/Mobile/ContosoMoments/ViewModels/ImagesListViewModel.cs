@@ -46,11 +46,6 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        public string UserName
-        {
-            get { return _app.CurrentUserEmail; }
-        }
-
         private string _ErrorMessage = null;
         public string ErrorMessage
         {

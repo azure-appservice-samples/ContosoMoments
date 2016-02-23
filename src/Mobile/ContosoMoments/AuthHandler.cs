@@ -37,6 +37,7 @@ namespace ContosoMoments
             if (response.StatusCode == HttpStatusCode.Unauthorized) {
                 try {
                     await ShowAuthDialog();
+                    App.Instance.CurrentUserId = Client.CurrentUser.UserId;
 
                     clonedRequest = await CloneRequestAsync(request);
 

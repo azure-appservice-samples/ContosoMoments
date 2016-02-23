@@ -13,7 +13,6 @@ namespace ContosoMoments.Views
 	public partial class Login : ContentPage
 	{
         private TaskCompletionSource<Settings.AuthOption> tcs = new TaskCompletionSource<Settings.AuthOption>();
-        private Settings.AuthOption authOption;
 
 		public Login ()
 		{

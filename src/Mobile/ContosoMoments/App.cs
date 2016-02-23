@@ -38,8 +38,13 @@ namespace ContosoMoments
 
         public string DataFilesPath { get; set; }
 
-        public string CurrentUserId { get; set; }
-        public string CurrentUserEmail { get; set; }
+        private string currentUserId;
+
+        public string CurrentUserId
+        {
+            get { return currentUserId != null ? currentUserId : Settings.DefaultUserId; }
+            set { currentUserId = value; }
+        }
 
         public App()
         {
@@ -105,6 +110,7 @@ namespace ContosoMoments
                 await MainPage.Navigation.PushAsync(loginPage);
                 
                 Settings.AuthenticationType = await loginPage.GetResultAsync();
+                this.CurrentUserId = MobileService.CurrentUser?.UserId; // CurrentUser might be null if guest access
             }
             else {
                 MainPage = new NavigationPage(new AlbumsListView(this));
@@ -198,7 +204,7 @@ namespace ContosoMoments
         internal async Task<Models.Image> AddImageAsync(Models.Album album, string sourceFile)
         {
             var image = new Models.Image {
-                UserId = CurrentUserId != null ? CurrentUserId : Settings.DefaultUserId,
+                UserId = CurrentUserId,
                 AlbumId = album.AlbumId,
                 UploadFormat = "Mobile Image"
             };
