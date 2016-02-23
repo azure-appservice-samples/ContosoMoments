@@ -11,7 +11,7 @@
         </Grid.RowDefinitions>
 
         <!--Header-->
-        <Grid Grid.Row="0" Padding="10,30,10,5">
+        <Grid Grid.Row="0" Padding="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -23,7 +23,7 @@
                 </Image.Source>
             </Image>
 
-            <Label Text="Settings" FontSize="28" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
+            <Label Text="Settings" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
 
             <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End">
                 <Image.Source>
@@ -36,7 +36,7 @@
         <Grid Grid.Row="1" BackgroundColor="White" VerticalOptions="FillAndExpand" >
             <StackLayout Orientation="Vertical" Padding="10,15,10,5">
                 <Label Text="Mobile Service URL" TextColor="Black"/>
-                <Entry x:Name="mobileServiceUrl" Placeholder="Url" TextColor="Black"/>
+                <Entry x:Name="mobileServiceUrl" FontSize="Small" Placeholder="Url" TextColor="Black"/>
             </StackLayout>
         </Grid>
 

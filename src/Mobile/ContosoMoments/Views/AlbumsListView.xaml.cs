@@ -54,6 +54,9 @@ namespace ContosoMoments.Views
         private void AuthTypePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             imgAddAlbum.IsVisible = Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
+
+            if (!imgAddAlbum.IsVisible)
+               Grid.SetColumn(imgSettings, 4);
         }
 
         protected override async void OnAppearing()

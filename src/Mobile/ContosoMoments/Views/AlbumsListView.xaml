@@ -81,7 +81,7 @@
               <MenuItem Clicked="OnRename" Text="Rename"/>
               <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
             </ViewCell.ContextActions>
-            <Grid Padding="8">
+            <Grid Padding="10">
               <Label Text="{Binding AlbumName}" TextColor="Black" VerticalTextAlignment="Center"/>
             </Grid>
           </ViewCell>
