@@ -4,6 +4,7 @@ using Microsoft.Azure.Mobile.Server;
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
@@ -13,13 +14,15 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
     public class AlbumController : TableController<Album>
     {
+        private MobileServiceContext dbContext;
+
         protected override void Initialize(HttpControllerContext controllerContext)
         {
             base.Initialize(controllerContext);
-            var softDeleteEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
-            MobileServiceContext context = new MobileServiceContext();
+
+            dbContext = new MobileServiceContext();
             controllerContext.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            DomainManager = new EntityDomainManager<Album>(context, Request, enableSoftDelete: softDeleteEnabled);
+            DomainManager = new EntityDomainManager<Album>(dbContext, Request, enableSoftDelete: IsSoftDeleteEnabled());
         }
 
         // GET tables/Album
@@ -35,12 +38,14 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         // PATCH tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        [Authorize]
         public Task<Album> PatchAlbum(string id, Delta<Album> patch)
         {
              return UpdateAsync(id, patch);
         }
 
         // POST tables/Album
+        [Authorize]
         public async Task<IHttpActionResult> PostAlbum(Album item)
         {
             Album current = await InsertAsync(item);
@@ -48,28 +53,33 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         // DELETE tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959
-        public Task DeleteAlbum(string id)
+        [Authorize]
+        public async Task DeleteAlbum(string albumId)
         {
             Web.Models.ConfigModel config = new Web.Models.ConfigModel();
-            string defaultAlbumId  = config.DefaultAlbumId;
-            if (id == defaultAlbumId)
-            {
-               return  Task.Run(() => {
-                   return "Default Album cannot be deleted !!";
+            string defaultAlbumId = config.DefaultAlbumId;
+            if (albumId == defaultAlbumId) {
+                var message =
+                    new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest) 
+                    { ReasonPhrase = "Cannot delete default album" };
+                throw new HttpResponseException(message);
                 }
                 
-                );
+            var album = await dbContext.Albums.FindAsync(albumId);
+
+            var domainManager = new EntityDomainManager<Image>(dbContext, Request, IsSoftDeleteEnabled());
+
+            foreach (var img in album.Images) {
+                await domainManager.DeleteAsync(img.Id);
+                await ImageController.DeleteBlobAsync(img.Id);
             }
           
-            var imgCtrl = new ImageController();
-            var album  = Lookup(id).Queryable.First();
-            foreach (var img in album.Images)
-            {
-               var res =  imgCtrl.DeleteImage(img.Id);
+            await DeleteAsync(albumId);
             }
             
-            return DeleteAsync(id);
+        public static bool IsSoftDeleteEnabled()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
         }
-
     }
 }

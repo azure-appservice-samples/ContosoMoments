@@ -1,12 +1,10 @@
-﻿using System;
+﻿using ContosoMoments.Common;
+using ContosoMoments.MobileServer.Models;
+using Microsoft.Azure.Mobile.Server.Files;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using ContosoMoments.Common;
-using ContosoMoments.Common.Models;
-using ContosoMoments.MobileServer.Models;
-using Microsoft.Azure.Mobile.Server.Files;
 
 namespace ContosoMoments.API.Helpers
 {

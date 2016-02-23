@@ -3,16 +3,17 @@ using Microsoft.Azure.Mobile.Server.Authentication;
 using Microsoft.Azure.Mobile.Server.Config;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Diagnostics;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
     [MobileAppController]
+    [Authorize]
     public class ManageUserController : ApiController
     {
         protected readonly string _defaultUserId;
@@ -45,7 +46,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             return UserOrDefault(retVal);
         }
 
-        // POST: api/Like
         public async Task<string> Get(string data, string provider)
         {
             string retVal = default(string);
@@ -99,17 +99,18 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
         private static string CheckAddEmailToDB(string email)
         {
-            //var identifier = GenerateHashFromEmail(email);
+            var identifier = GenerateHashFromEmail(email);
 
             using (var ctx = new MobileServiceContext())
             {
-                var user = ctx.Users.FirstOrDefault(x => x.Email == email);
+                var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
 
-                // User Found, Exit
-                if (default(Common.Models.User) != user)
+                // user was found, return it
+                if (user != default(Common.Models.User)) {
                     return user.Id;
+                }
 
-                // New User, Create
+                // create new user
                 return AddUser(email, ctx);
             }
         }

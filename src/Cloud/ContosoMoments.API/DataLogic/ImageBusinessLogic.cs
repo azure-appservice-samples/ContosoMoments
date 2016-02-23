@@ -1,5 +1,4 @@
-﻿using ContosoMoments.Common;
-using ContosoMoments.Common.Models;
+﻿using ContosoMoments.Common.Models;
 using ContosoMoments.Common.Storage;
 using ContosoMoments.MobileServer.Models;
 using System;
@@ -27,9 +26,7 @@ namespace ContosoMoments.MobileServer.DataLogic
 
                 Id = Guid.NewGuid().ToString(),
 
-                UploadFormat = UploadFormat,
-                ContainerName = AppSettings.StorageWebUri + containerName,
-                FileName = fileName,
+                UploadFormat = UploadFormat
             };
             ctx.Images.Add(img);
             try

@@ -34,7 +34,7 @@ namespace ContosoMoments.iOS
             return Task.FromResult(filesPath);
         }
 
-        public string GetDataPathAsync()
+        public string GetRootDataPath()
         {
             return Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
         }

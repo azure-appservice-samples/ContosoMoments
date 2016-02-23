@@ -1,4 +1,5 @@
-﻿using ContosoMoments.Models;
+﻿using ContosoMoments.Helpers;
+using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Net;
@@ -16,9 +17,9 @@ namespace ContosoMoments
 
         private IMobileClient platformClient;
 
-        public AuthHandler(IMobileClient platformClient)
+        public AuthHandler()
         {
-            this.platformClient = platformClient;
+            this.platformClient = DependencyService.Get<IMobileClient>();
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -33,13 +34,12 @@ namespace ContosoMoments
 
             if (response.StatusCode == HttpStatusCode.Unauthorized) {
                 try {
-                    var platform = DependencyService.Get<IPlatform>();
-                    var user = await platformClient.LoginAsync(MobileServiceAuthenticationProvider.Facebook);
+                    await ShowAuthDialog();
 
                     clonedRequest = await CloneRequestAsync(request);
 
                     clonedRequest.Headers.Remove("X-ZUMO-AUTH");
-                    clonedRequest.Headers.Add("X-ZUMO-AUTH", user.MobileServiceAuthenticationToken);
+                    clonedRequest.Headers.Add("X-ZUMO-AUTH", Client.CurrentUser.MobileServiceAuthenticationToken);
 
                     // Resend the request
                     response = await base.SendAsync(clonedRequest, cancellationToken);
@@ -51,6 +51,20 @@ namespace ContosoMoments
             }
 
             return response;
+        }
+
+        private async Task ShowAuthDialog()
+        {
+            var authSetting = Settings.AuthenticationType;
+            var provider = 
+                authSetting == Settings.AuthOption.Facebook ? MobileServiceAuthenticationProvider.Facebook : 
+                    MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory;
+
+            // NOTE: if the auth setting was actually Guest, that means that the UI allowed the user 
+            // to do something while in authenticated mode that it should not have. 
+            // So, it's a bug that will result in an NPE in SendAsync above
+
+            await DependencyService.Get<IMobileClient>().LoginAsync(provider);
         }
 
         private async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage request)

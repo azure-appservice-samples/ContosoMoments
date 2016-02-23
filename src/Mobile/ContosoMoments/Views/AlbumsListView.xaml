@@ -36,6 +36,12 @@
         </Image.Source>
       </Image>
       
+      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings">
+        <Image.Source>
+          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
+        </Image.Source>
+      </Image>
+
       <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgAddAlbum">
         <Image.Source>
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/plus.png" Android="plus.png" WinPhone="Assets/plus.png"/>
@@ -43,11 +49,8 @@
       </Image>
     </Grid>
 
-    <!--User and Album info-->
-    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="5,10,5,15">
-      <Label FontSize="Medium" TextColor="Black" FontAttributes="Bold" Text="{Binding UserEmail}"/>
-
-      <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10,0,10,10" >
+    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical">
+      <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10" >
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="Auto"/>

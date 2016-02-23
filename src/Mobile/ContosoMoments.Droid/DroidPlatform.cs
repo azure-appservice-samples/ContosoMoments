@@ -26,7 +26,7 @@ namespace ContosoMoments.Droid
             return new PathMobileServiceFileDataSource(filePath);
         }
 
-        public string GetDataPathAsync()
+        public string GetRootDataPath()
         {
             // TODO: Windows needs instead Windows.Storage.ApplicationData.Current.LocalFolder.Path
             return Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);

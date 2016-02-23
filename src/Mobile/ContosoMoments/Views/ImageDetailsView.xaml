@@ -25,6 +25,13 @@
           <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
         </Image.Source>
       </Image>
+
+      <!--<Label Text="Contoso Moments" FontSize="28" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>-->
+      <Image VerticalOptions="Center" Grid.Column="2" HeightRequest="30" WidthRequest="30" x:Name="imgSettings">
+        <Image.Source>
+          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
+        </Image.Source>
+      </Image>
     </Grid>
 
     <!--User and Album info-->

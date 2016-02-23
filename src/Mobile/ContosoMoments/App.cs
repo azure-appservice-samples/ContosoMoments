@@ -1,4 +1,5 @@
-﻿using ContosoMoments.Views;
+﻿using ContosoMoments.Helpers;
+using ContosoMoments.Views;
 using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.Eventing;
 using Microsoft.WindowsAzure.MobileServices.Files;
@@ -15,12 +16,12 @@ namespace ContosoMoments
 {
     public class App : Application
     {
-        public static string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
+        private string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
         
         //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
-        public static string DB_LOCAL_FILENAME = "localDb.sqlite";
-        public static MobileServiceClient MobileService;
-        public static MobileServiceUser AuthenticatedUser;
+        public const string LocalDbFilename = "localDb.sqlite";
+        public MobileServiceClient MobileService;
+        public MobileServiceUser AuthenticatedUser;
 
         public IMobileServiceSyncTable<Models.Album> albumTableSync;
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
@@ -43,8 +44,7 @@ namespace ContosoMoments
 
             Label label = new Label() { Text = "Loading..." };
             label.TextColor = Color.White;
-            Image img = new Image()
-            {
+            Image img = new Image() {
                 Source = Device.OnPlatform(
                     iOS: ImageSource.FromFile("Assets/logo.png"),
                     Android: ImageSource.FromFile("logo.png"),
@@ -64,41 +64,67 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            bool isAuthRequred = false;
+            if (Settings.MobileAppUrl == Settings.DefaultMobileAppUrl) {
+                MainPage = new SettingsView(this);
+            }
+            else {
+                await InitMobileService(Settings.MobileAppUrl);
+            }
+        }
 
-            var authHandler = new AuthHandler(DependencyService.Get<Models.IMobileClient>());
+        internal async Task InitMobileService(string uri, bool firstStart = false)
+        {
+            this.ApplicationURL = uri;
+
+            var authHandler = new AuthHandler();
             MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true), authHandler);
             authHandler.Client = MobileService;
-                AuthenticatedUser = MobileService.CurrentUser;
+            AuthenticatedUser = MobileService.CurrentUser;
 
-                await InitLocalStoreAsync(DB_LOCAL_FILENAME);
-                InitLocalTables();
+            await InitLocalStoreAsync(LocalDbFilename);
+            InitLocalTables();
 
             IPlatform platform = DependencyService.Get<IPlatform>();
             DataFilesPath = await platform.GetDataFilesPath();
 
-                if (isAuthRequred && AuthenticatedUser == null)
-                {
-                    MainPage = new NavigationPage(new Login());
-                }
-                else
-                {
 #if __DROID__ && PUSH
-                    Droid.GcmService.RegisterWithMobilePushNotifications();
+                Droid.GcmService.RegisterWithMobilePushNotifications();
 #elif __IOS__ && PUSH
-                    iOS.AppDelegate.IsAfterLogin = true;
-                    await iOS.AppDelegate.RegisterWithMobilePushNotifications();
+                iOS.AppDelegate.IsAfterLogin = true;
+                await iOS.AppDelegate.RegisterWithMobilePushNotifications();
 #elif __WP__ && PUSH
-                    ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+           ContosoMoments.WinPhone.App.AcquirePushChannel(App.Instance.MobileService);
 #endif
+
+            if (firstStart) {
+                var loginPage = new Login();
                 MainPage = new NavigationPage(new AlbumsListView(this));
-                }
+                await MainPage.Navigation.PushAsync(loginPage);
+                
+                Settings.AuthenticationType = await loginPage.GetResultAsync();
             }
+            else {
+                MainPage = new NavigationPage(new AlbumsListView(this));
+            }
+        }
+
+        internal async Task ResetAsync(string uri)
+        {
+            var platform = DependencyService.Get<IPlatform>();
+
+            string path = Path.Combine(platform.GetRootDataPath(), LocalDbFilename);
+
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
+
+            await InitMobileService(uri);
+        }
+
 
         public async Task InitLocalStoreAsync(string localDbFilename)
         {
-            if (!MobileService.SyncContext.IsInitialized)
-            {
+            if (!MobileService.SyncContext.IsInitialized) {
                 var store = new MobileServiceSQLiteStore(localDbFilename);
                 store.DefineTable<Models.Album>();
                 store.DefineTable<Models.Image>();
@@ -129,20 +155,18 @@ namespace ContosoMoments
 
         public void InitLocalTables()
         {
-            try
-                {
+            try {
                 albumTableSync = MobileService.GetSyncTable<Models.Album>(); 
                 imageTableSync = MobileService.GetSyncTable<Models.Image>(); 
                 resizeRequestSync = MobileService.GetSyncTable<ResizeRequest>();
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Trace.WriteLine(ex);
             }
         }
 
         internal Task DownloadFileAsync(MobileServiceFile file)
-            {
+        {
             // should only download one file at a time, since it's possible to get duplicate notifications for the same file
             // ContinueWith is used along with Wait() so that only one thread downloads at a time
             lock (currentDownloadTaskLock) {
@@ -168,10 +192,10 @@ namespace ContosoMoments
             await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
         }
 
-        internal async Task<Models.Image> AddImageAsync(string userId, Models.Album album, string sourceFile)
-                {
+        internal async Task<Models.Image> AddImageAsync(Models.Album album, string sourceFile)
+        {
             var image = new Models.Image {
-                UserId = userId,
+                UserId = CurrentUserId != null ? CurrentUserId : Settings.DefaultUserId,
                 AlbumId = album.AlbumId,
                 UploadFormat = "Mobile Image"
             };
@@ -196,13 +220,5 @@ namespace ContosoMoments
         {
             await imageTableSync.DeleteFileAsync(file);
         }
-
-        internal async Task<string> LoadUserIdAsync(string userId)
-            {
-            var userInfo = await MobileService.GetTable("User").LookupAsync(userId);
-            CurrentUserEmail = userInfo["email"].ToString();
-            return CurrentUserEmail;
-            }
-
-            }
-        }
+    }
+}

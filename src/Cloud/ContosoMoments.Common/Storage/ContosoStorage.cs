@@ -64,7 +64,7 @@ namespace ContosoMoments.Common.Storage
 
                 RenameBlob(container, FileName, FileName.Replace("temp", result));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Trace.TraceError("BuildFileSasUrl throw excaption", ex.Message);
             }
@@ -188,7 +188,7 @@ namespace ContosoMoments.Common.Storage
                 // "2011-08-18"; // null;
                 blobClient.SetServiceProperties(newProperties);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //throw;
             }

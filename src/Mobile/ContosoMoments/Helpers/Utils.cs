@@ -1,4 +1,6 @@
-﻿using ContosoMoments.Models;
+﻿using ContosoMoments.Helpers;
+using ContosoMoments.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -50,18 +52,26 @@ namespace ContosoMoments
             bool retVal = true;
 
             try {
-                var res = await App.MobileService.InvokeApiAsync<string>("Getway", System.Net.Http.HttpMethod.Get, null);
+                var defaults = await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
 
-                if (res == null && res.Length == 0) {
+                if (defaults == null) {
                     retVal = false;
                 }
             }
-            catch //(Exception ex)
+            catch (Exception)
             {
                 retVal = false;
             }
 
             return retVal;
+        }
+
+        public static async Task PopulateDefaultsAsync()
+        {
+            var defaults = await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
+ 
+            Settings.DefaultUserId   = defaults["DefaultUserId"].ToString();
+            Settings.DefaultAlbumId  = defaults["DefaultAlbumId"].ToString();
         }
     }
 }

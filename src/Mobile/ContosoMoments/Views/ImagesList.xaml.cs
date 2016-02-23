@@ -19,7 +19,7 @@ namespace ContosoMoments.Views
             InitializeComponent();
 
             _app = app;
-            viewModel = new ImagesListViewModel(App.MobileService, _app);
+            viewModel = new ImagesListViewModel(App.Instance.MobileService, _app);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -31,6 +31,10 @@ namespace ContosoMoments.Views
             var tapSyncImage = new TapGestureRecognizer();
             tapSyncImage.Tapped += OnSyncItems;
             imgSync.GestureRecognizers.Add(tapSyncImage);
+
+            var tapSettingsImage = new TapGestureRecognizer();
+            tapSettingsImage.Tapped += OnSettings;
+            imgSettings.GestureRecognizers.Add(tapSettingsImage);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -60,7 +64,7 @@ namespace ContosoMoments.Views
                     string sourceImagePath = await platform.TakePhotoAsync(App.UIContext);
 
                     if (sourceImagePath != null) {
-                        var image = await _app.AddImageAsync(_app.CurrentUserId, viewModel.Album, sourceImagePath);
+                        var image = await _app.AddImageAsync(viewModel.Album, sourceImagePath);
 
                         viewModel.Images.Add(image); // add image, item will appear and image will upload asynchronously
                         await SyncItemsAsync(true, refreshView: false);
@@ -95,7 +99,7 @@ namespace ContosoMoments.Views
             var selectedImage = e.SelectedItem as ContosoMoments.Models.Image;
 
             if (selectedImage != null) {
-                var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
+                var detailsVM = new ImageDetailsViewModel(App.Instance.MobileService, selectedImage);
                 var detailsView = new ImageDetailsView();
                 detailsVM.Album = viewModel.Album;
                 detailsView.BindingContext = detailsVM;
@@ -105,6 +109,11 @@ namespace ContosoMoments.Views
 
             // prevents background getting highlighted
             imagesList.SelectedItem = null;
+        }
+
+        public async void OnSettings(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new SettingsView(_app));
         }
 
         public async void OnSyncItems(object sender, EventArgs e)

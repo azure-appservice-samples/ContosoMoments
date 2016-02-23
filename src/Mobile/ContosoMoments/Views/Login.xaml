@@ -23,6 +23,8 @@
       <StackLayout Orientation="Vertical" Padding="10,15,10,5">
         <Button Text="Login with Facebook" Clicked="OnFBLoginClicked" />
         <Button Text="Login with Azure Active Directory" Clicked="OnAADLoginClicked" />
+        <Label></Label>
+        <Button Text="Guest access" Clicked="OnGuestClicked" />
         <Label x:Name="messageLabel" TextColor="Black"/>
       </StackLayout>
     </Grid>

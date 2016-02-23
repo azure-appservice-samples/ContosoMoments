@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using ContosoMoments.Common;
+﻿using ContosoMoments.Common;
 
 namespace ContosoMoments.Web.Models
 {

@@ -28,17 +28,17 @@ namespace ContosoMoments.ResizerWebJob
 
             Stream input = await blobInput.OpenReadAsync();
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            bool res = await scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
+            bool res = scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "MEDIUM", res);
 
             input.Position = 0;
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
-            res = await scaleImage(input, blobOutputSmall, Small, blobInput.Properties.ContentType);
+            res = scaleImage(input, blobOutputSmall, Small, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "SMALL", res);
 
             input.Position = 0;
             Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            res = await scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
+            res = scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
             TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
 
 
@@ -55,34 +55,32 @@ namespace ContosoMoments.ResizerWebJob
                 Trace.TraceWarning("Scaling " + imageId + " to " + size + " size failed. Please see previous errors in log");
         }
 
-        //public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
-        //    [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobLarge,
-        //    [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobExtraSmall,
-        //    [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobSmall,
-        //    [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobMedium)
-        //{
-        //    try
-        //    {
-        //        Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
-        //        await blobLarge.DeleteAsync();
-        //        Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
-        //        await blobExtraSmall.DeleteAsync();
-        //        Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
-        //        await blobSmall.DeleteAsync();
-        //        Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
-        //        await blobMedium.DeleteAsync();
+        public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
+            [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobLarge,
+            [Blob("{BlobNameXS}/{Filename}")] CloudBlockBlob blobExtraSmall,
+            [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobSmall,
+            [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobMedium)
+        {
+            try {
+                Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
+                await blobLarge.DeleteAsync();
+                Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
+                await blobExtraSmall.DeleteAsync();
+                Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
+                await blobSmall.DeleteAsync();
+                Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
+                await blobMedium.DeleteAsync();
 
-        //        Trace.TraceInformation("Done processing 'deleterequest' message");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Trace.TraceError("Error while deleting images: " + ex.Message);
-        //    }
-        //}
+                Trace.TraceInformation("Done processing 'deleterequest' message");
+            }
+            catch (Exception ex) {
+                Trace.TraceError("Error while deleting images: " + ex.Message);
+            }
+        }
         #endregion
 
         #region Private functionality
-        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, string contentType)
+        private static bool scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, string contentType)
         {
             bool retVal = true; //Assume success
 

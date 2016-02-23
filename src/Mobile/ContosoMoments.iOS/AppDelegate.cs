@@ -80,7 +80,7 @@ namespace ContosoMoments.iOS
                 //    (System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
 
                 // Get Mobile Services client
-                MobileServiceClient client = App.MobileService;
+                MobileServiceClient client = App.Instance.MobileService;
                 var push = client.GetPush();
 
                 try
