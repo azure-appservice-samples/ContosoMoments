@@ -16,7 +16,7 @@ namespace ContosoMoments.iOS
         public async Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
             var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
-            return await App.MobileService.LoginAsync(view, provider);
+            return await App.Instance.MobileService.LoginAsync(view, provider);
         }
 
         public async void Logout()
@@ -26,7 +26,7 @@ namespace ContosoMoments.iOS
                 NSHttpCookieStorage.SharedStorage.DeleteCookie(cookie);
             }
 
-            await App.MobileService.LogoutAsync();
+            await App.Instance.MobileService.LogoutAsync();
         }
 
         public void ForceCloseApp()

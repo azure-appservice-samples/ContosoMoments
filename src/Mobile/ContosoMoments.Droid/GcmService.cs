@@ -40,7 +40,7 @@ namespace ContosoMoments.Droid
 
         public static void RegisterWithMobilePushNotifications()
         {
-            MobileServiceClient client = App.MobileService;
+            MobileServiceClient client = App.Instance.MobileService;
 
             if (null != RegistrationID && null != client) {
                 var push = client.GetPush();
@@ -137,7 +137,7 @@ namespace ContosoMoments.Droid
 
         protected override async void OnUnRegistered(Context context, string registrationId)
         {
-            MobileServiceClient client = App.MobileService;
+            MobileServiceClient client = App.Instance.MobileService;
             var push = client.GetPush();
 
             await push.UnregisterAsync();

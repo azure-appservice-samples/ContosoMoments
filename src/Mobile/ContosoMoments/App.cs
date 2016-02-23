@@ -22,8 +22,8 @@ namespace ContosoMoments
         
         //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public static string DB_LOCAL_FILENAME = "localDb.sqlite";
-        public static MobileServiceClient MobileService;
         public static MobileServiceUser AuthenticatedUser;
+        public MobileServiceClient MobileService;
 
         public IMobileServiceSyncTable<Models.Album> albumTableSync;
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
@@ -92,7 +92,7 @@ namespace ContosoMoments
                 iOS.AppDelegate.IsAfterLogin = true;
                 await iOS.AppDelegate.RegisterWithMobilePushNotifications();
 #elif __WP__ && PUSH
-                ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+           ContosoMoments.WinPhone.App.AcquirePushChannel(App.Instance.MobileService);
 #endif
                 MainPage = new NavigationPage(new AlbumsListView(this));
             }

@@ -2,6 +2,8 @@
 using ContosoMoments.Models;
 using Xamarin.Forms;
 using System;
+using Newtonsoft.Json.Linq;
+using ContosoMoments.Helpers;
 
 namespace ContosoMoments
 {
@@ -50,9 +52,9 @@ namespace ContosoMoments
             bool retVal = true;
 
             try {
-                var res = await App.MobileService.InvokeApiAsync<string>("Defaults", System.Net.Http.HttpMethod.Get, null);
+                var defaults = await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
 
-                if (res == null) {
+                if (defaults == null) {
                     retVal = false;
                 }
             }

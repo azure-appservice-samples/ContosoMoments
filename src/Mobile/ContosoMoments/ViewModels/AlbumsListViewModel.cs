@@ -54,7 +54,7 @@ namespace ContosoMoments.ViewModels
         public async Task CheckUpdateNotificationRegistrationAsync(string userId)
         {
 #if !__WP__
-            string installationId = App.MobileService.GetPush().InstallationId;
+            string installationId = App.Instance.MobileService.GetPush().InstallationId;
 #elif (__WP__ && DEBUG)
             string installationId = "8a526c49-b824-4a81-8f27-dce0e383e850";
 #endif
@@ -63,7 +63,7 @@ namespace ContosoMoments.ViewModels
             string json = string.Format("{{\"InstallationId\":\"{0}\", \"UserId\":\"{1}\"}}", installationId, userId);
             Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
 
-            await App.MobileService.InvokeApiAsync("PushRegistration", body, HttpMethod.Post, null);
+            await App.Instance.MobileService.InvokeApiAsync("PushRegistration", body, HttpMethod.Post, null);
 #endif
         }
 

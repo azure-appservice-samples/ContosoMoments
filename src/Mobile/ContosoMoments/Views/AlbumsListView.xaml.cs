@@ -21,7 +21,7 @@ namespace ContosoMoments.Views
             InitializeComponent();
             this._app = app;
 
-            viewModel = new AlbumsListViewModel(App.MobileService, app);
+            viewModel = new AlbumsListViewModel(App.Instance.MobileService, app);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -54,7 +54,7 @@ namespace ContosoMoments.Views
                         //Call user custom controller:
                         //controller to check user and add if new. Will return user ID anyway.
                         //must be called prior to sync!!!
-                        userId = await App.MobileService.InvokeApiAsync<string>("ManageUser", System.Net.Http.HttpMethod.Get, null);
+                        userId = await App.Instance.MobileService.InvokeApiAsync<string>("ManageUser", System.Net.Http.HttpMethod.Get, null);
 #if (!__WP__ && PUSH) || (__WP__ && DEBUG)
                         await viewModel.CheckUpdateNotificationRegistrationAsync(userId);
 #endif

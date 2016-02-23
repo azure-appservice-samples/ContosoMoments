@@ -42,7 +42,7 @@ namespace ContosoMoments.Views
                 iOS.AppDelegate.IsAfterLogin = true;
                 await iOS.AppDelegate.RegisterWithMobilePushNotifications();
 #elif __WP__
-                ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
+                ContosoMoments.WinPhone.App.AcquirePushChannel(App.Instance.MobileService);
 #endif
 
                 Navigation.InsertPageBefore(new AlbumsListView(App.Current as App), this);

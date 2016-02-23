@@ -23,7 +23,7 @@ namespace ContosoMoments.Views
             InitializeComponent();
 
             _app = app;
-            viewModel = new ImagesListViewModel(App.MobileService, _app);
+            viewModel = new ImagesListViewModel(App.Instance.MobileService, _app);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -99,7 +99,7 @@ namespace ContosoMoments.Views
             var selectedImage = e.SelectedItem as ContosoMoments.Models.Image;
 
             if (selectedImage != null) {
-                var detailsVM = new ImageDetailsViewModel(App.MobileService, selectedImage);
+                var detailsVM = new ImageDetailsViewModel(App.Instance.MobileService, selectedImage);
                 var detailsView = new ImageDetailsView();
                 detailsVM.Album = viewModel.Album;
                 detailsView.BindingContext = detailsVM;

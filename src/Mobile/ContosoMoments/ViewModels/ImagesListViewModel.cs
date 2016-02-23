@@ -79,7 +79,7 @@ namespace ContosoMoments.ViewModels
                     im.ImageLoaded = await FileSystem.Current.LocalStorage.CheckExistsAsync(filePath) == ExistenceCheckResult.FileExists;
                 }
 
-                App.MobileService.EventManager.Subscribe<MobileServiceEvent>(DownloadStatusObserver);
+                App.Instance.MobileService.EventManager.Subscribe<MobileServiceEvent>(DownloadStatusObserver);
             }
             catch (Exception ex) {
                 ErrorMessage = ex.Message;

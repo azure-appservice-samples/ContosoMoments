@@ -43,7 +43,7 @@ namespace ContosoMoments.Views
 
             var vm = this.BindingContext as ImageDetailsViewModel;
 
-            IFileSyncContext context = App.MobileService.GetFileSyncContext();
+            IFileSyncContext context = App.Instance.MobileService.GetFileSyncContext();
 
             var recordFiles = await context.MobileServiceFilesClient.GetFilesAsync(App.Instance.imageTableSync.TableName, vm.Image.Id);
             var file = recordFiles.First(f => f.StoreUri.Contains(imageSize));
