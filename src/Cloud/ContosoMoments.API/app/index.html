@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>ContosoMoments - Share your photos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="https://ajax.aspnetcdn.com/ajax/mobileservices/MobileServices.Web-1.2.7.min.js"></script>
+    <script src="/app/lib/angular/angular.min.js"></script>
+    <script src="/app/lib/jquery/dist/jquery.js"></script>
+    <script src="/app/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/app/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/config.js"></script>
+    <link rel="stylesheet" href="/app/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/app/css/animation.css" />
+    <link rel="stylesheet" href="/app/css/fontello.css" />
+    <link rel="stylesheet" href="/app/css/main.css" />
+    <base href="/" />
+</head>
+<body ng-app="contosoMoments">
+    <header>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container" ng-controller="navController as navCtrl">
+                <div class="navbar-header">
+                    <button ng-show="showMenu" type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">
+                        <img class="img-responsive" src="/App/img/Web-ContosoMomentsLogo.svg">
+                    </a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav navbar-right">
+
+
+                        <li class="pull-right-sm" ng-show="showDelImage">
+                            <a href="#" ng-click="navCtrl.deleteImageModal()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
+                    <ul class="nav navbar-nav navbar-right">
+
+
+
+                        <li class="pull-right-sm" ng-show="showUpload">
+                            <a href="#" ng-click="navCtrl.deleteAlbumModal()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
+                            </a>
+                        </li>
+                        <li class="pull-right-sm" ng-show="showUpload">
+                            <a href="#" ng-click="navCtrl.openAlbummModal(true)">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Edit Album</span>
+                            </a>
+                        </li>
+                        <li class="pull-right-sm" ng-show="showUpload">
+                            <a href="#" ng-click="navCtrl.openUploadModal()">
+                                <span class="glyphicon glyphicon-cloud-upload"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Upload Image</span>
+                            </a>
+                        </li>
+
+
+                        <li class="pull-right-sm" ng-show="showCreateAlbum">
+                            <a href="#" ng-click="navCtrl.openAlbummModal()">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Create Album</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+        <div class="container" ng-controller="titleController as titleCtrl">
+
+            <div ng-show="userEmail" class="page-header">
+                <span class="glyphicon glyphicon-user">
+                </span>
+                <span ng-bind="userEmail"></span>
+                <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
+            </div>
+
+
+        </div>
+    </header>
+    <route-loader></route-loader>
+    <div class="container" ui-view></div>
+
+    <script src="/app/lib/ui-bootstrap-custom/ui-bootstrap-custom-tpls-0.14.3.min.js"> </script>
+    <script src="/app/lib/azure-blob-upload.js"></script>
+    <script src="/app/js/app.js"></script>
+    <script src="/app/js/controllers/AlbumController.js"></script>
+    <script src="/app/js/controllers/AuthController.js"></script>
+    <script src="/app/js/controllers/ImageController.js"></script>
+    <script src="/app/js/controllers/NavController.js"></script>
+    <script src="/app/js/controllers/UploadController.js"></script>
+    <script src="/app/js/services/AuthService.js"></script>
+    <script src="/app/js/services/AlbumService.js"></script>
+    <script src="/app/js/services/ImageService.js"></script>
+    <script src="/app/js/services/MobileService.js"></script>
+    <script src="/app/js/services/UploadService.js"></script>
+    <script src="/app/js/services/UserService.js"></script>
+    <script src="/app/js/directives/FileChange.js"></script>
+    <script src="/app/js/directives/RouteLoader.js"></script>
+</body>
+
+</html>

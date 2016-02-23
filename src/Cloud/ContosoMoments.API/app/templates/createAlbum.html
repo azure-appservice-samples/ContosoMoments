@@ -1,0 +1,13 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title" ng-bind="::crtAlbumCtrl.modalTitle">Create Album</h4>
+</div>
+<div class="modal-body">
+    <div class="has-feedback" ng-hide="uploadCtrl.showProgress()">
+        <input type="text" class="form-control" ng-model="crtAlbumCtrl.currentAlbum.albumName" ng-disabled="crtAlbumCtrl.postingAlbum" placeholder="Album name" />
+        <span ng-show="crtAlbumCtrl.postingAlbum" class="icon-spin3 animate-spin form-control-feedback"></span>
+    </div>
+</div>
+<div class="modal-footer" ng-hide="uploadCtrl.showProgress()">
+    <button class="btn btn-default" type="button" ng-click="crtAlbumCtrl.cancel()" ng-disabled="crtAlbumCtrl.postingAlbum">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="crtAlbumCtrl.post()" ng-disabled="crtAlbumCtrl.postingAlbum">Save</button>
+</div>

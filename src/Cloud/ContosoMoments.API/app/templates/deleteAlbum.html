@@ -1,0 +1,9 @@
+﻿<div class="modal-body">
+    <div class="text-center">
+        <b> {{ delAlbumCtrl.deleteMessage  }} </b>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="delAlbumCtrl.cancel()" ng-disabled="delAlbumCtrl.deletingAlbum">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-show="delAlbumCtrl.enableDelete" ng-click="delAlbumCtrl.deleteAlbum()" ng-disabled="delAlbumCtrl.deletingAlbum">Delete</button>
+</div>
