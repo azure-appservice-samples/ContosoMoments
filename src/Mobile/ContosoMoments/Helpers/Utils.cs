@@ -70,8 +70,8 @@ namespace ContosoMoments
         {
             var defaults = await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
  
-            Settings.DefaultUserId   = defaults["DefaultUserId"].ToString();
-            Settings.DefaultAlbumId  = defaults["DefaultAlbumId"].ToString();
+            Settings.Current.DefaultUserId   = defaults["DefaultUserId"].ToString();
+            Settings.Current.DefaultAlbumId  = defaults["DefaultAlbumId"].ToString();
         }
     }
 }

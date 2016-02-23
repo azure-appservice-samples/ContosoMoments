@@ -37,7 +37,6 @@ namespace ContosoMoments
             if (response.StatusCode == HttpStatusCode.Unauthorized) {
                 try {
                     await ShowAuthDialog();
-                    App.Instance.CurrentUserId = Client.CurrentUser.UserId;
 
                     clonedRequest = await CloneRequestAsync(request);
 
@@ -58,7 +57,7 @@ namespace ContosoMoments
 
         private async Task ShowAuthDialog()
         {
-            var authSetting = Settings.AuthenticationType;
+            var authSetting = Settings.Current.AuthenticationType;
             var provider = 
                 authSetting == Settings.AuthOption.Facebook ? MobileServiceAuthenticationProvider.Facebook : 
                     MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory;

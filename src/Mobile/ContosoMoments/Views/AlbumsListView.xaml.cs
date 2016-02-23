@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using ContosoMoments.Helpers;
+using System.ComponentModel;
 
 namespace ContosoMoments.Views
 {
@@ -26,6 +27,8 @@ namespace ContosoMoments.Views
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            Settings.Current.PropertyChanged += AuthTypePropertyChanged;
 
             // new album creation is only allowed in authenticated mode
             var tapNewAlbumImage = new TapGestureRecognizer();
@@ -48,13 +51,15 @@ namespace ContosoMoments.Views
             }
         }
 
+        private void AuthTypePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            imgAddAlbum.IsVisible = Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
+        }
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            if (Settings.AuthenticationType == Settings.AuthOption.GuestAccess) {
-                imgAddAlbum.IsVisible = false;
-            }
+            AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
             if (albumsList.ItemsSource != null) {
                 return;

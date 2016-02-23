@@ -42,8 +42,11 @@ namespace ContosoMoments
 
         public string CurrentUserId
         {
-            get { return currentUserId != null ? currentUserId : Settings.DefaultUserId; }
-            set { currentUserId = value; }
+            get { return currentUserId ?? Settings.Current.DefaultUserId; }
+            set {
+                currentUserId = value;
+                Settings.Current.CurrentUserId = currentUserId;
+            }
         }
 
         public App()
@@ -72,11 +75,11 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            if (Settings.MobileAppUrl == Settings.DefaultMobileAppUrl) {
+            if (Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl) {
                 MainPage = new SettingsView(this);
             }
             else {
-                await InitMobileService(Settings.MobileAppUrl);
+                await InitMobileService(Settings.Current.MobileAppUrl);
             }
         }
 
@@ -105,14 +108,16 @@ namespace ContosoMoments
 #endif
 
             if (firstStart) {
+                await Utils.PopulateDefaultsAsync();
+
                 var loginPage = new Login();
                 MainPage = new NavigationPage(new AlbumsListView(this));
+
                 await MainPage.Navigation.PushAsync(loginPage);
-                
-                Settings.AuthenticationType = await loginPage.GetResultAsync();
-                this.CurrentUserId = MobileService.CurrentUser?.UserId; // CurrentUser might be null if guest access
+                await loginPage.GetResultAsync();
             }
             else {
+                currentUserId = Settings.Current.CurrentUserId;
                 MainPage = new NavigationPage(new AlbumsListView(this));
             }
         }
