@@ -40,12 +40,14 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
+        [Authorize]
         public Task<Album> PatchAlbum(string id, Delta<Album> patch)
         {
             return UpdateAsync(id, patch);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
+        [Authorize]
         public async Task<IHttpActionResult> PostAlbum(Album item)
         {
             Album current = await InsertAsync(item);
@@ -53,6 +55,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
+        [Authorize]
         public async Task DeleteAlbum(string albumId)
         {
             Web.Models.ConfigModel config = new Web.Models.ConfigModel();

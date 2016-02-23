@@ -46,6 +46,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
 
         // PATCH tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
+        [Authorize]
         public Task<User> PatchUser(string id, Delta<User> patch)
         {
              return UpdateAsync(id, patch);
@@ -53,6 +54,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
 
         // POST tables/User
         [EnableCors(origins: "*", headers: "*", methods: "*")]
+        [Authorize]
         public async Task<IHttpActionResult> PostUser(User item)
         {
             User current = await InsertAsync(item);
@@ -61,6 +63,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
 
         // DELETE tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
+        [Authorize]
         public Task DeleteUser(string id)
         {
              return DeleteAsync(id);

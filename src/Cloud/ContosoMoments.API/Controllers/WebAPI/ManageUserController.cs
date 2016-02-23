@@ -13,6 +13,7 @@ using System.Diagnostics;
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
     [MobileAppController]
+    [Authorize]
     public class ManageUserController : ApiController
     {
         protected readonly string _defaultUserId;
@@ -45,7 +46,6 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             return UserOrDefault(retVal);
         }
 
-        // POST: api/Like
         public async Task<string> Get(string data, string provider)
         {
             string retVal = default(string);

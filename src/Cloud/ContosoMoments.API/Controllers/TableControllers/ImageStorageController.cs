@@ -37,6 +37,7 @@ namespace ContosoMoments.API.Controllers.TableControllers
 
         [HttpDelete]
         [Route("tables/Image/{id}/MobileServiceFiles/{name}")]
+        [Authorize]
         public Task Delete(string id, string name)
         {
             return base.DeleteFileAsync(id, name, new ImageNameResolver());
