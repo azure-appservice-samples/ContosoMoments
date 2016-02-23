@@ -75,11 +75,11 @@ namespace ContosoMoments
             }
         }
 
-        internal async Task InitMobileService(string uri)
+        internal async Task InitMobileService(string uri, bool firstStart = false)
         {
             this.ApplicationURL = uri;
 
-            var authHandler = new AuthHandler(DependencyService.Get<Models.IMobileClient>());
+            var authHandler = new AuthHandler();
             MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true), authHandler);
             authHandler.Client = MobileService;
             AuthenticatedUser = MobileService.CurrentUser;
@@ -98,7 +98,17 @@ namespace ContosoMoments
 #elif __WP__ && PUSH
            ContosoMoments.WinPhone.App.AcquirePushChannel(App.Instance.MobileService);
 #endif
-            MainPage = new NavigationPage(new AlbumsListView(this));
+
+            if (firstStart) {
+                var loginPage = new Login();
+                MainPage = new NavigationPage(new AlbumsListView(this));
+                await MainPage.Navigation.PushAsync(loginPage);
+                
+                Settings.AuthenticationType = await loginPage.GetResultAsync();
+            }
+            else {
+                MainPage = new NavigationPage(new AlbumsListView(this));
+            }
         }
 
         internal async Task ResetAsync(string uri)
@@ -213,13 +223,5 @@ namespace ContosoMoments
         {
             await imageTableSync.DeleteFileAsync(file);
         }
-
-        internal async Task<string> LoadUserIdAsync(string userId)
-        {
-            var userInfo = await MobileService.GetTable("User").LookupAsync(userId);
-            CurrentUserEmail = userInfo["email"].ToString();
-            return CurrentUserEmail;
-        }
-
     }
 }

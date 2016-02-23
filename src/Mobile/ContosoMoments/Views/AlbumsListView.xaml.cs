@@ -27,6 +27,7 @@ namespace ContosoMoments.Views
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
+            // new album creation is only allowed in authenticated mode
             var tapNewAlbumImage = new TapGestureRecognizer();
             tapNewAlbumImage.Tapped += OnAdd;
             imgAddAlbum.GestureRecognizers.Add(tapNewAlbumImage);
@@ -47,37 +48,32 @@ namespace ContosoMoments.Views
             }
         }
 
-
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            if (albumsList.ItemsSource == null) {
-                using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
-                    string userId = Settings.DefaultUserId;
-                    if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-                        //Call user custom controller:
-                        //controller to check user and add if new. Will return user ID anyway.
-                        //must be called prior to sync!!!
-                        userId = await App.Instance.MobileService.InvokeApiAsync<string>("ManageUser", System.Net.Http.HttpMethod.Get, null);
-#if (!__WP__ && PUSH) || (__WP__ && DEBUG)
-                        await viewModel.CheckUpdateNotificationRegistrationAsync(userId);
-#endif
-                        await _app.SyncAlbumsAsync();
-                        
-                        if (viewModel.UserEmail == null) {
-                            viewModel.UserEmail = await _app.LoadUserIdAsync(userId);
-                        }
+            if (Settings.AuthenticationType == Settings.AuthOption.GuestAccess) {
+                imgAddAlbum.IsVisible = false;
+            }
 
-                        #pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
-                        _app.SyncAsync();
-                        #pragma warning restore CS4014  
-                    }
-                    else
-                        await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Using local data. Please try again when data connection is back", "OK");
+            if (albumsList.ItemsSource != null) {
+                return;
+            }
 
-                    await LoadItemsAsync();
+            using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
+
+                if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
+
+                    await _app.SyncAlbumsAsync();
+
+#pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
+                    _app.SyncAsync();
+#pragma warning restore CS4014
                 }
+                else
+                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Using local data. Please try again when data connection is back", "OK");
+
+                await LoadItemsAsync();
             }
         }
 
@@ -246,10 +242,10 @@ namespace ContosoMoments.Views
                 HideAndCleanupInput();
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
                     await _app.SyncAlbumsAsync();
-                    
-                    #pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
+
+#pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
                     _app.SyncAsync();
-                    #pragma warning restore CS4014
+#pragma warning restore CS4014
                 }
                 else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");

@@ -53,7 +53,7 @@ namespace ContosoMoments.Views
             }
             else {
                 Settings.MobileAppUrl = uriText;
-                await _app.InitMobileService(uriText);
+                await _app.InitMobileService(uriText, firstStart: true);
                 await Utils.PopulateDefaultsAsync();
             }
         }

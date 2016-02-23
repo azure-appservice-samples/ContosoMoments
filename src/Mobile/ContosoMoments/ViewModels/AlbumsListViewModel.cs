@@ -41,16 +41,6 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        public string UserEmail
-        {
-            get { return _userEmail; }
-            set
-            {
-                _userEmail = value;
-                OnPropertyChanged(nameof(UserEmail));
-            }
-        }
-
         public async Task CheckUpdateNotificationRegistrationAsync(string userId)
         {
 #if !__WP__
