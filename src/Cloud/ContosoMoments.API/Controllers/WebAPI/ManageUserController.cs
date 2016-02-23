@@ -111,17 +111,17 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 }
 
                 // create new user
-                return AddUser(email, ctx);
+                return AddUser(identifier, ctx);
             }
         }
 
-        private static string AddUser(string email, MobileServiceContext ctx)
+        private static string AddUser(string emailHash, MobileServiceContext ctx)
         {
             var u = ctx.Users.Add(
                 new Common.Models.User
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Email = email,
+                    Email = emailHash,
                     IsEnabled = true
                 });
 

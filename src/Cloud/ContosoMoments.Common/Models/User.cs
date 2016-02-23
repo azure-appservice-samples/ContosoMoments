@@ -6,8 +6,7 @@ namespace ContosoMoments.Common.Models
 {
     public class User : EntityData
     {
-       // public Guid UserId { get; set; }
-
+        // Hash of the email address
         public string Email { get; set; }
 
         public bool IsEnabled { get; set; }
