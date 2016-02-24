@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Diagnostics;
 using ContosoMoments.API;
 using ContosoMoments.API.Helpers;
+using System.Net.Http;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
@@ -17,33 +18,30 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
     [Authorize]
     public class ManageUserController : ApiController
     {
-        protected readonly string _defaultUserId;
         protected const string FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token=";
 
-        public ManageUserController()
+        internal static async Task<string> GetUserId(HttpRequestMessage request, IPrincipal user)
         {
-            _defaultUserId = new ConfigModel().DefaultUserId;
+            string result = "";
+
+            // Get the credentials for the logged-in user.
+            var fbCredentials = await user.GetAppServiceIdentityAsync<FacebookCredentials>(request);
+            var aadCredentials = await user.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(request);
+
+            if (fbCredentials?.Claims?.Count > 0) {
+                result = CheckAddEmailToDB(await GetEmailFromFacebookGraph(fbCredentials.AccessToken));
+            }
+            else if (aadCredentials?.Claims?.Count > 0) {
+                result = CheckAddEmailToDB(aadCredentials.UserId);
+            }
+
+            return UserOrDefault(result);
         }
 
         // GET api/ManageUser
         public async Task<string> Get()
         {
-            string retVal = default(string);
-
-            // Get the credentials for the logged-in user.
-            var fbCredentials = await User.GetAppServiceIdentityAsync<FacebookCredentials>(Request);
-            if (null != fbCredentials && fbCredentials.Claims.Count > 0)
-            {
-                retVal = CheckAddEmailToDB(await GetEmailFromFacebookGraph(fbCredentials.AccessToken));
-            }
-
-            var aadCredentials = await User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(Request);
-            if (null != aadCredentials && aadCredentials.Claims.Count > 0)
-            {
-                retVal = CheckAddEmailToDB(aadCredentials.UserId);
-            }
-
-            return UserOrDefault(retVal);
+            return await GetUserId(Request, User);
         }
 
         public async Task<string> Get(string data, string provider)
@@ -63,11 +61,11 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
             return UserOrDefault(retVal);
         }
 
-        private string UserOrDefault(string retVal)
+        private static string UserOrDefault(string retVal)
         {
             if (string.IsNullOrWhiteSpace(retVal))
             {
-                retVal = _defaultUserId;
+                retVal = new ConfigModel().DefaultUserId;
             }
 
             return retVal;

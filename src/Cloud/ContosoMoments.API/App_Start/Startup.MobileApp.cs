@@ -8,6 +8,8 @@ using Microsoft.Azure.Mobile.Server.Config;
 using Owin;
 using Newtonsoft.Json;
 using ContosoMoments.API;
+using Microsoft.Azure.Mobile.Server.Authentication;
+using System.Configuration;
 
 namespace ContosoMoments.MobileServer
 {
@@ -26,10 +28,16 @@ namespace ContosoMoments.MobileServer
                 .ApplyTo(config);
 
             Database.SetInitializer(new ContosoMomentsDBInitializer());
-          
-            app.UseWebApi(config);          
+
+            // set up auth for local development
+            app.UseAppServiceAuthentication(new AppServiceAuthenticationOptions() {
+                SigningKey = ConfigurationManager.AppSettings["authSigningKey"],
+                ValidAudiences = new[] { ConfigurationManager.AppSettings["authAudience"] },
+                ValidIssuers = new[] { ConfigurationManager.AppSettings["authIssuer"] },
+                TokenHandler = config.GetAppServiceTokenHandler()
+            });
+
+            app.UseWebApi(config);         
         }
     }
-
-   
 }

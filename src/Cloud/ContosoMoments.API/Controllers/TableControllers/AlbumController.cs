@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using ContosoMoments.API;
 using ContosoMoments.API.Helpers;
+using ContosoMoments.MobileServer.Controllers.WebAPI;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -29,9 +30,11 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IQueryable<Album> GetAllAlbum()
+        [Route("tables/Album")]
+        public async Task<IQueryable<Album>> GetAllAlbum()
         {
-            return Query();
+            string currentUserId = await ManageUserController.GetUserId(Request, User);
+            return Query().Where(x => x.UserId == currentUserId || x.IsDefault);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]

@@ -12,6 +12,7 @@ using ContosoMoments.Common.Queue;
 using ContosoMoments.Common;
 using ContosoMoments.API.Helpers;
 using ContosoMoments.API;
+using ContosoMoments.MobileServer.Controllers.WebAPI;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -27,9 +28,13 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
 
         // GET tables/Image
         [EnableCors(origins: "*", headers: "*", methods: "*")]   
-        public IQueryable<Image> GetAllImage()
+        public async Task<IQueryable<Image>> GetAllImage()
         {
-            return Query();
+            string currentUserId = await ManageUserController.GetUserId(Request, User);
+            string defaultUserId = new ConfigModel().DefaultUserId;
+
+            // return images owned by the current user or the guest user
+            return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId);
         }
 
         // GET tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
