@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
+using ContosoMoments.API;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
 using ContosoMoments.Common.Storage;
-using ContosoMoments.MobileServer.Models;
 
 namespace ContosoMoments.MobileServer.DataLogic
 {

@@ -6,7 +6,7 @@ using Microsoft.Azure.Mobile.Server.Tables;
 using System.Configuration;
 using System.Collections.Specialized;
 
-namespace ContosoMoments.MobileServer.Models
+namespace ContosoMoments.API
 {
 
     public class MobileServiceContext : DbContext

@@ -1,5 +1,4 @@
-﻿using ContosoMoments.MobileServer.Models;
-using Microsoft.Azure.Mobile.Server.Authentication;
+﻿using Microsoft.Azure.Mobile.Server.Authentication;
 using Microsoft.Azure.Mobile.Server.Config;
 using Newtonsoft.Json.Linq;
 using System;
@@ -9,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Diagnostics;
+using ContosoMoments.API;
+using ContosoMoments.API.Helpers;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
@@ -21,8 +22,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
         public ManageUserController()
         {
-            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
-            _defaultUserId = config.DefaultUserId;
+            _defaultUserId = new ConfigModel().DefaultUserId;
         }
 
         // GET api/ManageUser

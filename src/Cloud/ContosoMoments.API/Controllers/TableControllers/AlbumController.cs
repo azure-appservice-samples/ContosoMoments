@@ -5,12 +5,13 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Cors;
 using System.Web.Http.OData;
 using ContosoMoments.Common.Models;
-using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using ContosoMoments.API;
+using ContosoMoments.API.Helpers;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
@@ -58,12 +59,9 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         [Authorize]
         public async Task DeleteAlbum(string albumId)
         {
-            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
-            string defaultAlbumId = config.DefaultAlbumId;
-            if (albumId == defaultAlbumId) {
+            if (albumId == new ConfigModel().DefaultAlbumId) {
                 var message =
-                    new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest) 
-                    { ReasonPhrase = "Cannot delete default album" };
+                    new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest) { ReasonPhrase = "Cannot delete default album" };
                 throw new HttpResponseException(message);
             }
 

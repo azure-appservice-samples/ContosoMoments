@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Web;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
-using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Files;
 
 namespace ContosoMoments.API.Helpers

@@ -1,8 +1,8 @@
 namespace ContosoMoments.MobileServer.Migrations
 {
     using System.Data.Entity.Migrations;
-
-    internal sealed class Configuration : DbMigrationsConfiguration<ContosoMoments.MobileServer.Models.MobileServiceContext>
+    using API;
+    internal sealed class Configuration : DbMigrationsConfiguration<MobileServiceContext>
     {
         public Configuration()
         {

@@ -6,8 +6,8 @@ using System.Data.Entity;
 using System.Web.Http;
 using Microsoft.Azure.Mobile.Server.Config;
 using Owin;
-using ContosoMoments.MobileServer.Models;
 using Newtonsoft.Json;
+using ContosoMoments.API;
 
 namespace ContosoMoments.MobileServer
 {

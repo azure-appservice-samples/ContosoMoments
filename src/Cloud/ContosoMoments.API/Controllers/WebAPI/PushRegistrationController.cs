@@ -1,11 +1,11 @@
 ﻿using ContosoMoments.Common.Notification;
-using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server.Config;
 using Microsoft.Azure.NotificationHubs;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ContosoMoments.API;
 
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {

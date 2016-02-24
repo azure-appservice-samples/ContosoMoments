@@ -5,13 +5,13 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Cors;
 using System.Web.Http.OData;
 using ContosoMoments.Common.Models;
-using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
 using ContosoMoments.Common.Queue;
 using ContosoMoments.Common;
 using ContosoMoments.API.Helpers;
+using ContosoMoments.API;
 
 namespace ContosoMoments.MobileServer.Controllers.TableControllers
 {
