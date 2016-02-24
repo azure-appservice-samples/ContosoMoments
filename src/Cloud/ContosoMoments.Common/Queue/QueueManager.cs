@@ -14,15 +14,17 @@ namespace ContosoMoments.Common.Queue
 {
     public class QueueManager
     {
-        public async Task PushToResizeQueue(BlobInformation blobInformation)
+        private static string StorageConnectionString()
         {
-            try
-            {
-                CloudStorageAccount account;
-                string storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", AppSettings.StorageAccountName, AppSettings.StorageAccountKey);
+            return $"DefaultEndpointsProtocol=https;AccountName={AppSettings.StorageAccountName};AccountKey={AppSettings.StorageAccountKey}";
+        }
 
-                if (CloudStorageAccount.TryParse(storageConnectionString, out account))
-                {
+        public async Task PushToResizeQueue(BlobInformation blobInformation)
+            {
+            try {
+                CloudStorageAccount account;
+
+                if (CloudStorageAccount.TryParse(StorageConnectionString(), out account)) {
                     CloudQueueClient queueClient = account.CreateCloudQueueClient();
                     CloudQueue resizeRequestQueue = queueClient.GetQueueReference(AppSettings.ResizeQueueName);
                     resizeRequestQueue.CreateIfNotExists(); 
@@ -31,8 +33,7 @@ namespace ContosoMoments.Common.Queue
                     await resizeRequestQueue.AddMessageAsync(queueMessage);
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Trace.TraceError("Exception in QueueManager.PushToQueue => " + ex.Message);
             }
 
@@ -40,13 +41,10 @@ namespace ContosoMoments.Common.Queue
 
         public async Task PushToDeleteQueue(BlobInformation blobInformation)
         {
-            try
-            {
+            try {
                 CloudStorageAccount account;
-                string storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", AppSettings.StorageAccountName, AppSettings.StorageAccountKey);
 
-                if (CloudStorageAccount.TryParse(storageConnectionString, out account))
-                {
+                if (CloudStorageAccount.TryParse(StorageConnectionString(), out account)) {
                     CloudQueueClient queueClient = account.CreateCloudQueueClient();
                     CloudQueue deleteRequestQueue = queueClient.GetQueueReference(AppSettings.DeleteQueueName);
                     deleteRequestQueue.CreateIfNotExists();
@@ -55,11 +53,9 @@ namespace ContosoMoments.Common.Queue
                     await deleteRequestQueue.AddMessageAsync(queueMessage);
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Trace.TraceError("Exception in QueueManager.PushToQueue => " + ex.Message);
             }
-
         }
     }
 }

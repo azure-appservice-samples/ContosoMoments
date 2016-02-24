@@ -40,6 +40,7 @@
     <NoWarn>1591,0618</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -242,7 +243,6 @@
     <Compile Include="Controllers\TableControllers\UserController.cs" />
     <Compile Include="Controllers\WebAPI\LikeController.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="DataLogic\ImageBusinessLogic.cs" />
     <Compile Include="Helpers\ConfigModel.cs" />
     <Compile Include="Models\MobileServiceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

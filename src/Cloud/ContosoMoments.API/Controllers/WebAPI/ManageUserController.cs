@@ -18,7 +18,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
     [Authorize]
     public class ManageUserController : ApiController
     {
-        protected const string FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token=";
+        protected const string FacebookGraphUrl = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token=";
 
         internal static async Task<string> GetUserId(HttpRequestMessage request, IPrincipal user)
         {
@@ -48,13 +48,11 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         {
             string retVal = default(string);
 
-            if (provider.Equals("facebook"))
-            {
+            if (provider.Equals("facebook")) {
                 retVal = CheckAddEmailToDB(await GetEmailFromFacebookGraph(data));
             }
 
-            if (provider.Equals("aad"))
-            {
+            if (provider.Equals("aad")) {
                 retVal = CheckAddEmailToDB(data);
             }
 
@@ -63,8 +61,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
         private static string UserOrDefault(string retVal)
         {
-            if (string.IsNullOrWhiteSpace(retVal))
-            {
+            if (string.IsNullOrWhiteSpace(retVal)) {
                 retVal = new ConfigModel().DefaultUserId;
             }
 
@@ -75,10 +72,9 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         {
             string fbInfo = default(string);
             // Create a query string with the Facebook access token.
-            var fbRequestUrl = FACEBOOK_GRAPH_URL + credentials;
+            var fbRequestUrl = FacebookGraphUrl + credentials;
 
-            using (var client = new System.Net.Http.HttpClient())
-            {
+            using (var client = new System.Net.Http.HttpClient()) {
                 // Request the current user info from Facebook.
                 var resp = await client.GetAsync(fbRequestUrl);
                 resp.EnsureSuccessStatusCode();
@@ -99,8 +95,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         {
             var identifier = GenerateHashFromEmail(email);
 
-            using (var ctx = new MobileServiceContext())
-            {
+            using (var ctx = new MobileServiceContext()) {
                 var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
 
                 // user was found, return it
@@ -116,21 +111,13 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         private static string AddUser(string emailHash, MobileServiceContext ctx)
         {
             var u = ctx.Users.Add(
-                new Common.Models.User
-                {
+                new Common.Models.User {
                     Id = Guid.NewGuid().ToString(),
                     Email = emailHash,
                     IsEnabled = true
                 });
 
-            try
-            {
                 ctx.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
 
             return u.Id;
         }
@@ -139,13 +126,11 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         {
             StringBuilder hashString = new StringBuilder();
 
-            using (var generator = System.Security.Cryptography.SHA256.Create())
-            {
+            using (var generator = System.Security.Cryptography.SHA256.Create()) {
                 var emailBytes = Encoding.UTF8.GetBytes(email);
                 var hash = generator.ComputeHash(emailBytes);
 
-                foreach (var b in hash)
-                {
+                foreach (var b in hash) {
                     hashString.AppendFormat("{0:x2}", b);
                 }
             }

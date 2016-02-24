@@ -11,14 +11,12 @@ namespace ContosoMoments.API.Helpers
 {
     public class ImageNameResolver : IContainerNameResolver
     {
-        private MobileServiceContext dbContext;
         private string storeUri;
 
         public const string DefaultSizeKey = "lg";
 
         public ImageNameResolver(string storeUri = null)
         {
-            this.dbContext = new MobileServiceContext();
             this.storeUri = storeUri;
         }
 

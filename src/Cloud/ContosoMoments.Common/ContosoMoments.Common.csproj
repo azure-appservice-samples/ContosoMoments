@@ -23,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -249,15 +251,12 @@
     <Compile Include="Notification\DeviceInstallationInfo.cs" />
     <Compile Include="Notification\Notifier.cs" />
     <Compile Include="Queue\QueueManager.cs" />
-    <Compile Include="Storage\BlobInformation.cs" />
-    <Compile Include="Enums\ImageFormats.cs" />
-    <Compile Include="Enums\ImageSizes.cs" />
+    <Compile Include="Models\BlobInformation.cs" />
+    <Compile Include="Models\ImageSizes.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Storage\CommitBlobRequest.cs" />
-    <Compile Include="Storage\ContosoStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

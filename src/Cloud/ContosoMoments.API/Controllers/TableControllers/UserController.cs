@@ -33,16 +33,8 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public SingleResult<User> GetUser(string id)
         {
-            try
-            {
                 return Lookup(id);
             }
-            catch (System.Exception ex)
-            {
-                 throw ex;
-            }
-            
-        }
 
         // PATCH tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]

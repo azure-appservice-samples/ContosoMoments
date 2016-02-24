@@ -66,7 +66,7 @@ namespace ContosoMoments.Common.Notification
             return (outcome.Success > 0 && outcome.Failure == 0);
         }
 
-        public async Task sendGCMNotification(string message, IEnumerable<string> tags)
+        public async Task SendGcmNotification(string message, IEnumerable<string> tags)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public async Task sendIOSNotification(string message, IEnumerable<string> tags)
+        public async Task SendAppleNotification(string message, IEnumerable<string> tags)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public async Task sendWPNotification(string message, IEnumerable<string> tags)
+        public async Task SendMpnsNotification(string message, IEnumerable<string> tags)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace ContosoMoments.Common.Notification
             }
         }
 
-        public async Task sendWindowsStoreNotification(string message, IEnumerable<string> tags)
+        public async Task SendWindowsNotification(string message, IEnumerable<string> tags)
         {
             try
             {
