@@ -4,12 +4,11 @@ using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using ContosoMoments.API.Helpers;
 using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server.Files;
 using Microsoft.Azure.Mobile.Server.Files.Controllers;
 
-namespace ContosoMoments.API.Controllers.TableControllers
+namespace ContosoMoments.Api
 {
     public class ImageStorageController : StorageController<Image>
     {

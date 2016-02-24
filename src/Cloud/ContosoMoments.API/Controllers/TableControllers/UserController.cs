@@ -8,40 +8,39 @@ using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
-using ContosoMoments.API;
 
-namespace ContosoMoments.MobileServer.Controllers.TableControllers
+namespace ContosoMoments.Api
 {
     public class UserController : TableController<User>
     {
         protected override void Initialize(HttpControllerContext controllerContext)
         {
-            var softDeleteEnabled=Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
+            var softDeleteEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
             base.Initialize(controllerContext);
             MobileServiceContext context = new MobileServiceContext();
-            DomainManager = new EntityDomainManager<User>(context, Request ,enableSoftDelete: softDeleteEnabled);
+            DomainManager = new EntityDomainManager<User>(context, Request, enableSoftDelete: softDeleteEnabled);
         }
 
         // GET tables/User
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public IQueryable<User> GetAllUser()
         {
-            return Query(); 
+            return Query();
         }
 
         // GET tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public SingleResult<User> GetUser(string id)
         {
-                return Lookup(id);
-            }
+            return Lookup(id);
+        }
 
         // PATCH tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         [Authorize]
         public Task<User> PatchUser(string id, Delta<User> patch)
         {
-             return UpdateAsync(id, patch);
+            return UpdateAsync(id, patch);
         }
 
         // POST tables/User
@@ -58,7 +57,7 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         [Authorize]
         public Task DeleteUser(string id)
         {
-             return DeleteAsync(id);
+            return DeleteAsync(id);
         }
 
     }

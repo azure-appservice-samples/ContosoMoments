@@ -8,13 +8,9 @@ using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
-using ContosoMoments.Common.Queue;
 using ContosoMoments.Common;
-using ContosoMoments.API.Helpers;
-using ContosoMoments.API;
-using ContosoMoments.MobileServer.Controllers.WebAPI;
 
-namespace ContosoMoments.MobileServer.Controllers.TableControllers
+namespace ContosoMoments.Api
 {
     public class ImageController : TableController<Image>
     {

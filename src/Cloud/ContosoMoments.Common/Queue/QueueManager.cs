@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Azure;
-using Microsoft.WindowsAzure.Storage.Queue.Protocol;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using ContosoMoments.Common.Models;
 
-namespace ContosoMoments.Common.Queue
+namespace ContosoMoments.Common
 {
     public class QueueManager
     {
@@ -20,14 +16,14 @@ namespace ContosoMoments.Common.Queue
         }
 
         public async Task PushToResizeQueue(BlobInformation blobInformation)
-            {
+        {
             try {
                 CloudStorageAccount account;
 
                 if (CloudStorageAccount.TryParse(StorageConnectionString(), out account)) {
                     CloudQueueClient queueClient = account.CreateCloudQueueClient();
                     CloudQueue resizeRequestQueue = queueClient.GetQueueReference(AppSettings.ResizeQueueName);
-                    resizeRequestQueue.CreateIfNotExists(); 
+                    resizeRequestQueue.CreateIfNotExists();
 
                     var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(blobInformation));
                     await resizeRequestQueue.AddMessageAsync(queueMessage);

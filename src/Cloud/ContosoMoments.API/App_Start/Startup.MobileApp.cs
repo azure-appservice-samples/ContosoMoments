@@ -1,17 +1,12 @@
-﻿// ---------------------------------------------------------------------------- 
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// ---------------------------------------------------------------------------- 
-
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Web.Http;
 using Microsoft.Azure.Mobile.Server.Config;
 using Owin;
 using Newtonsoft.Json;
-using ContosoMoments.API;
 using Microsoft.Azure.Mobile.Server.Authentication;
 using System.Configuration;
 
-namespace ContosoMoments.MobileServer
+namespace ContosoMoments.Api
 {
     public partial class Startup
     {

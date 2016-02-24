@@ -3,7 +3,7 @@ using System.Web.Http;
 using Newtonsoft.Json.Linq;
 using ContosoMoments.Common;
 
-namespace ContosoMoments.MobileServer.Controllers.WebAPI
+namespace ContosoMoments.Api
 {
     [MobileAppController]
     public class DefaultsController : ApiController

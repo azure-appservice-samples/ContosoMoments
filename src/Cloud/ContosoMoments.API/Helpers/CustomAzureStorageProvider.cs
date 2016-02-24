@@ -8,7 +8,7 @@ using ContosoMoments.Common;
 using Microsoft.Azure.Mobile.Server.Files;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace ContosoMoments.API.Helpers
+namespace ContosoMoments.Api
 {
     public class CustomAzureStorageProvider : AzureStorageProvider
     {
@@ -41,7 +41,7 @@ namespace ContosoMoments.API.Helpers
             var connectionStringSettings = ConfigurationManager.ConnectionStrings[connectionStringName];
 
             if (connectionStringSettings == null) {
-                throw new ConfigurationErrorsException(string.Format("Connection string is missing", connectionStringName));
+                throw new ConfigurationErrorsException($"Connection string is missing: {connectionStringName}");
             }
 
             return connectionStringSettings.ConnectionString;

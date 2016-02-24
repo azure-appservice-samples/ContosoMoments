@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server.Files;
 
-namespace ContosoMoments.API.Helpers
+namespace ContosoMoments.Api
 {
     public class ImageNameResolver : IContainerNameResolver
     {

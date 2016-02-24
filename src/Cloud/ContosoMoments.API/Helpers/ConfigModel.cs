@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace ContosoMoments.API.Helpers
+namespace ContosoMoments.Api
 {
     public class ConfigModel
     {

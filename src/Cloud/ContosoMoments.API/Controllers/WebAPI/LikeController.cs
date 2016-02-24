@@ -1,17 +1,13 @@
-﻿using ContosoMoments.Common.Notification;
-using ContosoMoments.MobileServer.DataLogic;
-using Microsoft.Azure.Mobile.Server.Config;
+﻿using Microsoft.Azure.Mobile.Server.Config;
 using Microsoft.Azure.NotificationHubs;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using ContosoMoments.API;
+using ContosoMoments.Common.Models;
+using ContosoMoments.Common;
 
-namespace ContosoMoments.MobileServer.Controllers.WebAPI
+namespace ContosoMoments.Api
 {
     [MobileAppController]
     public class LikeController : ApiController
@@ -25,8 +21,8 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                 if (image != null) {
                     var registrations = ctx.DeviceRegistrations.Where(x => x.UserId == image.UserId);
 
-                //Send plat-specific message to all installation one by one
-                string message = "Someone has liked your image";
+                    //Send plat-specific message to all installation one by one
+                    string message = "Someone has liked your image";
                     foreach (var registration in registrations) {
                         await SendPush(message, registration);
                     }
@@ -39,27 +35,27 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
         }
 
         private static async Task SendPush(string message, DeviceRegistration registration)
-                    {
+        {
             var tags = new string[1] { $"$InstallationId:{{{registration.InstallationId}}}" };
             switch (registration.Platform) {
-                        case NotificationPlatform.Wns:
+                case NotificationPlatform.Wns:
                     await Notifier.Instance.SendWindowsNotification(message, tags);
-                            break;
-                        case NotificationPlatform.Apns:
+                    break;
+                case NotificationPlatform.Apns:
                     await Notifier.Instance.SendAppleNotification(message, tags);
-                            break;
-                        case NotificationPlatform.Mpns:
+                    break;
+                case NotificationPlatform.Mpns:
                     await Notifier.Instance.SendMpnsNotification(message, tags);
-                            break;
-                        case NotificationPlatform.Gcm:
+                    break;
+                case NotificationPlatform.Gcm:
                     await Notifier.Instance.SendGcmNotification(message, tags);
-                            break;
-                        case NotificationPlatform.Adm:
-                            //NOT SUPPORTED
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                    break;
+                case NotificationPlatform.Adm:
+                    //NOT SUPPORTED
+                    break;
+                default:
+                    break;
             }
+        }
+    }
 }

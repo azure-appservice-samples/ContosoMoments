@@ -8,11 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Diagnostics;
-using ContosoMoments.API;
-using ContosoMoments.API.Helpers;
 using System.Net.Http;
 
-namespace ContosoMoments.MobileServer.Controllers.WebAPI
+namespace ContosoMoments.Api
 {
     [MobileAppController]
     [Authorize]
@@ -117,7 +115,7 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
                     IsEnabled = true
                 });
 
-                ctx.SaveChanges();
+            ctx.SaveChanges();
 
             return u.Id;
         }

@@ -8,13 +8,9 @@ using ContosoMoments.Common.Models;
 using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
-using System.Diagnostics;
 using System.Net.Http;
-using ContosoMoments.API;
-using ContosoMoments.API.Helpers;
-using ContosoMoments.MobileServer.Controllers.WebAPI;
 
-namespace ContosoMoments.MobileServer.Controllers.TableControllers
+namespace ContosoMoments.Api
 {
     public class AlbumController : TableController<Album>
     {

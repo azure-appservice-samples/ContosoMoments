@@ -1,14 +1,9 @@
-﻿// ---------------------------------------------------------------------------- 
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// ---------------------------------------------------------------------------- 
-
-using ContosoMoments.MobileServer;
+﻿using ContosoMoments.Api;
 using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartup(typeof(Startup))]
-
-namespace ContosoMoments.MobileServer
+namespace ContosoMoments.Api
 {
     public partial class Startup
     {
