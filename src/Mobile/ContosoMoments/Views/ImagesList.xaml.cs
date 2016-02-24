@@ -39,6 +39,8 @@ namespace ContosoMoments.Views
             var tapSettingsImage = new TapGestureRecognizer();
             tapSettingsImage.Tapped += OnSettings;
             imgSettings.GestureRecognizers.Add(tapSettingsImage);
+
+            viewModel.DeleteImageViewAction = OnDelete;
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -142,19 +144,17 @@ namespace ContosoMoments.Views
             }
         }
 
-        public async void OnDelete(object sender, EventArgs e)
+        public async void OnDelete(Models.Image image)
         {
-            var res = await DisplayAlert("Delete image?", "Delete selected image?", "Yes", "No");
+            var result = await DisplayAlert("Delete image?", "Delete selected image?", "Yes", "No");
 
-            if (res) {
-                var selectedImage = (sender as MenuItem).BindingContext as ContosoMoments.Models.Image;
-
+            if (result) {
                 try {
-                    await viewModel.DeleteImageAsync(selectedImage);
+                    await viewModel.DeleteImageAsync(image);
                     await RefreshAsync();
                 }
                 catch (Exception) {
-                    await DisplayAlert("Delete error", "Couldn't delete the image. Please try again later.", "OK");
+                    await DisplayAlert("Delete error", "Could not delete the image", "OK");
                 }
             }
         }

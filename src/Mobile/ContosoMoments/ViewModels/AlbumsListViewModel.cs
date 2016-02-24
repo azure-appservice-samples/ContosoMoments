@@ -5,20 +5,24 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Windows.Input;
+using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments.ViewModels
 {
     public class AlbumsListViewModel : BaseViewModel
     {
-        App _app;
-        string _userEmail;       
-
         public AlbumsListViewModel(MobileServiceClient client, App app)
         {
-            _app = app;
+            this.app = app;
             _client = client;
+
+            RenameCommand = new DelegateCommand(OnStartAlbumRename, IsRenameAndDeleteEnabled);
+            DeleteCommand = new DelegateCommand(OnDeleteAlbum, IsRenameAndDeleteEnabled);
         }
 
+        #region Properties
         private string _ErrorMessage = null;
         public string ErrorMessage
         {
@@ -30,16 +34,84 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        private List<Album> _Albums;
-        public List<Album> Albums
+        public string ErrorMessageTitle { get; set; }
+
+        App app;
+        private Album currentAlbumEdit;
+
+        private string editedName;
+
+        public string EditedAlbumName
         {
-            get { return _Albums; }
+            get { return editedName; }
             set
             {
-                _Albums = value;
+                editedName = value;
+                OnPropertyChanged(nameof(EditedAlbumName));
+            }
+        }
+
+        private bool showCancelButton;
+
+        public bool ShowCancelButton
+        {
+            get { return showCancelButton && showInputControl; }
+            set
+            {
+                showCancelButton = value;
+                OnPropertyChanged(nameof(ShowCancelButton));
+            }
+        }
+
+        public string CreateOrUpdateButtonText
+        {
+            get { return isRename ? "Rename" : "Add"; }
+        }
+
+        private bool isRename;
+
+        public bool IsRename
+        {
+            get { return isRename; }
+            set
+            {
+                isRename = value;
+                OnPropertyChanged(nameof(IsRename));
+                OnPropertyChanged(nameof(CreateOrUpdateButtonText));
+            }
+        }
+
+        private bool showInputControl;
+
+        public bool ShowInputControl
+        {
+            get { return showInputControl; }
+            set
+            {
+                showInputControl = value;
+                OnPropertyChanged(nameof(ShowInputControl));
+                OnPropertyChanged(nameof(ShowCancelButton));
+            }
+        }
+
+        private List<Album> albums;
+        public List<Album> Albums
+        {
+            get { return albums; }
+            set
+            {
+                albums = value;
                 OnPropertyChanged(nameof(Albums));
             }
         }
+
+        public ICommand RenameCommand { get; set; }
+        public ICommand DeleteCommand { get; set; }
+
+        // called when the album delete button is clicked
+        public Action<Album> DeleteAlbumViewAction { get; set; }
+
+        #endregion
 
         public async Task CheckUpdateNotificationRegistrationAsync(string userId)
         {
@@ -50,35 +122,101 @@ namespace ContosoMoments.ViewModels
 #endif
 
 #if (!__WP__) || (__WP__ && DEBUG)
-            string json = string.Format("{{\"InstallationId\":\"{0}\", \"UserId\":\"{1}\"}}", installationId, userId);
-            Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
+            var jsonRequest = new JObject();
+            jsonRequest["InstallationId"] = installationId;
+            jsonRequest["UserId"] = userId;
 
-            await App.Instance.MobileService.InvokeApiAsync("PushRegistration", body, HttpMethod.Post, null);
+            await App.Instance.MobileService.InvokeApiAsync("PushRegistration", jsonRequest, HttpMethod.Post, null);
 #endif
         }
 
         public async Task GetAlbumsAsync(string userId)
         {
-            _Albums =
-                await _app.albumTableSync
+            Albums =
+                await app.albumTableSync
                 .Where(a => a.UserId == userId || a.IsDefault)
                 .ToListAsync();
         }
 
-        public async Task AddNewAlbumAsync(string albumName)
+        #region UI Actions
+        private void OnStartAlbumRename(object obj)
         {
-            var album = new Album() { AlbumName = albumName, IsDefault = false, UserId = App.Instance.CurrentUserId };
-            await _app.albumTableSync.InsertAsync(album);
+            var selectedAlbum = obj as Album;
+            Debug.WriteLine($"Selected album: {selectedAlbum?.AlbumName}");
+
+            if (selectedAlbum != null) {
+                currentAlbumEdit = selectedAlbum;
+                IsRename = true;
+                EditedAlbumName = selectedAlbum.AlbumName;
+                ShowInputControl = true;
+                ShowCancelButton = true;
+            }
         }
 
         public async Task DeleteAlbumAsync(Album selectedAlbum)
         {
-            await _app.albumTableSync.DeleteAsync(selectedAlbum);
+            await app.albumTableSync.DeleteAsync(selectedAlbum);
         }
 
-        public async Task UpdateAlbumAsync(Album selectedAlbum)
+        private void OnDeleteAlbum(object obj)
         {
-            await _app.albumTableSync.UpdateAsync(selectedAlbum);
+            var selectedAlbum = obj as Album;
+            DeleteAlbumViewAction?.Invoke(selectedAlbum);
         }
+
+        public async Task<bool> CreateOrRenameAlbum()
+        {
+            if (currentAlbumEdit == null || EditedAlbumName.Length > 0) {
+                ShowInputControl = false;
+
+                if (IsRename) {
+                    currentAlbumEdit.AlbumName = EditedAlbumName;
+                    await app.albumTableSync.UpdateAsync(currentAlbumEdit);
+                }
+                else {
+                    await CreateAlbumAsync();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task CreateAlbumAsync()
+        {
+            var album = new Album() 
+            {
+                AlbumName = EditedAlbumName,
+                IsDefault = false,
+                UserId = App.Instance.CurrentUserId
+            };
+
+            await app.albumTableSync.InsertAsync(album);
+        }
+
+        public void OnAdd(object sender, EventArgs e)
+        {
+            ShowInputControl = !ShowInputControl;
+            IsRename = false;
+            ShowCancelButton = false;
+        }
+
+        #endregion
+
+        #region Helpers
+
+        // return true if the rename and delete commands are available
+        internal static bool IsRenameAndDeleteEnabled(object input)
+        {
+            var album = input as Album;
+            var isDefaultAlbum = album != null ? album.IsDefault : false;  // default album can't be renamed
+
+            return !isDefaultAlbum && Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
+        }
+
+        #endregion
     }
+
 }
+

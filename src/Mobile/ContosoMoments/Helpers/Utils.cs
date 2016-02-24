@@ -46,12 +46,17 @@ namespace ContosoMoments
             return networkConnection.IsConnected;
         }
 
+        private static async Task<JObject> GetDefaultsAsync()
+        {
+            return await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
+        }
+
         public static async Task<bool> SiteIsOnline()
         {
             bool retVal = true;
 
             try {
-                var defaults = await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
+                var defaults = await GetDefaultsAsync();
 
                 if (defaults == null) {
                     retVal = false;
@@ -67,7 +72,7 @@ namespace ContosoMoments
 
         public static async Task PopulateDefaultsAsync()
         {
-            var defaults = await App.Instance.MobileService.InvokeApiAsync<JObject>("Defaults", System.Net.Http.HttpMethod.Get, null);
+            var defaults = await GetDefaultsAsync();
  
             Settings.Current.DefaultUserId   = defaults["DefaultUserId"].ToString();
             Settings.Current.DefaultAlbumId  = defaults["DefaultAlbumId"].ToString();

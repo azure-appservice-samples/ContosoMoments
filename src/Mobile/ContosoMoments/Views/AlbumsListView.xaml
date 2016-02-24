@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.AlbumsListView"
              BackgroundColor="#8C0A4B"
-             NavigationPage.HasNavigationBar="false">
+             NavigationPage.HasNavigationBar="false"
+             xmlns:local="clr-namespace:ContosoMoments.Views;assembly=ContosoMoments">
 
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
@@ -50,7 +51,7 @@
     </Grid>
 
     <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical">
-      <Grid x:Name="grdInput" IsVisible="False" BackgroundColor="#8C0A4B" Padding="10" >
+      <Grid x:Name="grdInput" IsVisible="{Binding ShowInputControl}" BackgroundColor="#8C0A4B" Padding="10" >
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="Auto"/>
@@ -61,25 +62,31 @@
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label Text="New album name:" Grid.Row="0" Grid.Column="0" TextColor="White" HorizontalOptions="StartAndExpand"/>
-        <Entry x:Name="entAlbumName" IsPassword="False" Keyboard="Text" Grid.Row="1" Grid.Column="0" TextColor="White">
+        <Entry x:Name="entAlbumName" Text="{Binding EditedAlbumName}" IsPassword="False" Keyboard="Text" Grid.Row="1" Grid.Column="0" TextColor="White">
           <Entry.TextColor>
             <OnPlatform x:TypeArguments="Color" iOS="Black" Android="White" WinPhone="White"/>
           </Entry.TextColor>
         </Entry>
-        <Button x:Name="btnUpdate" Text="Create" Grid.Row="1" Grid.Column="1" Clicked="OnCreateClick" TextColor="White"/>
+        <Button x:Name="btnUpdate" Text="{Binding CreateOrUpdateButtonText}" Grid.Row="1" Grid.Column="1" Clicked="OnCreateClick" TextColor="White"/>
         <Button x:Name="btnCancel" Text="Cancel" Grid.Row="1" Grid.Column="2" Clicked="OnCancelClick" TextColor="White" IsVisible="False"/>
       </Grid>
 
     </StackLayout>
 
     <!--List of albums-->
-    <ListView x:Name="albumsList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="2" BackgroundColor="White">
+    <ListView
+      Grid.Row="2" BackgroundColor="White"
+      x:Name="albumsList"
+      ItemSelected="OnSelected"
+      IsPullToRefreshEnabled="true"
+      Refreshing="OnRefresh"
+      ItemsSource="{Binding Albums}">
       <ListView.ItemTemplate>
         <DataTemplate>
           <ViewCell>
             <ViewCell.ContextActions>
-              <MenuItem Clicked="OnRename" Text="Rename"/>
-              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
+              <MenuItem Text="Rename" Command="{Binding Path=BindingContext.RenameCommand, Source={x:Reference albumsList} }" CommandParameter="{Binding .}" />
+              <MenuItem Text="Delete" Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference albumsList} }" CommandParameter="{Binding .}" IsDestructive="True" />
             </ViewCell.ContextActions>
             <Grid Padding="10">
               <Label Text="{Binding AlbumName}" TextColor="Black" VerticalTextAlignment="Center"/>

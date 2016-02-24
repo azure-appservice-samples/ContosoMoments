@@ -76,7 +76,7 @@
               </ContentView>
             </Grid>
             <ViewCell.ContextActions>
-              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
+              <MenuItem Text="Delete" Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference imagesList} }" CommandParameter="{Binding .}" IsDestructive="True" />
             </ViewCell.ContextActions>
           </ViewCell>
 
