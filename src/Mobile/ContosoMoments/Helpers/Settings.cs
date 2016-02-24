@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 
-namespace ContosoMoments.Helpers
+namespace ContosoMoments
 {
     public class Settings : INotifyPropertyChanged
     {

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using ContosoMoments.Helpers;
 using Microsoft.WindowsAzure.MobileServices;
 using Xamarin.Forms;
 

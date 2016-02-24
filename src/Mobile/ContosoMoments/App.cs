@@ -12,8 +12,6 @@ using Microsoft.WindowsAzure.MobileServices.Sync;
 using PCLStorage;
 using Xamarin.Forms;
 using ContosoMoments.Views;
-using Newtonsoft.Json.Linq;
-using ContosoMoments.Helpers;
 
 namespace ContosoMoments
 {

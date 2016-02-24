@@ -3,7 +3,6 @@ using ContosoMoments.Models;
 using Xamarin.Forms;
 using System;
 using Newtonsoft.Json.Linq;
-using ContosoMoments.Helpers;
 
 namespace ContosoMoments
 {

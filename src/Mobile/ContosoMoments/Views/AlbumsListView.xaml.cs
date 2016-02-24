@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
-using ContosoMoments.Helpers;
 using System.ComponentModel;
 
 namespace ContosoMoments.Views
