@@ -23,13 +23,13 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             DomainManager = new EntityDomainManager<Image>(context, Request, enableSoftDelete: softDeleteEnabled);
         }
 
-        // GET tables/Images
+        // GET tables/Image
         public IQueryable<Image> GetAllImage()
         {
             return Query();
         }
 
-        // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // GET tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public SingleResult<Image> GetImage(string id)
         {
             return Lookup(id);

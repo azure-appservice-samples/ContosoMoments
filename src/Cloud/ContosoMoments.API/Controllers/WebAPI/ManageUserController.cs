@@ -13,7 +13,7 @@ using System.Web.Http;
 namespace ContosoMoments.MobileServer.Controllers.WebAPI
 {
     [MobileAppController]
-    [Authorize]
+    //[Authorize]
     public class ManageUserController : ApiController
     {
         protected readonly string _defaultUserId;

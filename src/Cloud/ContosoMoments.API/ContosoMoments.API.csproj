@@ -585,6 +585,7 @@
     <Content Include="app\lib\angular-ui-router\README.md" />
     <Content Include=".bowerrc" />
     <None Include="Properties\PublishProfiles\contosomoments - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\ContosoMoments62ab - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\contosomomentsqa - Web Deploy.pubxml" />

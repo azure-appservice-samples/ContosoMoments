@@ -36,8 +36,30 @@ contosoMomentsApp
         return {
             getImageURL: function (img, imgSize) {
                 // The Storage account was set to public when this code was created, changing to implement SAS token retrieval
-                return urlExp({ image: img, size: imgSize });
-                //return $http.post('/tables/Image/'+ img.id +'/StorageToken', {});
+                //return urlExp({ image: img, size: imgSize });
+                return $http.post('/tables/Image/' + img.id + '/StorageToken', {
+                    "Permissions": "Read",
+                    "TargetFile": {
+                        "Id": img.Id,
+                        "Name": img.Id,
+                        "TableName": "Image",
+                        "ParentId": img.Id,
+                        "ContentMD5": null,
+                        "LastModified": null,
+                        "StoreUri": "/" + img.containerName + "-" + imgSize + "/" + img.fileName,
+                        "Metadata": {}
+                    },
+                    "ScopedEntityId": null,
+                    "ProviderName": null
+                }).success(function(data){
+                    
+                    return data.ResourceUri + "/" + data.EntityId + data.RawToken;
+
+                }).error(function(error){
+                    
+                    console.log("error returning SAS from API");
+
+                });
             },
             getImagesFromAlbum: function (album, options) {
                 var defered = $q.defer();
