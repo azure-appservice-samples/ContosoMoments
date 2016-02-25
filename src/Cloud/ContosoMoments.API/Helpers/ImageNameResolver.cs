@@ -5,19 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ContosoMoments.Common;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server.Files;
 
-namespace ContosoMoments.API.Helpers
+namespace ContosoMoments.Api
 {
     public class ImageNameResolver : IContainerNameResolver
     {
-        private MobileServiceContext dbContext;
         private string storeUri;
 
         public const string DefaultSizeKey = "lg";
 
         public ImageNameResolver(string storeUri = null)
         {
-            this.dbContext = new MobileServiceContext();
             this.storeUri = storeUri;
         }
 

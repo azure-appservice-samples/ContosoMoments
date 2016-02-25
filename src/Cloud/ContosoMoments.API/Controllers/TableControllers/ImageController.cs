@@ -10,8 +10,13 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server;
+using System.Configuration;
+using System;
+using ContosoMoments.Common;
 
-namespace ContosoMoments.MobileServer.Controllers.TableControllers
+namespace ContosoMoments.Api
 {
     public class ImageController : TableController<Image>
     {
@@ -23,10 +28,14 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             DomainManager = new EntityDomainManager<Image>(context, Request, enableSoftDelete: softDeleteEnabled);
         }
 
-        // GET tables/Image
-        public IQueryable<Image> GetAllImage()
+        // GET tables/Image 
+        public async Task<IQueryable<Image>> GetAllImage()
         {
-            return Query();
+            string currentUserId = await ManageUserController.GetUserId(Request, User);
+            string defaultUserId = new ConfigModel().DefaultUserId;
+
+            // return images owned by the current user or the guest user
+            return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId);
         }
 
         // GET tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959

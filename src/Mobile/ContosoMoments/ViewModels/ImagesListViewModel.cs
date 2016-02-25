@@ -6,9 +6,7 @@ using Microsoft.WindowsAzure.MobileServices.Sync;
 using PCLStorage;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ContosoMoments.ViewModels
 {
@@ -20,8 +18,11 @@ namespace ContosoMoments.ViewModels
         {
             _client = client;
             _app = app;
+
+            DeleteCommand = new DelegateCommand(OnDeleteAlbum, AlbumsListViewModel.IsRenameAndDeleteEnabled);
         }
 
+        #region Properties
         private ObservableCollection<Image> _images;
         public ObservableCollection<Image> Images
         {
@@ -44,21 +45,21 @@ namespace ContosoMoments.ViewModels
             }
         }
 
-        public string UserName
-        {
-            get { return _app.CurrentUserEmail; }
-        }
+        public ICommand DeleteCommand { get; set; }
 
-        private string _ErrorMessage = null;
+        private string _errorMessage = null;
         public string ErrorMessage
         {
-            get { return _ErrorMessage; }
+            get { return _errorMessage; }
             set
             {
-                _ErrorMessage = value;
+                _errorMessage = value;
                 OnPropertyChanged(nameof(ErrorMessage));
             }
         }
+
+        public Action<Image> DeleteImageViewAction { get; set; }
+        #endregion
 
         public async Task LoadImagesAsync(string albumId)
         {
@@ -95,8 +96,14 @@ namespace ContosoMoments.ViewModels
         }
 
         public async Task DeleteImageAsync(Image selectedImage)
-            {
+        {
             await _app.imageTableSync.DeleteAsync(selectedImage);
+        }
+
+        private void OnDeleteAlbum(object obj)
+        {
+            var selectedImage = obj as Image;
+            DeleteImageViewAction?.Invoke(selectedImage);
         }
     }
 }

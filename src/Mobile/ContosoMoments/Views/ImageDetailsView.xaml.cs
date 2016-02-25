@@ -40,7 +40,6 @@ namespace ContosoMoments.Views
 
         public async void OnSettings(object sender, EventArgs e)
         {
-            ImageDetailsViewModel vm = this.BindingContext as ImageDetailsViewModel;
             await Navigation.PushModalAsync(new SettingsView(App.Current as App));
         }
 

@@ -14,23 +14,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mobile", "Mobile", "{71D9D8A9-51F7-4B05-B9DF-C24EAF853A50}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ContosoMoments", "Mobile\ContosoMoments\ContosoMoments.shproj", "{9ADECDE0-0A6D-41C3-B0C8-DF786035A62B}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ContosoMoments", "src\Mobile\ContosoMoments\ContosoMoments.shproj", "{9ADECDE0-0A6D-41C3-B0C8-DF786035A62B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Droid", "Mobile\ContosoMoments.Droid\ContosoMoments.Droid.csproj", "{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Droid", "src\Mobile\ContosoMoments.Droid\ContosoMoments.Droid.csproj", "{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.iOS", "Mobile\ContosoMoments.iOS\ContosoMoments.iOS.csproj", "{B05129CD-0D56-4FF1-800F-51FCD8611F9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.iOS", "src\Mobile\ContosoMoments.iOS\ContosoMoments.iOS.csproj", "{B05129CD-0D56-4FF1-800F-51FCD8611F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WinPhone", "Mobile\ContosoMoments.WinPhone\ContosoMoments.WinPhone.csproj", "{D2B524E8-338F-4D83-AC73-37FAD854ACF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WinPhone", "src\Mobile\ContosoMoments.WinPhone\ContosoMoments.WinPhone.csproj", "{D2B524E8-338F-4D83-AC73-37FAD854ACF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Common", "Cloud\ContosoMoments.Common\ContosoMoments.Common.csproj", "{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Common", "src\Cloud\ContosoMoments.Common\ContosoMoments.Common.csproj", "{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.API", "Cloud\ContosoMoments.API\ContosoMoments.API.csproj", "{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.API", "src\Cloud\ContosoMoments.API\ContosoMoments.API.csproj", "{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WebJobWrapper", "Cloud\ContosoMoments.WebJobWrapper\ContosoMoments.WebJobWrapper.csproj", "{32FDB152-1D9B-4682-9869-4CEF34C3E40E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WebJobWrapper", "src\Cloud\ContosoMoments.WebJobWrapper\ContosoMoments.WebJobWrapper.csproj", "{32FDB152-1D9B-4682-9869-4CEF34C3E40E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.ResizerWebJob", "Cloud\ContosoMoments.ResizerWebJob\ContosoMoments.ResizerWebJob.csproj", "{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.ResizerWebJob", "src\Cloud\ContosoMoments.ResizerWebJob\ContosoMoments.ResizerWebJob.csproj", "{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}"
 EndProject
-Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ContosoMoments.Deployment", "Deployment\ContosoMoments.Deployment.deployproj", "{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}"
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ContosoMoments.Deployment", "src\Deployment\ContosoMoments.Deployment.deployproj", "{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

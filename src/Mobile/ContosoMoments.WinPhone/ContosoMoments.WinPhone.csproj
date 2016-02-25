@@ -187,20 +187,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\BadgeLogo.png" />
-    <Content Include="Assets\plus.png" />
-    <Content Include="Assets\settings.png" />
+    <Content Include="plus.png" />
+    <Content Include="settings.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\SquareTile150x150.png" />
     <Content Include="Assets\SquareTile71x71.png" />
     <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\save.png" />
+    <Content Include="save.png" />
     <Content Include="Assets\WideLogo.png" />
-    <Content Include="Assets\sync.png" />
-    <Content Include="Assets\logotext.png" />
-    <Content Include="Assets\logo.png" />
-    <Content Include="Assets\link.png" />
-    <Content Include="Assets\like.png" />
-    <Content Include="Assets\upload.png" />
+    <Content Include="sync.png" />
+    <Content Include="logotext.png" />
+    <Content Include="logo.png" />
+    <Content Include="link.png" />
+    <Content Include="like.png" />
+    <Content Include="upload.png" />
     <Content Include="README_FIRST.txt" />
     <Content Include="SplashScreenImage.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

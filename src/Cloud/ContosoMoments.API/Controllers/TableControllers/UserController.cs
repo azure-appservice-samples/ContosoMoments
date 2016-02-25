@@ -8,8 +8,12 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server;
+using System.Configuration;
+using System;
 
-namespace ContosoMoments.MobileServer.Controllers.TableControllers
+namespace ContosoMoments.Api
 {
     public class UserController : TableController<User>
     {
@@ -30,16 +34,8 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         // GET tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public SingleResult<User> GetUser(string id)
         {
-            try
-            {
                 return Lookup(id);
             }
-            catch (Exception ex)
-            {
-                 throw ex;
-            }
-            
-        }
 
         // PATCH tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [Authorize]

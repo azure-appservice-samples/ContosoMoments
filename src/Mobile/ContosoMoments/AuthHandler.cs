@@ -7,6 +7,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ContosoMoments.Models;
+using ContosoMoments.Views;
+using Microsoft.WindowsAzure.MobileServices;
 using Xamarin.Forms;
 
 namespace ContosoMoments
@@ -14,13 +17,6 @@ namespace ContosoMoments
     class AuthHandler : DelegatingHandler
     {
         public IMobileServiceClient Client { get; set; }
-
-        private IMobileClient platformClient;
-
-        public AuthHandler()
-        {
-            this.platformClient = DependencyService.Get<IMobileClient>();
-        }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -55,7 +51,7 @@ namespace ContosoMoments
 
         private async Task ShowAuthDialog()
         {
-            var authSetting = Settings.AuthenticationType;
+            var authSetting = Settings.Current.AuthenticationType;
             var provider = 
                 authSetting == Settings.AuthOption.Facebook ? MobileServiceAuthenticationProvider.Facebook : 
                     MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory;

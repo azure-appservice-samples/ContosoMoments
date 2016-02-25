@@ -1,8 +1,7 @@
-﻿using ContosoMoments.Web.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Web;
 
-namespace ContosoMoments.Web
+namespace ContosoMoments.Api
 {
     /// <summary>
     /// Summary description for Handler1

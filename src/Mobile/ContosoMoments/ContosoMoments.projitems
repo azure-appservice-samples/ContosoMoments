@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AuthHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DelegateCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileSyncTriggerFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LoggingHandler.cs" />

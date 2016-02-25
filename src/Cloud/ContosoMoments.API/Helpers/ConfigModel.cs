@@ -1,6 +1,6 @@
 ﻿using ContosoMoments.Common;
 
-namespace ContosoMoments.Web.Models
+namespace ContosoMoments.Api
 {
     public class ConfigModel
     {

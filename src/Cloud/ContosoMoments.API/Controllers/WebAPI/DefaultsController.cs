@@ -3,7 +3,7 @@ using Microsoft.Azure.Mobile.Server.Config;
 using Newtonsoft.Json.Linq;
 using System.Web.Http;
 
-namespace ContosoMoments.MobileServer.Controllers.WebAPI
+namespace ContosoMoments.Api
 {
     [MobileAppController]
     public class DefaultsController : ApiController

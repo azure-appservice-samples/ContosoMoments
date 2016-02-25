@@ -1,4 +1,4 @@
-﻿namespace ContosoMoments.Common.Notification
+﻿namespace ContosoMoments.Common
 {
     public class DeviceInstallationInfo
     {

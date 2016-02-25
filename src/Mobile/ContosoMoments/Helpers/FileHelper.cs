@@ -23,7 +23,6 @@ namespace ContosoMoments
         {
             var sourceFile = await FileSystem.Current.LocalStorage.GetFileAsync(filePath);
             var sourceStream = await sourceFile.OpenAsync(FileAccess.Read);
-            string fileExt = System.IO.Path.GetExtension(filePath);
             
             return await SaveStreamAsync(itemId, itemId/* + fileExt*/, sourceStream, dataFilesPath);
         }

@@ -1,6 +1,9 @@
-﻿using Microsoft.WindowsAzure.MobileServices.Files;
-using Newtonsoft.Json;
+﻿using System;
 using System.ComponentModel;
+
+using Microsoft.WindowsAzure.MobileServices;
+using Microsoft.WindowsAzure.MobileServices.Files;
+using Newtonsoft.Json;
 
 namespace ContosoMoments.Models
 {
@@ -12,6 +15,16 @@ namespace ContosoMoments.Models
         public string AlbumId { get; set; }
         public string UserId { get; set; }
 
+        [UpdatedAt]
+        public DateTimeOffset UpdatedAt { get; set; }
+        
+        [JsonIgnore]
+        public string ImageInfo
+        {
+            get { return string.Format("{0:MMMM d, yyyy}", UpdatedAt); }
+        }
+
+
         private string _uri;
         private MobileServiceFile _file;
         private bool _imageLoaded;
@@ -21,31 +34,31 @@ namespace ContosoMoments.Models
         {
             get { return _file; }
             set
-        {
+            {
                 _file = value;
 
                 if (_file != null) {
                     FileHelper.GetLocalFilePathAsync(Id, _file.Name, App.Instance.DataFilesPath)
                         .ContinueWith(x => this.Uri = x.Result);
-        }
+                }
 
                 OnPropertyChanged(nameof(File));
-        }
+            }
         }
 
         [JsonIgnore]
         public string Uri
         {
             get
-        {
+            {
                 return ImageLoaded ? _uri : "";
-        }
+            }
 
             set
-        {
+            {
                 _uri = value;
                 OnPropertyChanged(nameof(Uri));
-        }
+            }
         }
 
         [JsonIgnore]

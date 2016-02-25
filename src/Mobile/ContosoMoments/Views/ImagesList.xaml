@@ -20,32 +20,17 @@
         <ColumnDefinition Width="45"/>
         <ColumnDefinition Width="45"/>
       </Grid.ColumnDefinitions>
-      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
-        </Image.Source>
-      </Image>
+      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center" Source="logotext.png" />
 
-      <Image x:Name="imgSync" VerticalOptions="Center" HeightRequest="30" WidthRequest="30" Grid.Column="2">
+      <Image x:Name="imgSync" VerticalOptions="Center" HeightRequest="30" WidthRequest="30" Grid.Column="2" Source="sync.png">
         <Image.IsVisible>
           <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False" WinPhone="True"/>
         </Image.IsVisible>
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/sync.png" Android="sync.png" WinPhone="Assets/sync.png"/>
-        </Image.Source>
       </Image>
 
-      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
-        </Image.Source>
-      </Image>
+      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings" Source="settings.png" />
 
-      <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgUpload">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/upload.png" Android="upload.png" WinPhone="Assets/upload.png"/>
-        </Image.Source>
-      </Image>
+      <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgUpload" Source="upload.png" />
     </Grid>
 
     <!--User and Album info-->
@@ -65,16 +50,18 @@
       <ListView.ItemTemplate>
         <DataTemplate>
           <ViewCell>
-            <Grid Padding="5">
+            <Grid Padding="10,5,5,5">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="*"/>
               </Grid.ColumnDefinitions>
               <Image Grid.Column="0" Source="{Binding Uri}" Aspect="AspectFill" />
-              <Label Grid.Column="1" Text="{Binding UploadFormat}" FontSize="Small" TextColor="Black"/>
+              <ContentView Grid.Column="1" Padding="10,0,0,0">
+                <Label Text="{Binding ImageInfo}" FontSize="Small" TextColor="Black" VerticalTextAlignment="Center"/>
+              </ContentView>
             </Grid>
             <ViewCell.ContextActions>
-              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
+              <MenuItem Text="Delete" Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference imagesList} }" CommandParameter="{Binding .}" IsDestructive="True" />
             </ViewCell.ContextActions>
           </ViewCell>
 

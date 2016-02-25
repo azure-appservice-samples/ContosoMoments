@@ -1,37 +1,59 @@
-﻿using Plugin.Settings;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 
-namespace ContosoMoments.Helpers
+namespace ContosoMoments
 {
-    public class Settings
+    public class Settings : INotifyPropertyChanged
     {
+        static Settings settings;
+        public static Settings Current
+        {
+            get { return settings ?? (settings = new Settings()); }
+        }
+
         public enum AuthOption
         {
             GuestAccess, Facebook, ActiveDirectory
         }
 
-        public static string DefaultUserId
+        public string DefaultUserId
         {
             get { return AppSettings.GetValueOrDefault<string>(DefaultUserIdKey, UserIdDefault); }
             set { AppSettings.AddOrUpdateValue<string>(DefaultUserIdKey, value); }
         }
 
-        public static string DefaultAlbumId
+        public string DefaultAlbumId
         {
             get { return AppSettings.GetValueOrDefault<string>(DefaultAlbumIdKey, AlbumIdDefault); }
             set { AppSettings.AddOrUpdateValue<string>(DefaultAlbumIdKey, value); }
         }
 
-        public static string MobileAppUrl
+        public string MobileAppUrl
         {
             get { return AppSettings.GetValueOrDefault<string>(MobileAppUrlKey, DefaultMobileAppUrl); }
+
             set { AppSettings.AddOrUpdateValue<string>(MobileAppUrlKey, value); }
         }
 
-        public static AuthOption AuthenticationType
+        public AuthOption AuthenticationType
         {
             get { return AppSettings.GetValueOrDefault<AuthOption>(AuthenticationTypeKey, DefaultAuthType); }
-            set { AppSettings.AddOrUpdateValue<AuthOption>(AuthenticationTypeKey, value); }
+
+            set
+            {
+                if (AppSettings.AddOrUpdateValue<AuthOption>(AuthenticationTypeKey, value)) {
+                    OnPropertyChanged();
+                }
+
+            }
+        }
+
+        public string CurrentUserId
+        {
+            get { return AppSettings.GetValueOrDefault<string>(CurrentUserIdKey, DefaultCurrentUserId); }
+            set { AppSettings.AddOrUpdateValue<string>(CurrentUserIdKey, value); }
         }
 
         private const string DefaultUserIdKey = nameof(DefaultUserIdKey);
@@ -46,6 +68,9 @@ namespace ContosoMoments.Helpers
         private const string AuthenticationTypeKey = nameof(AuthenticationTypeKey);
         public const AuthOption DefaultAuthType = AuthOption.GuestAccess;
 
+        private const string CurrentUserIdKey = nameof(CurrentUserIdKey);
+        public const string DefaultCurrentUserId = "";
+
         private static ISettings AppSettings
         {
             get
@@ -53,5 +78,16 @@ namespace ContosoMoments.Helpers
                 return CrossSettings.Current;
             }
         }
+
+        #region INotifyPropertyChanged implementation
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName]string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        #endregion
     }
 }

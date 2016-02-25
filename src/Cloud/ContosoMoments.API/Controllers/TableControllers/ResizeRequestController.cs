@@ -8,8 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using ContosoMoments.Common;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server;
 
-namespace ContosoMoments.API.Controllers.TableController
+namespace ContosoMoments.Api
 {
     public class ResizeRequest : EntityData
     {

@@ -1,4 +1,5 @@
-using ContosoMoments.Helpers;
+using System;
+using System.Linq;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using Xamarin.Forms;
@@ -24,8 +25,8 @@ namespace ContosoMoments.Views
         {
             mobileServiceUrl.Text = "https://donnamcontosomoments.azurewebsites.net/";
 
-            if (Settings.MobileAppUrl != Settings.DefaultMobileAppUrl) {
-                mobileServiceUrl.Text = Settings.MobileAppUrl;
+            if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
+                mobileServiceUrl.Text = Settings.Current.MobileAppUrl;
             }
 
             if (UrlIsInvalid)
@@ -40,20 +41,26 @@ namespace ContosoMoments.Views
             Uri uri;
             string uriText = mobileServiceUrl.Text;
 
+            if (Settings.Current.MobileAppUrl == uriText && 
+                Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
+                // no changes, return
+                await Navigation.PopModalAsync();
+                return;
+            }
+
             if (!Uri.TryCreate(uriText, UriKind.Absolute, out uri)) {
                 await DisplayAlert("Configuration Error", "Invalid URI entered", "OK");
                 return;
             }
 
-            if (Settings.MobileAppUrl != Settings.DefaultMobileAppUrl && Settings.MobileAppUrl != uriText) {
-                // new URI was entered, and one had been set previously, so the app state should be reset
-                Settings.MobileAppUrl = uriText;
+            if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
+                // a URI had been set previously, so the app state should be reset
+                Settings.Current.MobileAppUrl = uriText;
                 await _app.ResetAsync(uriText);
             }
             else {
-                Settings.MobileAppUrl = uriText;
+                Settings.Current.MobileAppUrl = uriText;
                 await _app.InitMobileService(uriText, firstStart: true);
-                await Utils.PopulateDefaultsAsync();
             }
         }
     }

@@ -7,13 +7,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
-using static ContosoMoments.Common.Enums.ImageSizes;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.WebJobs;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace ContosoMoments.ResizerWebJob
 {
     public class Functions
     {
-        //   private const string resizeQueue = AppSettings.ResizeQueueName;
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
             [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobInput,
@@ -21,38 +22,16 @@ namespace ContosoMoments.ResizerWebJob
             [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobOutputSmall,
             [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobOutputMedium)
         {
-            Trace.TraceInformation("Blob URI: " + blobInfo.BlobUri);
-            Trace.TraceInformation("Blob guid: " + blobInfo.FileGuidName);
-            Trace.TraceInformation("Blob imageID: " + blobInfo.ImageId);
-            Trace.TraceInformation("Blob extension: " + blobInfo.FileExt);
-
             Stream input = await blobInput.OpenReadAsync();
-            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            bool res = scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
-            TraceInfo(blobInfo.ImageId, "MEDIUM", res);
+            scaleImage(input, blobOutputMedium, ImageSize.Medium, blobInput.Properties.ContentType);
 
             input.Position = 0;
-            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
-            res = scaleImage(input, blobOutputSmall, Small, blobInput.Properties.ContentType);
-            TraceInfo(blobInfo.ImageId, "SMALL", res);
+            scaleImage(input, blobOutputSmall, ImageSize.Small, blobInput.Properties.ContentType);
 
             input.Position = 0;
-            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            res = scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
-            TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
-
+            scaleImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall, blobInput.Properties.ContentType);
 
             input.Dispose();
-            Trace.TraceInformation("Done processing 'resizerequest' message");
-        }
-
-
-        private static void TraceInfo(string imageId, string size, bool res)
-        {
-            if (res)
-                Trace.TraceInformation("Scaling " + imageId + " to " + size + " size completed successfully");
-            else
-                Trace.TraceWarning("Scaling " + imageId + " to " + size + " size failed. Please see previous errors in log");
         }
 
         public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
@@ -62,16 +41,10 @@ namespace ContosoMoments.ResizerWebJob
             [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobMedium)
         {
             try {
-                Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
                 await blobLarge.DeleteAsync();
-                Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
                 await blobExtraSmall.DeleteAsync();
-                Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
                 await blobSmall.DeleteAsync();
-                Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
                 await blobMedium.DeleteAsync();
-
-                Trace.TraceInformation("Done processing 'deleterequest' message");
             }
             catch (Exception ex) {
                 Trace.TraceError("Error while deleting images: " + ex.Message);
@@ -80,24 +53,20 @@ namespace ContosoMoments.ResizerWebJob
         #endregion
 
         #region Private functionality
-        private static bool scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, string contentType)
+        private static bool scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSize imageSize, string contentType)
         {
             bool retVal = true; //Assume success
 
-            try
-            {
-                using (Stream output = blobOutput.OpenWrite())
-                {
-                    if (doScaling(blobInput, output, imageSize))
-                    {
+            try {
+                using (Stream output = blobOutput.OpenWrite()) {
+                    if (doScaling(blobInput, output, imageSize)) {
                         blobOutput.Properties.ContentType = contentType;
                     }
                     else
                         retVal = false;
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Trace.TraceError("Error while scaling image: " + ex.Message);
                 retVal = false;
             }
@@ -105,60 +74,53 @@ namespace ContosoMoments.ResizerWebJob
             return retVal;
         }
 
-        private static bool doScaling(Stream blobInput, Stream output, ImageSizes imageSize)
+        private static bool doScaling(Stream blobInput, Stream output, ImageSize imageSize)
         {
             bool retVal = true; //Assume success
 
-            try
-            {
+            try {
                 int width = 0, height = 0;
 
                 //TODO: get original image aspect ratio, get "priority property" (width) and calculate new height...
-                switch (imageSize)
-                {
-                    case Medium:
+                switch (imageSize) {
+                    case ImageSize.Medium:
                         width = 800;
                         height = 480;
                         break;
-                    case Large:
+                    case ImageSize.Large:
                         width = 1024;
                         height = 768;
                         break;
-                    case ExtraSmall:
+                    case ImageSize.ExtraSmall:
                         width = 320;
                         height = 200;
                         break;
-                    case Small:
+                    case ImageSize.Small:
                         width = 640;
                         height = 400;
                         break;
                 }
 
-                using (Image img = Image.FromStream(blobInput))
-                {
+                using (System.Drawing.Image img = System.Drawing.Image.FromStream(blobInput)) {
                     //Calculate aspect ratio and new heights of scaled image
                     var widthRatio = (double)width / (double)img.Width;
                     var heightRatio = (double)height / (double)img.Height;
                     var minAspectRatio = Math.Min(widthRatio, heightRatio);
-                    if (minAspectRatio > 1)
-                    {
+                    if (minAspectRatio > 1) {
                         width = img.Width;
                         height = img.Height;
                     }
-                    else
-                    {
+                    else {
                         width = (int)(img.Width * minAspectRatio);
                         height = (int)(img.Height * minAspectRatio);
                     }
 
-                    using (Bitmap bitmap = new Bitmap(img, width, height))
-                    {
+                    using (Bitmap bitmap = new Bitmap(img, width, height)) {
                         bitmap.Save(output, img.RawFormat);
                     }
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Trace.TraceError("Error while saving scaled image: " + ex.Message);
                 retVal = false;
             }
