@@ -3,20 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ContosoMoments", "Mobile\ContosoMoments\ContosoMoments.shproj", "{9ADECDE0-0A6D-41C3-B0C8-DF786035A62B}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ContosoMoments", "src\Mobile\ContosoMoments\ContosoMoments.shproj", "{9ADECDE0-0A6D-41C3-B0C8-DF786035A62B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Droid", "Mobile\ContosoMoments.Droid\ContosoMoments.Droid.csproj", "{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Droid", "src\Mobile\ContosoMoments.Droid\ContosoMoments.Droid.csproj", "{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.iOS", "Mobile\ContosoMoments.iOS\ContosoMoments.iOS.csproj", "{B05129CD-0D56-4FF1-800F-51FCD8611F9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.iOS", "src\Mobile\ContosoMoments.iOS\ContosoMoments.iOS.csproj", "{B05129CD-0D56-4FF1-800F-51FCD8611F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WinPhone", "Mobile\ContosoMoments.WinPhone\ContosoMoments.WinPhone.csproj", "{D2B524E8-338F-4D83-AC73-37FAD854ACF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WinPhone", "src\Mobile\ContosoMoments.WinPhone\ContosoMoments.WinPhone.csproj", "{D2B524E8-338F-4D83-AC73-37FAD854ACF3}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Mobile\ContosoMoments\ContosoMoments.projitems*{d2b524e8-338f-4d83-ac73-37fad854acf3}*SharedItemsImports = 4
-		Mobile\ContosoMoments\ContosoMoments.projitems*{b05129cd-0d56-4ff1-800f-51fcd8611f9f}*SharedItemsImports = 4
-		Mobile\ContosoMoments\ContosoMoments.projitems*{d1107dee-672e-4fb6-b81e-abc8326fc48b}*SharedItemsImports = 4
-		Mobile\ContosoMoments\ContosoMoments.projitems*{9adecde0-0a6d-41c3-b0c8-df786035a62b}*SharedItemsImports = 13
+		src\Mobile\ContosoMoments\ContosoMoments.projitems*{b05129cd-0d56-4ff1-800f-51fcd8611f9f}*SharedItemsImports = 4
+		src\Mobile\ContosoMoments\ContosoMoments.projitems*{d1107dee-672e-4fb6-b81e-abc8326fc48b}*SharedItemsImports = 4
+		src\Mobile\ContosoMoments\ContosoMoments.projitems*{9adecde0-0a6d-41c3-b0c8-df786035a62b}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
