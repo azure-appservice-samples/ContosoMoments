@@ -16,7 +16,8 @@ namespace ContosoMoments.Api
         public async Task<bool> Post([FromBody]Dictionary<string, string> imageInfo)
         {
             using (var ctx = new MobileServiceContext()) {
-                var image = ctx.Images.Include("User").SingleOrDefault(x => x.Id == imageInfo["imageId"]);
+                var imageId = imageInfo["imageId"]; // resolve imageId to a value before using it in a LINQ expression
+                var image = ctx.Images.Include("User").SingleOrDefault(x => x.Id == imageId);
 
                 if (image != null) {
                     var registrations = ctx.DeviceRegistrations.Where(x => x.UserId == image.UserId);
