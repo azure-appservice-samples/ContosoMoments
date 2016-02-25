@@ -14,13 +14,11 @@ namespace ContosoMoments
 
     public class ActivityIndicatorScope : IDisposable
     {
-        private bool showIndicator;
         private ActivityIndicator indicator;
 
         public ActivityIndicatorScope(ActivityIndicator indicator, bool showIndicator)
         {
             this.indicator = indicator;
-            this.showIndicator = showIndicator;
 
             SetIndicatorActivity(showIndicator);
         }

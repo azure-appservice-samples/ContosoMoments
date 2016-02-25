@@ -16,13 +16,6 @@ namespace ContosoMoments
     {
         public IMobileServiceClient Client { get; set; }
 
-        private IMobileClient platformClient;
-
-        public AuthHandler()
-        {
-            this.platformClient = DependencyService.Get<IMobileClient>();
-        }
-
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (this.Client == null) {
