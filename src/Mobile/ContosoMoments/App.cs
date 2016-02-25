@@ -130,7 +130,7 @@ namespace ContosoMoments
                 File.Delete(path);
             }
 
-            await InitMobileService(uri);
+            await InitMobileService(uri, firstStart: true);
         }
 
 
