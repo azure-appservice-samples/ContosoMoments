@@ -248,46 +248,46 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\save.png" />
+    <BundleResource Include="Resources\save.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\save%402x.png" />
+    <BundleResource Include="Resources\save%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\logo.png" />
+    <BundleResource Include="Resources\logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\logo%402x.png" />
+    <BundleResource Include="Resources\logo%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\logotext.png" />
+    <BundleResource Include="Resources\logotext.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\logotext%402x.png" />
+    <BundleResource Include="Resources\logotext%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\upload.png" />
+    <BundleResource Include="Resources\upload.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\upload%402x.png" />
+    <BundleResource Include="Resources\upload%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\sync%402x.png" />
+    <BundleResource Include="Resources\sync%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\sync.png" />
+    <BundleResource Include="Resources\sync.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\like.png" />
+    <BundleResource Include="Resources\like.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\like%402x.png" />
+    <BundleResource Include="Resources\like%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\link.png" />
+    <BundleResource Include="Resources\link.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\link%402x.png" />
+    <BundleResource Include="Resources\link%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-Landscape.png" />
@@ -314,16 +314,16 @@
     <BundleResource Include="Resources\Icon-Small-50%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\settings.png" />
+    <BundleResource Include="Resources\settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\settings%402x.png" />
+    <BundleResource Include="Resources\settings%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\plus.png" />
+    <BundleResource Include="Resources\plus.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Assets\plus%402x.png" />
+    <BundleResource Include="Resources\plus%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamarin.mobile">

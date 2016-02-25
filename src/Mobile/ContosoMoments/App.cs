@@ -53,12 +53,7 @@ namespace ContosoMoments
 
             Label label = new Label() { Text = "Loading..." };
             label.TextColor = Color.White;
-            Image img = new Image() {
-                Source = Device.OnPlatform(
-                    iOS: ImageSource.FromFile("Assets/logo.png"),
-                    Android: ImageSource.FromFile("logo.png"),
-                    WinPhone: ImageSource.FromFile("Assets/logo.png"))
-            };
+            Image img = new Image() { Source = ImageSource.FromFile("logo.png") };
             StackLayout stack = new StackLayout();
             stack.VerticalOptions = LayoutOptions.Center;
             stack.HorizontalOptions = LayoutOptions.Center;

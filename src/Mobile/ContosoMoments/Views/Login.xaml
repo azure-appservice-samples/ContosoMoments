@@ -9,12 +9,8 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <Grid Grid.Row="0" Padding="10,30,10,30" BackgroundColor="#8C0A4B">
-      <Image VerticalOptions="End">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
-        </Image.Source>
-      </Image>
+    <Grid Grid.Row="0" Padding="10,30,10,30" BackgroundColor="#8C0A4B" >
+      <Image VerticalOptions="End" Source="logotext.png"/>
     </Grid>
 
     <!--Settings-->

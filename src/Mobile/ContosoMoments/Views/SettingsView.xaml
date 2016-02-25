@@ -17,19 +17,11 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center">
-                <Image.Source>
-                    <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logo.png" Android="logo.png" WinPhone="Assets/logo.png"/>
-                </Image.Source>
-            </Image>
+            <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center" Source="logo.png"/>
 
             <Label Text="Settings" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
 
-            <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End">
-                <Image.Source>
-                    <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/save.png" Android="save.png" WinPhone="Assets/save.png"/>
-                </Image.Source>
-            </Image>
+          <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End" Source="save.png" />
         </Grid>
 
         <!--Settings-->
