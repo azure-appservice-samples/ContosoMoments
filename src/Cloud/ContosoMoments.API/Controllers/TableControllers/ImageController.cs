@@ -9,6 +9,7 @@ using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
 using ContosoMoments.Common;
+using System.Diagnostics;
 
 namespace ContosoMoments.Api
 {
@@ -26,8 +27,15 @@ namespace ContosoMoments.Api
         [EnableCors(origins: "*", headers: "*", methods: "*")]   
         public async Task<IQueryable<Image>> GetAllImage()
         {
-            string currentUserId = await ManageUserController.GetUserId(Request, User);
             string defaultUserId = new ConfigModel().DefaultUserId;
+            string currentUserId = defaultUserId;
+
+            try {
+                currentUserId = await ManageUserController.GetUserId(Request, User);
+            }
+            catch (Exception e) {
+                Trace.WriteLine("Invalid auth token: " + e);
+            }
 
             // return images owned by the current user or the guest user
             return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId);

@@ -9,6 +9,7 @@ using Microsoft.Azure.Mobile.Server;
 using System.Configuration;
 using System;
 using System.Net.Http;
+using System.Diagnostics;
 
 namespace ContosoMoments.Api
 {
@@ -29,7 +30,15 @@ namespace ContosoMoments.Api
         [Route("tables/Album")]
         public async Task<IQueryable<Album>> GetAllAlbum()
         {
-            string currentUserId = await ManageUserController.GetUserId(Request, User);
+            string currentUserId = new ConfigModel().DefaultUserId;
+
+            try {
+                currentUserId = await ManageUserController.GetUserId(Request, User);
+            }
+            catch (Exception e) {
+                Trace.WriteLine("Invalid auth token: " + e);
+            }
+
             return Query().Where(x => x.UserId == currentUserId || x.IsDefault);
         }
 
