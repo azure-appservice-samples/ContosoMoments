@@ -135,11 +135,14 @@ namespace ContosoMoments
             await albumTableSync.PurgeAsync("allAlbums", imageTableSync.CreateQuery(), CancellationToken.None);
             await resizeRequestSync.PurgeAsync(true);
 
-            MainPage = new NavigationPage(new AlbumsListView(this));
+            var albumListView = new AlbumsListView(this);
+            MainPage = new NavigationPage(albumListView);
 
             var loginPage = new Login();           
             await MainPage.Navigation.PushAsync(loginPage);
             await loginPage.GetResultAsync();
+
+            albumListView.OnRefresh(albumListView, EventArgs.Empty); // reload data, since now the user might be logged in
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)

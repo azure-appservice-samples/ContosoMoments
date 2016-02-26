@@ -33,7 +33,7 @@
         </Grid>
 
         <!--Logout button-->
-        <Button Grid.Row="2" x:Name="LogoutButton" Clicked="OnLogout" Text="Logout" HorizontalOptions="Center" IsEnabled="false" BackgroundColor="White" />
+        <Button Grid.Row="2" x:Name="LogoutButton" Clicked="OnLogout" Text="Logout" HorizontalOptions="FillAndExpand" IsEnabled="false" />
 
     </Grid>
 </ContentPage>
