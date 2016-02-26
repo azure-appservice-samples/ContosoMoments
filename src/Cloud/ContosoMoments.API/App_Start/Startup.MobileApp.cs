@@ -25,12 +25,12 @@ namespace ContosoMoments.Api
             Database.SetInitializer(new ContosoMomentsDBInitializer());
 
             // set up auth for local development
-            app.UseAppServiceAuthentication(new AppServiceAuthenticationOptions() {
-                SigningKey = ConfigurationManager.AppSettings["authSigningKey"],
-                ValidAudiences = new[] { ConfigurationManager.AppSettings["authAudience"] },
-                ValidIssuers = new[] { ConfigurationManager.AppSettings["authIssuer"] },
-                TokenHandler = config.GetAppServiceTokenHandler()
-            });
+            //app.UseAppServiceAuthentication(new AppServiceAuthenticationOptions() {
+            //    SigningKey = ConfigurationManager.AppSettings["authSigningKey"],
+            //    ValidAudiences = new[] { ConfigurationManager.AppSettings["authAudience"] },
+            //    ValidIssuers = new[] { ConfigurationManager.AppSettings["authIssuer"] },
+            //    TokenHandler = config.GetAppServiceTokenHandler()
+            //});
 
             app.UseWebApi(config);         
         }
