@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.MobileServices.Sync;
 using PCLStorage;
 using Xamarin.Forms;
 using ContosoMoments.Views;
+using System.Threading;
 
 namespace ContosoMoments
 {
@@ -118,16 +119,28 @@ namespace ContosoMoments
         internal async Task ResetAsync(string uri)
         {
             var platform = DependencyService.Get<IPlatform>();
+            MobileService.Dispose();
 
             string path = Path.Combine(platform.GetRootDataPath(), LocalDbFilename);
-
-            if (File.Exists(path)) {
-                File.Delete(path);
-            }
+            await FileHelper.DeleteLocalFileAsync(path);
 
             await InitMobileService(uri, firstStart: true);
         }
 
+        internal async Task LogoutAsync()
+        {
+            await MobileService.LogoutAsync();
+
+            await imageTableSync.PurgeAsync("allImages", imageTableSync.CreateQuery(), CancellationToken.None);
+            await albumTableSync.PurgeAsync("allAlbums", imageTableSync.CreateQuery(), CancellationToken.None);
+            await resizeRequestSync.PurgeAsync(true);
+
+            MainPage = new NavigationPage(new AlbumsListView(this));
+
+            var loginPage = new Login();           
+            await MainPage.Navigation.PushAsync(loginPage);
+            await loginPage.GetResultAsync();
+        }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
         {

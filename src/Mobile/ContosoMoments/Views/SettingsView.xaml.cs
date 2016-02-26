@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.WindowsAzure.MobileServices;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace ContosoMoments.Views
 {
@@ -26,6 +27,7 @@ namespace ContosoMoments.Views
 
             if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
                 mobileServiceUrl.Text = Settings.Current.MobileAppUrl;
+                LogoutButton.IsEnabled = true;
             }
 
             if (UrlIsInvalid)
@@ -37,30 +39,50 @@ namespace ContosoMoments.Views
 
         public async void OnSave(object sender, EventArgs args)
         {
-            Uri uri;
-            string uriText = mobileServiceUrl.Text;
-
-            if (Settings.Current.MobileAppUrl == uriText && 
+            if (Settings.Current.MobileAppUrl == mobileServiceUrl.Text && 
                 Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
                 // no changes, return
                 await Navigation.PopModalAsync();
                 return;
             }
 
-            if (!Uri.TryCreate(uriText, UriKind.Absolute, out uri)) {
+            string newUri;
+
+            if (!GetHttpsUri(mobileServiceUrl.Text, out newUri)) {
                 await DisplayAlert("Configuration Error", "Invalid URI entered", "OK");
                 return;
             }
 
             if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
                 // a URI had been set previously, so the app state should be reset
-                Settings.Current.MobileAppUrl = uriText;
-                await _app.ResetAsync(uriText);
+                Settings.Current.MobileAppUrl = newUri;
+                await _app.ResetAsync(newUri);
             }
             else {
-                Settings.Current.MobileAppUrl = uriText;
-                await _app.InitMobileService(uriText, firstStart: true);
+                Settings.Current.MobileAppUrl = newUri;
+                await _app.InitMobileService(newUri, firstStart: true);
             }
+        }
+
+        public async void OnLogout(object sender, EventArgs args)
+        {
+            await _app.LogoutAsync();
+        }
+
+        private bool GetHttpsUri(string inputString, out string httpsUri)
+        {
+            if (!Uri.IsWellFormedUriString(inputString, UriKind.Absolute)) {
+                httpsUri = "";
+                return false;
+            }
+
+            var uriBuilder = new UriBuilder(inputString) 
+            { 
+                    Scheme = Uri.UriSchemeHttps,
+                    Port = -1
+            }; // set as https always
+            httpsUri = uriBuilder.ToString();
+            return true;
         }
     }
 }
