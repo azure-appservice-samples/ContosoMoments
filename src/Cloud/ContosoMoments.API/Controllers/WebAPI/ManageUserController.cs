@@ -4,12 +4,11 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Diagnostics;
-using System.Net.Http;
 
 namespace ContosoMoments.Api
 {

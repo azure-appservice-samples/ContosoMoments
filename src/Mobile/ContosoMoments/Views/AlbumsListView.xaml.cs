@@ -1,12 +1,10 @@
-﻿using ContosoMoments.Helpers;
+﻿using ContosoMoments.Models;
 using ContosoMoments.ViewModels;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Xamarin.Forms;
 using System.ComponentModel;
 using System.Diagnostics;
-using ContosoMoments.Models;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {

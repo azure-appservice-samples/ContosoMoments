@@ -1,5 +1,4 @@
-﻿using ContosoMoments.Helpers;
-using ContosoMoments.Models;
+﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Net;
@@ -7,9 +6,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ContosoMoments.Models;
-using ContosoMoments.Views;
-using Microsoft.WindowsAzure.MobileServices;
 using Xamarin.Forms;
 
 namespace ContosoMoments

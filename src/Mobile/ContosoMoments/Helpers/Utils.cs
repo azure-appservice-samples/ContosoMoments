@@ -1,11 +1,8 @@
-﻿using ContosoMoments.Helpers;
-using ContosoMoments.Models;
+﻿using ContosoMoments.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using System;
-using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments
 {

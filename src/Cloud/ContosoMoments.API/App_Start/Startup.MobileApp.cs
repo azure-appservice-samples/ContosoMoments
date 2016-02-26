@@ -1,10 +1,11 @@
-﻿using System.Data.Entity;
-using System.Web.Http;
+﻿using Microsoft.Azure.Mobile.Server.Authentication;
 using Microsoft.Azure.Mobile.Server.Config;
-using Owin;
 using Newtonsoft.Json;
-using Microsoft.Azure.Mobile.Server.Authentication;
+using Owin;
 using System.Configuration;
+using System.Data.Entity;
+using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace ContosoMoments.Api
 {

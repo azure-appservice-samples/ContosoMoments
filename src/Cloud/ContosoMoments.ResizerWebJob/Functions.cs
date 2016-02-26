@@ -1,5 +1,4 @@
-﻿using ContosoMoments.Common;
-using ContosoMoments.Common.Enums;
+﻿using ContosoMoments.Common.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
@@ -7,9 +6,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
-using ContosoMoments.Common.Models;
-using Microsoft.Azure.WebJobs;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace ContosoMoments.ResizerWebJob
 {

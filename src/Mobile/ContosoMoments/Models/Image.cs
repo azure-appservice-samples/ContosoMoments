@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-
-using Microsoft.WindowsAzure.MobileServices;
+﻿using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Newtonsoft.Json;
+using System;
+using System.ComponentModel;
 
 namespace ContosoMoments.Models
 {

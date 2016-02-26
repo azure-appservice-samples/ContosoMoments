@@ -1,7 +1,5 @@
 ﻿using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
-using ContosoMoments.Common.Queue;
-using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 using System;
 using System.Configuration;
@@ -10,11 +8,6 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
-using ContosoMoments.Common.Models;
-using Microsoft.Azure.Mobile.Server;
-using System.Configuration;
-using System;
-using ContosoMoments.Common;
 
 namespace ContosoMoments.Api
 {

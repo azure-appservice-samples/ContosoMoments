@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using Xamarin.Forms;

@@ -1,5 +1,4 @@
-﻿using ContosoMoments.Helpers;
-using ContosoMoments.Views;
+﻿using ContosoMoments.Views;
 using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.Eventing;
 using Microsoft.WindowsAzure.MobileServices.Files;
@@ -11,7 +10,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using ContosoMoments.Views;
 
 namespace ContosoMoments
 {

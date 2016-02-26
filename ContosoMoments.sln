@@ -34,10 +34,10 @@ Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ContosoMoments.Deployment",
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Mobile\ContosoMoments\ContosoMoments.projitems*{d2b524e8-338f-4d83-ac73-37fad854acf3}*SharedItemsImports = 4
-		Mobile\ContosoMoments\ContosoMoments.projitems*{b05129cd-0d56-4ff1-800f-51fcd8611f9f}*SharedItemsImports = 4
-		Mobile\ContosoMoments\ContosoMoments.projitems*{d1107dee-672e-4fb6-b81e-abc8326fc48b}*SharedItemsImports = 4
-		Mobile\ContosoMoments\ContosoMoments.projitems*{9adecde0-0a6d-41c3-b0c8-df786035a62b}*SharedItemsImports = 13
+		src\Mobile\ContosoMoments\ContosoMoments.projitems*{d2b524e8-338f-4d83-ac73-37fad854acf3}*SharedItemsImports = 4
+		src\Mobile\ContosoMoments\ContosoMoments.projitems*{b05129cd-0d56-4ff1-800f-51fcd8611f9f}*SharedItemsImports = 4
+		src\Mobile\ContosoMoments\ContosoMoments.projitems*{d1107dee-672e-4fb6-b81e-abc8326fc48b}*SharedItemsImports = 4
+		src\Mobile\ContosoMoments\ContosoMoments.projitems*{9adecde0-0a6d-41c3-b0c8-df786035a62b}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
@@ -122,7 +122,6 @@ Global
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.AppStore|x86.Deploy.0 = Release|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|ARM.Build.0 = Debug|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|ARM.Deploy.0 = Debug|Any CPU
@@ -265,7 +264,6 @@ Global
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.AppStore|x86.Build.0 = Release|x86
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.AppStore|x86.Deploy.0 = Release|x86
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Debug|Any CPU.Build.0 = Debug|x86
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Debug|ARM.ActiveCfg = Debug|ARM
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Debug|ARM.Build.0 = Debug|ARM
 		{D2B524E8-338F-4D83-AC73-37FAD854ACF3}.Debug|ARM.Deploy.0 = Debug|ARM
