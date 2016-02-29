@@ -5,6 +5,7 @@ contosoMomentsApp
         function ($scope, albumsService, authContext, $state) {
             var self = this;
 
+            curUserId = authContext.userId;
 
             self.albums = [];
             albumsService.getUserAlbums(authContext.userId).then(function (albums) {

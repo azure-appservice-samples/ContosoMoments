@@ -80,15 +80,7 @@
             </div>
         </nav>
         <div class="container" ng-controller="titleController as titleCtrl">
-
-            <div ng-show="userEmail" class="page-header">
-                <span class="glyphicon glyphicon-user">
-                </span>
-                <span ng-bind="userEmail"></span>
-                <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
-            </div>
-
-
+            <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
         </div>
     </header>
     <route-loader></route-loader>

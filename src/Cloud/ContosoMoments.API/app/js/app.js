@@ -21,7 +21,7 @@ contosoMomentsApp.config(['$locationProvider', '$stateProvider', '$urlRouterProv
 
         .state('main.albums', {
             url: '/',
-            templateUrl: '/templates/albums.html',
+            templateUrl: 'app/templates/albums.html',
             controller: 'albumsController as albumsCtrl',
             onEnter: ['selectedAlbum', function (selectedAlbum) {
                 selectedAlbum.album = null;
@@ -30,16 +30,12 @@ contosoMomentsApp.config(['$locationProvider', '$stateProvider', '$urlRouterProv
         })
          .state('main.auth', {
              url: '/auth',
-             templateUrl: '/templates/auth.html'
-             //controller: 'albumsController as albumsCtrl',
-             // onEnter: ['selectedAlbum', function (selectedAlbum) {
-             //   selectedAlbum.album = null;
-
+             templateUrl: 'app/templates/auth.html'
 
          })
         .state('main.gallery', {
             url: '/album/:albumid',
-            templateUrl: '/templates/gallery.html',
+            templateUrl: 'app/templates/gallery.html',
             controller: 'albumController as albumCtrl',
             resolve: {
                 currentAlbum: ['albumsService', '$stateParams', function (albumsService, $stateParams) {
@@ -52,7 +48,7 @@ contosoMomentsApp.config(['$locationProvider', '$stateProvider', '$urlRouterProv
         })
         .state('main.singleImage', {
             url: '/image/:imageid',
-            templateUrl: '/templates/singleimage.html',
+            templateUrl: 'app/templates/singleimage.html',
             controller: 'imageController as imageCtrl',
             resolve: {
                 currentImage: ['selectedImage', '$stateParams', 'imageService', function (selectedImage, $stateParams, imageService) {
@@ -82,7 +78,7 @@ contosoMomentsApp.config(['$locationProvider', '$stateProvider', '$urlRouterProv
 
     $urlRouterProvider.when('/_=_', '/')
         .when('_-_', '/')
-        .when('/index.html', '/')
+        .when('app/index.html', '/')
         .otherwise('/error/404');
 
     $locationProvider.html5Mode(true);

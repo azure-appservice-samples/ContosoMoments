@@ -29,7 +29,7 @@ contosoMomentsApp
                 var albumTable = mobileServicesClient.getTable('album');
 
                 albumTable.where(function (currentUserId) {
-                    return this.userId == currentUserId || this.id == configJson.DefaultAlbumId;
+                    return this.userId == currentUserId || this.id == "11111111-1111-1111-1111-111111111111"; //configJson.DefaultAlbumId;
                 }, userId)
 
                 .orderByDescending("createdAt")
