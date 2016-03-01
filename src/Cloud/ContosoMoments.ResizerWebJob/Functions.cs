@@ -11,6 +11,8 @@ namespace ContosoMoments.ResizerWebJob
 {
     public class Functions
     {
+        private const string BlobContentType = "image/jpg";
+
         #region Queue handlers
         public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
             [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobInput,
@@ -18,6 +20,9 @@ namespace ContosoMoments.ResizerWebJob
             [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobOutputSmall,
             [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobOutputMedium)
         {
+            blobInput.Properties.ContentType = BlobContentType;
+            blobInput.SetProperties();
+
             Stream input = await blobInput.OpenReadAsync();
             scaleImage(input, blobOutputMedium, ImageSize.Medium, blobInput.Properties.ContentType);
 
