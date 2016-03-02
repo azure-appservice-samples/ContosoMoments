@@ -59,6 +59,12 @@ namespace ContosoMoments.Api
         // POST tables/Image
         public async Task<IHttpActionResult> PostImage(Image item)
         {
+            var config = new ConfigModel();
+
+            if (item.AlbumId == config.DefaultAlbumId) {
+                item.UserId = config.DefaultUserId; // default album images can be viewed by anyone, so set to the default user
+            }
+
             Image current = await InsertAsync(item);
             return CreatedAtRoute("Tables", new { id = current.Id }, current);
         }
