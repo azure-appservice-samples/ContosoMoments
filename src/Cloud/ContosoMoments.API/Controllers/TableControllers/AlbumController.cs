@@ -43,7 +43,7 @@ namespace ContosoMoments.Api
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        [Route("tables/Album/{id}")]
+        [Route("tables/Album/{id}", Name = "GetAlbumById")]
         public SingleResult<Album> GetAlbum(string id)
         {
             return Lookup(id);
@@ -63,7 +63,7 @@ namespace ContosoMoments.Api
         public async Task<IHttpActionResult> PostAlbum(Album item)
         {
             Album current = await InsertAsync(item);
-            return CreatedAtRoute("Tables", new { id = current.Id }, current);
+            return CreatedAtRoute("GetAlbumById", new { id = current.Id }, current);
         }
 
         [EnableCors(origins: "*", headers: "*", methods: "*")]
