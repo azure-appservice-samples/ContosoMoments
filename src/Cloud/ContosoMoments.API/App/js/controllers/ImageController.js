@@ -18,7 +18,7 @@ contosoMomentsApp
         });
 
         self.getCurrentImageURL = function (size) {
-            return imageService.getImageURL(this.currentImage, size);
+            return imageService.getImageURL(this.currentImage.id, size);
         }
 
         self.hasBeenLiked = false;

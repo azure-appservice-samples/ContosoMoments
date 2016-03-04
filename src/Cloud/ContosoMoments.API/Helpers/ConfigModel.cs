@@ -13,6 +13,11 @@ namespace ContosoMoments.Api
             get { return AppSettings.DefaultUserId; }
         }
 
+        public string UploadContainerName
+        {
+            get { return AppSettings.UploadContainerName; }
+        }
+
         public string DefaultServiceUrl
         {
             get { return AppSettings.DefaultServiceUrl; }

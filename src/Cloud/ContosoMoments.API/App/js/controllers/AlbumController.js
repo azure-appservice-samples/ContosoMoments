@@ -5,7 +5,7 @@ contosoMomentsApp
         function ($scope, albumsService, authContext, $state) {
             var self = this;
 
-            curUserId = authContext.userId;
+            var curUserId = authContext.userId;
 
             self.albums = [];
             albumsService.getUserAlbums(authContext.userId).then(function (albums) {
@@ -32,28 +32,31 @@ contosoMomentsApp
 
             $rootScope.lastAlbum = selectedAlbum.album;
             var onImageGotten = function (images) {
-                if (self.currentIndex === 0 && self.curAlbum.images.length === 0) {
-                    self.curAlbum.images = images;
-                    if (self.curAlbum.images.length >= (self.count - 1)) {
-                        self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = true;
-                    }
-                } else if (self.currentIndex > 0 && self.curAlbum.images.length < (self.currentIndex + self.count - 1)) {
-                    self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = images.length <= 0;
-                    self.curAlbum.images = self.curAlbum.images.concat(images);
-                    if (self.curAlbum.images.length === self.currentIndex + self.count) {
-                        self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = true;
-                    }
-                }
+
+                self.curAlbum.images = images;
+
+                //if (self.currentIndex === 0 && self.curAlbum.images.length === 0) {
+                //    self.curAlbum.images = images;
+                //    if (self.curAlbum.images.length >= (self.count - 1)) {
+                //        self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = true;
+                //    }
+                //} else if (self.currentIndex > 0 && self.curAlbum.images.length < (self.currentIndex + self.count - 1)) {
+                //    self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = images.length <= 0;
+                //    self.curAlbum.images = self.curAlbum.images.concat(images);
+                //    if (self.curAlbum.images.length === self.currentIndex + self.count) {
+                //        self.curAlbum.images[self.curAlbum.images.length - 1].showPlaceholder = true;
+                //    }
+                //}
             }
             this.getAlbumImages = function () {
                 imageService.getImagesFromAlbum(self.curAlbum, { start: self.currentIndex, count: self.count }).then(onImageGotten);
             }
             this.showNext = function () {
                 this.currentIndex += this.count;
-                imageService.getImagesFromAlbum(self.curAlbum, { start: self.currentIndex, count: self.count }).then(onImageGotten)
+                imageService.getImagesFromAlbum(self.curAlbum, { start: self.currentIndex, count: self.count });//.then(onImageGotten)
             }
-            this.getImageURL = function (img, size) {
-                return imageService.getImageURL(img, size);
+            this.getImageURL = function (imgId, size) {
+                return imageService.getImageURL(imgId, size);
             }
             this.onImageSelected = function (image) {
                 selectedImage.image = image;

@@ -79,7 +79,7 @@
 
             </div>
         </nav>
-        <div class="container" ng-controller="titleController as titleCtrl">
+        <div class="container">
             <h4 ng-show="curAlbum.album" ng-bind="curAlbum.album.albumName"></h4>
         </div>
     </header>
@@ -90,7 +90,6 @@
     <script src="/app/lib/azure-blob-upload.js"></script>
     <script src="/app/js/app.js"></script>
     <script src="/app/js/controllers/AlbumController.js"></script>
-    <script src="/app/js/controllers/AuthController.js"></script>
     <script src="/app/js/controllers/ImageController.js"></script>
     <script src="/app/js/controllers/NavController.js"></script>
     <script src="/app/js/controllers/UploadController.js"></script>
@@ -102,6 +101,7 @@
     <script src="/app/js/services/UserService.js"></script>
     <script src="/app/js/directives/FileChange.js"></script>
     <script src="/app/js/directives/RouteLoader.js"></script>
+    <script src="/app/js/directives/Thumbnail.js"></script>
 </body>
 
 </html>

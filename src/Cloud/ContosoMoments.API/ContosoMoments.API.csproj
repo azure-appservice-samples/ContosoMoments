@@ -242,6 +242,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\Startup.MobileApp.cs" />
+    <Content Include="app\js\directives\Thumbnail.js" />
     <Content Include="app\templates\createAlbum.html" />
     <Content Include="app\templates\deleteAlbum.html" />
     <Content Include="app\templates\deleteImage.html" />
@@ -406,7 +407,6 @@
     <Content Include="app\js\app.js" />
     <Content Include="app\lib\azure-blob-upload.js" />
     <Content Include="app\js\controllers\AlbumController.js" />
-    <Content Include="app\js\controllers\AuthController.js" />
     <Content Include="app\js\controllers\ImageController.js" />
     <Content Include="app\js\controllers\NavController.js" />
     <Content Include="app\js\controllers\UploadController.js" />

@@ -1,9 +1,8 @@
 ﻿'use strict';
 
 contosoMomentsApp
-    .factory('imageService', ['mobileServicesClient', '$interpolate', '$http', '$q', 'appConfig', '$rootScope',
-    function (mobileServicesClient, $interpolate, $http, $q, appConfig, $rootScope) {
-        var urlExp = $interpolate('{{image.containerName}}/{{size}}/{{image.fileName}}');
+    .factory('imageService', ['mobileServicesClient', '$http', '$q', 'appConfig', '$rootScope',
+    function (mobileServicesClient, $http, $q, appConfig, $rootScope) {
         var imageDefaultOptions = {
             start: 0,
             count: 50
@@ -34,19 +33,17 @@ contosoMomentsApp
         }
 
         return {
-            getImageURL: function (img, imgSize) {
-                // The Storage account was set to public when this code was created, changing to implement SAS token retrieval
-                //return urlExp({ image: img, size: imgSize });
-                return $http.post('/tables/Image/' + img.id + '/StorageToken', {
+            getImageURL: function (imgId, imgSize) {
+                return $http.post('/tables/Image/' + imgId + '/StorageToken', {
                     "Permissions": "Read",
                     "TargetFile": {
-                        "Id": img.Id,
-                        "Name": img.Id,
+                        "Id": imgId,
+                        "Name": imgId,
                         "TableName": "Image",
-                        "ParentId": img.Id,
+                        "ParentId": imgId,
                         "ContentMD5": null,
                         "LastModified": null,
-                        "StoreUri": "/" + img.containerName + "-" + imgSize + "/" + img.fileName,
+                        "StoreUri": "/" + appConfig.UploadContainerName + "-" + imgSize + "/" + imgId,
                         "Metadata": {}
                     },
                     "ScopedEntityId": null,
