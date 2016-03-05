@@ -34,7 +34,8 @@ contosoMomentsApp
 
         return {
             getImageURL: function (imgId, imgSize) {
-                return $http.post('/tables/Image/' + imgId + '/StorageToken', {
+                var defered = $q.defer();
+                $http.post('/tables/Image/' + imgId + '/StorageToken', {
                     "Permissions": "Read",
                     "TargetFile": {
                         "Id": imgId,
@@ -48,15 +49,15 @@ contosoMomentsApp
                     },
                     "ScopedEntityId": null,
                     "ProviderName": null
-                }).success(function(data){
-                    
-                    return data.ResourceUri + "/" + data.EntityId + data.RawToken;
-
-                }).error(function(error){
-                    
-                    console.log("error returning SAS from API");
-
+                })
+                .then(function (res) {
+                    defered.resolve(res.data.ResourceUri.concat("/", res.data.EntityId, res.data.RawToken));
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    defered.reject(err);
                 });
+                return defered.promise;
             },
             getImagesFromAlbum: function (album, options) {
                 var defered = $q.defer();

@@ -53,7 +53,7 @@ contosoMomentsApp
             }
             this.showNext = function () {
                 this.currentIndex += this.count;
-                imageService.getImagesFromAlbum(self.curAlbum, { start: self.currentIndex, count: self.count });//.then(onImageGotten)
+                imageService.getImagesFromAlbum(self.curAlbum, { start: self.currentIndex, count: self.count }).then(onImageGotten)
             }
             this.getImageURL = function (imgId, size) {
                 return imageService.getImageURL(imgId, size);
