@@ -1,23 +1,23 @@
-﻿using Android.App;
-using Android.Content;
+﻿using System;
+
+using Android.App;
 using Android.Content.PM;
-using Android.OS;
-using Android.Provider;
 using Android.Views;
-using Gcm.Client;
+using Android.OS;
 using Java.IO;
-using System;
+using Android.Content;
+using Android.Provider;
 
 namespace ContosoMoments.Droid
 {
     [Activity (Label = "Contoso Moments", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
-	{
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
+    {
         static readonly File file = new File(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures), "tmp.jpg");
-        static MainActivity instance;
+        public static MainActivity instance;
 
         protected override void OnCreate (Bundle bundle)
-		{
+        {
             base.OnCreate (bundle);
 
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
@@ -26,17 +26,13 @@ namespace ContosoMoments.Droid
 
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
 
+            App.UIContext = this;
             LoadApplication(new ContosoMoments.App ());
 
-            App.Instance.ShouldTakePicture += () => {
-                var intent = new Intent(MediaStore.ActionImageCapture);
-                intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(file));
-                StartActivityForResult(intent, 0);
-            };
-
             instance = this;
-            try
-            {
+
+#if PUSH // need to use a Google image on an Android emulator
+            try {
                 // Check to ensure everything's setup right
                 GcmClient.CheckDevice(this);
                 GcmClient.CheckManifest(this);
@@ -45,30 +41,19 @@ namespace ContosoMoments.Droid
                 System.Diagnostics.Debug.WriteLine("Registering...");
                 GcmClient.Register(this, PushHandlerBroadcastReceiver.SENDER_IDS);
             }
-            catch (Java.Net.MalformedURLException)
-            {
+            catch (Java.Net.MalformedURLException) {
 
                 CreateAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 CreateAndShowDialog(e, "Error");
             }
+#endif 
         }
 
         public static MainActivity DefaultService
         {
             get { return instance; }
-        }
-
-        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
-        {
-            base.OnActivityResult(requestCode, resultCode, data);
-
-            if (resultCode != Result.Canceled)
-                App.Instance.ShowCapturedImage(file.Path);
-            else
-                App.Instance.ShowCapturedImage(null);
         }
 
         private void CreateAndShowDialog(Exception e, string title)

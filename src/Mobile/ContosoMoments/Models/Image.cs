@@ -1,103 +1,88 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
+﻿using System;
+using System.ComponentModel;
+
+using Microsoft.WindowsAzure.MobileServices;
+using Microsoft.WindowsAzure.MobileServices.Files;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace ContosoMoments.Models
 {
-    public class Image
+    public class Image : INotifyPropertyChanged
     {
-        string id;
-        string imageId;
-        string imageFormat;
-        string containerName;
-        Album album;
-        User user;
-        string albumId;
-        string userId;
+        public string Id { get; set; }
+        public string UploadFormat { get; set; }
+        public Album Album { get; set; }
+        public string AlbumId { get; set; }
+        public string UserId { get; set; }
 
-        [JsonProperty(PropertyName = "Id")]
-        public string Id
+        [UpdatedAt]
+        public DateTimeOffset UpdatedAt { get; set; }
+        
+        [JsonIgnore]
+        public string ImageInfo
         {
-            get { return id; }
-            set { id = value; }
+            get { return string.Format("{0:MMMM d, yyyy}", UpdatedAt); }
         }
 
-        [JsonProperty(PropertyName = "FileName")]
-        public string ImageId
-        {
-            get { return imageId; }
-            set { imageId = value; }
-        }
 
-        [JsonProperty(PropertyName = "UploadFormat")]
-        public string ImageFormat
-        {
-            get { return imageFormat; }
-            set { imageFormat = value; }
-        }
-
-        [JsonProperty(PropertyName = "ContainerName")]
-        public string ContainerName
-        {
-            get { return containerName; }
-            set { containerName = value; }
-        }
-
-        [JsonProperty(PropertyName = "Album")]
-        public Album Album
-        {
-            get { return album; }
-            set { album = value; }
-        }
-
-        [JsonProperty(PropertyName = "AlbumId")]
-        public string AlbumId
-        {
-            get { return albumId; }
-            set { albumId = value; }
-        }
-
-        [JsonProperty(PropertyName = "User")]
-        public User User
-        {
-            get { return user; }
-            set { user = value; }
-        }
-
-        [JsonProperty(PropertyName = "UserId")]
-        public string UserId
-        {
-            get { return userId; }
-            set { userId = value; }
-        }
+        private string _uri;
+        private MobileServiceFile _file;
+        private bool _imageLoaded;
 
         [JsonIgnore]
-        public IDictionary<string, Uri> ImagePath
+        public MobileServiceFile File
         {
-            get
+            get { return _file; }
+            set
             {
-                Dictionary<string, Uri> retVal = new Dictionary<string, Uri>();
+                _file = value;
 
-                retVal.Add("xs", new Uri(string.Format("{0}/xs/{1}", containerName, imageId)));
-                retVal.Add("sm", new Uri(string.Format("{0}/sm/{1}", containerName, imageId)));
-                retVal.Add("md", new Uri(string.Format("{0}/md/{1}", containerName, imageId)));
-                retVal.Add("lg", new Uri(string.Format("{0}/lg/{1}", containerName, imageId)));
+                if (_file != null) {
+                    FileHelper.GetLocalFilePathAsync(Id, _file.Name, App.Instance.DataFilesPath)
+                        .ContinueWith(x => this.Uri = x.Result);
+                }
 
-                return retVal;
+                OnPropertyChanged(nameof(File));
             }
         }
 
-        [Version]
-        public string Version { get; set; }
+        [JsonIgnore]
+        public string Uri
+        {
+            get
+            {
+                return ImageLoaded ? _uri : "";
+            }
 
-        [CreatedAt]
-        public DateTime CreatedAt { get; set; }
+            set
+            {
+                _uri = value;
+                OnPropertyChanged(nameof(Uri));
+            }
+        }
 
-        [UpdatedAt]
-        public DateTime UpdatedAt { get; set; }
+        [JsonIgnore]
+        public bool ImageLoaded
+        {
+            get { return _imageLoaded; }
+            set
+            {
+                _imageLoaded = value;
+                OnPropertyChanged(nameof(ImageLoaded));
+                OnPropertyChanged(nameof(Uri));
+            }
+        }
 
-        [Deleted]
-        public bool Deleted { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public override string ToString()
+        {
+            return $"+++Image -- Id: {Id}    File: {File?.Name}   Uri: {Uri}   ImageLoaded: {ImageLoaded}";
+        }
     }
 }

@@ -1,13 +1,13 @@
-namespace ContosoMoments.MobileServer.Migrations
-{
-    using System.Data.Entity.Migrations;
+using System.Data.Entity.Migrations;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<ContosoMoments.MobileServer.Models.MobileServiceContext>
+namespace ContosoMoments.Api
+{
+    internal sealed class Configuration : DbMigrationsConfiguration<MobileServiceContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            ContextKey = "ContosoMoments.MobileServer.Models.MobileServiceContext";
+            ContextKey = "ContosoMoments.Api.MobileServiceContext";
         }
     }
 }

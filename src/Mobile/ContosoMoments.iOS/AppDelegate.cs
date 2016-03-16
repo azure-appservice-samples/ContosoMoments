@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Foundation;
 using UIKit;
-using System.IO;
 using Microsoft.WindowsAzure.MobileServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -52,35 +49,12 @@ namespace ContosoMoments.iOS
                                                                                    UIRemoteNotificationType.Sound |
                                                                                    UIRemoteNotificationType.Alert);
             }
-
-            LoadApplication(new ContosoMoments.App());
-
-            #error COMMENT WHEN DEBUGGING ON EMULATOR!
-            var imagePicker = new UIImagePickerController { SourceType = UIImagePickerControllerSourceType.Camera };
-            (Xamarin.Forms.Application.Current as App).ShouldTakePicture += () =>
-                app.KeyWindow.RootViewController.PresentViewController(imagePicker, true, null);
-
-            imagePicker.FinishedPickingMedia += (sender, e) =>
-            {
-                var filepath = Path.Combine(Environment.GetFolderPath(
-                                   Environment.SpecialFolder.MyDocuments), "tmp.png");
-                var image = (UIImage)e.Info.ObjectForKey(new NSString("UIImagePickerControllerOriginalImage"));
-                InvokeOnMainThread(() =>
-                {
-                    image.AsJPEG().Save(filepath, false);
-                    (Xamarin.Forms.Application.Current as App).ShowCapturedImage(filepath);
-                });
-                app.KeyWindow.RootViewController.DismissViewController(true, null);
-            };
-
-            imagePicker.Canceled += (sender, e) =>
-            {
-                (Xamarin.Forms.Application.Current as App).ShowCapturedImage(null);
-                app.KeyWindow.RootViewController.DismissViewController(true, null);
-            };
-
+                
+            var formsApp = new ContosoMoments.App();
+            LoadApplication(formsApp);
+        
             return base.FinishedLaunching(app, options);
-        }
+        }              
 
         public static async Task RegisterWithMobilePushNotifications()
         {
@@ -107,7 +81,7 @@ namespace ContosoMoments.iOS
                 //    (System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
 
                 // Get Mobile Services client
-                MobileServiceClient client = App.MobileService;
+                MobileServiceClient client = App.Instance.MobileService;
                 var push = client.GetPush();
 
                 try
@@ -121,12 +95,12 @@ namespace ContosoMoments.iOS
             }
         }
 
-        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        public override async void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
         {
             DeviceToken = deviceToken;
 
             if (IsAfterLogin)
-                RegisterWithMobilePushNotifications();
+                await RegisterWithMobilePushNotifications();
         }
 
         public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ContosoMoments.Views.SettingsView">
+
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--Header-->
+        <Grid Grid.Row="0" Padding="10" BackgroundColor="#8C0A4B">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center" Source="logo.png"/>
+
+            <Label Text="Settings" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
+
+          <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End" Source="save.png" />
+        </Grid>
+
+        <!--Settings-->
+        <Grid Grid.Row="1" BackgroundColor="White" VerticalOptions="FillAndExpand" >
+            <StackLayout Orientation="Vertical" Padding="10,15,10,5">
+                <Label Text="Mobile Service URL" TextColor="Black"/>
+                <Entry x:Name="mobileServiceUrl" FontSize="Small" Placeholder="Url" TextColor="Black"/>
+            </StackLayout>
+        </Grid>
+
+        <!--Logout button-->
+        <Button Grid.Row="2" x:Name="LogoutButton" Clicked="OnLogout" Text="Logout" HorizontalOptions="FillAndExpand" IsEnabled="false" />
+
+    </Grid>
+</ContentPage>
