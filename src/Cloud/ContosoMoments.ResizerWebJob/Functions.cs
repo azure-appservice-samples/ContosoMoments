@@ -33,9 +33,12 @@ namespace ContosoMoments.ResizerWebJob
             [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobOutputMedium)
         {
             using (var input = await blobInput.OpenReadAsync()) {
-                ScaleImage(input, blobOutputMedium, ImageSize.Medium);
+                var contentType = ScaleImage(input, blobOutputMedium, ImageSize.Medium);
                 ScaleImage(input, blobOutputSmall, ImageSize.Small);
                 ScaleImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall);
+
+                blobInput.Properties.ContentType = contentType;
+                blobInput.SetProperties();
             }
         }
 
@@ -52,7 +55,7 @@ namespace ContosoMoments.ResizerWebJob
             await blobLarge.DeleteAsync();
         }
 
-        private static void ScaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSize imageSize)
+        private static string ScaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSize imageSize)
         {
             using (Stream output = blobOutput.OpenWrite()) {
                 var imageFormat = DoScaling(blobInput, output, imageSize);
@@ -61,6 +64,9 @@ namespace ContosoMoments.ResizerWebJob
                 var mimeFormat = codecs.First(codec => codec.FormatID == imageFormat.Guid).MimeType;
 
                 blobOutput.Properties.ContentType = mimeFormat;
+                blobOutput.SetProperties();
+
+                return mimeFormat;
             }
         }
 
