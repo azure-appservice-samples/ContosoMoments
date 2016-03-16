@@ -1,134 +1,99 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
-using ContosoMoments.Common.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Collections.Generic;
+using ContosoMoments.Common.Models;
 
 namespace ContosoMoments.ResizerWebJob
 {
     public class Functions
     {
-        private const string BlobContentType = "image/jpg";
+        private static Dictionary<ImageSize, Tuple<int, int>> imageDimensionsTable;
 
-        #region Queue handlers
-        public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
+        static Functions()
+        {
+            imageDimensionsTable = new Dictionary<ImageSize, Tuple<int, int>>();
+
+            imageDimensionsTable[ImageSize.ExtraSmall] = Tuple.Create(320, 200);
+            imageDimensionsTable[ImageSize.Small]      = Tuple.Create(640, 400);
+            imageDimensionsTable[ImageSize.Medium]     = Tuple.Create(800, 480);
+            imageDimensionsTable[ImageSize.Large]      = Tuple.Create(1024, 768);
+        }
+
+        public async static Task StartImageScalingAsync(
+            [QueueTrigger("resizerequest")] BlobInformation blobInfo,
             [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobInput,
             [Blob("{BlobNameXS}/{Filename}")] CloudBlockBlob blobOutputExtraSmall,
             [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobOutputSmall,
             [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobOutputMedium)
         {
-            blobInput.Properties.ContentType = BlobContentType;
-            blobInput.SetProperties();
-
-            Stream input = await blobInput.OpenReadAsync();
-            scaleImage(input, blobOutputMedium, ImageSize.Medium, blobInput.Properties.ContentType);
-
-            input.Position = 0;
-            scaleImage(input, blobOutputSmall, ImageSize.Small, blobInput.Properties.ContentType);
-
-            input.Position = 0;
-            scaleImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall, blobInput.Properties.ContentType);
-
-            input.Dispose();
+            using (var input = await blobInput.OpenReadAsync()) {
+                ScaleImage(input, blobOutputMedium, ImageSize.Medium);
+                ScaleImage(input, blobOutputSmall, ImageSize.Small);
+                ScaleImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall);
+            }
         }
 
-        public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
+        public async static Task DeleteImagesAsync(
+            [QueueTrigger("deleterequest")] BlobInformation blobInfo,
             [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobLarge,
             [Blob("{BlobNameXS}/{Filename}")] CloudBlockBlob blobExtraSmall,
             [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobSmall,
             [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobMedium)
         {
-            try {
-                await blobLarge.DeleteAsync();
-                await blobExtraSmall.DeleteAsync();
-                await blobSmall.DeleteAsync();
-                await blobMedium.DeleteAsync();
-            }
-            catch (Exception ex) {
-                Trace.TraceError("Error while deleting images: " + ex.Message);
-            }
+            await blobExtraSmall.DeleteAsync();
+            await blobSmall.DeleteAsync();
+            await blobMedium.DeleteAsync();
+            await blobLarge.DeleteAsync();
         }
-        #endregion
 
-        #region Private functionality
-        private static bool scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSize imageSize, string contentType)
+        private static void ScaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSize imageSize)
         {
-            bool retVal = true; //Assume success
+            using (Stream output = blobOutput.OpenWrite()) {
+                var imageFormat = DoScaling(blobInput, output, imageSize);
 
-            try {
-                using (Stream output = blobOutput.OpenWrite()) {
-                    if (doScaling(blobInput, output, imageSize)) {
-                        blobOutput.Properties.ContentType = contentType;
-                    }
-                    else
-                        retVal = false;
-                }
-            }
-            catch (Exception ex) {
-                Trace.TraceError("Error while scaling image: " + ex.Message);
-                retVal = false;
-            }
+                ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+                var mimeFormat = codecs.First(codec => codec.FormatID == imageFormat.Guid).MimeType;
 
-            return retVal;
+                blobOutput.Properties.ContentType = mimeFormat;
+            }
         }
 
-        private static bool doScaling(Stream blobInput, Stream output, ImageSize imageSize)
+        private static ImageFormat DoScaling(Stream blobInput, Stream output, ImageSize imageSize)
         {
-            bool retVal = true; //Assume success
+            ImageFormat imageFormat;
 
-            try {
-                int width = 0, height = 0;
+            var widthHeight = imageDimensionsTable[imageSize];
+            int width = widthHeight.Item1;
+            int height = widthHeight.Item2;
 
-                //TODO: get original image aspect ratio, get "priority property" (width) and calculate new height...
-                switch (imageSize) {
-                    case ImageSize.Medium:
-                        width = 800;
-                        height = 480;
-                        break;
-                    case ImageSize.Large:
-                        width = 1024;
-                        height = 768;
-                        break;
-                    case ImageSize.ExtraSmall:
-                        width = 320;
-                        height = 200;
-                        break;
-                    case ImageSize.Small:
-                        width = 640;
-                        height = 400;
-                        break;
+            blobInput.Position = 0;
+
+            using (var img = System.Drawing.Image.FromStream(blobInput)) {
+                var widthRatio = (double)width / (double)img.Width;
+                var heightRatio = (double)height / (double)img.Height;
+                var minAspectRatio = Math.Min(widthRatio, heightRatio);
+                if (minAspectRatio > 1) {
+                    width = img.Width;
+                    height = img.Height;
+                }
+                else {
+                    width = (int)(img.Width * minAspectRatio);
+                    height = (int)(img.Height * minAspectRatio);
                 }
 
-                using (System.Drawing.Image img = System.Drawing.Image.FromStream(blobInput)) {
-                    //Calculate aspect ratio and new heights of scaled image
-                    var widthRatio = (double)width / (double)img.Width;
-                    var heightRatio = (double)height / (double)img.Height;
-                    var minAspectRatio = Math.Min(widthRatio, heightRatio);
-                    if (minAspectRatio > 1) {
-                        width = img.Width;
-                        height = img.Height;
-                    }
-                    else {
-                        width = (int)(img.Width * minAspectRatio);
-                        height = (int)(img.Height * minAspectRatio);
-                    }
-
-                    using (Bitmap bitmap = new Bitmap(img, width, height)) {
-                        bitmap.Save(output, img.RawFormat);
-                    }
+                using (Bitmap bitmap = new Bitmap(img, width, height)) {
+                    bitmap.Save(output, img.RawFormat);
+                    imageFormat = img.RawFormat;
                 }
             }
-            catch (Exception ex) {
-                Trace.TraceError("Error while saving scaled image: " + ex.Message);
-                retVal = false;
-            }
 
-            return retVal;
+            return imageFormat;
         }
-
-        #endregion
     }
 }
