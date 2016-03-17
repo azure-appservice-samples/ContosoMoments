@@ -95,11 +95,19 @@ contosoMomentsApp
             var createAlbum = function () {
                 var auth = authService.currentContext();
                 self.postingAlbum = true;
-                albumsService.createAlbum(self.currentAlbum.albumName, auth.userId).then(function (res) {
-                    $uibModalInstance.close(res);
-                }).finally(function () {
-                    self.postingAlbum = false;
-                });
+                albumsService
+                    .createAlbum(self.currentAlbum.albumName, auth.userId)
+                    .then(function (res) {
+                        $uibModalInstance.close(res);
+                    }, function (err) {
+                        if (err.status === 401) {
+
+                            alert('login to add album');
+                            $uibModalInstance.close(null);
+                        }
+                    }).finally(function () {
+                        self.postingAlbum = false;
+                    });
 
             }
 

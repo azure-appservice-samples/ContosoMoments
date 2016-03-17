@@ -242,7 +242,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\Startup.MobileApp.cs" />
-    <Content Include="app\js\directives\Thumbnail.js" />
+    <Content Include="app\js\directives\StorageSASResolver.js" />
     <Content Include="app\templates\createAlbum.html" />
     <Content Include="app\templates\deleteAlbum.html" />
     <Content Include="app\templates\deleteImage.html" />
