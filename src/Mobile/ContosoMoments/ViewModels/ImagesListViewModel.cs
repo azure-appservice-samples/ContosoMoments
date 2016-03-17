@@ -1,6 +1,11 @@
 ﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
-using Microsoft.WindowsAzure.MobileServices.Eventing;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using System.Linq;
+using System.Diagnostics;
 using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using PCLStorage;

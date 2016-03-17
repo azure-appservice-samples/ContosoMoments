@@ -1,13 +1,16 @@
-﻿using ContosoMoments.Common.Models;
-using Microsoft.Azure.Mobile.Server;
-using System;
-using System.Configuration;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Cors;
 using System.Web.Http.OData;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server;
+using System.Configuration;
+using System;
+using System.Net.Http;
+using System.Diagnostics;
 
 namespace ContosoMoments.Api
 {
@@ -27,10 +30,19 @@ namespace ContosoMoments.Api
         [Route("tables/Album")]
         public async Task<IQueryable<Album>> GetAllAlbum()
         {
-            string currentUserId = await ManageUserController.GetUserId(Request, User);
+            string currentUserId = new ConfigModel().DefaultUserId;
+
+            try {
+                currentUserId = await ManageUserController.GetUserId(Request, User);
+            }
+            catch (Exception e) {
+                Trace.WriteLine("Invalid auth token: " + e);
+            }
+
             return Query().Where(x => x.UserId == currentUserId || x.IsDefault);
         }
-        [Route("tables/Album/{id}")]
+
+        [Route("tables/Album/{id}", Name = "GetAlbumById")]
         public SingleResult<Album> GetAlbum(string id)
         {
             return Lookup(id);
@@ -50,7 +62,7 @@ namespace ContosoMoments.Api
         public async Task<IHttpActionResult> PostAlbum(Album item)
         {
             Album current = await InsertAsync(item);
-            return CreatedAtRoute("Tables", new { id = current.Id }, current);
+            return CreatedAtRoute("GetAlbumById", new { id = current.Id }, current);
         }
 
         // DELETE tables/Album/48D68C86-6EA6-4C25-AA33-223FC9A27959

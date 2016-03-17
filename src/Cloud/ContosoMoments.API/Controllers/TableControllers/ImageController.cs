@@ -1,13 +1,15 @@
-﻿using ContosoMoments.Common;
-using ContosoMoments.Common.Models;
-using Microsoft.Azure.Mobile.Server;
-using System;
-using System.Configuration;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Cors;
 using System.Web.Http.OData;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server;
+using System.Configuration;
+using System;
+using ContosoMoments.Common;
+using System.Diagnostics;
 
 namespace ContosoMoments.Api
 {
@@ -21,11 +23,18 @@ namespace ContosoMoments.Api
             DomainManager = new EntityDomainManager<Image>(context, Request, enableSoftDelete: softDeleteEnabled);
         }
 
-        // GET tables/Image 
+        // GET tables/Image
         public async Task<IQueryable<Image>> GetAllImage()
         {
-            string currentUserId = await ManageUserController.GetUserId(Request, User);
             string defaultUserId = new ConfigModel().DefaultUserId;
+            string currentUserId = defaultUserId;
+
+            try {
+                currentUserId = await ManageUserController.GetUserId(Request, User);
+            }
+            catch (Exception e) {
+                Trace.WriteLine("Invalid auth token: " + e);
+            }
 
             // return images owned by the current user or the guest user
             return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId);
@@ -47,6 +56,12 @@ namespace ContosoMoments.Api
         // POST tables/Image
         public async Task<IHttpActionResult> PostImage(Image item)
         {
+            var config = new ConfigModel();
+
+            if (item.AlbumId == config.DefaultAlbumId) {
+                item.UserId = config.DefaultUserId; // default album images can be viewed by anyone, so set to the default user
+            }
+
             Image current = await InsertAsync(item);
             return CreatedAtRoute("Tables", new { id = current.Id }, current);
         }

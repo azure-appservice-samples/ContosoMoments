@@ -1,15 +1,11 @@
-﻿using ContosoMoments.Views;
-using Microsoft.WindowsAzure.MobileServices;
-using Microsoft.WindowsAzure.MobileServices.Eventing;
-using Microsoft.WindowsAzure.MobileServices.Files;
-using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
-using Microsoft.WindowsAzure.MobileServices.Sync;
-using PCLStorage;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using ContosoMoments.Views;
+using System.Threading;
 
 namespace ContosoMoments
 {
@@ -116,16 +112,31 @@ namespace ContosoMoments
         internal async Task ResetAsync(string uri)
         {
             var platform = DependencyService.Get<IPlatform>();
+            MobileService.Dispose();
 
             string path = Path.Combine(platform.GetRootDataPath(), LocalDbFilename);
-
-            if (File.Exists(path)) {
-                File.Delete(path);
-            }
+            await FileHelper.DeleteLocalFileAsync(path);
 
             await InitMobileService(uri, firstStart: true);
-        }
+            }
 
+        internal async Task LogoutAsync()
+        {
+            await MobileService.LogoutAsync();
+
+            await imageTableSync.PurgeAsync("allImages", imageTableSync.CreateQuery(), CancellationToken.None);
+            await albumTableSync.PurgeAsync("allAlbums", imageTableSync.CreateQuery(), CancellationToken.None);
+            await resizeRequestSync.PurgeAsync(true);
+
+            var albumListView = new AlbumsListView(this);
+            MainPage = new NavigationPage(albumListView);
+
+            var loginPage = new Login();           
+            await MainPage.Navigation.PushAsync(loginPage);
+            await loginPage.GetResultAsync();
+
+            albumListView.OnRefresh(albumListView, EventArgs.Empty); // reload data, since now the user might be logged in
+        }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
         {

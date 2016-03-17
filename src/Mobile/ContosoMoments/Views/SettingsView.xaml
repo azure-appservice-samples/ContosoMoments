@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ContosoMoments.Views.SettingsView"
-             BackgroundColor="#8C0A4B">
+             x:Class="ContosoMoments.Views.SettingsView">
 
     <Grid RowSpacing="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--Header-->
-        <Grid Grid.Row="0" Padding="10">
+        <Grid Grid.Row="0" Padding="10" BackgroundColor="#8C0A4B">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -31,6 +31,9 @@
                 <Entry x:Name="mobileServiceUrl" FontSize="Small" Placeholder="Url" TextColor="Black"/>
             </StackLayout>
         </Grid>
+
+        <!--Logout button-->
+        <Button Grid.Row="2" x:Name="LogoutButton" Clicked="OnLogout" Text="Logout" HorizontalOptions="FillAndExpand" IsEnabled="false" />
 
     </Grid>
 </ContentPage>

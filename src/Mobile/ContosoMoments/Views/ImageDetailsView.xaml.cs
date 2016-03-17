@@ -3,9 +3,9 @@ using Microsoft.WindowsAzure.MobileServices.Files;
 using Microsoft.WindowsAzure.MobileServices.Files.Sync;
 using PCLStorage;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
 
 namespace ContosoMoments.Views

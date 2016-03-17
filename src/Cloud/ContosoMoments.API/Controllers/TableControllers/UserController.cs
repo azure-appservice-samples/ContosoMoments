@@ -1,12 +1,13 @@
-using ContosoMoments.Common.Models;
-using Microsoft.Azure.Mobile.Server;
-using System;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Cors;
 using System.Web.Http.OData;
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server;
+using System.Configuration;
+using System;
 
 namespace ContosoMoments.Api
 {
@@ -23,20 +24,20 @@ namespace ContosoMoments.Api
         // GET tables/User
         public IQueryable<User> GetAllUser()
         {
-            return Query(); 
+            return Query();
         }
 
         // GET tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public SingleResult<User> GetUser(string id)
         {
-                return Lookup(id);
-            }
+            return Lookup(id);
+        }
 
         // PATCH tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959
         [Authorize]
         public Task<User> PatchUser(string id, Delta<User> patch)
         {
-             return UpdateAsync(id, patch);
+            return UpdateAsync(id, patch);
         }
 
         // POST tables/User
@@ -51,7 +52,7 @@ namespace ContosoMoments.Api
         [Authorize]
         public Task DeleteUser(string id)
         {
-             return DeleteAsync(id);
+            return DeleteAsync(id);
         }
 
     }

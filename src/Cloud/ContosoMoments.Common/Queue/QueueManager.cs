@@ -1,10 +1,10 @@
-﻿using ContosoMoments.Common.Models;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using ContosoMoments.Common.Models;
 
 namespace ContosoMoments.Common
 {
@@ -23,7 +23,7 @@ namespace ContosoMoments.Common
                 if (CloudStorageAccount.TryParse(StorageConnectionString(), out account)) {
                     CloudQueueClient queueClient = account.CreateCloudQueueClient();
                     CloudQueue resizeRequestQueue = queueClient.GetQueueReference(AppSettings.ResizeQueueName);
-                    resizeRequestQueue.CreateIfNotExists(); 
+                    resizeRequestQueue.CreateIfNotExists();
 
                     var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(blobInformation));
                     await resizeRequestQueue.AddMessageAsync(queueMessage);
