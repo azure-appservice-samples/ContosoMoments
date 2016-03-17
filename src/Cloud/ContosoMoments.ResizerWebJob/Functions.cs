@@ -1,167 +1,105 @@
-﻿using ContosoMoments.Common;
-using ContosoMoments.Common.Enums;
-using Microsoft.Azure.WebJobs;
-using Microsoft.WindowsAzure.Storage.Blob;
-using System;
-using System.Diagnostics;
-using System.Drawing;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using static ContosoMoments.Common.Enums.ImageSizes;
+using Microsoft.Azure.WebJobs;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Collections.Generic;
+using ContosoMoments.Common.Models;
 
 namespace ContosoMoments.ResizerWebJob
 {
     public class Functions
     {
-        //   private const string resizeQueue = AppSettings.ResizeQueueName;
-        #region Queue handlers
-        public async static Task StartImageScalingAsync([QueueTrigger("resizerequest")] BlobInformation blobInfo,
-            [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobInput,
-            [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobOutputExtraSmall,
-            [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobOutputSmall,
-            [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobOutputMedium)
+        private static Dictionary<ImageSize, Tuple<int, int>> imageDimensionsTable;
+
+        static Functions()
         {
-            Stream input = await blobInput.OpenReadAsync();
-            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to MEDIUM size");
-            bool res = await scaleImage(input, blobOutputMedium, Medium, blobInput.Properties.ContentType);
-            TraceInfo(blobInfo.ImageId, "MEDIUM", res);
+            imageDimensionsTable = new Dictionary<ImageSize, Tuple<int, int>>();
 
-            input.Position = 0;
-            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to SMALL size");
-            res = await scaleImage(input, blobOutputSmall, Small, blobInput.Properties.ContentType);
-            TraceInfo(blobInfo.ImageId, "SMALL", res);
-
-            input.Position = 0;
-            Trace.TraceInformation("Scaling " + blobInfo.ImageId + " to EXTRA SMALL size");
-            res = await scaleImage(input, blobOutputExtraSmall, ExtraSmall, blobInput.Properties.ContentType);
-            TraceInfo(blobInfo.ImageId, "EXTRA SMALL", res);
-
-
-            input.Dispose();
-            Trace.TraceInformation("Done processing 'resizerequest' message");
+            imageDimensionsTable[ImageSize.ExtraSmall] = Tuple.Create(320, 200);
+            imageDimensionsTable[ImageSize.Small]      = Tuple.Create(640, 400);
+            imageDimensionsTable[ImageSize.Medium]     = Tuple.Create(800, 480);
+            imageDimensionsTable[ImageSize.Large]      = Tuple.Create(1024, 768);
         }
 
-        private static void TraceInfo(string imageId, string size, bool res)
+        public async static Task StartImageScalingAsync(
+            [QueueTrigger("resizerequest")] BlobInformation blobInfo,
+            [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobInput,
+            [Blob("{BlobNameXS}/{Filename}")] CloudBlockBlob blobOutputExtraSmall,
+            [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobOutputSmall,
+            [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobOutputMedium)
         {
-            if (res)
-                Trace.TraceInformation("Scaling " + imageId + " to " + size + " size completed successfully");
-            else
-                Trace.TraceWarning("Scaling " + imageId + " to " + size + " size failed. Please see previous errors in log");
-        }
+            using (var input = await blobInput.OpenReadAsync()) {
+                var contentType = ScaleImage(input, blobOutputMedium, ImageSize.Medium);
+                ScaleImage(input, blobOutputSmall, ImageSize.Small);
+                ScaleImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall);
 
-        public async static Task DeleteImagesAsync([QueueTrigger("deleterequest")] BlobInformation blobInfo,
-            [Blob("{BlobName}/{BlobNameLG}")] CloudBlockBlob blobLarge,
-            [Blob("{BlobName}/{BlobNameXS}")] CloudBlockBlob blobExtraSmall,
-            [Blob("{BlobName}/{BlobNameSM}")] CloudBlockBlob blobSmall,
-            [Blob("{BlobName}/{BlobNameMD}")] CloudBlockBlob blobMedium)
-        {
-            try
-            {
-                Trace.TraceInformation("Deleting LARGE image with ImageID = " + blobInfo.ImageId);
-                await blobLarge.DeleteAsync();
-                Trace.TraceInformation("Deleting EXTRA SMALL image with ImageID = " + blobInfo.ImageId);
-                await blobExtraSmall.DeleteAsync();
-                Trace.TraceInformation("Deleting SMALL image with ImageID = " + blobInfo.ImageId);
-                await blobSmall.DeleteAsync();
-                Trace.TraceInformation("Deleting MEDIUM image with ImageID = " + blobInfo.ImageId);
-                await blobMedium.DeleteAsync();
-
-                Trace.TraceInformation("Done processing 'deleterequest' message");
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError("Error while deleting images: " + ex.Message);
+                blobInput.Properties.ContentType = contentType;
+                blobInput.SetProperties();
             }
         }
-        #endregion
 
-        #region Private functionality
-        private async static Task<bool> scaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSizes imageSize, string contentType)
+        public async static Task DeleteImagesAsync(
+            [QueueTrigger("deleterequest")] BlobInformation blobInfo,
+            [Blob("{BlobNameLG}/{Filename}")] CloudBlockBlob blobLarge,
+            [Blob("{BlobNameXS}/{Filename}")] CloudBlockBlob blobExtraSmall,
+            [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobSmall,
+            [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobMedium)
         {
-            bool retVal = true; //Assume success
+            await blobExtraSmall.DeleteAsync();
+            await blobSmall.DeleteAsync();
+            await blobMedium.DeleteAsync();
+            await blobLarge.DeleteAsync();
+        }
 
-            try
-            {
-                using (Stream output = blobOutput.OpenWrite())
-                {
-                    if (doScaling(blobInput, output, imageSize))
-                    {
-                        blobOutput.Properties.ContentType = contentType;
-                    }
-                    else
-                        retVal = false;
+        private static string ScaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSize imageSize)
+        {
+            using (Stream output = blobOutput.OpenWrite()) {
+                var imageFormat = DoScaling(blobInput, output, imageSize);
+
+                ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+                var mimeFormat = codecs.First(codec => codec.FormatID == imageFormat.Guid).MimeType;
+
+                blobOutput.Properties.ContentType = mimeFormat;
+                blobOutput.SetProperties();
+
+                return mimeFormat;
+            }
+        }
+
+        private static ImageFormat DoScaling(Stream blobInput, Stream output, ImageSize imageSize)
+        {
+            ImageFormat imageFormat;
+
+            var widthHeight = imageDimensionsTable[imageSize];
+            int width = widthHeight.Item1;
+            int height = widthHeight.Item2;
+
+            blobInput.Position = 0;
+
+            using (var img = System.Drawing.Image.FromStream(blobInput)) {
+                var widthRatio = (double)width / (double)img.Width;
+                var heightRatio = (double)height / (double)img.Height;
+                var minAspectRatio = Math.Min(widthRatio, heightRatio);
+                if (minAspectRatio > 1) {
+                    width = img.Width;
+                    height = img.Height;
                 }
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError("Error while scaling image: " + ex.Message);
-                retVal = false;
-            }
-
-            return retVal;
-        }
-
-        private static bool doScaling(Stream blobInput, Stream output, ImageSizes imageSize)
-        {
-            bool retVal = true; //Assume success
-
-            try
-            {
-                int width = 0, height = 0;
-
-                //TODO: get original image aspect ratio, get "priority property" (width) and calculate new height...
-                switch (imageSize)
-                {
-                    case Medium:
-                        width = 800;
-                        height = 480;
-                        break;
-                    case Large:
-                        width = 1024;
-                        height = 768;
-                        break;
-                    case ExtraSmall:
-                        width = 320;
-                        height = 200;
-                        break;
-                    case Small:
-                        width = 640;
-                        height = 400;
-                        break;
+                else {
+                    width = (int)(img.Width * minAspectRatio);
+                    height = (int)(img.Height * minAspectRatio);
                 }
 
-                using (Image img = Image.FromStream(blobInput))
-                {
-                    //Calculate aspect ratio and new heights of scaled image
-                    var widthRatio = (double)width / (double)img.Width;
-                    var heightRatio = (double)height / (double)img.Height;
-                    var minAspectRatio = Math.Min(widthRatio, heightRatio);
-                    if (minAspectRatio > 1)
-                    {
-                        width = img.Width;
-                        height = img.Height;
-                    }
-                    else
-                    {
-                        width = (int)(img.Width * minAspectRatio);
-                        height = (int)(img.Height * minAspectRatio);
-                    }
-
-                    using (Bitmap bitmap = new Bitmap(img, width, height))
-                    {
-                        bitmap.Save(output, img.RawFormat);
-                    }
+                using (Bitmap bitmap = new Bitmap(img, width, height)) {
+                    bitmap.Save(output, img.RawFormat);
+                    imageFormat = img.RawFormat;
                 }
             }
-            catch (Exception ex)
-            {
-                Trace.TraceError("Error while saving scaled image: " + ex.Message);
-                retVal = false;
-            }
 
-            return retVal;
+            return imageFormat;
         }
-
-        #endregion
     }
 }

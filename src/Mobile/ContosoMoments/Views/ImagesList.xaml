@@ -2,14 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.ImagesList"
-             xmlns:local="clr-namespace:ContosoMoments.Converters;assembly=ContosoMoments"
-             xmlns:controls="clr-namespace:ContosoMoments.Controls;assembly=ContosoMoments"
              BackgroundColor="#8C0A4B">
-  <ContentPage.Resources>
-    <ResourceDictionary>
-      <local:ImagePathForSizeConverter x:Key="cnvInvert"></local:ImagePathForSizeConverter>
-    </ResourceDictionary>
-  </ContentPage.Resources>
 
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
@@ -19,84 +12,62 @@
     </Grid.RowDefinitions>
 
     <!--Header-->
-    <Grid Grid.Row="0" Padding="10,30,10,5">
+    <Grid Grid.Row="0" Padding="10">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
-        <!--<ColumnDefinition Width="Auto"/>-->
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="45"/>
         <ColumnDefinition Width="45"/>
         <ColumnDefinition Width="45"/>
       </Grid.ColumnDefinitions>
-      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
-        </Image.Source>
-      </Image>
+      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center" Source="logotext.png" />
 
-      <!--<Label Text="Contoso Moments" FontSize="28" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>-->
-
-      <Image x:Name="imgSync" VerticalOptions="Center" HeightRequest="30" WidthRequest="30" Grid.Column="2">
+      <Image x:Name="imgSync" VerticalOptions="Center" HeightRequest="30" WidthRequest="30" Grid.Column="2" Source="sync.png">
         <Image.IsVisible>
           <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False" WinPhone="True"/>
         </Image.IsVisible>
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/sync.png" Android="sync.png" WinPhone="Assets/sync.png"/>
-        </Image.Source>
       </Image>
 
-      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/settings.png" Android="settings.png" WinPhone="Assets/settings.png"/>
-        </Image.Source>
-      </Image>
+      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings" Source="settings.png" />
 
-      <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgUpload">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/upload.png" Android="upload.png" WinPhone="Assets/upload.png"/>
-        </Image.Source>
-      </Image>
+      <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgUpload" Source="upload.png" />
     </Grid>
 
     <!--User and Album info-->
-    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10,0,10,5">
-      <Label FontSize="28" TextColor="Black" FontAttributes="Bold" Text="{Binding User.UserName}"/>
-      <Label FontSize="22" TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
+    <StackLayout Grid.Row="1" BackgroundColor="White" Orientation="Vertical" Padding="10">
+      <Label TextColor="Black" FontAttributes="Italic" Text="{Binding Album.AlbumName}"/>
     </StackLayout>
 
     <!--List of images-->
-    <ListView x:Name="imagesList" ItemSelected="OnSelected" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" Grid.Row="2" BackgroundColor="White">
-      <!--<ListView.RowHeight>
-        <OnPlatform x:TypeArguments="x:Int32" iOS="128" Android="136" WinPhone="144" />
-      </ListView.RowHeight>-->
+
+    <ListView x:Name="imagesList" Grid.Row="2"
+              ItemsSource="{Binding Images}"
+              ItemSelected="OnSelected"
+              IsPullToRefreshEnabled="true"
+              Refreshing="OnSyncItems"
+              BackgroundColor="White"
+              SeparatorVisibility="None">
       <ListView.ItemTemplate>
         <DataTemplate>
-          <!--<ViewCell>
-          <Grid Padding="8">-->
-          <ImageCell ImageSource="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"
-                   Text="{Binding ImageFormat}" TextColor="Black">
-            <ImageCell.ContextActions>
-              <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
-            </ImageCell.ContextActions>
-          </ImageCell>
-          <!--<Image Source="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}"/>
-          </Grid>
-          </ViewCell>-->
+          <ViewCell>
+            <Grid Padding="10,5,5,5">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0" Source="{Binding Uri}" Aspect="AspectFill" />
+              <ContentView Grid.Column="1" Padding="10,0,0,0">
+                <Label Text="{Binding ImageInfo}" FontSize="Small" TextColor="Black" VerticalTextAlignment="Center"/>
+              </ContentView>
+            </Grid>
+            <ViewCell.ContextActions>
+              <MenuItem Text="Delete" Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference imagesList} }" CommandParameter="{Binding .}" IsDestructive="True" />
+            </ViewCell.ContextActions>
+          </ViewCell>
+
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
-
-    <!--<ScrollView>
-      <controls:WrapPanel Orientation="Horizontal" x:Name="imagesWrap">
-        <controls:WrapPanel.ItemTemplate>
-          <DataTemplate>
-            <StackLayout>
-              <Image Source="{Binding ImagePath, Converter={StaticResource cnvInvert}, ConverterParameter='xs'}" />
-            </StackLayout>
-          </DataTemplate>
-        </controls:WrapPanel.ItemTemplate>
-      </controls:WrapPanel>
-    </ScrollView>-->
 
     <ActivityIndicator Grid.RowSpan="3" IsVisible="False" IsEnabled="True" x:Name="syncIndicator" Color="#8C0A4B">
       <ActivityIndicator.VerticalOptions>

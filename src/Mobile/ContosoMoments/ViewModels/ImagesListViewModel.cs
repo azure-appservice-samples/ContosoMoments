@@ -1,57 +1,41 @@
 ﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
+
+using System.Linq;
+using System.Diagnostics;
+using Microsoft.WindowsAzure.MobileServices.Files;
+using Microsoft.WindowsAzure.MobileServices.Sync;
+using Microsoft.WindowsAzure.MobileServices.Eventing;
+using PCLStorage;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace ContosoMoments.ViewModels
 {
     public class ImagesListViewModel : BaseViewModel
     {
-        public ImagesListViewModel(MobileServiceClient client)
+        private App _app;
+
+        public ImagesListViewModel(MobileServiceClient client, App app)
         {
             _client = client;
+            _app = app;
 
-            //_UserName = "Demo User";
-            //_AlbumName = "Demo Album";
+            DeleteCommand = new DelegateCommand(OnDeleteAlbum, AlbumsListViewModel.IsRenameAndDeleteEnabled);
         }
 
-        // View model properties
-        private /*MobileServiceCollection<Image, Image>*/List<Image> _Images;
-        public /*MobileServiceCollection<Image, Image>*/List<Image> Images
+        #region Properties
+        private ObservableCollection<Image> _images;
+        public ObservableCollection<Image> Images
         {
-            get { return _Images; }
+            get { return _images; }
             set
             {
-                _Images = value;
-                OnPropertyChanged("Images");
-            }
-        }
-
-        private bool _IsPending;
-        public bool IsPending
-        {
-            get { return _IsPending; }
-            set
-            {
-                _IsPending = value;
-                OnPropertyChanged("IsPending");
-            }
-        }
-
-        private User _user;
-        public User User
-        {
-            get { return _user; }
-            set
-            {
-                _user = value;
-                OnPropertyChanged("User");
+                _images = value;
+                OnPropertyChanged(nameof(Images));
             }
         }
 
@@ -62,93 +46,69 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _album = value;
-                OnPropertyChanged("Album");
+                OnPropertyChanged(nameof(Album));
             }
         }
 
-        private string _ErrorMessage = null;
+        public ICommand DeleteCommand { get; set; }
+
+        private string _errorMessage = null;
         public string ErrorMessage
         {
-            get { return _ErrorMessage; }
+            get { return _errorMessage; }
             set
             {
-                _ErrorMessage = value;
-                OnPropertyChanged("ErrorMessage");
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 
-        public async Task GetImagesAsync(string albumId)
+        public Action<Image> DeleteImageViewAction { get; set; }
+        #endregion
+
+        public async Task LoadImagesAsync(string albumId)
         {
-            IsPending = true;
-            ErrorMessage = null;
+            try {
+                this.Images = new ObservableCollection<Image>();
+                         
+                foreach (var i in await _app.imageTableSync.Where(i => i.AlbumId == albumId).ToEnumerableAsync()) {
+                    this.Images.Add(i);
+                }
 
-            try
-            {                
-                var images = await (App.Current as App).imageTableSync.ToListAsync();
-                var res = from image in images
-                          where image.AlbumId == albumId
-                          select image;
+                foreach (var im in this.Images) {
+                    var result = await _app.imageTableSync.GetFilesAsync(im);
+                    im.File = result.FirstOrDefault();
 
-                _Images = res.ToList();
+                    string filePath = await FileHelper.GetLocalFilePathAsync(im.Id, im.File.Name, _app.DataFilesPath);
+                    im.ImageLoaded = await FileSystem.Current.LocalStorage.CheckExistsAsync(filePath) == ExistenceCheckResult.FileExists;
+                }
+
+                App.Instance.MobileService.EventManager.Subscribe<MobileServiceEvent>(DownloadStatusObserver);
             }
-            catch (MobileServiceInvalidOperationException ex)
-            {
+            catch (Exception ex) {
                 ErrorMessage = ex.Message;
             }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
-            }
-            finally
-            {
-                IsPending = false;
+        }
+
+        private void DownloadStatusObserver(MobileServiceEvent obj)
+        {
+            var image = Images.Where(x => x.Id == obj.Name).FirstOrDefault();
+            Debug.WriteLine($"Image download event: {image?.Id}");
+
+            if (image != null) {
+                image.ImageLoaded = true;
             }
         }
 
-        public async Task<bool> DeleteImageAsync(Image selectedImage)
+        public async Task DeleteImageAsync(Image selectedImage)
         {
-            bool bRes = true; //Assume success
-
-            try
-            {
-                //await imageTable.DeleteAsync(selectedImage);
-                await (App.Current as App).imageTableSync.DeleteAsync(selectedImage);
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            await _app.imageTableSync.DeleteAsync(selectedImage);
         }
 
-        public async Task<bool> UploadImageAsync(Stream imageStream)
+        private void OnDeleteAlbum(object obj)
         {
-            bool retVal = false;
-
-            try
-            {
-                var sasToken = await App.MobileService.InvokeApiAsync<string>("GetSasUrl", HttpMethod.Get, null);
-                string token = sasToken.Substring(sasToken.IndexOf("?")).TrimEnd('"');
-                StorageCredentials credentials = new StorageCredentials(token);
-                string blobUri = sasToken.Substring(0, sasToken.IndexOf("?"));
-                CloudBlockBlob blobFromSASCredential = new CloudBlockBlob(new System.Uri(blobUri), credentials);
-                blobFromSASCredential.Properties.ContentType = "image/jpeg";
-                byte[] bytes = new byte[imageStream.Length];
-                await imageStream.ReadAsync(bytes, 0, (int)imageStream.Length);
-                await blobFromSASCredential.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
-                string json = string.Format("{{\"UserId\":\"{1}\", \"IsMobile\":true, \"AlbumId\":\"{2}\", \"SasUrl\": \"{0}\", \"blobParts\":null }}", sasToken, User.UserId, Album.AlbumId);
-
-                Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
-
-                var res = await App.MobileService.InvokeApiAsync<Newtonsoft.Json.Linq.JToken, Newtonsoft.Json.Linq.JObject>("CommitBlob", body, HttpMethod.Post, null);
-                retVal = (bool)res["success"];
-            }
-            catch (Exception ex)
-            {
-            }
-
-            return retVal;
+            var selectedImage = obj as Image;
+            DeleteImageViewAction?.Invoke(selectedImage);
         }
     }
 }

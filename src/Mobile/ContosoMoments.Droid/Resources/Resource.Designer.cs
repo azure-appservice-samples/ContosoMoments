@@ -9,13 +9,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("ContosoMoments.Droid.Resource", IsApplication = true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("ContosoMoments.Droid.Resource", IsApplication=true)]
 
 namespace ContosoMoments.Droid
 {
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "1.0.0.0")]
+	
+	
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "1.0.0.0")]
 	public partial class Resource
 	{
 		
@@ -27,6 +27,10 @@ namespace ContosoMoments.Droid
 		public static void UpdateIdValues()
 		{
 			global::Gcm.Client.Resource.String.library_name = global::ContosoMoments.Droid.Resource.String.library_name;
+			global::Microsoft.WindowsAzure.Mobile.Files.Resource.String.ApplicationName = global::ContosoMoments.Droid.Resource.String.ApplicationName;
+			global::Microsoft.WindowsAzure.Mobile.Files.Resource.String.Hello = global::ContosoMoments.Droid.Resource.String.Hello;
+			global::PCLStorage.Resource.String.ApplicationName = global::ContosoMoments.Droid.Resource.String.ApplicationName;
+			global::PCLStorage.Resource.String.Hello = global::ContosoMoments.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Resource.Animation.abc_fade_in = global::ContosoMoments.Droid.Resource.Animation.abc_fade_in;
 			global::Xamarin.Forms.Platform.Resource.Animation.abc_fade_out = global::ContosoMoments.Droid.Resource.Animation.abc_fade_out;
 			global::Xamarin.Forms.Platform.Resource.Animation.abc_grow_fade_in_from_bottom = global::ContosoMoments.Droid.Resource.Animation.abc_grow_fade_in_from_bottom;

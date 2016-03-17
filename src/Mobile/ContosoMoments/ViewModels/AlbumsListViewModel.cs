@@ -2,23 +2,27 @@
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
+using System.Linq;
+using System.Windows.Input;
+using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments.ViewModels
 {
     public class AlbumsListViewModel : BaseViewModel
     {
-        //IMobileServiceTable<Album> albumTable;
-        //IMobileServiceTable<User> userTable;
-
-        public AlbumsListViewModel(MobileServiceClient client)
+        public AlbumsListViewModel(MobileServiceClient client, App app)
         {
+            this.app = app;
             _client = client;
+
+            RenameCommand = new DelegateCommand(OnStartAlbumRename, IsRenameAndDeleteEnabled);
+            DeleteCommand = new DelegateCommand(OnDeleteAlbum, IsRenameAndDeleteEnabled);
         }
 
+        #region Properties
         private string _ErrorMessage = null;
         public string ErrorMessage
         {
@@ -26,163 +30,193 @@ namespace ContosoMoments.ViewModels
             set
             {
                 _ErrorMessage = value;
-                OnPropertyChanged("ErrorMessage");
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 
-        private bool _IsPending;
-        public bool IsPending
+        public string ErrorMessageTitle { get; set; }
+
+        App app;
+        private Album currentAlbumEdit;
+
+        private string editedName;
+
+        public string EditedAlbumName
         {
-            get { return _IsPending; }
+            get { return editedName; }
             set
             {
-                _IsPending = value;
-                OnPropertyChanged("IsPending");
+                editedName = value;
+                OnPropertyChanged(nameof(EditedAlbumName));
             }
         }
 
-        // View model properties
-        private /*MobileServiceCollection<Album, Album>*/ List<Album> _Albums;
-        public /*MobileServiceCollection<Album, Album>*/ List<Album> Albums
+        private bool showCancelButton;
+
+        public bool ShowCancelButton
         {
-            get { return _Albums; }
+            get { return showCancelButton && showInputControl; }
             set
             {
-                _Albums = value;
-                OnPropertyChanged("Albums");
+                showCancelButton = value;
+                OnPropertyChanged(nameof(ShowCancelButton));
             }
         }
 
-        private User _user;
-        public User User
+        public string CreateOrUpdateButtonText
         {
-            get { return _user; }
+            get { return isRename ? "Rename" : "Add"; }
+        }
+
+        private bool isRename;
+
+        public bool IsRename
+        {
+            get { return isRename; }
             set
             {
-                _user = value;
-                OnPropertyChanged("User");
+                isRename = value;
+                OnPropertyChanged(nameof(IsRename));
+                OnPropertyChanged(nameof(CreateOrUpdateButtonText));
             }
         }
 
-        public async Task GetUserAsync(Guid userId)
+        private bool showInputControl;
+
+        public bool ShowInputControl
         {
-            try
+            get { return showInputControl; }
+            set
             {
-                //userTable = _client.GetTable<User>();
-                //var user = await userTable.LookupAsync(userId);
-                var user = await (App.Current as App).userTableSync.LookupAsync(userId.ToString());
-
-                if (null != user)
-                    User = user;
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
+                showInputControl = value;
+                OnPropertyChanged(nameof(ShowInputControl));
+                OnPropertyChanged(nameof(ShowCancelButton));
             }
         }
+
+        private List<Album> albums;
+        public List<Album> Albums
+        {
+            get { return albums; }
+            set
+            {
+                albums = value;
+                OnPropertyChanged(nameof(Albums));
+            }
+        }
+
+        public ICommand RenameCommand { get; set; }
+        public ICommand DeleteCommand { get; set; }
+
+        // called when the album delete button is clicked
+        public Action<Album> DeleteAlbumViewAction { get; set; }
+
+        #endregion
 
         public async Task CheckUpdateNotificationRegistrationAsync(string userId)
         {
 #if !__WP__
-            string installationId = App.MobileService.GetPush().InstallationId;
+            string installationId = App.Instance.MobileService.GetPush().InstallationId;
 #elif (__WP__ && DEBUG)
             string installationId = "8a526c49-b824-4a81-8f27-dce0e383e850";
 #endif
 
 #if (!__WP__) || (__WP__ && DEBUG)
-            string json = string.Format("{{\"InstallationId\":\"{0}\", \"UserId\":\"{1}\"}}", installationId, userId);
-            Newtonsoft.Json.Linq.JToken body = Newtonsoft.Json.Linq.JToken.Parse(json);
+            var jsonRequest = new JObject();
+            jsonRequest["InstallationId"] = installationId;
+            jsonRequest["UserId"] = userId;
 
-            await App.MobileService.InvokeApiAsync("PushRegistration", body, HttpMethod.Post, null);
+            await App.Instance.MobileService.InvokeApiAsync("PushRegistration", jsonRequest, HttpMethod.Post, null);
 #endif
         }
 
-        public async Task GetAlbumsAsync()
+        public async Task GetAlbumsAsync(string userId)
         {
-            IsPending = true;
-            ErrorMessage = null;
+            Albums =
+                await app.albumTableSync
+                .Where(a => a.UserId == userId || a.IsDefault)
+                .ToListAsync();
+        }
 
-            try
-            {
-                //var albumTable = _client.GetTable<Album>();
-                //var zzz = await albumTable.ToCollectionAsync();
+        #region UI Actions
+        private void OnStartAlbumRename(object obj)
+        {
+            var selectedAlbum = obj as Album;
+            Debug.WriteLine($"Selected album: {selectedAlbum?.AlbumName}");
 
-                //Albums = await (App.Current as App).albumTableSync.ToCollectionAsync();
-                var albums = await (App.Current as App).albumTableSync.ToListAsync();
-                var res = from album in albums
-                          where album.UserId == User.UserId.ToString() ||
-                                album.IsDefault
-                          select album;
-
-                _Albums = res.ToList();
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (HttpRequestException ex2)
-            {
-                ErrorMessage = ex2.Message;
-            }
-            finally
-            {
-                IsPending = false;
+            if (selectedAlbum != null) {
+                currentAlbumEdit = selectedAlbum;
+                IsRename = true;
+                EditedAlbumName = selectedAlbum.AlbumName;
+                ShowInputControl = true;
+                ShowCancelButton = true;
             }
         }
 
-        public async Task<bool> AddNewAlbumAsync(string albumName)
+        public async Task DeleteAlbumAsync(Album selectedAlbum)
         {
-            bool bRes = true; //Assume success
-
-            try
-            {
-                //await albumTable.InsertAsync(new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() });
-                await (App.Current as App).albumTableSync.InsertAsync(new Album() { AlbumName = albumName, IsDefault = false, UserId = User.UserId.ToString() });
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            await app.albumTableSync.DeleteAsync(selectedAlbum);
         }
 
-        public async Task<bool> DeleteAlbumAsync(Album selectedAlbum)
+        private void OnDeleteAlbum(object obj)
         {
-            bool bRes = true; //Assume success
-
-            try
-            {
-                //await albumTable.DeleteAsync(selectedAlbum);
-                await (App.Current as App).albumTableSync.DeleteAsync(selectedAlbum);
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
-            }
-
-            return bRes;
+            var selectedAlbum = obj as Album;
+            DeleteAlbumViewAction?.Invoke(selectedAlbum);
         }
 
-        public async Task<bool> UpdateAlbumAsync(Album selectedAlbum)
+        public async Task<bool> CreateOrRenameAlbum()
         {
-            bool bRes = true; //Assume success
+            if (currentAlbumEdit == null || EditedAlbumName.Length > 0) {
+                ShowInputControl = false;
 
-            try
-            {
-                //await albumTable.UpdateAsync(selectedAlbum);
-                await (App.Current as App).albumTableSync.UpdateAsync(selectedAlbum);
-            }
-            catch (Exception ex)
-            {
-                bRes = false;
+                if (IsRename) {
+                    currentAlbumEdit.AlbumName = EditedAlbumName;
+                    await app.albumTableSync.UpdateAsync(currentAlbumEdit);
+                }
+                else {
+                    await CreateAlbumAsync();
+                }
+
+                return true;
             }
 
-            return bRes;
+            return false;
         }
+
+        private async Task CreateAlbumAsync()
+        {
+            var album = new Album() 
+            {
+                AlbumName = EditedAlbumName,
+                IsDefault = false,
+                UserId = App.Instance.CurrentUserId
+            };
+
+            await app.albumTableSync.InsertAsync(album);
+        }
+
+        public void OnAdd(object sender, EventArgs e)
+        {
+            ShowInputControl = !ShowInputControl;
+            IsRename = false;
+            ShowCancelButton = false;
+        }
+
+        #endregion
+
+        #region Helpers
+
+        // return true if the rename and delete commands are available
+        internal static bool IsRenameAndDeleteEnabled(object input)
+        {
+            var album = input as Album;
+            var isDefaultAlbum = album != null ? album.IsDefault : false;  // default album can't be renamed
+
+            return !isDefaultAlbum && Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
+        }
+
+        #endregion
     }
+
 }
+

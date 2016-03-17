@@ -1,55 +1,14 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
 
 namespace ContosoMoments.Models
 {
     public class Album
     {
-        string albumId;
-        string albumName;
-        bool isDefault;
-        //bool isDeleted;
-        string userId;
-
         [JsonProperty(PropertyName = "Id")]
-        public string AlbumId
-        {
-            get { return albumId; }
-            set { albumId = value; }
-        }
+        public string AlbumId { get; set; }
 
-        [JsonProperty(PropertyName = "AlbumName")]
-        public string AlbumName
-        {
-            get { return albumName; }
-            set { albumName = value; }
-        }
-
-        [JsonProperty(PropertyName = "IsDefault")]
-        public bool IsDefault
-        {
-            get { return isDefault; }
-            set { isDefault = value; }
-        }
-
-        [JsonProperty(PropertyName = "UserId")]
-        public string UserId
-        {
-            get { return userId; }
-            set { userId = value; }
-        }
-
-        [Version]
-        public string Version { get; set; }
-
-        [CreatedAt]
-        public DateTime CreatedAt { get; set; }
-
-        [UpdatedAt]
-        public DateTime UpdatedAt { get; set; }
-
-        [Deleted]
-        public bool Deleted { get; set; }
+        public string AlbumName { get; set; }
+        public bool IsDefault { get; set; }
+        public string UserId { get; set; }
     }
 }

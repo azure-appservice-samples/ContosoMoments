@@ -1,61 +1,78 @@
 ﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace ContosoMoments.Views
 {
     public partial class Login : ContentPage
-	{
-		public Login ()
-		{
-			InitializeComponent ();
-		}
+    {
+        private TaskCompletionSource<Settings.AuthOption> tcs = new TaskCompletionSource<Settings.AuthOption>();
 
-        async void OnFBLoginClicked(object sender, EventArgs e)
+        public Login()
         {
-            await DoLoginAsync(MobileServiceAuthenticationProvider.Facebook);
+            InitializeComponent();
         }
 
-        async void OnAADLoginClicked(object sender, EventArgs e)
+        public Task<Settings.AuthOption> GetResultAsync()
         {
-            await DoLoginAsync(MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory);
+            return tcs.Task;
         }
 
-        private async Task DoLoginAsync(MobileServiceAuthenticationProvider provider)
+        private async void OnFBLoginClicked(object sender, EventArgs e)
+        {
+            await DoLoginAsync(
+                MobileServiceAuthenticationProvider.Facebook,
+                Settings.AuthOption.Facebook);
+        }
+
+        private async void OnAADLoginClicked(object sender, EventArgs e)
+        {
+            await DoLoginAsync(
+                MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory,
+                Settings.AuthOption.ActiveDirectory);
+        }
+
+        private async void OnGuestClicked(object sender, EventArgs e)
+        {
+            App.Instance.CurrentUserId = Settings.Current.DefaultUserId; // use default user ID
+            await LoginComplete(Settings.AuthOption.GuestAccess);
+        }
+
+        private async Task LoginComplete(Settings.AuthOption option)
+        {
+            await Navigation.PopToRootAsync();
+
+            Settings.Current.AuthenticationType = option;
+            tcs.TrySetResult(option);
+        }
+
+        private async Task DoLoginAsync(MobileServiceAuthenticationProvider provider, Settings.AuthOption authOption)
         {
             MobileServiceUser user;
 
-            try
-            {
+            try {
                 user = await DependencyService.Get<IMobileClient>().LoginAsync(provider);
-                App.AuthenticatedUser = user;
+                App.Instance.AuthenticatedUser = user;
                 System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
 
-#if __DROID__
-                Droid.GcmService.RegisterWithMobilePushNotifications();
-#elif __IOS__
-                iOS.AppDelegate.IsAfterLogin = true;
-                await iOS.AppDelegate.RegisterWithMobilePushNotifications();
-#elif __WP__
-                ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
-#endif
+                App.Instance.CurrentUserId =
+                    await App.Instance.MobileService.InvokeApiAsync<string>(
+                        "ManageUser",
+                        System.Net.Http.HttpMethod.Get,
+                        null);
 
-                //Navigation.InsertPageBefore(new ImagesList(), this);
-                Navigation.InsertPageBefore(new AlbumsListView(), this);
-                await Navigation.PopAsync();
+                Debug.WriteLine($"Set current userID to: {App.Instance.CurrentUserId}");
+                await LoginComplete(authOption);
             }
-            catch (InvalidOperationException ex)
-            {
-                if (ex.Message.Contains("Authentication was cancelled"))
-                {
-                    messageLabel.Text = "Authentication cancelled by the user";
-                }
-            }
-            catch (Exception ex)
-            {
-                messageLabel.Text = "Authentication failed";
+            catch (Exception) { // if user cancels, then set to Guest access
+                Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
+                tcs.TrySetResult(Settings.AuthOption.GuestAccess);
             }
         }
     }
