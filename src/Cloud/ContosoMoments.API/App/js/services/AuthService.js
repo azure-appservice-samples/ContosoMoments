@@ -36,7 +36,7 @@ contosoMomentsApp
                         }
 
                         $http.get("/api/ManageUser/?data=" + sendData + "&provider=" + authData.provider_name)
-                                    .then(function (getRes) {
+                                    .then(function (getRes) {   
 
                                         userService.getUser(getRes.data).then(function (res) {
                                             context = new AuthContext(getRes.data, true, res);

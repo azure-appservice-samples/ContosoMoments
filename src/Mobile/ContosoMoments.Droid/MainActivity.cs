@@ -1,12 +1,9 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Views;
 using Android.OS;
+using Android.Views;
 using Java.IO;
-using Android.Content;
-using Android.Provider;
+using System;
 
 namespace ContosoMoments.Droid
 {

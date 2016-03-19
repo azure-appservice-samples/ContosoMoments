@@ -3,12 +3,10 @@ using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Windows.Input;
-using System.Diagnostics;
-using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments.ViewModels
 {

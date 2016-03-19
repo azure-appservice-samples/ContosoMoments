@@ -1,7 +1,6 @@
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using Xamarin.Forms;
-using System.Diagnostics;
 
 namespace ContosoMoments.Views
 {

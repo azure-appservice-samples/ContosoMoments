@@ -1,13 +1,12 @@
+using ContosoMoments.Common.Models;
+using Microsoft.Azure.Mobile.Server;
+using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using System.Web.Http.Cors;
 using System.Web.Http.OData;
-using ContosoMoments.Common.Models;
-using Microsoft.Azure.Mobile.Server;
-using System.Configuration;
-using System;
 
 namespace ContosoMoments.Api
 {

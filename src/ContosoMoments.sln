@@ -34,7 +34,6 @@ Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ContosoMoments.Deployment",
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Mobile\ContosoMoments\ContosoMoments.projitems*{d2b524e8-338f-4d83-ac73-37fad854acf3}*SharedItemsImports = 4
 		Mobile\ContosoMoments\ContosoMoments.projitems*{b05129cd-0d56-4ff1-800f-51fcd8611f9f}*SharedItemsImports = 4
 		Mobile\ContosoMoments\ContosoMoments.projitems*{d1107dee-672e-4fb6-b81e-abc8326fc48b}*SharedItemsImports = 4
 		Mobile\ContosoMoments\ContosoMoments.projitems*{9adecde0-0a6d-41c3-b0c8-df786035a62b}*SharedItemsImports = 13
@@ -131,6 +130,8 @@ Global
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|iPhoneSimulator.Deploy.0 = Debug|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Debug|x86.Deploy.0 = Debug|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.iOS|Any CPU.ActiveCfg = iOS|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.iOS|Any CPU.Build.0 = iOS|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.iOS|Any CPU.Deploy.0 = iOS|Any CPU

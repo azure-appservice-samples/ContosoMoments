@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using ContosoMoments.Common.Models;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
-using ContosoMoments.Common.Models;
+using System.Threading.Tasks;
 
 namespace ContosoMoments.Common
 {

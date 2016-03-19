@@ -224,6 +224,7 @@
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\TableControllers\ResizeRequestController.cs" />
+    <Compile Include="Helpers\AzureStorageCorsHelper.cs" />
     <Compile Include="Helpers\CustomAzureStorageProvider.cs" />
     <Compile Include="Helpers\ImageNameResolver.cs" />
     <Compile Include="Controllers\TableControllers\ImageStorageController.cs" />
@@ -243,6 +244,9 @@
   <ItemGroup>
     <Compile Include="App_Start\Startup.MobileApp.cs" />
     <Content Include="app\js\directives\StorageSASResolver.js" />
+    <Content Include="app\lib\node-uuid\benchmark\benchmark-native.c" />
+    <Content Include="app\lib\node-uuid\benchmark\benchmark.js" />
+    <Content Include="app\lib\node-uuid\uuid.js" />
     <Content Include="app\templates\createAlbum.html" />
     <Content Include="app\templates\deleteAlbum.html" />
     <Content Include="app\templates\deleteImage.html" />
@@ -576,6 +580,16 @@
     <Content Include="app\lib\angular-ui-router\LICENSE" />
     <Content Include="app\lib\angular-ui-router\README.md" />
     <Content Include=".bowerrc" />
+    <Content Include="app\lib\node-uuid\.bower.json" />
+    <Content Include="app\lib\node-uuid\benchmark\bench.gnu" />
+    <Content Include="app\lib\node-uuid\benchmark\bench.sh" />
+    <Content Include="app\lib\node-uuid\benchmark\README.md" />
+    <Content Include="app\lib\node-uuid\bin\uuid" />
+    <Content Include="app\lib\node-uuid\bower.json" />
+    <Content Include="app\lib\node-uuid\component.json" />
+    <Content Include="app\lib\node-uuid\LICENSE.md" />
+    <Content Include="app\lib\node-uuid\package.json" />
+    <Content Include="app\lib\node-uuid\README.md" />
     <None Include="Properties\PublishProfiles\contosomoments - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMoments62ab - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />
