@@ -26,12 +26,11 @@ contosoMomentsApp
             });
         }
         var commit = function (sasurl, options) {
-            return $http.post('/api/CommitBlob', {
-                isMobile: false,
-                UserId: options.userId,
-                AlbumId: options.albumId,
-                SasUrl: sasurl,
-                //sendNotification: store.sendNotification(blobface.selectedFile.name)
+            return $http.post('/tables/Image', {
+                "Id": sasurl.EntityId,
+                "UploadFormat": "Web Upload",
+                "AlbumId": options.albumId,
+                "UserId": options.userId,
             }).then(function (res) {
                 return res.data;
             });
@@ -58,7 +57,6 @@ contosoMomentsApp
                     },// complete callback function,
                     error: config.error || angular.noop// error callback function,                       
                 });
-                //setFile($("#file")[0].files[0], res); 
             }, function (err) {
                 if (typeof (config.error) === 'function') {
                     config.error();
