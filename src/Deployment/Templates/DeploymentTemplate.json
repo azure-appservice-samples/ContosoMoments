@@ -250,7 +250,7 @@
             "UploadContainerName": "[parameters('storageContainerName')]",
             "DefaultUserId": "[variables('DefaultUserId')]",
             "DefaultAlbumId": "[variables('DefaultAlbumId')]",
-            "DefaultServiceURL": "[concat('http://', parameters('siteName'), '.azurewebsites.net/')]",
+            "DefaultServiceURL": "[concat('https://', parameters('siteName'), '.azurewebsites.net/')]",
             "MS_NotificationHubName": "[variables('NotificationHubName')]",
             "enableSoftDelete": "true",
             "PROJECT": "src\\Cloud\\ContosoMoments.API\\ContosoMoments.API.csproj"

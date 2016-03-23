@@ -5,7 +5,6 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage;
-using System.Net.Http;
 
 namespace ContosoMoments.API.Helpers
 {
