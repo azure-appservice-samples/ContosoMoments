@@ -361,3 +361,4 @@ obj/
 *.userprefs
 
 !**/app/lib/**/release
+!**/app/lib/**/bin
