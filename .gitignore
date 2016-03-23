@@ -360,4 +360,4 @@ bin/
 obj/
 *.userprefs
 
-!**/bower_components/**/release
+!**app/lib/**/release
