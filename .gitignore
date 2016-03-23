@@ -360,4 +360,4 @@ bin/
 obj/
 *.userprefs
 
-!**app/lib/**/release
+!**/app/lib/**/release
