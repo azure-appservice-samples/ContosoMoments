@@ -144,7 +144,7 @@ contosoMomentsApp
 
             $scope.albumName = selectedAlbum.album.albumName;
 
-            if (selectedAlbum.album.id == "11111111-1111-1111-1111-111111111111") {
+            if (selectedAlbum.album.id == appConfig.DefaultAlbumId) {
                 self.deleteMessage = "Default Album cannot be deleted !";
                 self.enableDelete = false;
             }

@@ -49,9 +49,7 @@ contosoMomentsApp
                         commit(sasurl, config).then(function (res) {
                             if (angular.isFunction(config.complete)) {
                                 config.complete(res);
-                            }
-                            if (res.success) {
-                                $rootScope.$broadcast('imageUploaded', res.imageId);
+                                $rootScope.$broadcast('imageUploaded', res.id);
                             }
                         })
                     },// complete callback function,

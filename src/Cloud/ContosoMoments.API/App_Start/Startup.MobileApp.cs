@@ -44,7 +44,7 @@ namespace ContosoMoments.Api
 
         private static void ConfigureStorage()
         {
-            string connectionString = 
+            string connectionString =
                 ConfigurationManager
                 .ConnectionStrings["MS_AzureStorageAccountConnectionString"]
                 .ConnectionString;
@@ -53,7 +53,10 @@ namespace ContosoMoments.Api
             headers.Add("*");
 
             var origins = new List<string>();
-            origins.Add(AppSettings.DefaultServiceUrl.ToLower().TrimEnd('/'));
+
+            string serviceUri = AppSettings.DefaultServiceUrl.ToLower().TrimEnd('/');
+
+            origins.Add(serviceUri);
 
             var methods = new List<string>();
             methods.Add(HttpMethod.Get.ToString());
@@ -68,5 +71,5 @@ namespace ContosoMoments.Api
                 , methods);
         }
     }
-    
+
 }
