@@ -20,9 +20,9 @@ namespace ContosoMoments.ResizerWebJob
             imageDimensionsTable = new Dictionary<ImageSize, Tuple<int, int>>();
 
             imageDimensionsTable[ImageSize.ExtraSmall] = Tuple.Create(320, 200);
-            imageDimensionsTable[ImageSize.Small]      = Tuple.Create(640, 400);
-            imageDimensionsTable[ImageSize.Medium]     = Tuple.Create(800, 480);
-            imageDimensionsTable[ImageSize.Large]      = Tuple.Create(1024, 768);
+            imageDimensionsTable[ImageSize.Small] = Tuple.Create(640, 400);
+            imageDimensionsTable[ImageSize.Medium] = Tuple.Create(800, 480);
+            imageDimensionsTable[ImageSize.Large] = Tuple.Create(1024, 768);
         }
 
         public async static Task StartImageScalingAsync(
@@ -39,7 +39,7 @@ namespace ContosoMoments.ResizerWebJob
 
                 blobInput.Properties.ContentType = contentType;
                 blobInput.SetProperties();
-        }
+            }
         }
 
         public async static Task DeleteImagesAsync(
@@ -49,11 +49,11 @@ namespace ContosoMoments.ResizerWebJob
             [Blob("{BlobNameSM}/{Filename}")] CloudBlockBlob blobSmall,
             [Blob("{BlobNameMD}/{Filename}")] CloudBlockBlob blobMedium)
         {
-                await blobExtraSmall.DeleteAsync();
-                await blobSmall.DeleteAsync();
-                await blobMedium.DeleteAsync();
+            await blobExtraSmall.DeleteAsync();
+            await blobSmall.DeleteAsync();
+            await blobMedium.DeleteAsync();
             await blobLarge.DeleteAsync();
-            }
+        }
 
         private static string ScaleImage(Stream blobInput, CloudBlockBlob blobOutput, ImageSize imageSize)
         {
@@ -81,22 +81,22 @@ namespace ContosoMoments.ResizerWebJob
             blobInput.Position = 0;
 
             using (var img = System.Drawing.Image.FromStream(blobInput)) {
-                    var widthRatio = (double)width / (double)img.Width;
-                    var heightRatio = (double)height / (double)img.Height;
-                    var minAspectRatio = Math.Min(widthRatio, heightRatio);
-                    if (minAspectRatio > 1) {
-                        width = img.Width;
-                        height = img.Height;
-                    }
-                    else {
-                        width = (int)(img.Width * minAspectRatio);
-                        height = (int)(img.Height * minAspectRatio);
-                    }
+                var widthRatio = (double)width / (double)img.Width;
+                var heightRatio = (double)height / (double)img.Height;
+                var minAspectRatio = Math.Min(widthRatio, heightRatio);
+                if (minAspectRatio > 1) {
+                    width = img.Width;
+                    height = img.Height;
+                }
+                else {
+                    width = (int)(img.Width * minAspectRatio);
+                    height = (int)(img.Height * minAspectRatio);
+                }
 
-                    using (Bitmap bitmap = new Bitmap(img, width, height)) {
-                        bitmap.Save(output, img.RawFormat);
+                using (Bitmap bitmap = new Bitmap(img, width, height)) {
+                    bitmap.Save(output, img.RawFormat);
                     imageFormat = img.RawFormat;
-            }
+                }
             }
 
             return imageFormat;

@@ -32,29 +32,29 @@
     <StackLayout Grid.Row="2" BackgroundColor="White" Padding="10,0">
 
       <Button BackgroundColor="White" 
-      	Text="View extra small" 
-      	TextColor="Black" 
-      	HorizontalOptions="Start" 
-      	Clicked="OnOpenImage" 
-      	CommandParameter="xs" 
-      	Image="link.png" />
+        Text="View extra small" 
+        TextColor="Black" 
+        HorizontalOptions="Start" 
+        Clicked="OnOpenImage" 
+        CommandParameter="xs" 
+        Image="link.png" />
 
       <Button BackgroundColor="White" 
-      	Text="View small" 
-      	TextColor="Black" 
-      	HorizontalOptions="Start" 
-      	Clicked="OnOpenImage" 
-      	CommandParameter="sm" 
-      	Image="link.png" />
+        Text="View small" 
+        TextColor="Black" 
+        HorizontalOptions="Start" 
+        Clicked="OnOpenImage" 
+        CommandParameter="sm" 
+        Image="link.png" />
 
       <Button BackgroundColor="White" 
-      	Text="View medium" 
-      	TextColor="Black" 
-      	HorizontalOptions="Start" 
-      	Clicked="OnOpenImage" 
-      	CommandParameter="md" 
-      	Image="link.png" />
-      	      
+        Text="View medium" 
+        TextColor="Black" 
+        HorizontalOptions="Start" 
+        Clicked="OnOpenImage" 
+        CommandParameter="md" 
+        Image="link.png" />
+              
     </StackLayout>
   </Grid>
 
