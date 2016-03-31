@@ -29,7 +29,7 @@ namespace ContosoMoments.Api
             }
             else {
                 // use the default container
-                result = string.Format("{0}-{1}", BlobInformation.ContainerPrefix, DefaultSizeKey);
+                result = string.Format("{0}-{1}", BlobInformation.DefaultContainerPrefix, DefaultSizeKey);
             }
 
             return Task.FromResult(result);
@@ -47,7 +47,7 @@ namespace ContosoMoments.Api
         {
             // image container is in the format images-xs
             // There is a custom storage provider that will filter to only that file within the container
-            return string.Format("{0}-{1}/{2}", BlobInformation.ContainerPrefix, sizeKey, recordId);
+            return string.Format("{0}-{1}/{2}", BlobInformation.DefaultContainerPrefix, sizeKey, recordId);
         }
     }
 }

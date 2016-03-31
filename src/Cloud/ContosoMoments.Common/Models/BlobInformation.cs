@@ -5,7 +5,7 @@ namespace ContosoMoments.Common.Models
     public class BlobInformation
     {
         public const string DefaultFileExtension = "jpg";
-        public const string ContainerPrefix = "images";
+        public const string DefaultContainerPrefix = "images";
 
         public BlobInformation(string fileExt = DefaultFileExtension)
         {
@@ -17,6 +17,14 @@ namespace ContosoMoments.Common.Models
         public string ImageId { get; set; }
 
         public string FileExt { get; set; }
+
+        private string containerPrefix;
+
+        public string ContainerPrefix
+        {
+            get { return containerPrefix ?? DefaultContainerPrefix; }
+            set { containerPrefix = value; }
+        }
 
         public string BlobNameXS
         {
