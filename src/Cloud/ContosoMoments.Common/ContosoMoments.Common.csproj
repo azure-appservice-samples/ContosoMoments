@@ -189,6 +189,8 @@
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trace\TableLogger.cs" />
+    <Compile Include="Trace\TraceItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -220,6 +220,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="app\node_modules\azure-mobile-apps-client\sdk\src\Properties\AssemblyInfo.cs" />
     <Compile Include="configHandler.ashx.cs">
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
@@ -247,6 +248,33 @@
     <Content Include="app\lib\node-uuid\benchmark\benchmark-native.c" />
     <Content Include="app\lib\node-uuid\benchmark\benchmark.js" />
     <Content Include="app\lib\node-uuid\uuid.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\dist\MobileServices.Web.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\dist\MobileServices.Web.min.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\Gruntfile.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\LICENSE.txt" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\constants.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\index.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Internals\DevIntellisense.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\LoginUis\BrowserPopup.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\LoginUis\CordovaPopup.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\LoginUis\WebAuthBroker.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Microsoft.WindowsAzure.Mobile.JS.csproj" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\MobileServiceClient.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\MobileServiceLogin.js" />
+    <None Include="app\node_modules\azure-mobile-apps-client\sdk\src\MobileServices.intellisense.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\MobileServices.intellisense.txt" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\MobileServices.priconfig.xml" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\MobileServiceTable.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Platforms\web\Platform.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Platforms\winjs\Platform.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Push\Push.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Strings\en-US\Resources.resjson" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Transports\DirectAjaxTransport.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Transports\IframeTransport.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Utilities\Extensions.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Utilities\PostMessageExchange.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Utilities\Promises.js" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Utilities\Validate.js" />
     <Content Include="app\templates\createAlbum.html" />
     <Content Include="app\templates\deleteAlbum.html" />
     <Content Include="app\templates\deleteImage.html" />
@@ -439,6 +467,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\PublicContosoMomentsWeb - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -590,6 +619,10 @@
     <Content Include="app\lib\node-uuid\LICENSE.md" />
     <Content Include="app\lib\node-uuid\package.json" />
     <Content Include="app\lib\node-uuid\README.md" />
+    <Content Include="app\package.json" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\CHANGELOG.md" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\package.json" />
+    <Content Include="app\node_modules\azure-mobile-apps-client\README.md" />
     <None Include="Properties\PublishProfiles\contosomoments - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMoments62ab - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ContosoMomentsMobileWeb - Web Deploy %282%29.pubxml" />

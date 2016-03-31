@@ -67,6 +67,7 @@
     <None Include="Properties\PublishProfiles\ContosoMomentsWebJobs.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <None Include="Properties\PublishProfiles\ContosoMomentsWebJobWrapper - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\PublicContosoMomentsWeb-jobs - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
