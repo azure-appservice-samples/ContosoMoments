@@ -43,9 +43,7 @@ namespace ContosoMoments.Api
             string extension = fileNameParts.Length > 1 ? fileNameParts[1] : "";
 
             var qm = new QueueManager();
-            var blobInfo = new BlobInformation(extension);
-            blobInfo.BlobUri = new Uri(AppSettings.StorageWebUri);
-            blobInfo.ImageId = imageId;
+            var blobInfo = new BlobInformation() { ImageId = imageId };
 
             await qm.PushToResizeQueue(blobInfo);
             Trace.WriteLine("Sent resize request for blob: " + imageId);
