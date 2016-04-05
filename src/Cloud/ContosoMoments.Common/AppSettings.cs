@@ -13,6 +13,8 @@ namespace ContosoMoments.Common
         public static string DefaultUserId = CloudConfigurationManager.GetSetting("DefaultUserId");
         public static string ServiceBusConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
         public static string StorageWebUri = string.Format("https://{0}.blob.core.windows.net/", StorageAccountName);
-        public static string DefaultServiceUrl = CloudConfigurationManager.GetSetting("DefaultServiceUrl");       
+        public static string DefaultServiceUrl = CloudConfigurationManager.GetSetting("DefaultServiceUrl");
+        public static string FunctionsBaseUri = CloudConfigurationManager.GetSetting("FunctionAppBaseUri");
+        public static string FunctionPathAndSecret = CloudConfigurationManager.GetSetting("FunctionPathAndSecret");
     }
 }
