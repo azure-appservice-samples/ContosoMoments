@@ -20,9 +20,6 @@ namespace ContosoMoments.Api
             MobileServiceContext context = new MobileServiceContext();
             var softDeleteEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSoftDelete"]);
             DomainManager = new EntityDomainManager<Image>(context, Request, enableSoftDelete: softDeleteEnabled);
-
-            var baseUri = AppSettings.FunctionsBaseUri;
-            TableLogger.Init(baseUri);
         }
 
         // GET tables/Image
@@ -38,19 +35,6 @@ namespace ContosoMoments.Api
                 Trace.WriteLine("Invalid auth token: " + e);
             }
 
-            TableLogger.LogMessage(
-                "ContosoMomentsImageAPI",
-                Guid.NewGuid().ToString(),
-                new TraceItem
-                {
-                    Api = "GetAllImages",
-                    Time = DateTime.UtcNow,
-                    UserId = currentUserId,
-                    ImageId = AppSettings.DefaultAlbumId,
-                    AlbumId = AppSettings.DefaultAlbumId
-                },
-                AppSettings.FunctionPathAndSecret);
-
             // return images owned by the current user or the guest user
             return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId);
         }
@@ -58,19 +42,6 @@ namespace ContosoMoments.Api
         // GET tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public SingleResult<Image> GetImage(string id)
         {
-            TableLogger.LogMessage(
-                "GetImage",
-                Guid.NewGuid().ToString(),
-                new TraceItem
-                {
-                    Api = "tables/Image/{id}",
-                    Time = DateTime.UtcNow,
-                    UserId = AppSettings.DefaultUserId,
-                    ImageId = id,
-                    AlbumId = AppSettings.DefaultAlbumId
-                },
-                AppSettings.FunctionPathAndSecret);
-
             return Lookup(id);
         }
 
@@ -104,10 +75,7 @@ namespace ContosoMoments.Api
         public static async Task DeleteBlobAsync(string imageId)
         {
             var qm = new QueueManager();
-            var blobInfo = new BlobInformation("");
-
-            blobInfo.BlobUri = new Uri(AppSettings.StorageWebUri);
-            blobInfo.ImageId = imageId;
+            var blobInfo = new BlobInformation() { ImageId = imageId };
 
             await qm.PushToDeleteQueue(blobInfo);
         }

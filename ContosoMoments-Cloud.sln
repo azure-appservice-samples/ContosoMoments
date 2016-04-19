@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Common", "src\Cloud\ContosoMoments.Common\ContosoMoments.Common.csproj", "{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.API", "src\Cloud\ContosoMoments.API\ContosoMoments.API.csproj", "{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WebJobWrapper", "src\Cloud\ContosoMoments.WebJobWrapper\ContosoMoments.WebJobWrapper.csproj", "{32FDB152-1D9B-4682-9869-4CEF34C3E40E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.ResizerWebJob", "src\Cloud\ContosoMoments.ResizerWebJob\ContosoMoments.ResizerWebJob.csproj", "{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Android|Any CPU = Android|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		iOS|Any CPU = iOS|Any CPU
+		Release|Any CPU = Release|Any CPU
+		VSTS Build|Any CPU = VSTS Build|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|Any CPU.ActiveCfg = Android|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Android|Any CPU.Build.0 = Android|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.iOS|Any CPU.ActiveCfg = iOS|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.iOS|Any CPU.Build.0 = iOS|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|Any CPU.ActiveCfg = Android|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Android|Any CPU.Build.0 = Android|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.iOS|Any CPU.ActiveCfg = iOS|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.iOS|Any CPU.Build.0 = iOS|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|Any CPU.ActiveCfg = Android|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Android|Any CPU.Build.0 = Android|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.iOS|Any CPU.ActiveCfg = iOS|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.iOS|Any CPU.Build.0 = iOS|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|Any CPU.ActiveCfg = Android|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Android|Any CPU.Build.0 = Android|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.iOS|Any CPU.ActiveCfg = iOS|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.iOS|Any CPU.Build.0 = iOS|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -129,9 +129,12 @@ namespace ContosoMoments
         {
             await MobileService.LogoutAsync();
 
-            await imageTableSync.PurgeAsync("allImages", imageTableSync.CreateQuery(), CancellationToken.None);
-            await albumTableSync.PurgeAsync("allAlbums", imageTableSync.CreateQuery(), CancellationToken.None);
+            await imageTableSync.PurgeAsync("allImages", null, true, CancellationToken.None);
+            await albumTableSync.PurgeAsync("allAlbums", null, true, CancellationToken.None);
             await resizeRequestSync.PurgeAsync(true);
+
+            currentUserId = null;
+            Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
 
             var albumListView = new AlbumsListView(this);
             MainPage = new NavigationPage(albumListView);
