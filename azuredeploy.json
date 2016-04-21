@@ -95,7 +95,7 @@
     },
     "variables": {
         "lcSiteName": "[concat(parameters('siteName'), uniqueString(resourceGroup().id))]",
-        "webJobSiteName": "[concat(variables('lcSiteName'), '-jobs')]",
+        "webJobSiteName": "[concat(variables('lcSiteName'), '-function')]",
         "storageAccountName": "[concat('contoso', uniqueString(resourceGroup().id))]",
         "NotificationHubName": "[variables('lcSiteName')]",
         "notificationHubNamespace": "[concat(variables('lcSiteName'), '-ns')]",
@@ -296,6 +296,7 @@
             "type": "Microsoft.Web/sites",
             "name": "[variables('webJobSiteName')]",
             "location": "[parameters('siteLocation')]",
+            "kind": "functionapp",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
@@ -350,7 +351,7 @@
                         "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
                     ],
                     "properties": {
-                        "PROJECT": "src\\Cloud\\ContosoMoments.WebJobWrapper\\ContosoMoments.WebJobWrapper.csproj"
+                        "command": "src\\Cloud\\ContosoMoments.Function\\deploy.cmd"
                     }
                 }
             ]
