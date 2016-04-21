@@ -220,7 +220,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="app\node_modules\azure-mobile-apps-client\sdk\src\Properties\AssemblyInfo.cs" />
     <Compile Include="configHandler.ashx.cs">
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
