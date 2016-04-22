@@ -183,7 +183,6 @@
     <Compile Include="Notification\DeviceInstallationInfo.cs" />
     <Compile Include="Notification\Notifier.cs" />
     <Compile Include="Queue\QueueManager.cs" />
-    <Compile Include="Models\BlobInformation.cs" />
     <Compile Include="Models\ImageSize.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\Image.cs" />

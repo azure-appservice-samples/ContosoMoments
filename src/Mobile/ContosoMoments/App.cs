@@ -25,7 +25,6 @@ namespace ContosoMoments
 
         public IMobileServiceSyncTable<Models.Album> albumTableSync;
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
-        public IMobileServiceSyncTable<ResizeRequest> resizeRequestSync;
 
         public static App Instance;
         public static object UIContext { get; set; }
@@ -40,7 +39,8 @@ namespace ContosoMoments
         public string CurrentUserId
         {
             get { return currentUserId ?? Settings.Current.DefaultUserId; }
-            set {
+            set
+            {
                 currentUserId = value;
                 Settings.Current.CurrentUserId = currentUserId;
             }
@@ -123,7 +123,7 @@ namespace ContosoMoments
             await FileHelper.DeleteLocalFileAsync(path);
 
             await InitMobileService(uri, firstStart: true);
-            }
+        }
 
         internal async Task LogoutAsync()
         {
@@ -131,7 +131,6 @@ namespace ContosoMoments
 
             await imageTableSync.PurgeAsync("allImages", null, true, CancellationToken.None);
             await albumTableSync.PurgeAsync("allAlbums", null, true, CancellationToken.None);
-            await resizeRequestSync.PurgeAsync(true);
 
             currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
@@ -139,7 +138,7 @@ namespace ContosoMoments
             var albumListView = new AlbumsListView(this);
             MainPage = new NavigationPage(albumListView);
 
-            var loginPage = new Login();           
+            var loginPage = new Login();
             await MainPage.Navigation.PushAsync(loginPage);
             await loginPage.GetResultAsync();
 
@@ -179,14 +178,8 @@ namespace ContosoMoments
 
         public void InitLocalTables()
         {
-            try {
-                albumTableSync = MobileService.GetSyncTable<Models.Album>();
-                imageTableSync = MobileService.GetSyncTable<Models.Image>();
-                resizeRequestSync = MobileService.GetSyncTable<ResizeRequest>();
-            }
-            catch (Exception ex) {
-                Trace.WriteLine(ex);
-            }
+            albumTableSync = MobileService.GetSyncTable<Models.Album>();
+            imageTableSync = MobileService.GetSyncTable<Models.Image>();
         }
 
         internal Task DownloadFileAsync(MobileServiceFile file)
@@ -230,10 +223,6 @@ namespace ContosoMoments
             // add image to the record
             string copiedFilePath = await FileHelper.CopyFileAsync(image.Id, sourceFile, DataFilesPath);
             string copiedFileName = Path.GetFileName(copiedFilePath);
-
-            // add an object representing a resize request for the blob
-            // it will be synced after all images have been uploaded
-            await resizeRequestSync.InsertAsync(new ResizeRequest { BlobName = copiedFileName });
 
             var file = await imageTableSync.AddFileAsync(image, copiedFileName);
             image.File = file;
