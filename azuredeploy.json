@@ -94,9 +94,9 @@
         }
     },
     "variables": {
-        "lcSiteName": "[concat(parameters('siteName'), uniqueString(resourceGroup().id))]",
-        "webJobSiteName": "[concat(variables('lcSiteName'), '-jobs')]",
-        "storageAccountName": "[concat('contoso', uniqueString(resourceGroup().id))]",
+        "lcSiteName": "[concat(parameters('siteName'), substring(uniqueString(resourceGroup().id), 0, 6))]",
+        "webJobSiteName": "[concat(variables('lcSiteName'), '-webjob')]",
+        "storageAccountName": "[concat('contoso', substring(uniqueString(resourceGroup().id), 0, 6))]",
         "NotificationHubName": "[variables('lcSiteName')]",
         "notificationHubNamespace": "[concat(variables('lcSiteName'), '-ns')]",
         "notificationHubLocation": "[parameters('siteLocation')]",
@@ -212,32 +212,27 @@
             },
             "resources": [
                 {
-                    "apiVersion": "2014-04-01",
+                    "apiVersion": "2015-08-01",
                     "type": "config",
-                    "name": "web",
+                    "name": "connectionstrings",
                     "dependsOn": [
                         "[concat('Microsoft.Web/sites/', variables('lcSiteName'))]",
                         "[resourceId('Microsoft.Sql/servers/', variables('sqlServerName'))]",
                         "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
                     ],
                     "properties": {
-                        "connectionStrings": [
-                            {
-                                "ConnectionString": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('sqlDbName'), ';User Id=', parameters('sqlAdministratorLogin'), '@', variables('sqlServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
-                                "Name": "MS_TableConnectionString",
-                                "Type": 2
-                            },
-                            {
-                                "ConnectionString": "[listkeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', variables('notificationHubNamespace'), variables('NotificationHubName'), 'DefaultFullSharedAccessSignature'), '2014-09-01').primaryConnectionString]",
-                                "Name": "MS_NotificationHubConnectionString",
-                                "Type": "custom"
-                            },
-                            {
-                                "ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1)]",
-                                "Name": "MS_AzureStorageAccountConnectionString",
-                                "Type": "custom"
-                            }
-                        ]
+                        "MS_TableConnectionString": {
+                            "value": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('sqlDbName'), ';User Id=', parameters('sqlAdministratorLogin'), '@', variables('sqlServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                            "type": "SQLAzure"
+                        },
+                        "MS_NotificationHubConnectionString": {
+                            "value": "[listkeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', variables('notificationHubNamespace'), variables('NotificationHubName'), 'DefaultFullSharedAccessSignature'), '2014-09-01').primaryConnectionString]",
+                            "type": "custom"
+                        },
+                        "MS_AzureStorageAccountConnectionString": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1)]",
+                            "type": "custom"
+                        }
                     }
                 },
                 {
@@ -253,24 +248,13 @@
                     }
                 },
                 {
-                    "apiVersion": "2015-04-01",
-                    "name": "web",
-                    "type": "sourcecontrols",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', variables('lcSiteName'))]"
-                    ],
-                    "properties": {
-                        "RepoUrl": "[parameters('repoUrl')]",
-                        "branch": "[parameters('branch')]"
-                    }
-                },
-                {
                     "apiVersion": "2015-08-01",
                     "type": "config",
                     "name": "appsettings",
                     "dependsOn": [
                         "[concat('Microsoft.Web/sites/', variables('lcSiteName'))]",
-                        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+                        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                        "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
                     ],
                     "properties": {
                         "StorageAccountName": "[variables('storageAccountName')]",
@@ -287,6 +271,20 @@
                         "enableSoftDelete": "true",
                         "PROJECT": "src\\Cloud\\ContosoMoments.API\\ContosoMoments.API.csproj"
                     }
+                },
+                {
+                    "apiVersion": "2015-04-01",
+                    "name": "web",
+                    "type": "sourcecontrols",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('lcSiteName'))]",
+                        "[resourceId('Microsoft.Web/Sites/config', variables('lcSiteName'), 'appsettings')]",
+                        "[resourceId('Microsoft.Web/Sites/config', variables('lcSiteName'), 'connectionstrings')]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "[parameters('repoUrl')]",
+                        "branch": "[parameters('branch')]"
+                    }
                 }
             ]
         },
@@ -302,43 +300,29 @@
             ],
             "properties": {
                 "name": "[variables('webJobSiteName')]",
-                "serverFarm": "[parameters('hostingPlanName')]"
+                "serverFarm": "[parameters('hostingPlanName')]",
+                "siteConfig": {
+                    "AlwaysOn": true
+                }
             },
             "resources": [
                 {
-                    "apiVersion": "2014-04-01",
+                    "apiVersion": "2015-08-01",
                     "type": "config",
-                    "name": "web",
+                    "name": "connectionstrings",
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]",
                         "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
                     ],
                     "properties": {
-                        "connectionStrings": [
-                            {
-                                "ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
-                                "Name": "AzureWebJobsDashboard",
-                                "Type": "custom"
-                            },
-                            {
-                                "ConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
-                                "Name": "AzureWebJobsStorage",
-                                "Type": "custom"
-                            }
-                        ],
-                        "alwaysOn": true
-                    }
-                },
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "web",
-                    "type": "sourcecontrols",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]"
-                    ],
-                    "properties": {
-                        "RepoUrl": "[parameters('repoUrl')]",
-                        "branch": "[parameters('branch')]"
+                        "AzureWebJobsDashboard": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
+                            "type": "Custom"
+                        },
+                        "AzureWebJobsStorage": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
+                            "type": "Custom"
+                        }
                     }
                 },
                 {
@@ -346,11 +330,23 @@
                     "type": "config",
                     "name": "appsettings",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]",
-                        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+                        "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]"
                     ],
                     "properties": {
-                        "PROJECT": "src\\Cloud\\ContosoMoments.WebJobWrapper\\ContosoMoments.WebJobWrapper.csproj"
+                        "project": "src\\Cloud\\ContosoMoments.WebJobWrapper\\ContosoMoments.WebJobWrapper.csproj"
+                    }
+                },
+                {
+                    "apiVersion": "2015-04-01",
+                    "name": "web",
+                    "type": "sourcecontrols",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]",
+                        "[resourceId('Microsoft.Web/Sites/config', variables('lcSiteName'), 'appsettings')]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "[parameters('repoUrl')]",
+                        "branch": "[parameters('branch')]"
                     }
                 }
             ]
