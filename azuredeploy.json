@@ -94,9 +94,9 @@
         }
     },
     "variables": {
-        "lcSiteName": "[concat(parameters('siteName'), uniqueString(resourceGroup().id))]",
+        "lcSiteName": "[concat(parameters('siteName'), substring(uniqueString(resourceGroup().id), 0, 6))]",
         "webJobSiteName": "[concat(variables('lcSiteName'), '-function')]",
-        "storageAccountName": "[concat('contoso', uniqueString(resourceGroup().id))]",
+        "storageAccountName": "[concat('contoso', substring(uniqueString(resourceGroup().id), 0, 6))]",
         "NotificationHubName": "[variables('lcSiteName')]",
         "notificationHubNamespace": "[concat(variables('lcSiteName'), '-ns')]",
         "notificationHubLocation": "[parameters('siteLocation')]",
