@@ -1,0 +1,11 @@
+﻿{
+    "bindings": [
+        {
+            "queueName": "deleterequest",
+            "name": "blobName",
+            "type": "queueTrigger",
+            "direction": "in"
+        }
+    ],
+    "disabled": false
+}
