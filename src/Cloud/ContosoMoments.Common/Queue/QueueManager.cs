@@ -15,38 +15,28 @@ namespace ContosoMoments.Common
             return $"DefaultEndpointsProtocol=https;AccountName={AppSettings.StorageAccountName};AccountKey={AppSettings.StorageAccountKey}";
         }
 
-        public async Task PushToResizeQueue(BlobInformation blobInformation)
+        public async Task PushToResizeQueue(BlobInformation blobInfo)
         {
-            try {
-                CloudStorageAccount account;
-
-                if (CloudStorageAccount.TryParse(StorageConnectionString(), out account)) {
-                    CloudQueueClient queueClient = account.CreateCloudQueueClient();
-                    CloudQueue resizeRequestQueue = queueClient.GetQueueReference(AppSettings.ResizeQueueName);
-                    resizeRequestQueue.CreateIfNotExists();
-
-                    var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(blobInformation));
-                    await resizeRequestQueue.AddMessageAsync(queueMessage);
-                }
-            }
-            catch (Exception ex) {
-                Trace.TraceError("Exception in QueueManager.PushToQueue => " + ex.Message);
-            }
-
+            await PushToQueue(AppSettings.ResizeQueueName, JsonConvert.SerializeObject(blobInfo));
         }
 
-        public async Task PushToDeleteQueue(BlobInformation blobInformation)
+        public async Task PushToDeleteQueue(BlobInformation blobInfo)
+        {
+            await PushToQueue(AppSettings.DeleteQueueName, JsonConvert.SerializeObject(blobInfo));
+        }
+
+        private async Task PushToQueue(string queueName, string data)
         {
             try {
                 CloudStorageAccount account;
 
                 if (CloudStorageAccount.TryParse(StorageConnectionString(), out account)) {
                     CloudQueueClient queueClient = account.CreateCloudQueueClient();
-                    CloudQueue deleteRequestQueue = queueClient.GetQueueReference(AppSettings.DeleteQueueName);
-                    deleteRequestQueue.CreateIfNotExists();
+                    CloudQueue queue = queueClient.GetQueueReference(queueName);
+                    queue.CreateIfNotExists();
 
-                    var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(blobInformation));
-                    await deleteRequestQueue.AddMessageAsync(queueMessage);
+                    var queueMessage = new CloudQueueMessage(data);
+                    await queue.AddMessageAsync(queueMessage);
                 }
             }
             catch (Exception ex) {
