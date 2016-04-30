@@ -1,0 +1,30 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+    "parameters": {
+        "siteLocation": {
+            "value": "West US"
+        },
+        "sqlAdministratorLogin": {
+            "value": "dbadmin"
+        },
+        "dbAdminPassword": {
+            "value": "Password$123"
+        },
+
+        "storageAccountType": { "value": "Standard_GRS" },
+
+        "hostingPlanName": { "value": "contosomomentshosting" },
+        "siteName": { "value": "contosomoments" },
+
+        "repoURL": {
+            "value": "https://github.com/azure-appservice-samples/contosomoments"
+        },
+        "branch": {
+            "value": "dev"
+        },
+        "manualIntegration": {
+            "value": true
+        }
+    }
+}
