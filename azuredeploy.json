@@ -273,7 +273,7 @@
                         "DefaultServiceURL": "[concat('https://', variables('lcSiteName'), '.azurewebsites.net/')]",
                         "MS_NotificationHubName": "[variables('NotificationHubName')]",
                         "enableSoftDelete": "true",
-                        "PROJECT": "src\\Cloud\\ContosoMoments.API\\ContosoMoments.API.csproj"
+                        "Command": "deploy.cmd"
                     }
                 },
                 {
