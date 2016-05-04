@@ -45,11 +45,13 @@
     <None Include="..\..\azuredeploy.json">
       <Link>Templates\azuredeploy.json</Link>
     </None>
+    <None Include="..\..\azuredeploy.parameters.json">
+      <Link>Templates\azuredeploy.parameters.json</Link>
+    </None>
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
-    <None Include="Templates\DeploymentTemplate.param.dev.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tools\AzCopy.exe" />
