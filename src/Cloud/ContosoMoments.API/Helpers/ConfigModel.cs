@@ -20,7 +20,7 @@ namespace ContosoMoments.Api
 
         public string DefaultServiceUrl
         {
-            get { return AppSettings.DefaultServiceUrl; }
+            get { return AppSettings.DefaultServiceUrl.ToLower(); }
         }
     }
 }

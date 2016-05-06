@@ -22,7 +22,7 @@ namespace ContosoMoments.Common
             if (string.IsNullOrWhiteSpace(baseUri) ||
                 !Uri.IsWellFormedUriString(baseUri, UriKind.RelativeOrAbsolute))
             {
-                throw new ArgumentException("$base uri is not a well formated {baseUri}");
+                return; // Avoiding Errors if improperly configured
             }
             baseAddress = new Uri(baseUri);
         }
@@ -37,12 +37,13 @@ namespace ContosoMoments.Common
         /// <returns></returns>
         public static HttpResponseMessage LogMessage(String partitionKey, string rowKey, Object msg, string functionUriWithToken)
         {
-            if (string.IsNullOrWhiteSpace(partitionKey) 
+            if (default(Uri) == baseAddress
+                || string.IsNullOrWhiteSpace(partitionKey) 
                 || string.IsNullOrWhiteSpace(rowKey) 
                 || !Uri.IsWellFormedUriString(functionUriWithToken, UriKind.Relative) 
                 || msg == null)
             {
-                throw new ArgumentException("invalid arguments ");
+                return new HttpResponseMessage(); // Avoiding Errors if improperly configured
             }
 
             using (var client = new HttpClient())
