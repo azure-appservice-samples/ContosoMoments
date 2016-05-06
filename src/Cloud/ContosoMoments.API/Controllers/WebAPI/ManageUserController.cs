@@ -72,7 +72,7 @@ namespace ContosoMoments.Api
             // Create a query string with the Facebook access token.
             var fbRequestUrl = FacebookGraphUrl + credentials;
 
-            using (var client = new System.Net.Http.HttpClient()) {
+            using (var client = new HttpClient()) {
                 // Request the current user info from Facebook.
                 var resp = await client.GetAsync(fbRequestUrl);
                 resp.EnsureSuccessStatusCode();
