@@ -1,24 +1,21 @@
+#r "Microsoft.WindowsAzure.Storage"
+
 using System;
-using Microsoft.Azure;
-using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
-const string ContainerName = "images";
-
-private static string[] containerNames = new string[] {
-    $"{ContainerName}-lg",
-    $"{ContainerName}-md",
-    $"{ContainerName}-sm",
-    $"{ContainerName}-xs"
-};
-
-public static async Task Run(string blobName, TraceWriter log)
+public class BlobInfo
 {
-    var storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("AzureWebJobsStorage"));
-    var blobClient = storageAccount.CreateCloudBlobClient();
-
-    foreach (var name in containerNames) {
-        var container = blobClient.GetContainerReference(name);
-        var blob = container.GetBlobReference(blobName);
-        await blob.DeleteAsync();
-    }
+    public string ImageId { get; set; }
 }
+
+public static async Task Run(BlobInfo blobName,
+                             CloudBlockBlob blobLarge,
+                             CloudBlockBlob blobExtraSmall,
+                             CloudBlockBlob blobSmall,
+                             CloudBlockBlob blobMedium)
+{
+    await blobExtraSmall.DeleteAsync();
+    await blobSmall.DeleteAsync();
+    await blobMedium.DeleteAsync();
+    await blobLarge.DeleteAsync();
+}  

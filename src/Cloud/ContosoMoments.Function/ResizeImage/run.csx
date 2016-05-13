@@ -5,16 +5,13 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
 using ImageResizer;
 
-public static void Run(
+public static async Task Run(
     String blobTrigger, Stream input,
-    Stream blobOutputSmall, Stream blobOutputMedium, Stream blobOutputExtraSmall,
-    TraceWriter log)
+    CloudBlockBlob blobOutputSmall, CloudBlockBlob blobOutputMedium, CloudBlockBlob blobOutputExtraSmall)
 {
-    log.Verbose(blobTrigger);
-
-    ResizeImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall);
-    ResizeImage(input, blobOutputSmall, ImageSize.Small);
-    ResizeImage(input, blobOutputMedium, ImageSize.Medium);
+    await ResizeImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall);
+    await ResizeImage(input, blobOutputSmall, ImageSize.Small);
+    await ResizeImage(input, blobOutputMedium, ImageSize.Medium);
 }
 
 #region Image dimensions
@@ -33,18 +30,25 @@ private static Dictionary<ImageSize, ResizeSettings> imageDimensionsTable = new 
 
 #endregion
 
-private static void ResizeImage(Stream streamInput, Stream output, ImageSize size)
+private static async Task<string> ResizeImage(Stream streamInput, CloudBlockBlob blobOutput, ImageSize size)
 {
     streamInput.Position = 0;
 
-    var instructions = new Instructions(imageDimensionsTable[size]);
-    var job = new ImageJob(streamInput, output, instructions, disposeSource: false, addFileExtension: false);
+    using (var memoryStream = new MemoryStream()) {
+        // use a memory stream, since using the blob stream directly causes InvalidOperationException due to the way image resizer works
+        var instructions = new Instructions(imageDimensionsTable[size]);
+        var job = new ImageJob(streamInput, memoryStream, instructions, disposeSource: false, addFileExtension: false);
 
-    // use the advanced version of resize so that we can get the content type
-    var result = ImageBuilder.Current.Build(job);
-    
-    // TODO: write blob content type
-    // var contentType = result.ResultMimeType;
-    // blobOutput.Properties.ContentType = contentType;
-    // blobOutput.SetProperties();
+        // use the advanced version of resize so that we can get the content type
+        var result = ImageBuilder.Current.Build(job);
+
+        memoryStream.Position = 0;
+        await blobOutput.UploadFromStreamAsync(memoryStream);
+
+        var contentType = result.ResultMimeType;
+        blobOutput.Properties.ContentType = contentType;
+        blobOutput.SetProperties();
+
+        return contentType;
+    }
 }
