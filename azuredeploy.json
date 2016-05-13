@@ -261,9 +261,6 @@
                         "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
                     ],
                     "properties": {
-                        "StorageAccountName": "[variables('storageAccountName')]",
-                        "StorageAccountKey": "[concat('',listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
-                        "UploadSasDaysTime": "5",
                         "ResizeQueueName": "[variables('ResizeQueueName')]",
                         "DeleteQueueName": "[variables('DeleteQueueName')]",
                         "UploadContainerName": "images",

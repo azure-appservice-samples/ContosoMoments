@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Configuration;
+using Microsoft.Azure.Mobile.Server.Files;
 
 namespace ContosoMoments.Common
 {
@@ -12,7 +14,7 @@ namespace ContosoMoments.Common
     {
         private static string StorageConnectionString()
         {
-            return $"DefaultEndpointsProtocol=https;AccountName={AppSettings.StorageAccountName};AccountKey={AppSettings.StorageAccountKey}";
+            return ConfigurationManager.ConnectionStrings[Constants.StorageConnectionStringName].ConnectionString;
         }
 
         public async Task PushToResizeQueue(BlobInformation blobInfo)
