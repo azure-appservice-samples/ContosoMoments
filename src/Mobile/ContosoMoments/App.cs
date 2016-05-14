@@ -143,7 +143,7 @@ namespace ContosoMoments
             await MainPage.Navigation.PushAsync(loginPage);
             await loginPage.GetResultAsync();
 
-            albumListView.OnRefresh(albumListView, EventArgs.Empty); // reload data, since now the user might be logged in
+            await albumListView.RefreshAsync(true); // reload data, since now the user might be logged in
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)

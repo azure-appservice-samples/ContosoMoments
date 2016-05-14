@@ -102,12 +102,12 @@ namespace ContosoMoments.Views
         private async Task LoadItemsAsync()
         {
             await viewModel.GetAlbumsAsync(_app.CurrentUserId);
-            }
+        }
 
-        public async void OnRefresh(object sender, EventArgs e)
+        public async Task RefreshAsync(bool showIndicator)
         {
             try {
-                await SyncItemsAsync(true);
+                await SyncItemsAsync(showIndicator);
             }
             catch (Exception ex) {
                 await DisplayAlert("Refresh Error", "Couldn't refresh data (" + ex.Message + ")", "OK");
@@ -134,7 +134,7 @@ namespace ContosoMoments.Views
 
         public async void OnSyncItems(object sender, EventArgs e)
         {
-            await SyncItemsAsync(true);
+            await RefreshAsync(false); // don't show the activity indicator, since the refresh gesture already shows it
         }
 
         public async void OnSettings(object sender, EventArgs e)
@@ -150,16 +150,16 @@ namespace ContosoMoments.Views
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
                     await _app.SyncAlbumsAsync();
 
-                    #pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
+#pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
                     _app.SyncAsync();
-                    #pragma warning restore CS4014
-                    }
-                    else {
+#pragma warning restore CS4014
+                }
+                else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
-                    }
+                }
 
                 await LoadItemsAsync();
-        }
+            }
         }
 
         public async void OnCreateClick(object sender, EventArgs e)
@@ -167,11 +167,11 @@ namespace ContosoMoments.Views
             var result = await viewModel.CreateOrRenameAlbum();
 
             if (result) {
-                            OnRefresh(sender, e);
-                        }
+                await RefreshAsync(true);
+            }
             else {
                 await DisplayAlert(viewModel.IsRename ? "Album rename error" : "Album create error", "Album name is blank", "OK");
-        }
+            }
         }
 
         public void OnCancelClick(object sender, EventArgs e)
@@ -185,7 +185,7 @@ namespace ContosoMoments.Views
 
             if (result) {
                 await viewModel.DeleteAlbumAsync(album);
-                OnRefresh(this, EventArgs.Empty);
+                await RefreshAsync(true);
             }
         }
     }
