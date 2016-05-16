@@ -26,15 +26,17 @@ namespace ContosoMoments.Api
             var fbCredentials = await user.GetAppServiceIdentityAsync<FacebookCredentials>(request);
             var aadCredentials = await user.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(request);
 
-            if (fbCredentials?.Claims?.Count > 0) {
-                result = CheckAddEmailToDB(await GetEmailFromFacebookGraph(fbCredentials.AccessToken));
+            if (fbCredentials?.Claims?.Count > 0)
+            {
+                result = CheckAddEmailToDB(fbCredentials.UserId);
             }
-            else if (aadCredentials?.Claims?.Count > 0) {
+            else if (aadCredentials?.Claims?.Count > 0)
+            {
                 result = CheckAddEmailToDB(aadCredentials.UserId);
             }
 
             return UserOrDefault(result);
-            }
+        }
 
         // GET api/ManageUser
         public async Task<string> Get()
@@ -42,15 +44,17 @@ namespace ContosoMoments.Api
             return await GetUserId(Request, User);
         }
 
-        public async Task<string> Get(string data, string provider)
+        public string Get(string data, string provider)
         {
             string retVal = default(string);
 
-            if (provider.Equals("facebook")) {
-                retVal = CheckAddEmailToDB(await GetEmailFromFacebookGraph(data));
+            if (provider.Equals("facebook"))
+            {
+                retVal = CheckAddEmailToDB(data);
             }
 
-            if (provider.Equals("aad")) {
+            if (provider.Equals("aad"))
+            {
                 retVal = CheckAddEmailToDB(data);
             }
 
@@ -58,46 +62,26 @@ namespace ContosoMoments.Api
         }
 
         private static string UserOrDefault(string retVal)
+        {
+            if (string.IsNullOrWhiteSpace(retVal))
             {
-            if (string.IsNullOrWhiteSpace(retVal)) {
                 retVal = new ConfigModel().DefaultUserId;
             }
 
             return retVal;
         }
 
-        private static async Task<string> GetEmailFromFacebookGraph(string credentials)
-        {
-            string fbInfo = default(string);
-            // Create a query string with the Facebook access token.
-            var fbRequestUrl = FacebookGraphUrl + credentials;
-
-            using (var client = new System.Net.Http.HttpClient()) {
-                // Request the current user info from Facebook.
-                var resp = await client.GetAsync(fbRequestUrl);
-                resp.EnsureSuccessStatusCode();
-
-                // Do something here with the Facebook user information.
-                fbInfo = await resp.Content.ReadAsStringAsync();
-                Trace.WriteLine("fbInfo: " + fbInfo);
-            }
-
-            JObject fbObject = JObject.Parse(fbInfo);
-            var emailToken = fbObject.GetValue("email");
-            Trace.WriteLine("email: " + emailToken);
-
-            return emailToken.ToString();
-        }
-
         private static string CheckAddEmailToDB(string email)
         {
             var identifier = GenerateHashFromEmail(email);
 
-            using (var ctx = new MobileServiceContext()) {
+            using (var ctx = new MobileServiceContext())
+            {
                 var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
 
                 // user was found, return it
-                if (user != default(Common.Models.User)) {
+                if (user != default(Common.Models.User))
+                {
                     return user.Id;
                 }
 
@@ -109,13 +93,14 @@ namespace ContosoMoments.Api
         private static string AddUser(string emailHash, MobileServiceContext ctx)
         {
             var u = ctx.Users.Add(
-                new Common.Models.User {
+                new Common.Models.User
+                {
                     Id = Guid.NewGuid().ToString(),
                     Email = emailHash,
                     IsEnabled = true
                 });
 
-                ctx.SaveChanges();
+            ctx.SaveChanges();
 
             return u.Id;
         }
@@ -129,11 +114,13 @@ namespace ContosoMoments.Api
         {
             StringBuilder hashString = new StringBuilder();
 
-            using (var generator = System.Security.Cryptography.SHA256.Create()) {
+            using (var generator = System.Security.Cryptography.SHA256.Create())
+            {
                 var emailBytes = Encoding.UTF8.GetBytes(email);
                 var hash = generator.ComputeHash(emailBytes);
 
-                foreach (var b in hash) {
+                foreach (var b in hash)
+                {
                     hashString.AppendFormat("{0:x2}", b);
                 }
             }

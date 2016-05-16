@@ -59,8 +59,9 @@ namespace ContosoMoments.Api
             var origins = new List<string>();
 
             string serviceUri = AppSettings.DefaultServiceUrl.ToLower().TrimEnd('/');
-
-            origins.Add(serviceUri);
+            
+            origins.Add(TheProtocolTrap(serviceUri, Uri.UriSchemeHttp));
+            origins.Add(TheProtocolTrap(serviceUri, Uri.UriSchemeHttps));
 
             var methods = new List<string>();
             methods.Add(HttpMethod.Get.ToString());
@@ -73,6 +74,16 @@ namespace ContosoMoments.Api
                 , origins
                 , headers
                 , methods);
+        }
+
+        private static string TheProtocolTrap(string serviceUri, string Scheme)
+        {
+            var uriBuilder = new UriBuilder(serviceUri)
+            {
+                Scheme = Scheme,
+                Port = -1
+            }; // set as https always
+            return uriBuilder.ToString().TrimEnd('/');
         }
     }
 

@@ -24,7 +24,10 @@ contosoMomentsApp
                                 break;
                             default:
                                 element.css({
-                                    'background': 'transparent url(\'' + data + '\')'
+                                    'background': 'transparent url(\'' + data + '\')',
+                                    'background-position': 'center',
+                                    'background-repeat': 'no-repeat',
+                                    'zoom': 0.25
                                 });
                                 break;
                         }

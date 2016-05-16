@@ -5,6 +5,7 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage;
+using System.Diagnostics;
 
 namespace ContosoMoments.API.Helpers
 {
@@ -27,26 +28,24 @@ namespace ContosoMoments.API.Helpers
         {
             ServiceProperties props = blobClient.GetServiceProperties();
 
-            // Only set CorsRules if they don't already exist.
-            //if (props.Cors?.CorsRules.Count == 0)
-            //{
-            props.Cors = ExpandCorsRules(origins, headers, methods);
-            blobClient.SetServiceProperties(props);
-            //}
+            Trace.Write(props.Cors.CorsRules.ToString());
+
+            if (! ContainsOrigin(props.Cors.CorsRules, origins))
+            {
+                props.Cors.CorsRules.Add(
+                    new CorsRule
+                    {
+                        AllowedOrigins = origins,
+                        AllowedHeaders = headers,
+                        AllowedMethods = ExpandCorsHttpMethods(methods),
+                        MaxAgeInSeconds = 1800 // 30 minutes
+                    });
+                blobClient.SetServiceProperties(props);
+            }
         }
-        private static CorsProperties ExpandCorsRules(List<string> origins, List<string> headers, List<string> methods)
+        private static bool ContainsOrigin(IList<CorsRule> rules, List<string> origins)
         {
-            var props = new CorsProperties();
-            var rule = new CorsRule();
-
-            rule.AllowedOrigins = origins;
-            rule.AllowedHeaders = headers;
-            rule.AllowedMethods = ExpandCorsHttpMethods(methods);
-            rule.MaxAgeInSeconds = 1800; // 30 minutes
-
-            props.CorsRules.Add(rule);
-
-            return props;
+            return rules.Any(e => e.AllowedOrigins.Intersect(origins).Count() != 0);
         }
         private static CorsHttpMethods ExpandCorsHttpMethods(List<string> methods)
         {
