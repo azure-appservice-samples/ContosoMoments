@@ -4,14 +4,17 @@ using System;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
 using ImageResizer;
+using System.Threading;
+using System.Threading.Tasks;
 
-public static async Task Run(
-    String blobTrigger, Stream input,
+public static Task Run(
+    String blobTrigger, CloudBlockBlob input,
     CloudBlockBlob blobOutputSmall, CloudBlockBlob blobOutputMedium, CloudBlockBlob blobOutputExtraSmall)
 {
-    await ResizeImage(input, blobOutputExtraSmall, ImageSize.ExtraSmall);
-    await ResizeImage(input, blobOutputSmall, ImageSize.Small);
-    await ResizeImage(input, blobOutputMedium, ImageSize.Medium);
+    return Task.WhenAll(
+        ResizeImageAsync(input, blobOutputExtraSmall, ImageSize.ExtraSmall),
+        ResizeImageAsync(input, blobOutputSmall, ImageSize.Small),
+        ResizeImageAsync(input, blobOutputMedium, ImageSize.Medium));
 }
 
 #region Image dimensions
@@ -30,17 +33,15 @@ private static Dictionary<ImageSize, ResizeSettings> imageDimensionsTable = new 
 
 #endregion
 
-private static async Task<string> ResizeImage(Stream streamInput, CloudBlockBlob blobOutput, ImageSize size)
+private static async Task<string> ResizeImageAsync(CloudBlockBlob blobInput, CloudBlockBlob blobOutput, ImageSize size)
 {
-    streamInput.Position = 0;
-
-    using (var memoryStream = new MemoryStream()) {
+    using (Stream memoryStream = new MemoryStream(), streamInput = await blobInput.OpenReadAsync()) {
         // use a memory stream, since using the blob stream directly causes InvalidOperationException due to the way image resizer works
         var instructions = new Instructions(imageDimensionsTable[size]);
         var job = new ImageJob(streamInput, memoryStream, instructions, disposeSource: false, addFileExtension: false);
 
         // use the advanced version of resize so that we can get the content type
-        var result = ImageBuilder.Current.Build(job);
+        var result = await Task.Run(() => ImageBuilder.Current.Build(job));
 
         memoryStream.Position = 0;
         await blobOutput.UploadFromStreamAsync(memoryStream);
