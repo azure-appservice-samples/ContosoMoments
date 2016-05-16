@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments.Common
 {
@@ -17,7 +18,10 @@ namespace ContosoMoments.Common
 
         public static async Task PushToDeleteQueue(string blobName)
         {
-            await PushToQueue(AppSettings.DeleteQueueName, blobName);
+            var payload = new JObject();
+            payload["ImageId"] = blobName;
+                 
+            await PushToQueue(AppSettings.DeleteQueueName, payload.ToString());
         }
 
         private static async Task PushToQueue(string queueName, string data)
