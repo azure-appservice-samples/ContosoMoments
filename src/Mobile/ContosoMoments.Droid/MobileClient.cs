@@ -11,12 +11,12 @@ namespace ContosoMoments.Droid
 {
     public class MobileClient : IMobileClient
     {
-        public async Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
+        public Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
-            return await App.Instance.MobileService.LoginAsync(Forms.Context, provider);
+            return App.Instance.MobileService.LoginAsync(Forms.Context, provider);
         }
 
-        public async void Logout()
+        public async Task Logout()
         {
             CookieManager.Instance.RemoveAllCookie();
             await App.Instance.MobileService.LogoutAsync();
@@ -25,6 +25,11 @@ namespace ContosoMoments.Droid
         public void ForceCloseApp()
         {
             Process.KillProcess(Process.MyPid());
+        }
+
+        public Task<MobileServiceUser> LoginFacebookAsync()
+        {
+            return LoginAsync(MobileServiceAuthenticationProvider.Facebook);
         }
     }
 }

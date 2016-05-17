@@ -51,9 +51,18 @@ namespace ContosoMoments.iOS
                 
             var formsApp = new ContosoMoments.App();
             LoadApplication(formsApp);
-        
+
+            Facebook.CoreKit.ApplicationDelegate.SharedInstance.FinishedLaunching(app, options);
+
             return base.FinishedLaunching(app, options);
-        }              
+        }
+
+
+    public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+    {
+        // We need to handle URLs by passing them to their own OpenUrl in order to make the SSO authentication works.
+        return Facebook.CoreKit.ApplicationDelegate.SharedInstance.OpenUrl(application, url, sourceApplication, annotation);
+    }
 
         public static async Task RegisterWithMobilePushNotifications()
         {

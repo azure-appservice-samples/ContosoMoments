@@ -8,7 +8,7 @@ using Xamarin.Forms;
 namespace ContosoMoments.Views
 {
     public partial class Login : ContentPage
-        {
+    {
         private TaskCompletionSource<Settings.AuthOption> tcs = new TaskCompletionSource<Settings.AuthOption>();
 
         public Login()
@@ -53,21 +53,29 @@ namespace ContosoMoments.Views
         {
             MobileServiceUser user;
 
-            try {
-                user = await DependencyService.Get<IMobileClient>().LoginAsync(provider);
+            try
+            {
+                var mobileClient = DependencyService.Get<IMobileClient>();
+
+                user = 
+                    authOption == Settings.AuthOption.Facebook ? 
+                        await mobileClient.LoginFacebookAsync() :
+                        await mobileClient.LoginAsync(provider);
+
                 App.Instance.AuthenticatedUser = user;
                 System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
 
                 App.Instance.CurrentUserId =
                     await App.Instance.MobileService.InvokeApiAsync<string>(
-                        "ManageUser",
-                        System.Net.Http.HttpMethod.Get,
-                        null);
+                    "ManageUser",
+                    System.Net.Http.HttpMethod.Get,
+                    null);
 
                 Debug.WriteLine($"Set current userID to: {App.Instance.CurrentUserId}");
                 await LoginComplete(authOption);
             }
-            catch (Exception) { // if user cancels, then set to Guest access
+            catch (Exception)
+            { // if user cancels, then set to Guest access
                 Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
                 tcs.TrySetResult(Settings.AuthOption.GuestAccess);
             }
