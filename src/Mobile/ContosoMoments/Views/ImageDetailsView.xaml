@@ -11,17 +11,6 @@
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
 
-    <!--Header-->
-    <Grid Grid.Row="0" Padding="10,30,10,5" IsVisible="False">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="Auto"/>
-      </Grid.ColumnDefinitions>
-      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center" Source="logotext.png" />
-            <Image VerticalOptions="Center" Grid.Column="2" HeightRequest="30" WidthRequest="30" x:Name="imgSettings" Source="settings.png" />
-    </Grid>
-
     <!--Image preview-->
     <Grid Grid.Row="1" Padding="10,0">
       <Image Source="{Binding Image.Uri}" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill"/>

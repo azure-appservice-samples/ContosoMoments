@@ -79,24 +79,11 @@ namespace ContosoMoments.Views
             AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
             if (albumsList.ItemsSource != null) {
+                // data has already been loaded, skip sync
                 return;
             }
 
-            using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
-
-                if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-
-                    await _app.SyncAlbumsAsync();
-
-#pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
-                    _app.SyncAsync();
-#pragma warning restore CS4014
-                }
-                else
-                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Using local data. Please try again when data connection is back", "OK");
-
-                await LoadItemsAsync();
-            }
+            await SyncItemsAsync(true);
         }
 
         private async Task LoadItemsAsync()

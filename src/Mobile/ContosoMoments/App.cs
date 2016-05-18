@@ -16,9 +16,8 @@ namespace ContosoMoments
 {
     public class App : Application
     {
-        private string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
+        private string ApplicationURL;
 
-        //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public const string LocalDbFilename = "localDb.sqlite";
         private const string AllAlbumsQueryString = "allAlbums";
         private const string AllImagesQueryString = "allImages";
