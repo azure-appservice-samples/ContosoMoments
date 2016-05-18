@@ -50,10 +50,13 @@ namespace ContosoMoments.Views
             IFileSyncContext context = App.Instance.MobileService.GetFileSyncContext();
 
             var recordFiles = await context.MobileServiceFilesClient.GetFilesAsync(App.Instance.imageTableSync.TableName, vm.Image.Id);
-            var file = recordFiles.First(f => f.StoreUri.Contains(imageSize));
+            var file = recordFiles.FirstOrDefault(f => f.StoreUri.Contains(imageSize));
 
             if (file != null) {
                 await DownloadAndDisplayImage(file, imageSize);
+            }
+            else {
+                await DisplayAlert("Error downloading image", "Image doesn't exist", "OK");
             }
         }
 
