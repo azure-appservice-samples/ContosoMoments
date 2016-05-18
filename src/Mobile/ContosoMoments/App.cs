@@ -211,7 +211,7 @@ namespace ContosoMoments
             await fileRef.RenameAsync(path, NameCollisionOption.ReplaceExisting);
             Debug.WriteLine("Renamed file to - " + path);
 
-            await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
+            await MobileService.EventManager.PublishAsync(new ImageDownloadEvent(file.ParentId));
         }
 
         internal async Task<Models.Image> AddImageAsync(Models.Album album, string sourceFile)

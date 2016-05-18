@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Microsoft.WindowsAzure.MobileServices.Eventing;
 
 namespace ContosoMoments
 {
@@ -10,6 +11,16 @@ namespace ContosoMoments
     {
         public string Id { get; set; }
         public string BlobName { get; set; }
+    }
+
+    public class ImageDownloadEvent : MobileServiceEvent
+    {
+        public string Id { get; set; }
+
+        public ImageDownloadEvent(string id) : base(id)
+        {
+            this.Id = id;
+        }        
     }
 
     public class ActivityIndicatorScope : IDisposable
