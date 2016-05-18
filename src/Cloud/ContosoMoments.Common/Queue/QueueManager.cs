@@ -17,17 +17,12 @@ namespace ContosoMoments.Common
             return ConfigurationManager.ConnectionStrings[Constants.StorageConnectionStringName].ConnectionString;
         }
 
-        public async Task PushToResizeQueue(BlobInformation blobInfo)
+        public static async Task PushToDeleteQueue(string blobName)
         {
-            await PushToQueue(AppSettings.ResizeQueueName, JsonConvert.SerializeObject(blobInfo));
+            await PushToQueue(AppSettings.DeleteQueueName, blobName);
         }
 
-        public async Task PushToDeleteQueue(BlobInformation blobInfo)
-        {
-            await PushToQueue(AppSettings.DeleteQueueName, JsonConvert.SerializeObject(blobInfo));
-        }
-
-        private async Task PushToQueue(string queueName, string data)
+        private static async Task PushToQueue(string queueName, string data)
         {
             try {
                 CloudStorageAccount account;

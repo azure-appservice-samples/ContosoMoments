@@ -7,12 +7,6 @@ using Microsoft.WindowsAzure.MobileServices.Eventing;
 
 namespace ContosoMoments
 {
-    public class ResizeRequest
-    {
-        public string Id { get; set; }
-        public string BlobName { get; set; }
-    }
-
     public class ImageDownloadEvent : MobileServiceEvent
     {
         public string Id { get; set; }
@@ -23,7 +17,7 @@ namespace ContosoMoments
         }        
     }
 
-    public class SyncCompletedEvent: MobileServiceEvent 
+    public class SyncCompletedEvent : MobileServiceEvent
     {
         public static SyncCompletedEvent Instance = new SyncCompletedEvent();
 

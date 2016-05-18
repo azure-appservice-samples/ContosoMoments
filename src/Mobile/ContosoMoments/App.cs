@@ -26,7 +26,6 @@ namespace ContosoMoments
 
         public IMobileServiceSyncTable<Models.Album> albumTableSync;
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
-        public IMobileServiceSyncTable<ResizeRequest> resizeRequestSync;
 
         public static App Instance;
         public static object UIContext { get; set; }
@@ -140,7 +139,6 @@ namespace ContosoMoments
 
             await imageTableSync.PurgeAsync(AllImagesQueryString, null, true, CancellationToken.None);
             await albumTableSync.PurgeAsync(AllAlbumsQueryString, null, true, CancellationToken.None);
-            await resizeRequestSync.PurgeAsync(true);
 
             currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
@@ -154,7 +152,6 @@ namespace ContosoMoments
                 var store = new MobileServiceSQLiteStore(localDbFilename);
                 store.DefineTable<Models.Album>();
                 store.DefineTable<Models.Image>();
-                store.DefineTable<ResizeRequest>();
 
                 // Initialize file sync
                 MobileService.InitializeFileSyncContext(new FileSyncHandler(this), store, new FileSyncTriggerFactory(MobileService, true));
@@ -185,14 +182,8 @@ namespace ContosoMoments
 
         public void InitLocalTables()
         {
-            try {
-                albumTableSync = MobileService.GetSyncTable<Models.Album>();
-                imageTableSync = MobileService.GetSyncTable<Models.Image>();
-                resizeRequestSync = MobileService.GetSyncTable<ResizeRequest>();
-            }
-            catch (Exception ex) {
-                Trace.WriteLine(ex);
-            }
+            albumTableSync = MobileService.GetSyncTable<Models.Album>();
+            imageTableSync = MobileService.GetSyncTable<Models.Image>();
         }
 
         internal Task DownloadFileAsync(MobileServiceFile file)
@@ -236,10 +227,6 @@ namespace ContosoMoments
             // add image to the record
             string copiedFilePath = await FileHelper.CopyFileAsync(image.Id, sourceFile, DataFilesPath);
             string copiedFileName = Path.GetFileName(copiedFilePath);
-
-            // add an object representing a resize request for the blob
-            // it will be synced after all images have been uploaded
-            await resizeRequestSync.InsertAsync(new ResizeRequest { BlobName = copiedFileName });
 
             var file = await imageTableSync.AddFileAsync(image, copiedFileName);
             image.File = file;

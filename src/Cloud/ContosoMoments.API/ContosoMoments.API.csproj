@@ -223,7 +223,6 @@
     <Compile Include="configHandler.ashx.cs">
       <DependentUpon>configHandler.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\TableControllers\ResizeRequestController.cs" />
     <Compile Include="Helpers\AzureStorageCorsHelper.cs" />
     <Compile Include="Helpers\CustomAzureStorageProvider.cs" />
     <Compile Include="Helpers\ImageNameResolver.cs" />
