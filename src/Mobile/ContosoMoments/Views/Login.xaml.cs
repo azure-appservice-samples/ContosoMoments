@@ -45,7 +45,6 @@ namespace ContosoMoments.Views
         {
             await Navigation.PopToRootAsync();
 
-            Settings.Current.AuthenticationType = option;
             tcs.TrySetResult(option);
         }
 

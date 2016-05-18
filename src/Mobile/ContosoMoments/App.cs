@@ -104,11 +104,9 @@ namespace ContosoMoments
             if (firstStart) {
                 await Utils.PopulateDefaultsAsync();
 
-                var loginPage = new Login();
                 MainPage = new NavigationPage(new AlbumsListView(this));
 
-                await MainPage.Navigation.PushAsync(loginPage);
-                await loginPage.GetResultAsync();
+                await DoLoginAsync();
             }
             else {
                 currentUserId = Settings.Current.CurrentUserId;
@@ -127,6 +125,15 @@ namespace ContosoMoments
             await InitMobileService(uri, firstStart: true);
             }
 
+        private async Task DoLoginAsync()
+        {
+            var loginPage = new Login();
+            await MainPage.Navigation.PushAsync(loginPage);
+            Settings.Current.AuthenticationType = await loginPage.GetResultAsync();
+
+            await SyncAsync(notify: true);
+        }
+
         internal async Task LogoutAsync()
         {
             await MobileService.LogoutAsync();
@@ -138,9 +145,7 @@ namespace ContosoMoments
             currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
 
-            var loginPage = new Login();           
-            await MainPage.Navigation.PushAsync(loginPage);
-            await loginPage.GetResultAsync();
+            await DoLoginAsync();
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
