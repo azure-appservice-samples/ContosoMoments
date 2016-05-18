@@ -23,7 +23,6 @@ namespace ContosoMoments.Droid
 
     public class PushHandlerBroadcastReceiver : GcmBroadcastReceiverBase<GcmService>
     {
-
         public static string[] SENDER_IDS = new string[] { "952946361628" };
         public const string TAG = "ContosoMoments-GCM";
     }
@@ -39,21 +38,31 @@ namespace ContosoMoments.Droid
         public static void RegisterWithMobilePushNotifications()
         {
             MobileServiceClient client = App.Instance.MobileService;
-
-            if (null != RegistrationID && null != client) {
+            
+            if (RegistrationID != null && client != null) {
                 var push = client.GetPush();
 
                 MainActivity.DefaultService.RunOnUiThread(async () => {
                     try {
-                        const string templateBodyGCM = "{\"data\":{\"message\":\"$(messageParam)\"}}";
-
-                        JObject templates = new JObject();
-                        templates["genericMessage"] = new JObject
-                        {
-                            { "body", templateBodyGCM }
+                        var gcmBody = new JObject {
+                            {
+                                "data",
+                                new JObject {
+                                    { "message", "$(messageParam)" }
+                                }
+                            }
                         };
 
-                        await push.RegisterAsync(RegistrationID, templates);
+                        var template = new JObject {
+                            {
+                                "genericMessage",
+                                new JObject {
+                                    {"body", gcmBody}
+                                }
+                            }
+                        };
+
+                        await push.RegisterAsync(RegistrationID, template);
                         Log.Verbose(PushHandlerBroadcastReceiver.TAG, "NotificationHub registration successful");
 
                     }
@@ -69,7 +78,7 @@ namespace ContosoMoments.Droid
             Log.Verbose(PushHandlerBroadcastReceiver.TAG, "GCM Registered: " + registrationId);
             RegistrationID = registrationId;
 
-            if (null != registrationId)
+            if (registrationId != null)
                 RegisterWithMobilePushNotifications();
         }
 
