@@ -123,7 +123,7 @@ namespace ContosoMoments
             await FileHelper.DeleteLocalFileAsync(path);
 
             await InitMobileService(uri, firstStart: true);
-            }
+        }
 
         private async Task DoLoginAsync()
         {
@@ -170,13 +170,17 @@ namespace ContosoMoments
             await albumTableSync.PullAsync(AllAlbumsQueryString, albumTableSync.CreateQuery());
         }
 
-        public async Task SyncAsync()
+        public async Task SyncAsync(bool notify = false)
         {
             await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
 
             await albumTableSync.PullAsync(AllAlbumsQueryString, albumTableSync.CreateQuery());
             await imageTableSync.PullAsync(AllImagesQueryString, imageTableSync.CreateQuery());
+
+            if (notify) {
+                await MobileService.EventManager.PublishAsync(SyncCompletedEvent.Instance);
+            }
         }
 
         public void InitLocalTables()

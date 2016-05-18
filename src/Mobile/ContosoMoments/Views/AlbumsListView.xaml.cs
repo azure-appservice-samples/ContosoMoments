@@ -39,7 +39,7 @@ namespace ContosoMoments.Views
             viewModel = new AlbumsListViewModel(App.Instance.MobileService, app);
 
             BindingContext = viewModel;
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            viewModel.PropertyChanged += ViewModelPropertyChanged;
 
             Settings.Current.PropertyChanged += AuthTypePropertyChanged;
 
@@ -57,9 +57,11 @@ namespace ContosoMoments.Views
             imgSettings.GestureRecognizers.Add(tapSettingsImage);
 
             viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
+
+            App.Instance.MobileService.EventManager.Subscribe<SyncCompletedEvent>(OnSyncCompleted);
         }
 
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AlbumsListViewModel.ErrorMessage) && viewModel.ErrorMessage != null) {
                 DisplayAlert(viewModel.ErrorMessageTitle, viewModel.ErrorMessage, "OK");
@@ -71,6 +73,11 @@ namespace ContosoMoments.Views
             imgAddAlbum.IsVisible = Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
             var settingsColumn = imgAddAlbum.IsVisible ? 3 : 4; // move the settings button to the end if the Add Album button is not shown
             Grid.SetColumn(imgSettings, settingsColumn);
+        }
+
+        private async void OnSyncCompleted(SyncCompletedEvent obj)
+        {
+            await LoadItemsAsync();
         }
 
         protected override async void OnAppearing()
