@@ -20,6 +20,8 @@ namespace ContosoMoments
 
         //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public const string LocalDbFilename = "localDb.sqlite";
+        private const string AllAlbumsQueryString = "allAlbums";
+        private const string AllImagesQueryString = "allImages";
         public MobileServiceClient MobileService;
         public MobileServiceUser AuthenticatedUser;
 
@@ -40,7 +42,8 @@ namespace ContosoMoments
         public string CurrentUserId
         {
             get { return currentUserId ?? Settings.Current.DefaultUserId; }
-            set {
+            set
+            {
                 currentUserId = value;
                 Settings.Current.CurrentUserId = currentUserId;
             }
@@ -129,21 +132,16 @@ namespace ContosoMoments
         {
             await MobileService.LogoutAsync();
 
-            await imageTableSync.PurgeAsync("allImages", null, true, CancellationToken.None);
-            await albumTableSync.PurgeAsync("allAlbums", null, true, CancellationToken.None);
+            await imageTableSync.PurgeAsync(AllImagesQueryString, null, true, CancellationToken.None);
+            await albumTableSync.PurgeAsync(AllAlbumsQueryString, null, true, CancellationToken.None);
             await resizeRequestSync.PurgeAsync(true);
 
             currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
 
-            var albumListView = new AlbumsListView(this);
-            MainPage = new NavigationPage(albumListView);
-
             var loginPage = new Login();           
             await MainPage.Navigation.PushAsync(loginPage);
             await loginPage.GetResultAsync();
-
-            await albumListView.RefreshAsync(true); // reload data, since now the user might be logged in
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
@@ -165,7 +163,7 @@ namespace ContosoMoments
         public async Task SyncAlbumsAsync()
         {
             await MobileService.SyncContext.PushAsync();
-            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery());
+            await albumTableSync.PullAsync(AllAlbumsQueryString, albumTableSync.CreateQuery());
         }
 
         public async Task SyncAsync()
@@ -173,8 +171,8 @@ namespace ContosoMoments
             await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
 
-            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery());
-            await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery());
+            await albumTableSync.PullAsync(AllAlbumsQueryString, albumTableSync.CreateQuery());
+            await imageTableSync.PullAsync(AllImagesQueryString, imageTableSync.CreateQuery());
         }
 
         public void InitLocalTables()

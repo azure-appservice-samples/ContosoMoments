@@ -64,6 +64,7 @@ namespace ContosoMoments.Views
 
         public async void OnLogout(object sender, EventArgs args)
         {
+            await Navigation.PopModalAsync();
             await _app.LogoutAsync();
         }
 

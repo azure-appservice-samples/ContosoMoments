@@ -15,7 +15,6 @@ namespace ContosoMoments.ViewModels
         public AlbumsListViewModel(MobileServiceClient client, App app)
         {
             this.app = app;
-            _client = client;
 
             RenameCommand = new DelegateCommand(OnStartAlbumRename, IsRenameAndDeleteEnabled);
             DeleteCommand = new DelegateCommand(OnDeleteAlbum, IsRenameAndDeleteEnabled);

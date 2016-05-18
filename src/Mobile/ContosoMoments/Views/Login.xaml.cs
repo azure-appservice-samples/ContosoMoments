@@ -75,9 +75,9 @@ namespace ContosoMoments.Views
                 await LoginComplete(authOption);
             }
             catch (Exception)
-            { // if user cancels, then set to Guest access
-                Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
-                tcs.TrySetResult(Settings.AuthOption.GuestAccess);
+            { 
+                // if user cancels, then set to Guest access
+                await LoginComplete(Settings.AuthOption.GuestAccess);
             }
         }
     }

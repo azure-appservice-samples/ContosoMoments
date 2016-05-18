@@ -6,17 +6,11 @@ namespace ContosoMoments.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
-        protected MobileServiceClient _client;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var temp = PropertyChanged;
-            if (temp != null)
-            {
-                temp(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
