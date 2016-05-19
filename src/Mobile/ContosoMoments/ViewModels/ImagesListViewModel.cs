@@ -19,7 +19,6 @@ namespace ContosoMoments.ViewModels
 
         public ImagesListViewModel(MobileServiceClient client, App app)
         {
-            _client = client;
             _app = app;
 
             DeleteCommand = new DelegateCommand(OnDeleteAlbum, AlbumsListViewModel.IsRenameAndDeleteEnabled);
@@ -77,20 +76,22 @@ namespace ContosoMoments.ViewModels
                     var result = await _app.imageTableSync.GetFilesAsync(im);
                     im.File = result.FirstOrDefault();
 
-                    string filePath = await FileHelper.GetLocalFilePathAsync(im.Id, im.File.Name, _app.DataFilesPath);
-                    im.ImageLoaded = await FileSystem.Current.LocalStorage.CheckExistsAsync(filePath) == ExistenceCheckResult.FileExists;
+                    if (im.File != null) {
+                        string filePath = await FileHelper.GetLocalFilePathAsync(im.Id, im.File.Name, _app.DataFilesPath);
+                        im.ImageLoaded = await FileSystem.Current.LocalStorage.CheckExistsAsync(filePath) == ExistenceCheckResult.FileExists;
+                    }
                 }
 
-                App.Instance.MobileService.EventManager.Subscribe<MobileServiceEvent>(DownloadStatusObserver);
+                App.Instance.MobileService.EventManager.Subscribe<ImageDownloadEvent>(DownloadStatusObserver);
             }
             catch (Exception ex) {
                 ErrorMessage = ex.Message;
             }
         }
 
-        private void DownloadStatusObserver(MobileServiceEvent obj)
+        private void DownloadStatusObserver(ImageDownloadEvent evt)
         {
-            var image = Images.Where(x => x.Id == obj.Name).FirstOrDefault();
+            var image = Images.Where(x => x.Id == evt.Id).FirstOrDefault();
             Debug.WriteLine($"Image download event: {image?.Id}");
 
             if (image != null) {

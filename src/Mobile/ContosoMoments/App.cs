@@ -16,16 +16,16 @@ namespace ContosoMoments
 {
     public class App : Application
     {
-        private string ApplicationURL = @"https://donnamcontosomoments.azurewebsites.net";
+        private string ApplicationURL;
 
-        //public static string DB_LOCAL_FILENAME = "localDb-" + DateTime.Now.Ticks + ".sqlite";
         public const string LocalDbFilename = "localDb.sqlite";
+        private const string AllAlbumsQueryString = "allAlbums";
+        private const string AllImagesQueryString = "allImages";
         public MobileServiceClient MobileService;
         public MobileServiceUser AuthenticatedUser;
 
         public IMobileServiceSyncTable<Models.Album> albumTableSync;
         public IMobileServiceSyncTable<Models.Image> imageTableSync;
-        public IMobileServiceSyncTable<ResizeRequest> resizeRequestSync;
 
         public static App Instance;
         public static object UIContext { get; set; }
@@ -40,7 +40,8 @@ namespace ContosoMoments
         public string CurrentUserId
         {
             get { return currentUserId ?? Settings.Current.DefaultUserId; }
-            set {
+            set
+            {
                 currentUserId = value;
                 Settings.Current.CurrentUserId = currentUserId;
             }
@@ -102,11 +103,9 @@ namespace ContosoMoments
             if (firstStart) {
                 await Utils.PopulateDefaultsAsync();
 
-                var loginPage = new Login();
                 MainPage = new NavigationPage(new AlbumsListView(this));
 
-                await MainPage.Navigation.PushAsync(loginPage);
-                await loginPage.GetResultAsync();
+                await DoLoginAsync();
             }
             else {
                 currentUserId = Settings.Current.CurrentUserId;
@@ -123,27 +122,28 @@ namespace ContosoMoments
             await FileHelper.DeleteLocalFileAsync(path);
 
             await InitMobileService(uri, firstStart: true);
-            }
+        }
+
+        private async Task DoLoginAsync()
+        {
+            var loginPage = new Login();
+            await MainPage.Navigation.PushAsync(loginPage);
+            Settings.Current.AuthenticationType = await loginPage.GetResultAsync();
+
+            await SyncAsync(notify: true);
+        }
 
         internal async Task LogoutAsync()
         {
             await MobileService.LogoutAsync();
 
-            await imageTableSync.PurgeAsync("allImages", null, true, CancellationToken.None);
-            await albumTableSync.PurgeAsync("allAlbums", null, true, CancellationToken.None);
-            await resizeRequestSync.PurgeAsync(true);
+            await imageTableSync.PurgeAsync(AllImagesQueryString, null, true, CancellationToken.None);
+            await albumTableSync.PurgeAsync(AllAlbumsQueryString, null, true, CancellationToken.None);
 
             currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
 
-            var albumListView = new AlbumsListView(this);
-            MainPage = new NavigationPage(albumListView);
-
-            var loginPage = new Login();           
-            await MainPage.Navigation.PushAsync(loginPage);
-            await loginPage.GetResultAsync();
-
-            await albumListView.RefreshAsync(true); // reload data, since now the user might be logged in
+            await DoLoginAsync();
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
@@ -152,7 +152,6 @@ namespace ContosoMoments
                 var store = new MobileServiceSQLiteStore(localDbFilename);
                 store.DefineTable<Models.Album>();
                 store.DefineTable<Models.Image>();
-                store.DefineTable<ResizeRequest>();
 
                 // Initialize file sync
                 MobileService.InitializeFileSyncContext(new FileSyncHandler(this), store, new FileSyncTriggerFactory(MobileService, true));
@@ -165,28 +164,26 @@ namespace ContosoMoments
         public async Task SyncAlbumsAsync()
         {
             await MobileService.SyncContext.PushAsync();
-            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery());
+            await albumTableSync.PullAsync(AllAlbumsQueryString, albumTableSync.CreateQuery());
         }
 
-        public async Task SyncAsync()
+        public async Task SyncAsync(bool notify = false)
         {
             await imageTableSync.PushFileChangesAsync();
             await MobileService.SyncContext.PushAsync();
 
-            await albumTableSync.PullAsync("allAlbums", albumTableSync.CreateQuery());
-            await imageTableSync.PullAsync("allImages", imageTableSync.CreateQuery());
+            await albumTableSync.PullAsync(AllAlbumsQueryString, albumTableSync.CreateQuery());
+            await imageTableSync.PullAsync(AllImagesQueryString, imageTableSync.CreateQuery());
+
+            if (notify) {
+                await MobileService.EventManager.PublishAsync(SyncCompletedEvent.Instance);
+            }
         }
 
         public void InitLocalTables()
         {
-            try {
-                albumTableSync = MobileService.GetSyncTable<Models.Album>();
-                imageTableSync = MobileService.GetSyncTable<Models.Image>();
-                resizeRequestSync = MobileService.GetSyncTable<ResizeRequest>();
-            }
-            catch (Exception ex) {
-                Trace.WriteLine(ex);
-            }
+            albumTableSync = MobileService.GetSyncTable<Models.Album>();
+            imageTableSync = MobileService.GetSyncTable<Models.Image>();
         }
 
         internal Task DownloadFileAsync(MobileServiceFile file)
@@ -213,7 +210,7 @@ namespace ContosoMoments
             await fileRef.RenameAsync(path, NameCollisionOption.ReplaceExisting);
             Debug.WriteLine("Renamed file to - " + path);
 
-            await MobileService.EventManager.PublishAsync(new MobileServiceEvent(file.ParentId));
+            await MobileService.EventManager.PublishAsync(new ImageDownloadEvent(file.ParentId));
         }
 
         internal async Task<Models.Image> AddImageAsync(Models.Album album, string sourceFile)
@@ -230,10 +227,6 @@ namespace ContosoMoments
             // add image to the record
             string copiedFilePath = await FileHelper.CopyFileAsync(image.Id, sourceFile, DataFilesPath);
             string copiedFileName = Path.GetFileName(copiedFilePath);
-
-            // add an object representing a resize request for the blob
-            // it will be synced after all images have been uploaded
-            await resizeRequestSync.InsertAsync(new ResizeRequest { BlobName = copiedFileName });
 
             var file = await imageTableSync.AddFileAsync(image, copiedFileName);
             image.File = file;

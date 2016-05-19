@@ -6,7 +6,12 @@ namespace ContosoMoments.Models
     public interface IMobileClient
     {
         Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider);
-        void Logout();
+
+        /// <summary>
+        /// Login using Facebook client flow
+        /// </summary>
+        Task<MobileServiceUser> LoginFacebookAsync();
+        Task Logout();
         void ForceCloseApp();
     }
 }

@@ -74,10 +74,7 @@ namespace ContosoMoments.Api
 
         public static async Task DeleteBlobAsync(string imageId)
         {
-            var qm = new QueueManager();
-            var blobInfo = new BlobInformation() { ImageId = imageId };
-
-            await qm.PushToDeleteQueue(blobInfo);
+            await QueueManager.PushToDeleteQueue(imageId);
         }
     }
 }

@@ -20,10 +20,6 @@ namespace ContosoMoments.Views
             var tapLikeImage = new TapGestureRecognizer();
             tapLikeImage.Tapped += OnLike;
             imgLike.GestureRecognizers.Add(tapLikeImage);
-
-            var tapSettingsImage = new TapGestureRecognizer();
-            tapSettingsImage.Tapped += OnSettings;
-            imgSettings.GestureRecognizers.Add(tapSettingsImage);
         }
 
         public async void OnLike(object sender, EventArgs e)
@@ -54,10 +50,13 @@ namespace ContosoMoments.Views
             IFileSyncContext context = App.Instance.MobileService.GetFileSyncContext();
 
             var recordFiles = await context.MobileServiceFilesClient.GetFilesAsync(App.Instance.imageTableSync.TableName, vm.Image.Id);
-            var file = recordFiles.First(f => f.StoreUri.Contains(imageSize));
+            var file = recordFiles.FirstOrDefault(f => f.StoreUri.Contains(imageSize));
 
             if (file != null) {
                 await DownloadAndDisplayImage(file, imageSize);
+            }
+            else {
+                await DisplayAlert("Error downloading image", "Image doesn't exist", "OK");
             }
         }
 
@@ -89,7 +88,7 @@ namespace ContosoMoments.Views
             return toDownload;
         }
 
-        private static ContentPage CreateDetailsPage(string uri) 
+        private static ContentPage CreateDetailsPage(string uri)
         {
             var imagePage = new ContentPage {
                 Content = new StackLayout() {
@@ -100,8 +99,8 @@ namespace ContosoMoments.Views
                             VerticalOptions = LayoutOptions.Center,
                             HorizontalOptions = LayoutOptions.Center,
                             Source = ImageSource.FromFile(uri)
-                       }
-                   }
+                        }
+                    }
                 }
             };
 

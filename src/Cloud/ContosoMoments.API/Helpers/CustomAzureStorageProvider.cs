@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace ContosoMoments.Api
 {
@@ -12,7 +13,7 @@ namespace ContosoMoments.Api
         public CustomAzureStorageProvider() : base(GetConnectionString())
         { }
 
-        protected override Task<IEnumerable<CloudBlockBlob>> GetContainerFilesAsync(string containerString)
+        protected override async Task<IEnumerable<CloudBlockBlob>> GetContainerFilesAsync(string containerString)
         {
             // ImageNameResolver returns the container string in the format container/file
             var containerInfo = containerString.Split('/');
@@ -21,8 +22,10 @@ namespace ContosoMoments.Api
 
             CloudBlobContainer container = GetContainer(containerName);
 
-            IEnumerable<CloudBlockBlob> result = new CloudBlockBlob[] { container.GetBlockBlobReference(blobName) };
-            return Task.FromResult(result);
+            var blob = container.GetBlockBlobReference(blobName);
+            var result = await blob.ExistsAsync() ? new[] { blob } : Enumerable.Empty<CloudBlockBlob>();
+
+            return result;
         }
 
         internal static string GetConnectionString(string connectionStringName = Constants.StorageConnectionStringName)

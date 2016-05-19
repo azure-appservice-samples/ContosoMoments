@@ -32,8 +32,7 @@ namespace ContosoMoments.iOS
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
             SQLitePCL.CurrentPlatform.Init();
 
-            if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-            {
+            if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0)) {
                 var settings = UIUserNotificationSettings.GetSettingsForTypes(UIUserNotificationType.Sound |
                                                                               UIUserNotificationType.Alert |
                                                                               UIUserNotificationType.Badge, null);
@@ -42,54 +41,55 @@ namespace ContosoMoments.iOS
                 UIApplication.SharedApplication.RegisterForRemoteNotifications();
 
             }
-            else
-            {
+            else {
                 UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(UIRemoteNotificationType.Badge |
                                                                                    UIRemoteNotificationType.Sound |
                                                                                    UIRemoteNotificationType.Alert);
             }
-                
+
             var formsApp = new ContosoMoments.App();
             LoadApplication(formsApp);
-        
+
+            Facebook.CoreKit.ApplicationDelegate.SharedInstance.FinishedLaunching(app, options);
+
             return base.FinishedLaunching(app, options);
-        }              
+        }
+
+
+        public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            // We need to handle URLs by passing them to their own OpenUrl in order to make the SSO authentication works.
+            return Facebook.CoreKit.ApplicationDelegate.SharedInstance.OpenUrl(application, url, sourceApplication, annotation);
+        }
 
         public static async Task RegisterWithMobilePushNotifications()
         {
-            if (null != DeviceToken && IsAfterLogin)
-            {
-                // Register for push with Mobile Services
-                //IEnumerable<string> tag = new List<string>() { "uniqueTag" };
+            if (DeviceToken != null && IsAfterLogin) {
 
-                const string templateBodyAPNS = "{\"aps\":{\"alert\":\"$(messageParam)\"}}";
-
-                //JObject templateBody = new JObject();
-                //templateBody["body"] = notificationTemplate;
-
-                //JObject templates = new JObject();
-                //templates["ContosoMomentsApnsTemplate"] = templateBody;
-
-                JObject templates = new JObject();
-                templates["genericMessage"] = new JObject
-                {
-                    {"body", templateBodyAPNS}
+                var apnsBody = new JObject {
+                    {
+                        "aps",
+                        new JObject {
+                            { "alert", "$(messageParam)" }
+                        }
+                    }
                 };
 
-                //var expiryDate = DateTime.Now.AddDays(90).ToString
-                //    (System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
+                var template = new JObject {
+                    {
+                        "genericMessage",
+                        new JObject {
+                            {"body", apnsBody}
+                        }
+                    }
+                };
 
-                // Get Mobile Services client
-                MobileServiceClient client = App.Instance.MobileService;
-                var push = client.GetPush();
-
-                try
-                {
-                    await push.RegisterAsync(DeviceToken, templates);
+                try {
+                    var push = App.Instance.MobileService.GetPush();
+                    await push.RegisterAsync(DeviceToken, template);
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("RegisterWithMobilePushNotifications: " + ex.Message);
+                catch (Exception ex) {
+                    System.Diagnostics.Debug.WriteLine("Exception in RegisterWithMobilePushNotifications: " + ex.Message);
                 }
             }
         }
@@ -108,8 +108,7 @@ namespace ContosoMoments.iOS
 
             bool success = userInfo.TryGetValue(new NSString("inAppMessage"), out inAppMessage);
 
-            if (success)
-            {
+            if (success) {
                 var alert = new UIAlertView("Got push notification", inAppMessage.ToString(), null, "OK", null);
                 alert.Show();
             }

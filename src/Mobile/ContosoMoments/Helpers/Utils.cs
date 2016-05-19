@@ -3,13 +3,25 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Microsoft.WindowsAzure.MobileServices.Eventing;
 
 namespace ContosoMoments
 {
-    public class ResizeRequest
+    public class ImageDownloadEvent : MobileServiceEvent
     {
         public string Id { get; set; }
-        public string BlobName { get; set; }
+
+        public ImageDownloadEvent(string id) : base(id)
+        {
+            this.Id = id;
+        }        
+    }
+
+    public class SyncCompletedEvent : MobileServiceEvent
+    {
+        public static SyncCompletedEvent Instance = new SyncCompletedEvent();
+
+        public SyncCompletedEvent() : base("SyncCompletedEvent") { }
     }
 
     public class ActivityIndicatorScope : IDisposable

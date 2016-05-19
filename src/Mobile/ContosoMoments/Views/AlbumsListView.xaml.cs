@@ -39,7 +39,7 @@ namespace ContosoMoments.Views
             viewModel = new AlbumsListViewModel(App.Instance.MobileService, app);
 
             BindingContext = viewModel;
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            viewModel.PropertyChanged += ViewModelPropertyChanged;
 
             Settings.Current.PropertyChanged += AuthTypePropertyChanged;
 
@@ -57,9 +57,11 @@ namespace ContosoMoments.Views
             imgSettings.GestureRecognizers.Add(tapSettingsImage);
 
             viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
+
+            App.Instance.MobileService.EventManager.Subscribe<SyncCompletedEvent>(OnSyncCompleted);
         }
 
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AlbumsListViewModel.ErrorMessage) && viewModel.ErrorMessage != null) {
                 DisplayAlert(viewModel.ErrorMessageTitle, viewModel.ErrorMessage, "OK");
@@ -73,30 +75,22 @@ namespace ContosoMoments.Views
             Grid.SetColumn(imgSettings, settingsColumn);
         }
 
+        private async void OnSyncCompleted(SyncCompletedEvent obj)
+        {
+            await LoadItemsAsync();
+        }
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
             AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
             if (albumsList.ItemsSource != null) {
+                // data has already been loaded, skip sync
                 return;
             }
 
-            using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
-
-                if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-
-                    await _app.SyncAlbumsAsync();
-
-#pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
-                    _app.SyncAsync();
-#pragma warning restore CS4014
-                }
-                else
-                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Using local data. Please try again when data connection is back", "OK");
-
-                await LoadItemsAsync();
-            }
+            await SyncItemsAsync(true);
         }
 
         private async Task LoadItemsAsync()

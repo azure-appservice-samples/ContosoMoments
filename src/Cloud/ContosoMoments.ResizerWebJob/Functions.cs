@@ -10,6 +10,16 @@ namespace ContosoMoments.ResizerWebJob
 {
     public class Functions
     {
+        public class BlobInfo
+        {
+            public string ImageId { get; set; }
+
+            public const string ImageNameLg = "images-lg/{ImageId}";
+            public const string ImageNameMd = "images-md/{ImageId}";
+            public const string ImageNameSm = "images-sm/{ImageId}";
+            public const string ImageNameXs = "images-xs/{ImageId}";
+        }
+
         private static Dictionary<ImageSize, ResizeSettings> imageDimensionsTable = new Dictionary<ImageSize, ResizeSettings>()
         {
             { ImageSize.ExtraSmall, new ResizeSettings("maxwidth=320&maxheight=200") },
@@ -18,21 +28,29 @@ namespace ContosoMoments.ResizerWebJob
         };
 
         public async static Task StartImageScalingAsync(
-            [QueueTrigger("resizerequest")] BlobInformation blobInfo,
-            [Blob("{BlobNameLG}/{ImageId}")] CloudBlockBlob blobInput,
-            [Blob("{BlobNameXS}/{ImageId}")] CloudBlockBlob blobOutputExtraSmall,
-            [Blob("{BlobNameSM}/{ImageId}")] CloudBlockBlob blobOutputSmall,
-            [Blob("{BlobNameMD}/{ImageId}")] CloudBlockBlob blobOutputMedium)
+            [BlobTrigger(BlobInfo.ImageNameLg)] CloudBlockBlob blobInput,
+            [Blob(BlobInfo.ImageNameXs)] CloudBlockBlob blobOutputExtraSmall,
+            [Blob(BlobInfo.ImageNameSm)] CloudBlockBlob blobOutputSmall,
+            [Blob(BlobInfo.ImageNameMd)] CloudBlockBlob blobOutputMedium)
         {
             using (var streamInput = await blobInput.OpenReadAsync()) {
-
-                var contentType = await ResizeImage(streamInput, blobOutputExtraSmall, ImageSize.ExtraSmall);
+                await ResizeImage(streamInput, blobOutputExtraSmall, ImageSize.ExtraSmall);
                 await ResizeImage(streamInput, blobOutputSmall, ImageSize.Small);
                 await ResizeImage(streamInput, blobOutputMedium, ImageSize.Medium);
-
-                blobInput.Properties.ContentType = contentType;
-                blobInput.SetProperties();
             }
+        }
+
+        public async static Task DeleteImagesAsync(
+            [QueueTrigger("deleterequest")] BlobInfo blobInfo,
+            [Blob(BlobInfo.ImageNameLg)] CloudBlockBlob blobLarge,
+            [Blob(BlobInfo.ImageNameXs)] CloudBlockBlob blobExtraSmall,
+            [Blob(BlobInfo.ImageNameSm)] CloudBlockBlob blobSmall,
+            [Blob(BlobInfo.ImageNameMd)] CloudBlockBlob blobMedium)
+        {
+            await blobExtraSmall.DeleteAsync();
+            await blobSmall.DeleteAsync();
+            await blobMedium.DeleteAsync();
+            await blobLarge.DeleteAsync();
         }
 
         private static async Task<string> ResizeImage(Stream streamInput, CloudBlockBlob blobOutput, ImageSize size)
@@ -56,19 +74,6 @@ namespace ContosoMoments.ResizerWebJob
 
                 return contentType;
             }
-        }
-
-        public async static Task DeleteImagesAsync(
-            [QueueTrigger("deleterequest")] BlobInformation blobInfo,
-            [Blob("{BlobNameLG}/{ImageId}")] CloudBlockBlob blobLarge,
-            [Blob("{BlobNameXS}/{ImageId}")] CloudBlockBlob blobExtraSmall,
-            [Blob("{BlobNameSM}/{ImageId}")] CloudBlockBlob blobSmall,
-            [Blob("{BlobNameMD}/{ImageId}")] CloudBlockBlob blobMedium)
-        {
-            await blobExtraSmall.DeleteAsync();
-            await blobSmall.DeleteAsync();
-            await blobMedium.DeleteAsync();
-            await blobLarge.DeleteAsync();
         }
     }
 }

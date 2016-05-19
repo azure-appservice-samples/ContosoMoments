@@ -21,8 +21,6 @@ namespace ContosoMoments.Views
 
         protected override void OnAppearing()
         {
-            mobileServiceUrl.Text = "https://donnamcontosomoments.azurewebsites.net/";
-
             if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
                 mobileServiceUrl.Text = Settings.Current.MobileAppUrl;
                 LogoutButton.IsEnabled = true;
@@ -64,6 +62,7 @@ namespace ContosoMoments.Views
 
         public async void OnLogout(object sender, EventArgs args)
         {
+            await Navigation.PopModalAsync();
             await _app.LogoutAsync();
         }
 

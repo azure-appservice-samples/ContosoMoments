@@ -1,12 +1,11 @@
-﻿using ContosoMoments.Common.Models;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Configuration;
 using Microsoft.Azure.Mobile.Server.Files;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json.Linq;
 
 namespace ContosoMoments.Common
 {
@@ -17,17 +16,15 @@ namespace ContosoMoments.Common
             return ConfigurationManager.ConnectionStrings[Constants.StorageConnectionStringName].ConnectionString;
         }
 
-        public async Task PushToResizeQueue(BlobInformation blobInfo)
+        public static async Task PushToDeleteQueue(string blobName)
         {
-            await PushToQueue(AppSettings.ResizeQueueName, JsonConvert.SerializeObject(blobInfo));
+            var payload = new JObject();
+            payload["ImageId"] = blobName;
+                 
+            await PushToQueue(AppSettings.DeleteQueueName, payload.ToString());
         }
 
-        public async Task PushToDeleteQueue(BlobInformation blobInfo)
-        {
-            await PushToQueue(AppSettings.DeleteQueueName, JsonConvert.SerializeObject(blobInfo));
-        }
-
-        private async Task PushToQueue(string queueName, string data)
+        private static async Task PushToQueue(string queueName, string data)
         {
             try {
                 CloudStorageAccount account;
