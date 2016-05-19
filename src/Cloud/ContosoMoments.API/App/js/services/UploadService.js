@@ -26,6 +26,7 @@ contosoMomentsApp
             });
         }
         var commit = function (sasurl, options) {
+            // TODO: Change to Mobile Service Table Object.
             return $http.post('/tables/Image', {
                 "Id": sasurl.EntityId,
                 "UploadFormat": "Web Upload",

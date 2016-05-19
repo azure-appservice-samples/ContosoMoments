@@ -445,7 +445,6 @@
     <Content Include="app\js\directives\FileChange.js" />
     <Content Include="app\js\directives\RouteLoader.js" />
     <Content Include="app\js\services\AlbumService.js" />
-    <Content Include="app\js\services\AuthService.js" />
     <Content Include="app\js\services\ImageService.js" />
     <Content Include="app\js\services\MobileService.js" />
     <Content Include="app\js\services\UploadService.js" />

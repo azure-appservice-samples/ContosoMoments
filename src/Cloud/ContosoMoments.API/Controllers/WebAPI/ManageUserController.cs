@@ -44,23 +44,6 @@ namespace ContosoMoments.Api
             return await GetUserId(Request, User);
         }
 
-        public string Get(string data, string provider)
-        {
-            string retVal = default(string);
-
-            if (provider.Equals("facebook"))
-            {
-                retVal = CheckAddEmailToDB(data);
-            }
-
-            if (provider.Equals("aad"))
-            {
-                retVal = CheckAddEmailToDB(data);
-            }
-
-            return UserOrDefault(retVal);
-        }
-
         private static string UserOrDefault(string retVal)
         {
             if (string.IsNullOrWhiteSpace(retVal))
