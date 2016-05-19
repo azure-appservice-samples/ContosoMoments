@@ -1,7 +1,8 @@
 ﻿'use strict';
 
 contosoMomentsApp
-    .controller('uploadController', ['$scope', 'uploadService', '$uibModalInstance', '$timeout', 'authService', 'selectedAlbum', function ($scope, uploadService, $uibModalInstance, $timeout, authService, selectedAlbum) {
+    .controller('uploadController', ['$scope', 'uploadService', '$uibModalInstance', '$timeout', 'selectedAlbum', 'appConfig',
+        function ($scope, uploadService, $uibModalInstance, $timeout, selectedAlbum, appConfig) {
         var init = function () {
             $scope.progress = -1;
             $scope.uploading = false;
@@ -25,7 +26,7 @@ contosoMomentsApp
                 $scope.hasError = true;
                 $scope.progressType = "error";
             },
-            userId: authService.currentContext().userId,
+            userId: appConfig.userId,
             albumId: selectedAlbum.album.id
         }
         this.showProgress = function () {

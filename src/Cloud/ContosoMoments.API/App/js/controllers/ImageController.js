@@ -1,8 +1,8 @@
 ﻿'use strict';
 
 contosoMomentsApp
-    .controller('imageController', ['currentImage', 'imageService', 'authContext', '$q', '$scope',
-    function (currentImage, imageService, authContext, $q, $scope) {
+    .controller('imageController', ['currentImage', 'imageService', '$q', '$scope',
+    function (currentImage, imageService, $q, $scope) {
         var self = this;
         $q.when(currentImage).then(function (curImage) {
             if (angular.isArray(curImage)) {
@@ -13,8 +13,6 @@ contosoMomentsApp
                 self.currentImage = curImage.image;
                 self.currentAlbum = curImage.album;
             }
-
-            self.currentAlbum.owner = authContext.currentUser.email;
         });
 
         self.getCurrentImageURL = function (size) {

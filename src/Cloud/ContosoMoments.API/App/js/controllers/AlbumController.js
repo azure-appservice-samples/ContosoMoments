@@ -1,14 +1,18 @@
 ﻿'use strict';
 
 contosoMomentsApp
-    .controller('albumsController', ['$scope', 'albumsService', 'authContext', '$state',
-        function ($scope, albumsService, authContext, $state) {
+    .controller('albumsController', ['$scope', 'albumsService', '$state', 'appConfig',
+        function ($scope, albumsService, $state, appConfig) {
             var self = this;
 
-            var curUserId = authContext.userId;
+            var curUserId = appConfig.DefaultUserId;
+
+            if (appConfig && appConfig.userId) {
+                curUserId = appConfig.userId;
+            }
 
             self.albums = [];
-            albumsService.getUserAlbums(authContext.userId).then(function (albums) {
+            albumsService.getUserAlbums(curUserId).then(function (albums) {
                 if (albums && angular.isArray(albums)) {
                     self.albums = albums;
                 }
@@ -75,8 +79,8 @@ contosoMomentsApp
         }]);
 
 contosoMomentsApp
-    .controller('createAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'authService', 'selectedAlbum', '$rootScope',
-        function ($scope, albumsService, $uibModalInstance, authService, selectedAlbum, $rootScope) {
+    .controller('createAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum', '$rootScope', 'appConfig',
+        function ($scope, albumsService, $uibModalInstance, selectedAlbum, $rootScope, appConfig) {
             var self = this;
 
             self.postingAlbum = false;
@@ -93,10 +97,10 @@ contosoMomentsApp
                 });
             }
             var createAlbum = function () {
-                var auth = authService.currentContext();
+
                 self.postingAlbum = true;
                 albumsService
-                    .createAlbum(self.currentAlbum.albumName, auth.userId)
+                    .createAlbum(self.currentAlbum.albumName, appConfig.userId)
                     .then(function (res) {
                         $uibModalInstance.close(res);
                     }, function (err) {

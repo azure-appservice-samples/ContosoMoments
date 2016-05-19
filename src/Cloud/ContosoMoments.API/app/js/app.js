@@ -12,11 +12,6 @@ contosoMomentsApp.config(['$locationProvider', '$stateProvider', '$urlRouterProv
         .state('main', {
             abstract: true,
             template: "<ui-view/>",
-            resolve: {
-                authContext: ['authService', function (authService) {
-                    return authService.getAuthContext();
-                }]
-            }
         })
 
         .state('main.albums', {

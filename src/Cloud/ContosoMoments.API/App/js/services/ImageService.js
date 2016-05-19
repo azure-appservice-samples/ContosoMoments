@@ -97,6 +97,7 @@ contosoMomentsApp
             },
             deleteImage: function (id) {
                 var defered = $q.defer();
+                // To Do: Mobile Service Client to do Delete for Auth Header
                 $http.delete('/api/image/' + id, []).success(function (data, status) {
                     defered.resolve(data);
                     $rootScope.$broadcast('imageDeleted', id);
