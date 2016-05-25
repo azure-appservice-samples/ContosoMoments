@@ -131,9 +131,7 @@ namespace ContosoMoments.ViewModels
         public async Task GetAlbumsAsync(string userId)
         {
             Albums =
-                await app.albumTableSync
-                .Where(a => a.UserId == userId || a.IsDefault)
-                .ToListAsync();
+                await app.albumTableSync.ToListAsync();
         }
 
         #region UI Actions

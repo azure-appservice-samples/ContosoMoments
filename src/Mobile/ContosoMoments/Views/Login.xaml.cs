@@ -23,16 +23,12 @@ namespace ContosoMoments.Views
 
         private async void OnFBLoginClicked(object sender, EventArgs e)
         {
-            await DoLoginAsync(
-                MobileServiceAuthenticationProvider.Facebook,
-                Settings.AuthOption.Facebook);
+            await DoLoginAsync(Settings.AuthOption.Facebook);
         }
 
         private async void OnAADLoginClicked(object sender, EventArgs e)
         {
-            await DoLoginAsync(
-                MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory,
-                Settings.AuthOption.ActiveDirectory);
+            await DoLoginAsync(Settings.AuthOption.ActiveDirectory);
         }
 
         private async void OnGuestClicked(object sender, EventArgs e)
@@ -48,29 +44,11 @@ namespace ContosoMoments.Views
             tcs.TrySetResult(option);
         }
 
-        private async Task DoLoginAsync(MobileServiceAuthenticationProvider provider, Settings.AuthOption authOption)
+        private async Task DoLoginAsync(Settings.AuthOption authOption)
         {
-            MobileServiceUser user;
-
             try
             {
-                var mobileClient = DependencyService.Get<IMobileClient>();
-
-                user = 
-                    authOption == Settings.AuthOption.Facebook ? 
-                        await mobileClient.LoginFacebookAsync() :
-                        await mobileClient.LoginAsync(provider);
-
-                App.Instance.AuthenticatedUser = user;
-                System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
-
-                App.Instance.CurrentUserId =
-                    await App.Instance.MobileService.InvokeApiAsync<string>(
-                    "ManageUser",
-                    System.Net.Http.HttpMethod.Get,
-                    null);
-
-                Debug.WriteLine($"Set current userID to: {App.Instance.CurrentUserId}");
+                await AuthHandler.DoLoginAsync(authOption);
                 await LoginComplete(authOption);
             }
             catch (Exception)

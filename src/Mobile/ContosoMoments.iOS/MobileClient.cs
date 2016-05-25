@@ -14,7 +14,7 @@ namespace ContosoMoments.iOS
 {
     public class MobileClient : IMobileClient
     {
-        private TaskCompletionSource<MobileServiceUser> tcs = new TaskCompletionSource<MobileServiceUser>();
+        private TaskCompletionSource<MobileServiceUser> tcs;
 
         public Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
@@ -24,8 +24,7 @@ namespace ContosoMoments.iOS
 
         public async Task Logout()
         {
-            foreach (var cookie in NSHttpCookieStorage.SharedStorage.Cookies)
-            {
+            foreach (var cookie in NSHttpCookieStorage.SharedStorage.Cookies) {
                 NSHttpCookieStorage.SharedStorage.DeleteCookie(cookie);
             }
 
@@ -39,6 +38,7 @@ namespace ContosoMoments.iOS
 
         public Task<MobileServiceUser> LoginFacebookAsync()
         {
+            tcs = new TaskCompletionSource<MobileServiceUser>();
             var loginManager = new LoginManager();
             var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
 
@@ -50,10 +50,9 @@ namespace ContosoMoments.iOS
 
         private async void LoginTokenHandler(LoginManagerLoginResult loginResult, NSError error)
         {
-            if (loginResult.Token != null)
-            {
+            if (loginResult.Token != null) {
                 Debug.WriteLine($"Logged into Facebook, access_token: {loginResult.Token.TokenString}");
-                
+
                 var token = new JObject();
                 token["access_token"] = loginResult.Token.TokenString;
 
@@ -62,8 +61,7 @@ namespace ContosoMoments.iOS
 
                 tcs.TrySetResult(user);
             }
-            else
-            {
+            else {
                 tcs.TrySetException(new Exception("Facebook login failed"));
             }
         }
