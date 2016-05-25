@@ -35,11 +35,6 @@ namespace ContosoMoments.Views
             }
         }
 
-        public async void OnSettings(object sender, EventArgs e)
-        {
-            await Navigation.PushModalAsync(new SettingsView(App.Current as App));
-        }
-
         public async void OnOpenImage(object sender, EventArgs args)
         {
             var button = (Button)sender;

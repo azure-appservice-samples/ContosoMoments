@@ -1,6 +1,7 @@
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace ContosoMoments.Views
 {
@@ -8,6 +9,7 @@ namespace ContosoMoments.Views
     {
         public bool UrlIsInvalid { get; set; }
         private App _app;
+        private TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
         public SettingsView(App app)
         {
@@ -33,12 +35,18 @@ namespace ContosoMoments.Views
             base.OnAppearing();
         }
 
+        public Task ShowDialog()
+        {
+            return tcs.Task;
+        }
+
         public async void OnSave(object sender, EventArgs args)
         {
-            if (Settings.Current.MobileAppUrl == mobileServiceUrl.Text && 
+            if (Settings.Current.MobileAppUrl == mobileServiceUrl.Text &&
                 Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
                 // no changes, return
                 await Navigation.PopModalAsync();
+                tcs.TrySetResult(true);
                 return;
             }
 
@@ -52,11 +60,13 @@ namespace ContosoMoments.Views
             if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
                 // a URI had been set previously, so the app state should be reset
                 Settings.Current.MobileAppUrl = newUri;
-                await _app.ResetAsync(newUri);
+                await Navigation.PopModalAsync();
+                tcs.TrySetResult(true);
+
+                await _app.ResetAsync();
             }
             else {
                 Settings.Current.MobileAppUrl = newUri;
-                await _app.InitMobileService(newUri, firstStart: true);
             }
         }
 
@@ -73,10 +83,9 @@ namespace ContosoMoments.Views
                 return false;
             }
 
-            var uriBuilder = new UriBuilder(inputString) 
-            { 
-                    Scheme = Uri.UriSchemeHttps,
-                    Port = -1
+            var uriBuilder = new UriBuilder(inputString) {
+                Scheme = Uri.UriSchemeHttps,
+                Port = -1
             }; // set as https always
             httpsUri = uriBuilder.ToString();
             return true;

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Diagnostics;
+using ContosoMoments.Helpers;
 
 namespace ContosoMoments
 {
@@ -48,7 +49,11 @@ namespace ContosoMoments
 
         public static async Task DoLoginAsync(Settings.AuthOption authOption)
         {
-            var mobileClient = DependencyService.Get<IMobileClient>();
+            if (authOption == Settings.AuthOption.GuestAccess) {
+                return; // can't authenticate
+            }
+
+            var mobileClient = DependencyService.Get<IPlatform>();
 
             var user =
                 authOption == Settings.AuthOption.Facebook ?
@@ -65,6 +70,8 @@ namespace ContosoMoments
                 null);
 
             Debug.WriteLine($"Set current userID to: {App.Instance.CurrentUserId}");
+
+            AuthStore.CacheAuthToken(user);
         }
 
         private async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage request)
