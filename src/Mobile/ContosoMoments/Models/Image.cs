@@ -10,7 +10,6 @@ namespace ContosoMoments.Models
     {
         public string Id { get; set; }
         public string UploadFormat { get; set; }
-        public Album Album { get; set; }
         public string AlbumId { get; set; }
         public string UserId { get; set; }
 
