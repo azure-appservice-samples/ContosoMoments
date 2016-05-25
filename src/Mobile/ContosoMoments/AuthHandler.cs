@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace ContosoMoments
 {
@@ -26,7 +27,7 @@ namespace ContosoMoments
 
             if (response.StatusCode == HttpStatusCode.Unauthorized) {
                 try {
-                    await ShowAuthDialog();
+                    await DoLoginAsync(Settings.Current.AuthenticationType);
 
                     clonedRequest = await CloneRequestAsync(request);
 
@@ -45,18 +46,25 @@ namespace ContosoMoments
             return response;
         }
 
-        private async Task ShowAuthDialog()
+        public static async Task DoLoginAsync(Settings.AuthOption authOption)
         {
-            var authSetting = Settings.Current.AuthenticationType;
-            var provider = 
-                authSetting == Settings.AuthOption.Facebook ? MobileServiceAuthenticationProvider.Facebook : 
-                    MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory;
+            var mobileClient = DependencyService.Get<IMobileClient>();
 
-            // NOTE: if the auth setting was actually Guest, that means that the UI allowed the user 
-            // to do something while in authenticated mode that it should not have. 
-            // So, it's a bug that will result in an NPE in SendAsync above
+            var user =
+                authOption == Settings.AuthOption.Facebook ?
+                    await mobileClient.LoginFacebookAsync() :
+                    await mobileClient.LoginAsync(MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory);
 
-            await DependencyService.Get<IMobileClient>().LoginAsync(provider);
+            App.Instance.AuthenticatedUser = user;
+            System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
+
+            App.Instance.CurrentUserId =
+                await App.Instance.MobileService.InvokeApiAsync<string>(
+                "ManageUser",
+                System.Net.Http.HttpMethod.Get,
+                null);
+
+            Debug.WriteLine($"Set current userID to: {App.Instance.CurrentUserId}");
         }
 
         private async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage request)
