@@ -15,10 +15,6 @@ namespace ContosoMoments.Views
         {
             InitializeComponent();
             _app = app;
-
-            var tapSaveImage = new TapGestureRecognizer();
-            tapSaveImage.Tapped += OnSave;
-            imgSave.GestureRecognizers.Add(tapSaveImage);
         }
 
         protected override void OnAppearing()
@@ -89,6 +85,12 @@ namespace ContosoMoments.Views
             }; // set as https always
             httpsUri = uriBuilder.ToString();
             return true;
+        }
+
+        public void OnPrivacyButtonClicked(object sender, EventArgs args)
+        {
+            // open link to privacy policy
+            Device.OpenUri(new System.Uri("https://go.microsoft.com/fwlink/?LinkId=521839"));
         }
     }
 }

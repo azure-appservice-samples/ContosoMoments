@@ -6,6 +6,7 @@
     <Grid RowSpacing="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -21,7 +22,11 @@
 
             <Label Text="Settings" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
 
-          <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End" Source="save.png" />
+            <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End" Source="save.png">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSave" />
+                </Image.GestureRecognizers>
+            </Image>
         </Grid>
 
         <!--Settings-->
@@ -32,8 +37,16 @@
             </StackLayout>
         </Grid>
 
+        <ContentView Grid.Row="2" Padding="10,30,0,10" BackgroundColor="White">
+            <Label Text="Privacy Statement" TextColor="#8C0A4B" FontSize="Small">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPrivacyButtonClicked" />
+                </Label.GestureRecognizers>
+            </Label>
+        </ContentView>
+
         <!--Logout button-->
-        <Button Grid.Row="2" x:Name="LogoutButton" Clicked="OnLogout" Text="Logout" HorizontalOptions="FillAndExpand" IsEnabled="false" />
+        <Button Grid.Row="3" x:Name="LogoutButton" Clicked="OnLogout" Text="Logout" HorizontalOptions="FillAndExpand" IsEnabled="false" />
 
     </Grid>
 </ContentPage>
