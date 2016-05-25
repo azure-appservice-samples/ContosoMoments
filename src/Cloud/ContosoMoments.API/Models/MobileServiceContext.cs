@@ -35,16 +35,13 @@ namespace ContosoMoments.Api
         protected override void Seed(MobileServiceContext context)
         {
             var userid = appSettings["DefaultUserId"];
-            var defaultAlbum = new Album
-            {
+
+            var defaultAlbum = new Album {
                 Id = appSettings["DefaultAlbumId"],
                 AlbumName = "Default Album",
-                IsDefault=true,
-                User = new User
-                {
-                    Email = "demo@contoso.com", // Do we need this? We should avoid PII issues in demos.
-                    Id = userid,
-                    IsEnabled = true
+                IsDefault = true,
+                User = new User {
+                    Id = userid
                 },
                 UserId = userid
             };
