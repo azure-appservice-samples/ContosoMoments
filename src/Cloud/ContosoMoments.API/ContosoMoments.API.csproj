@@ -232,7 +232,6 @@
     <Compile Include="Controllers\WebAPI\ManageUserController.cs" />
     <Compile Include="Controllers\TableControllers\AlbumController.cs" />
     <Compile Include="Controllers\TableControllers\ImageController.cs" />
-    <Compile Include="Controllers\TableControllers\UserController.cs" />
     <Compile Include="Controllers\WebAPI\LikeController.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Helpers\ConfigModel.cs" />
