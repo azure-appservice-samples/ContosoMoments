@@ -2,6 +2,7 @@
 using Microsoft.WindowsAzure.MobileServices.Files.Metadata;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace ContosoMoments
 {
@@ -16,5 +17,14 @@ namespace ContosoMoments
         string GetRootDataPath();
 
         Task<string> TakePhotoAsync(object context);
+
+        Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider);
+
+        /// <summary>
+        /// Login using Facebook client flow
+        /// </summary>
+        Task<MobileServiceUser> LoginFacebookAsync();
+
+        Task LogoutAsync();
     }
 }

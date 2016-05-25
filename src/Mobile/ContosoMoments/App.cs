@@ -135,6 +135,8 @@ namespace ContosoMoments
 
         internal async Task LogoutAsync()
         {
+            DependencyService.Get<IPlatform>().LogoutAsync();
+
             await MobileService.LogoutAsync();
 
             await imageTableSync.PurgeAsync(AllImagesQueryString, null, true, CancellationToken.None);

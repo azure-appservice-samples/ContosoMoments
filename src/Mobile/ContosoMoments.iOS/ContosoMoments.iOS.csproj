@@ -128,7 +128,6 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="MobileClient.cs" />
     <Compile Include="NetworkConnection.cs" />
     <Compile Include="TouchPlatform.cs" />
     <ITunesArtwork Include="iTunesArtwork%402x" />

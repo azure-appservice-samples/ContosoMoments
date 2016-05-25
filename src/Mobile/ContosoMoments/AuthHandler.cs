@@ -48,7 +48,7 @@ namespace ContosoMoments
 
         public static async Task DoLoginAsync(Settings.AuthOption authOption)
         {
-            var mobileClient = DependencyService.Get<IMobileClient>();
+            var mobileClient = DependencyService.Get<IPlatform>();
 
             var user =
                 authOption == Settings.AuthOption.Facebook ?

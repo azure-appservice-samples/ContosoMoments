@@ -219,7 +219,6 @@
     <Compile Include="DroidPlatform.cs" />
     <Compile Include="GcmService.cs" />
     <Compile Include="MainActivity.cs" />
-    <Compile Include="MobileClient.cs" />
     <Compile Include="NetworkConnection.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

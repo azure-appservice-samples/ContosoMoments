@@ -7,6 +7,9 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Media;
+using Microsoft.WindowsAzure.MobileServices;
+using Android.Webkit;
+using Xamarin.Forms;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ContosoMoments.Droid.DroidPlatform))]
 namespace ContosoMoments.Droid
@@ -61,5 +64,20 @@ namespace ContosoMoments.Droid
             return null;
         }
 
+        public Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
+        {
+            return App.Instance.MobileService.LoginAsync(Forms.Context, provider);
+        }
+
+        public async Task LogoutAsync()
+        {
+            CookieManager.Instance.RemoveAllCookie();
+            await App.Instance.MobileService.LogoutAsync();
+        }
+
+        public Task<MobileServiceUser> LoginFacebookAsync()
+        {
+            return LoginAsync(MobileServiceAuthenticationProvider.Facebook);
+        }
     }
 }
