@@ -10,6 +10,8 @@ using Xamarin.Media;
 using Microsoft.WindowsAzure.MobileServices;
 using Android.Webkit;
 using Xamarin.Forms;
+using Xamarin.Auth;
+using ContosoMoments.Helpers;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ContosoMoments.Droid.DroidPlatform))]
 namespace ContosoMoments.Droid
@@ -64,20 +66,44 @@ namespace ContosoMoments.Droid
             return null;
         }
 
-        public Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
+        public async Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
-            return App.Instance.MobileService.LoginAsync(Forms.Context, provider);
+            // login doesn't need to cache the user, since it will be cached by the caller
+
+            var user = GetCachedUser();
+
+            if (user == null) {
+                user = await App.Instance.MobileService.LoginAsync(Forms.Context, provider);
+            }
+
+            return user;
         }
 
         public async Task LogoutAsync()
         {
             CookieManager.Instance.RemoveAllCookie();
+            AuthStore.DeleteTokenCache();
             await App.Instance.MobileService.LogoutAsync();
         }
 
         public Task<MobileServiceUser> LoginFacebookAsync()
         {
             return LoginAsync(MobileServiceAuthenticationProvider.Facebook);
+        }
+
+        public AccountStore GetAccountStore()
+        {
+            return AccountStore.Create(Forms.Context);
+        }
+
+        private MobileServiceUser GetCachedUser()
+        {
+            var user = AuthStore.GetUserFromCache();
+            if (user != null) {
+                App.Instance.MobileService.CurrentUser = user;
+            }
+
+            return user;
         }
     }
 }

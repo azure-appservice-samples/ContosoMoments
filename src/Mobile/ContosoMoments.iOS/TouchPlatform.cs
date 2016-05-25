@@ -12,6 +12,9 @@ using Facebook.LoginKit;
 using UIKit;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using Xamarin.Auth;
+using System.Linq;
+using ContosoMoments.Helpers;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ContosoMoments.iOS.TouchPlatform))]
 namespace ContosoMoments.iOS
@@ -59,10 +62,49 @@ namespace ContosoMoments.iOS
             }
         }
 
-        public Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
+        public async Task<MobileServiceUser> LoginAsync(MobileServiceAuthenticationProvider provider)
         {
+            // login doesn't need to cache the user, since it will be cached by the caller
+
+            var user = GetCachedUser();
+
+            if (user == null) {
+                var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
+                user = await App.Instance.MobileService.LoginAsync(view, provider);
+            }
+
+            return user;
+        }
+
+        public async Task<MobileServiceUser> LoginFacebookAsync()
+        {
+            // login doesn't need to cache the user, since it will be cached by the caller
+
+            tcs = new TaskCompletionSource<MobileServiceUser>();
+            var loginManager = new LoginManager();
             var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
-            return App.Instance.MobileService.LoginAsync(view, provider);
+
+            var user = GetCachedUser();
+
+            if (user != null) {
+                tcs.TrySetResult(user);
+            }
+            else { 
+                Debug.WriteLine("Starting Facebook client flow");
+                loginManager.LogInWithReadPermissions(new[] { "public_profile" }, view, LoginTokenHandler);
+            }
+
+            return await tcs.Task;
+        }
+
+        private MobileServiceUser GetCachedUser()
+        {
+            var user = AuthStore.GetUserFromCache();
+            if (user != null) {
+                App.Instance.MobileService.CurrentUser = user;
+            }
+
+            return user;
         }
 
         public async Task LogoutAsync()
@@ -71,19 +113,8 @@ namespace ContosoMoments.iOS
                 NSHttpCookieStorage.SharedStorage.DeleteCookie(cookie);
             }
 
+            AuthStore.DeleteTokenCache();
             await App.Instance.MobileService.LogoutAsync();
-        }
-
-        public Task<MobileServiceUser> LoginFacebookAsync()
-        {
-            tcs = new TaskCompletionSource<MobileServiceUser>();
-            var loginManager = new LoginManager();
-            var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
-
-            Debug.WriteLine("Starting Facebook client flow");
-            loginManager.LogInWithReadPermissions(new[] { "public_profile" }, view, LoginTokenHandler);
-
-            return tcs.Task;
         }
 
         private async void LoginTokenHandler(LoginManagerLoginResult loginResult, NSError error)
@@ -104,5 +135,9 @@ namespace ContosoMoments.iOS
             }
         }
 
+        public AccountStore GetAccountStore()
+        {
+            return AccountStore.Create();
+        }
     }
 }
