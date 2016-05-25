@@ -9,7 +9,7 @@ namespace ContosoMoments.Views
 {
     public partial class Login : ContentPage
     {
-        private TaskCompletionSource<Settings.AuthOption> tcs = new TaskCompletionSource<Settings.AuthOption>();
+        private TaskCompletionSource<Settings.AuthOption> tcs;
 
         public Login()
         {
@@ -18,6 +18,7 @@ namespace ContosoMoments.Views
 
         public Task<Settings.AuthOption> GetResultAsync()
         {
+            tcs = new TaskCompletionSource<Settings.AuthOption>();
             return tcs.Task;
         }
 

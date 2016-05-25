@@ -16,7 +16,7 @@ namespace ContosoMoments
 {
     public class App : Application
     {
-        private string ApplicationURL;
+        public const string AppName = "ContosoMoments"; 
 
         public const string LocalDbFilename = "localDb.sqlite";
         private const string AllAlbumsQueryString = "allAlbums";
@@ -68,20 +68,23 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            if (Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl) {
-                MainPage = new SettingsView(this);
-            }
-            else {
-                await InitMobileService(Settings.Current.MobileAppUrl);
-            }
+            bool firstStart = Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl;
+
+            await InitMobileService(firstStart);
         }
 
-        internal async Task InitMobileService(string uri, bool firstStart = false)
+        internal async Task InitMobileService(bool firstStart = false)
         {
-            this.ApplicationURL = uri;
+            if (firstStart) {
+                var settingsView = new SettingsView(this);
+                await MainPage.Navigation.PushModalAsync(settingsView);
+                await settingsView.ShowDialog();
+            }
 
             var authHandler = new AuthHandler();
-            MobileService = new MobileServiceClient(ApplicationURL, new LoggingHandler(true), authHandler);
+            MobileService = 
+                new MobileServiceClient(Settings.Current.MobileAppUrl, new LoggingHandler(true), authHandler);
+
             authHandler.Client = MobileService;
             AuthenticatedUser = MobileService.CurrentUser;
 
@@ -102,7 +105,6 @@ namespace ContosoMoments
 
             if (firstStart) {
                 await Utils.PopulateDefaultsAsync();
-
                 MainPage = new NavigationPage(new AlbumsListView(this));
 
                 await DoLoginAsync();
@@ -110,18 +112,18 @@ namespace ContosoMoments
             else {
                 currentUserId = Settings.Current.CurrentUserId;
                 MainPage = new NavigationPage(new AlbumsListView(this));
+
+                // user has already chosen an authentication type, so re-authenticate
+                await AuthHandler.DoLoginAsync(Settings.Current.AuthenticationType);
             }
         }
 
-        internal async Task ResetAsync(string uri)
+        internal async Task ResetAsync()
         {
-            var platform = DependencyService.Get<IPlatform>();
+            await PurgeDataAsync();
             MobileService.Dispose();
 
-            string path = Path.Combine(platform.GetRootDataPath(), LocalDbFilename);
-            await FileHelper.DeleteLocalFileAsync(path);
-
-            await InitMobileService(uri, firstStart: true);
+            await InitMobileService(firstStart: true);
         }
 
         private async Task DoLoginAsync()
@@ -135,17 +137,23 @@ namespace ContosoMoments
 
         internal async Task LogoutAsync()
         {
-            DependencyService.Get<IPlatform>().LogoutAsync();
+            await PurgeDataAsync();
+            await DoLoginAsync();
+        }
 
-            await MobileService.LogoutAsync();
+        private async Task PurgeDataAsync()
+        {
+            var platform = DependencyService.Get<IPlatform>();
+            await platform.LogoutAsync();
 
             await imageTableSync.PurgeAsync(AllImagesQueryString, null, true, CancellationToken.None);
             await albumTableSync.PurgeAsync(AllAlbumsQueryString, null, true, CancellationToken.None);
 
+            // delete downloaded files
+            await FileHelper.DeleteLocalFileAsync(await platform.GetDataFilesPath());
+
             currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
-
-            await DoLoginAsync();
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
