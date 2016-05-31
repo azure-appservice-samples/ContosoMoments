@@ -2,14 +2,16 @@ using Microsoft.WindowsAzure.MobileServices;
 using System;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ContosoMoments.Views
 {
     public partial class SettingsView : ContentPage
     {
-        public bool UrlIsInvalid { get; set; }
         private App _app;
         private TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+        
+        private const string PrivacyUri = "https://go.microsoft.com/fwlink/?LinkId=521839";
 
         public SettingsView(App app)
         {
@@ -19,51 +21,52 @@ namespace ContosoMoments.Views
 
         protected override void OnAppearing()
         {
-            if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
-                mobileServiceUrl.Text = Settings.Current.MobileAppUrl;
+            mobileServiceUrl.Text = Settings.Current.MobileAppUrl;
+
+            if (!Settings.IsFirstStart()) {
                 LogoutButton.IsEnabled = true;
             }
-
-            if (UrlIsInvalid)
-                DisplayAlert("Configuration Error", "Mobile Service URL seems to be not valid anymore. Please check the URL value and try again", "OK");
-
 
             base.OnAppearing();
         }
 
-        public Task ShowDialog()
+        /// Returns true if the App URL was changed
+        public Task<bool> ShowDialog()
         {
             return tcs.Task;
         }
 
         public async void OnSave(object sender, EventArgs args)
         {
-            if (Settings.Current.MobileAppUrl == mobileServiceUrl.Text &&
-                Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
-                // no changes, return
-                await Navigation.PopModalAsync();
-                tcs.TrySetResult(true);
-                return;
-            }
-
             string newUri;
 
+            // convert to HTTPS
             if (!GetHttpsUri(mobileServiceUrl.Text, out newUri)) {
                 await DisplayAlert("Configuration Error", "Invalid URI entered", "OK");
                 return;
             }
 
-            if (Settings.Current.MobileAppUrl != Settings.DefaultMobileAppUrl) {
-                // a URI had been set previously, so the app state should be reset
-                Settings.Current.MobileAppUrl = newUri;
-                await Navigation.PopModalAsync();
-                tcs.TrySetResult(true);
+            if (Settings.Current.MobileAppUrl == mobileServiceUrl.Text || Settings.Current.MobileAppUrl == newUri) {
+                Settings.Current.MobileAppUrl = newUri; // save the URL, in case the scheme needed to be changed
 
-                await _app.ResetAsync();
+                // no changes, return
+                await Navigation.PopModalAsync();
+                tcs.TrySetResult(false);
             }
             else {
+                Debug.WriteLine("*** MobileAppUrlChanged");
+
                 Settings.Current.MobileAppUrl = newUri;
+
+                await Navigation.PopModalAsync();
+                tcs.TrySetResult(true);
             }
+        }
+
+        public void OnPrivacyButtonClicked(object sender, EventArgs args)
+        {
+            // open link to privacy policy
+            Device.OpenUri(new System.Uri(PrivacyUri));
         }
 
         public async void OnLogout(object sender, EventArgs args)
@@ -83,14 +86,9 @@ namespace ContosoMoments.Views
                 Scheme = Uri.UriSchemeHttps,
                 Port = -1
             }; // set as https always
+
             httpsUri = uriBuilder.ToString();
             return true;
-        }
-
-        public void OnPrivacyButtonClicked(object sender, EventArgs args)
-        {
-            // open link to privacy policy
-            Device.OpenUri(new System.Uri("https://go.microsoft.com/fwlink/?LinkId=521839"));
         }
     }
 }

@@ -68,14 +68,13 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            bool firstStart = Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl;
-
-            await InitMobileService(firstStart);
+            bool firstStart = Settings.IsFirstStart();
+            await InitMobileService(showSettingsPage: firstStart, showLoginDialog: firstStart);
         }
 
-        internal async Task InitMobileService(bool firstStart = false)
+        internal async Task InitMobileService(bool showSettingsPage, bool showLoginDialog)
         {
-            if (firstStart) {
+            if (showSettingsPage) {
                 var settingsView = new SettingsView(this);
                 await MainPage.Navigation.PushModalAsync(settingsView);
                 await settingsView.ShowDialog();
@@ -103,7 +102,7 @@ namespace ContosoMoments
            ContosoMoments.WinPhone.App.AcquirePushChannel(App.Instance.MobileService);
 #endif
 
-            if (firstStart) {
+            if (showLoginDialog) {
                 await Utils.PopulateDefaultsAsync();
                 MainPage = new NavigationPage(new AlbumsListView(this));
 
@@ -123,7 +122,7 @@ namespace ContosoMoments
             await PurgeDataAsync();
             MobileService.Dispose();
 
-            await InitMobileService(firstStart: true);
+            await InitMobileService(showSettingsPage: false, showLoginDialog: true);
         }
 
         private async Task DoLoginAsync()

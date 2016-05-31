@@ -32,10 +32,6 @@ namespace ContosoMoments.Views
             tapSyncImage.Tapped += OnSyncItems;
             imgSync.GestureRecognizers.Add(tapSyncImage);
 
-            var tapSettingsImage = new TapGestureRecognizer();
-            tapSettingsImage.Tapped += OnSettings;
-            imgSettings.GestureRecognizers.Add(tapSettingsImage);
-
             viewModel.DeleteImageViewAction = OnDelete;
         }
 
@@ -112,12 +108,7 @@ namespace ContosoMoments.Views
             // prevents background getting highlighted
             imagesList.SelectedItem = null;
         }
-
-        public async void OnSettings(object sender, EventArgs e)
-        {
-            await Navigation.PushModalAsync(new SettingsView(_app));
-        }
-
+            
         public async void OnSyncItems(object sender, EventArgs e)
         {
             await SyncItemsAsync(false, refreshView: true);

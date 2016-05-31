@@ -134,7 +134,14 @@ namespace ContosoMoments.Views
         public async void OnSettings(object sender, EventArgs e)
         {
             viewModel.ShowInputControl = false;
-            await Navigation.PushModalAsync(new SettingsView(this._app));
+
+            var settingsView = new SettingsView(this._app);
+            await Navigation.PushModalAsync(settingsView);
+            var urlChanged = await settingsView.ShowDialog();
+
+            if (urlChanged) {
+                _app.ResetAsync();
+            }
         }
 
         private async Task SyncItemsAsync(bool showActivityIndicator)
