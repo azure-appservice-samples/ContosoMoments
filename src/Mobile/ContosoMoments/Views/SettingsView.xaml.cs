@@ -8,7 +8,7 @@ namespace ContosoMoments.Views
 {
     public partial class SettingsView : ContentPage
     {
-        private App _app;
+        private App app;
         private TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
         
         private const string PrivacyUri = "https://go.microsoft.com/fwlink/?LinkId=521839";
@@ -16,7 +16,7 @@ namespace ContosoMoments.Views
         public SettingsView(App app)
         {
             InitializeComponent();
-            _app = app;
+            this.app = app;
         }
 
         protected override void OnAppearing()
@@ -72,7 +72,7 @@ namespace ContosoMoments.Views
         public async void OnLogout(object sender, EventArgs args)
         {
             await Navigation.PopModalAsync();
-            await _app.LogoutAsync();
+            await app.LogoutAsync();
         }
 
         private bool GetHttpsUri(string inputString, out string httpsUri)

@@ -11,15 +11,13 @@ namespace ContosoMoments.Views
     {
         public Album Album { get; set; }
 
-        private App _app;
         private ImagesListViewModel viewModel;
 
         public ImagesList(App app)
         {
             InitializeComponent();
 
-            _app = app;
-            viewModel = new ImagesListViewModel(App.Instance.MobileService, _app);
+            viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -33,6 +31,11 @@ namespace ContosoMoments.Views
             imgSync.GestureRecognizers.Add(tapSyncImage);
 
             viewModel.DeleteImageViewAction = OnDelete;
+
+            Disappearing += (object sender, EventArgs e) => { // clean up reasources
+                viewModel.Dispose();
+                BindingContext = null;
+            };
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -64,7 +67,7 @@ namespace ContosoMoments.Views
                     string sourceImagePath = await platform.TakePhotoAsync(App.UIContext);
 
                     if (sourceImagePath != null) {
-                        var image = await _app.AddImageAsync(viewModel.Album, sourceImagePath);
+                        var image = await App.Instance.AddImageAsync(viewModel.Album, sourceImagePath);
 
                         viewModel.Images.Add(image); // add image, item will appear and image will upload asynchronously
                         await SyncItemsAsync(true, refreshView: false);
@@ -121,7 +124,7 @@ namespace ContosoMoments.Views
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-                    await _app.SyncAsync();
+                    await App.Instance.SyncAsync();
                 }
                 else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");

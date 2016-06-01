@@ -8,28 +8,9 @@ using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
-    public class CustomCell : ViewCell
-    {
-        public CustomCell()
-        {
-            var renameAction = new MenuItem { Text = "Rename" };
-            renameAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
-
-            renameAction.Clicked += OnRename;
-
-            ContextActions.Add(renameAction);
-        }
-
-        private void OnRename(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Rename action clicked: " + ParentView);
-        }
-    }
-
     public partial class AlbumsListView : ContentPage
     {
         AlbumsListViewModel viewModel;
-        private IDisposable eventSubscription;
 
         public AlbumsListView()
         {
@@ -57,7 +38,10 @@ namespace ContosoMoments.Views
 
             viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
 
-            App.Instance.MobileService.EventManager.Subscribe<SyncCompletedEvent>(OnSyncCompleted);
+            Disappearing += (object sender, EventArgs e) => { // clean up reasources
+                viewModel.Dispose();
+                BindingContext = null;
+            };
         }
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -72,11 +56,6 @@ namespace ContosoMoments.Views
             imgAddAlbum.IsVisible = Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
             var settingsColumn = imgAddAlbum.IsVisible ? 3 : 4; // move the settings button to the end if the Add Album button is not shown
             Grid.SetColumn(imgSettings, settingsColumn);
-        }
-
-        private async void OnSyncCompleted(SyncCompletedEvent obj)
-        {
-            await LoadItemsAsync();
         }
 
         protected override async void OnAppearing()
@@ -94,7 +73,7 @@ namespace ContosoMoments.Views
 
         private async Task LoadItemsAsync()
         {
-            await viewModel.GetAlbumsAsync(Settings.Current.CurrentUserId);
+            await viewModel.LoadItemsAsync(Settings.Current.CurrentUserId);
         }
 
         public async Task RefreshAsync(bool showIndicator)
@@ -150,7 +129,7 @@ namespace ContosoMoments.Views
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
                     await App.Instance.SyncAlbumsAsync();
 
-                    // should not await call to _app.SyncAsync() because it should happen in the background
+                    // should not await call to app.SyncAsync() because it should happen in the background
                     var ignore = App.Instance.SyncAsync();
                 }
                 else {

@@ -11,17 +11,21 @@ using Xamarin.Forms;
 
 namespace ContosoMoments.ViewModels
 {
-    public class AlbumsListViewModel : BaseViewModel
+    public class AlbumsListViewModel : BaseViewModel, IDisposable
     {
+        private IDisposable eventSubscription;
+
         public AlbumsListViewModel(MobileServiceClient client, App app)
         {
             this.app = app;
 
             RenameCommand = new DelegateCommand(OnStartAlbumRename, IsRenameAndDeleteEnabled);
             DeleteCommand = new DelegateCommand(OnDeleteAlbum, IsRenameAndDeleteEnabled);
+
+            eventSubscription = client.EventManager.Subscribe<SyncCompletedEvent>(OnSyncCompleted);
         }
 
-        #region Properties
+        #region View Model Properties
         private string _ErrorMessage = null;
         public string ErrorMessage
         {
@@ -129,7 +133,12 @@ namespace ContosoMoments.ViewModels
 #endif
         }
 
-        public async Task GetAlbumsAsync(string userId)
+        private async void OnSyncCompleted(SyncCompletedEvent obj)
+        {
+            await LoadItemsAsync(Settings.Current.CurrentUserId);
+        }
+
+        public async Task LoadItemsAsync(string userId)
         {
             Albums =
                 await app.albumTableSync.ToListAsync();
@@ -205,8 +214,6 @@ namespace ContosoMoments.ViewModels
 
         #endregion
 
-        #region Helpers
-
         // return true if the rename and delete commands are available
         internal static bool IsRenameAndDeleteEnabled(object input)
         {
@@ -215,8 +222,12 @@ namespace ContosoMoments.ViewModels
 
             return !isDefaultAlbum && Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
         }
+        
+        public void Dispose()
+        {
+            eventSubscription.Dispose();
+        }
 
-        #endregion
     }
 
 }
