@@ -56,7 +56,7 @@ namespace ContosoMoments
 
         public string CurrentUserId
         {
-            get { return AppSettings.GetValueOrDefault<string>(CurrentUserIdKey, DefaultCurrentUserId); }
+            get { return AppSettings.GetValueOrDefault<string>(CurrentUserIdKey, DefaultUserId); }
             set { AppSettings.AddOrUpdateValue<string>(CurrentUserIdKey, value); }
         }
 

@@ -188,7 +188,7 @@ namespace ContosoMoments.ViewModels
             {
                 AlbumName = EditedAlbumName,
                 IsDefault = false,
-                UserId = App.Instance.CurrentUserId
+                UserId = Settings.Current.CurrentUserId
             };
 
             await app.albumTableSync.InsertAsync(album);

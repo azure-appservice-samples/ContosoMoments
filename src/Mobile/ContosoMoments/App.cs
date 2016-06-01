@@ -35,18 +35,6 @@ namespace ContosoMoments
 
         public string DataFilesPath { get; set; }
 
-        private string currentUserId;
-
-        public string CurrentUserId
-        {
-            get { return currentUserId ?? Settings.Current.DefaultUserId; }
-            set
-            {
-                currentUserId = value;
-                Settings.Current.CurrentUserId = currentUserId;
-            }
-        }
-
         public App()
         {
             Instance = this;
@@ -104,13 +92,12 @@ namespace ContosoMoments
 
             if (showLoginDialog) {
                 await Utils.PopulateDefaultsAsync();
-                MainPage = new NavigationPage(new AlbumsListView(this));
+                MainPage = new NavigationPage(new AlbumsListView());
 
                 await DoLoginAsync();
             }
             else {
-                currentUserId = Settings.Current.CurrentUserId;
-                MainPage = new NavigationPage(new AlbumsListView(this));
+                MainPage = new NavigationPage(new AlbumsListView());
 
                 // user has already chosen an authentication type, so re-authenticate
                 await AuthHandler.DoLoginAsync(Settings.Current.AuthenticationType);
@@ -153,8 +140,8 @@ namespace ContosoMoments
             // delete downloaded files
             await FileHelper.DeleteLocalFileAsync(await platform.GetDataFilesPath());
 
-            currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
+            Settings.Current.CurrentUserId = Settings.Current.DefaultUserId;
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
@@ -227,7 +214,7 @@ namespace ContosoMoments
         internal async Task<Models.Image> AddImageAsync(Models.Album album, string sourceFile)
         {
             var image = new Models.Image {
-                UserId = CurrentUserId,
+                UserId = Settings.Current.CurrentUserId,
                 AlbumId = album.AlbumId,
                 UploadFormat = "Mobile Image",
                 UpdatedAt = DateTime.Now

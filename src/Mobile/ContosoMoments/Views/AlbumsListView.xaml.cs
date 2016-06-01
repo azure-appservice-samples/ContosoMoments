@@ -29,14 +29,13 @@ namespace ContosoMoments.Views
     public partial class AlbumsListView : ContentPage
     {
         AlbumsListViewModel viewModel;
-        private App _app;
+        private IDisposable eventSubscription;
 
-        public AlbumsListView(App app)
+        public AlbumsListView()
         {
             InitializeComponent();
-            this._app = app;
 
-            viewModel = new AlbumsListViewModel(App.Instance.MobileService, app);
+            viewModel = new AlbumsListViewModel(App.Instance.MobileService, App.Instance);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModelPropertyChanged;
@@ -95,7 +94,7 @@ namespace ContosoMoments.Views
 
         private async Task LoadItemsAsync()
         {
-            await viewModel.GetAlbumsAsync(_app.CurrentUserId);
+            await viewModel.GetAlbumsAsync(Settings.Current.CurrentUserId);
         }
 
         public async Task RefreshAsync(bool showIndicator)
@@ -115,7 +114,7 @@ namespace ContosoMoments.Views
             var selectedAlbum = e.SelectedItem as Album;
 
             if (selectedAlbum != null) {
-                var imagesListView = new ImagesList(this._app);
+                var imagesListView = new ImagesList(App.Instance);
                 imagesListView.Album = selectedAlbum;
 
                 await Navigation.PushAsync(imagesListView);
@@ -135,12 +134,12 @@ namespace ContosoMoments.Views
         {
             viewModel.ShowInputControl = false;
 
-            var settingsView = new SettingsView(this._app);
+            var settingsView = new SettingsView(App.Instance);
             await Navigation.PushModalAsync(settingsView);
             var urlChanged = await settingsView.ShowDialog();
 
             if (urlChanged) {
-                _app.ResetAsync();
+                await App.Instance.ResetAsync();
             }
         }
 
@@ -149,11 +148,10 @@ namespace ContosoMoments.Views
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 viewModel.ShowInputControl = false;
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-                    await _app.SyncAlbumsAsync();
+                    await App.Instance.SyncAlbumsAsync();
 
-#pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
-                    _app.SyncAsync();
-#pragma warning restore CS4014
+                    // should not await call to _app.SyncAsync() because it should happen in the background
+                    var ignore = App.Instance.SyncAsync();
                 }
                 else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
