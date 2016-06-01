@@ -40,6 +40,8 @@ namespace ContosoMoments.Views
 
         private async Task LoginComplete(Settings.AuthOption option)
         {
+            DependencyService.Get<IPlatform>().LogEvent("Login" + option);
+
             await Navigation.PopToRootAsync();
 
             tcs.TrySetResult(option);

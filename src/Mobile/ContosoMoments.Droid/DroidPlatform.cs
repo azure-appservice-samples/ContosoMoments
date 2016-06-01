@@ -25,6 +25,8 @@ namespace ContosoMoments.Droid
     public class DroidPlatform : IPlatform
     {
         private TaskCompletionSource<MobileServiceUser> tcs; // used in LoginFacebookAsync
+        private AppEventsLogger logger = AppEventsLogger.NewLogger(MainActivity.DefaultService.Application);
+
         public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string fullPath)
         {
             await table.DownloadFileAsync(file, fullPath);
@@ -140,6 +142,11 @@ namespace ContosoMoments.Droid
             }
 
             return user;
+        }
+
+        public void LogEvent(string eventName)
+        {
+            logger.LogEvent(eventName);
         }
     }
 }

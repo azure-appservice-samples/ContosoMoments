@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace ContosoMoments.ViewModels
 {
@@ -152,6 +153,8 @@ namespace ContosoMoments.ViewModels
         public async Task DeleteAlbumAsync(Album selectedAlbum)
         {
             await app.albumTableSync.DeleteAsync(selectedAlbum);
+
+            DependencyService.Get<IPlatform>().LogEvent("DeleteAlbum");
         }
 
         private void OnDeleteAlbum(object obj)
@@ -189,6 +192,8 @@ namespace ContosoMoments.ViewModels
             };
 
             await app.albumTableSync.InsertAsync(album);
+
+            DependencyService.Get<IPlatform>().LogEvent("CreateAlbum");
         }
 
         public void OnAdd(object sender, EventArgs e)

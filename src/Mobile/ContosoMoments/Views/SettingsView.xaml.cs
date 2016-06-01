@@ -54,7 +54,7 @@ namespace ContosoMoments.Views
                 tcs.TrySetResult(false);
             }
             else {
-                Debug.WriteLine("*** MobileAppUrlChanged");
+                DependencyService.Get<IPlatform>().LogEvent("MobileAppUrlChanged");
 
                 Settings.Current.MobileAppUrl = newUri;
 

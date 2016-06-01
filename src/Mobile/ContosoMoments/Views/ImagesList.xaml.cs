@@ -56,6 +56,8 @@ namespace ContosoMoments.Views
 
         private async void OnAddImage(object sender, EventArgs e)
         {
+            DependencyService.Get<IPlatform>().LogEvent("AddImage");
+
             using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
                 try {
                     IPlatform platform = DependencyService.Get<IPlatform>();
@@ -136,6 +138,8 @@ namespace ContosoMoments.Views
             var result = await DisplayAlert("Delete image?", "Delete selected image?", "Yes", "No");
 
             if (result) {
+                DependencyService.Get<IPlatform>().LogEvent("DeleteImage");
+
                 try {
                     await viewModel.DeleteImageAsync(image);
                     await RefreshAsync();

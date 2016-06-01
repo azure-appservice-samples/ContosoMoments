@@ -139,5 +139,10 @@ namespace ContosoMoments.iOS
         {
             return AccountStore.Create();
         }
+
+        public void LogEvent(string eventName)
+        {
+            Facebook.CoreKit.AppEvents.LogEvent(eventName);
+        }
     }
 }

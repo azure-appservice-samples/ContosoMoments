@@ -136,6 +136,8 @@ namespace ContosoMoments
 
         internal async Task LogoutAsync()
         {
+            DependencyService.Get<IPlatform>().LogEvent("Logout" + Settings.Current.AuthenticationType);
+
             await PurgeDataAsync();
             await DoLoginAsync();
         }
