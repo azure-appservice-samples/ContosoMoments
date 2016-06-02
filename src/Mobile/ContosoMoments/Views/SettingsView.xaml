@@ -44,7 +44,7 @@
           <Label.FormattedText>
             <FormattedString>
               <FormattedString.Spans>
-                <Span Text="Data stored in the default service may be deleted by the service owners. For full control, you should deploy the service to your own Azure Subscription. " ForegroundColor="Black" />
+                <Span Text="Data stored in the default service may be deleted by the service owners. For full control, deploy the service to your own Azure Subscription. " ForegroundColor="Black" />
                 <Span Text="Learn more"  ForegroundColor="#8C0A4B" />
               </FormattedString.Spans>
             </FormattedString>
