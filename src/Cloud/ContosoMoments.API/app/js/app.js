@@ -28,6 +28,11 @@ contosoMomentsApp.config(['$locationProvider', '$stateProvider', '$urlRouterProv
              templateUrl: 'app/templates/auth.html'
 
          })
+         .state('main.about', {
+             url: '/about',
+             templateUrl: 'app/templates/about.html'
+
+         })
         .state('main.gallery', {
             url: '/album/:albumid',
             templateUrl: 'app/templates/gallery.html',

@@ -273,6 +273,7 @@
     <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Utilities\PostMessageExchange.js" />
     <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Utilities\Promises.js" />
     <Content Include="app\node_modules\azure-mobile-apps-client\sdk\src\Utilities\Validate.js" />
+    <Content Include="app\templates\about.html" />
     <Content Include="app\templates\createAlbum.html" />
     <Content Include="app\templates\deleteAlbum.html" />
     <Content Include="app\templates\deleteImage.html" />
