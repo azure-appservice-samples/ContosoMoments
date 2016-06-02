@@ -8,27 +8,13 @@ using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
-    public partial class AlbumsListView : ContentPage
+    public partial class AlbumsListView : ContentPage, IDisposable
     {
         AlbumsListViewModel viewModel;
 
         public AlbumsListView()
         {
             InitializeComponent();
-
-            viewModel = new AlbumsListViewModel(App.Instance.MobileService, App.Instance);
-
-            BindingContext = viewModel;
-            viewModel.PropertyChanged += ViewModelPropertyChanged;
-
-            Settings.Current.PropertyChanged += AuthTypePropertyChanged;
-
-            viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
-
-            Disappearing += (object sender, EventArgs e) => { // clean up reasources
-                viewModel.Dispose();
-                BindingContext = null;
-            };
         }
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -48,6 +34,15 @@ namespace ContosoMoments.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            viewModel = new AlbumsListViewModel(App.Instance.MobileService, App.Instance);
+
+            BindingContext = viewModel;
+            viewModel.PropertyChanged += ViewModelPropertyChanged;
+            Settings.Current.PropertyChanged += AuthTypePropertyChanged;
+
+            viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
+
             AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
             if (albumsList.ItemsSource != null) {
@@ -88,8 +83,10 @@ namespace ContosoMoments.Views
 
             // prevents background getting highlighted
             albumsList.SelectedItem = null;
+            if (viewModel != null) {
                 viewModel.ShowInputControl = false;
             }
+        }
 
         public async void OnSyncItems(object sender, EventArgs e)
         {
@@ -106,6 +103,7 @@ namespace ContosoMoments.Views
 
             if (urlChanged) {
                 await App.Instance.ResetAsync();
+                this.Dispose(); 
             }
         }
 
@@ -157,6 +155,15 @@ namespace ContosoMoments.Views
                 await viewModel.DeleteAlbumAsync(album);
                 await RefreshAsync(true);
             }
+        }
+
+        public void Dispose()
+        {
+            viewModel.PropertyChanged -= ViewModelPropertyChanged;
+            viewModel?.Dispose();
+            viewModel = null;
+            Settings.Current.PropertyChanged -= AuthTypePropertyChanged;
+            BindingContext = null;
         }
     }
 }

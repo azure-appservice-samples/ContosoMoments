@@ -15,18 +15,12 @@ namespace ContosoMoments.Views
 
         public ImagesList(App app)
         {
-            InitializeComponent();
-
-            viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
-
-            BindingContext = viewModel;
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-
-            viewModel.DeleteImageViewAction = OnDelete;
+            InitializeComponent();      
 
             Disappearing += (object sender, EventArgs e) => { // clean up reasources
-                viewModel.Dispose();
+                viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                viewModel?.Dispose();
+                viewModel = null;
                 BindingContext = null;
             };
         }
@@ -41,6 +35,11 @@ namespace ContosoMoments.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
+            BindingContext = viewModel;
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            viewModel.DeleteImageViewAction = OnDelete;
 
             if (imagesList.ItemsSource == null) {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
@@ -120,7 +119,7 @@ namespace ContosoMoments.Views
                     await App.Instance.SyncAsync();
                 }
                 else {
-                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
+                    await DisplayAlert("Working Offline", "Couldn't sync data - device may be offline", "OK");
                 }
 
                 if (refreshView) {

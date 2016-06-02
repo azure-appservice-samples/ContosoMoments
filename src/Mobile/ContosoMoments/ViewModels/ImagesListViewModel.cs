@@ -113,6 +113,7 @@ namespace ContosoMoments.ViewModels
 
         public void Dispose()
         {
+            DeleteImageViewAction = null;
             eventSubscription.Dispose();
         }
     }
