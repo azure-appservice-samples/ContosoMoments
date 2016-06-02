@@ -16,10 +16,6 @@ namespace ContosoMoments.Views
         public ImageDetailsView()
         {
             InitializeComponent();
-
-            var tapLikeImage = new TapGestureRecognizer();
-            tapLikeImage.Tapped += OnLike;
-            imgLike.GestureRecognizers.Add(tapLikeImage);
         }
 
         public async void OnLike(object sender, EventArgs e)

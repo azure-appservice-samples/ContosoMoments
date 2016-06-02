@@ -23,19 +23,6 @@ namespace ContosoMoments.Views
 
             Settings.Current.PropertyChanged += AuthTypePropertyChanged;
 
-            // new album creation is only allowed in authenticated mode
-            var tapNewAlbumImage = new TapGestureRecognizer();
-            tapNewAlbumImage.Tapped += viewModel.OnAdd;
-            imgAddAlbum.GestureRecognizers.Add(tapNewAlbumImage);
-
-            var tapSyncImage = new TapGestureRecognizer();
-            tapSyncImage.Tapped += OnSyncItems;
-            imgSync.GestureRecognizers.Add(tapSyncImage);
-
-            var tapSettingsImage = new TapGestureRecognizer();
-            tapSettingsImage.Tapped += OnSettings;
-            imgSettings.GestureRecognizers.Add(tapSettingsImage);
-
             viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
 
             Disappearing += (object sender, EventArgs e) => { // clean up reasources
@@ -101,8 +88,8 @@ namespace ContosoMoments.Views
 
             // prevents background getting highlighted
             albumsList.SelectedItem = null;
-            viewModel.ShowInputControl = false;
-        }
+                viewModel.ShowInputControl = false;
+            }
 
         public async void OnSyncItems(object sender, EventArgs e)
         {
@@ -150,6 +137,11 @@ namespace ContosoMoments.Views
             else {
                 await DisplayAlert(viewModel.IsRename ? "Album rename error" : "Album create error", "Album name is blank", "OK");
             }
+        }
+
+        public void OnAdd(object sender, EventArgs e)
+        {
+            viewModel.AddImage();
         }
 
         public void OnCancelClick(object sender, EventArgs e)

@@ -205,7 +205,7 @@ namespace ContosoMoments.ViewModels
             DependencyService.Get<IPlatform>().LogEvent("CreateAlbum");
         }
 
-        public void OnAdd(object sender, EventArgs e)
+        public void AddImage()
         {
             ShowInputControl = !ShowInputControl;
             IsRename = false;

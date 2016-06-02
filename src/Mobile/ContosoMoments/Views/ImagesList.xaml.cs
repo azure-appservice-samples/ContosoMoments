@@ -22,13 +22,6 @@ namespace ContosoMoments.Views
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            var tapUploadImage = new TapGestureRecognizer();
-            tapUploadImage.Tapped += OnAddImage;
-            imgUpload.GestureRecognizers.Add(tapUploadImage);
-
-            var tapSyncImage = new TapGestureRecognizer();
-            tapSyncImage.Tapped += OnSyncItems;
-            imgSync.GestureRecognizers.Add(tapSyncImage);
 
             viewModel.DeleteImageViewAction = OnDelete;
 
