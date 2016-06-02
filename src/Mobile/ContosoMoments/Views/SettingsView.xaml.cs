@@ -12,6 +12,7 @@ namespace ContosoMoments.Views
         private TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
         
         private const string PrivacyUri = "https://go.microsoft.com/fwlink/?LinkId=521839";
+        private const string AboutUri = "https://contosomoments.azurewebsites.net/about";
 
         public SettingsView(App app)
         {
@@ -73,6 +74,11 @@ namespace ContosoMoments.Views
         {
             await Navigation.PopModalAsync();
             await app.LogoutAsync();
+        }
+
+        public void OnLearnMoreButtonClicked(object sender, EventArgs args)
+        {
+            Device.OpenUri(new System.Uri(AboutUri));
         }
 
         private bool GetHttpsUri(string inputString, out string httpsUri)
