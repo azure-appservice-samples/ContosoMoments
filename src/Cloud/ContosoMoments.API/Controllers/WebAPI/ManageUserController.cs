@@ -36,6 +36,20 @@ namespace ContosoMoments.Api
                 null;
         }
 
+        // return true if user is logged in with AAD
+        internal static async Task<bool> IsAadLogin(HttpRequestMessage request, IPrincipal user)
+        {
+            ClaimsPrincipal principal = user as ClaimsPrincipal;
+            string provider = principal.FindFirst("http://schemas.microsoft.com/identity/claims/identityprovider").Value;
+
+            if (string.Equals(provider, "aad", StringComparison.OrdinalIgnoreCase)) {
+                var creds = await user.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(request);
+                return creds != null;
+            }
+
+            return false;
+        }
+
         // GET api/ManageUser
         public async Task<string> Get()
         {

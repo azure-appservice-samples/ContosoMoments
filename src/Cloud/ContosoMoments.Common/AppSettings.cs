@@ -13,5 +13,6 @@ namespace ContosoMoments.Common
         public static string DefaultServiceUrl = CloudConfigurationManager.GetSetting("DefaultServiceUrl");
         public static string FunctionsBaseUri = CloudConfigurationManager.GetSetting("FunctionAppBaseUri");
         public static string FunctionPathAndSecret = CloudConfigurationManager.GetSetting("FunctionPathAndSecret");
+        public static bool PublicAlbumRequiresAuth = bool.Parse(CloudConfigurationManager.GetSetting("PublicAlbumRequiresAuth"));
     }
 }
