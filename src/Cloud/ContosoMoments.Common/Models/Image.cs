@@ -15,5 +15,7 @@ namespace ContosoMoments.Common.Models
         [Column("User_Id")]
         public string UserId { get; set; }
         public User User { get; set; }
+
+        public bool IsVisible { get; set; }
     }
 }

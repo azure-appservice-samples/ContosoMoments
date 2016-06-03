@@ -15,12 +15,12 @@
     </Grid>
 
     <!--Settings-->
-    <Grid Grid.Row="1" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" Padding="10">
+    <Grid Grid.Row="1" VerticalOptions="Start" HorizontalOptions="CenterAndExpand">
       <StackLayout Orientation="Vertical" Padding="10">
-        <Button Text="Login with Facebook" Clicked="OnFBLoginClicked" />
-        <Button Text="Login with Azure Active Directory" Clicked="OnAADLoginClicked" />
+        <Button Text="  Login with Facebook  " Clicked="OnFBLoginClicked" Margin="5"/>
+        <Button Text="  Login with Azure Active Directory  " Clicked="OnAADLoginClicked"/>
         <ContentView Padding="0,10,0,0">
-          <Button Text="Guest access" Clicked="OnGuestClicked" />
+          <Button Text="  Guest access  " Clicked="OnGuestClicked" Margin="5,0,5,0" />
         </ContentView>
       </StackLayout>
     </Grid>

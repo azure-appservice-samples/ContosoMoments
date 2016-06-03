@@ -28,11 +28,23 @@
         <Image.IsVisible>
           <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False" WinPhone="True"/>
         </Image.IsVisible>
+        <Image.GestureRecognizers>
+          <TapGestureRecognizer Tapped="OnSyncItems" />
+        </Image.GestureRecognizers>
       </Image>
 
-      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings" Source="settings.png" />
+      <Image VerticalOptions="Center" Grid.Column="3" HeightRequest="30" WidthRequest="30" x:Name="imgSettings" Source="settings.png">
+        <Image.GestureRecognizers>
+          <TapGestureRecognizer Tapped="OnSettings" />
+        </Image.GestureRecognizers>
+      </Image>
 
-      <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgAddAlbum" Source="plus.png" />
+      <Image VerticalOptions="Center" Grid.Column="4" HeightRequest="30" WidthRequest="30" x:Name="imgAddAlbum" Source="plus.png">
+        <Image.GestureRecognizers>
+          <TapGestureRecognizer Tapped="OnAdd" />
+        </Image.GestureRecognizers>
+      </Image>
+      
       
     </Grid>
 

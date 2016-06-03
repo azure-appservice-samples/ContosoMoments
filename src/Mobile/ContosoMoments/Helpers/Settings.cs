@@ -13,6 +13,11 @@ namespace ContosoMoments
             get { return settings ?? (settings = new Settings()); }
         }
 
+        public static bool IsFirstStart()
+        {
+            return Current.DefaultUserId == UserIdDefault;
+        }
+
         public enum AuthOption
         {
             GuestAccess, Facebook, ActiveDirectory
@@ -46,13 +51,12 @@ namespace ContosoMoments
                 if (AppSettings.AddOrUpdateValue<AuthOption>(AuthenticationTypeKey, value)) {
                     OnPropertyChanged();
                 }
-
             }
         }
 
         public string CurrentUserId
         {
-            get { return AppSettings.GetValueOrDefault<string>(CurrentUserIdKey, DefaultCurrentUserId); }
+            get { return AppSettings.GetValueOrDefault<string>(CurrentUserIdKey, DefaultUserId); }
             set { AppSettings.AddOrUpdateValue<string>(CurrentUserIdKey, value); }
         }
 
@@ -63,7 +67,7 @@ namespace ContosoMoments
         public const string AlbumIdDefault = "";
 
         private const string MobileAppUrlKey = nameof(MobileAppUrlKey);
-        public const string DefaultMobileAppUrl = "";
+        public const string DefaultMobileAppUrl = "https://contosomoments.azurewebsites.net/";
 
         private const string AuthenticationTypeKey = nameof(AuthenticationTypeKey);
         public const AuthOption DefaultAuthType = AuthOption.GuestAccess;

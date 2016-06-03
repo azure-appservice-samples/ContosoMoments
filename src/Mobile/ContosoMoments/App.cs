@@ -35,18 +35,6 @@ namespace ContosoMoments
 
         public string DataFilesPath { get; set; }
 
-        private string currentUserId;
-
-        public string CurrentUserId
-        {
-            get { return currentUserId ?? Settings.Current.DefaultUserId; }
-            set
-            {
-                currentUserId = value;
-                Settings.Current.CurrentUserId = currentUserId;
-            }
-        }
-
         public App()
         {
             Instance = this;
@@ -68,14 +56,13 @@ namespace ContosoMoments
 
         protected override async void OnStart()
         {
-            bool firstStart = Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl;
-
-            await InitMobileService(firstStart);
+            bool firstStart = Settings.IsFirstStart();
+            await InitMobileService(showSettingsPage: firstStart, showLoginDialog: firstStart);
         }
 
-        internal async Task InitMobileService(bool firstStart = false)
+        internal async Task InitMobileService(bool showSettingsPage, bool showLoginDialog)
         {
-            if (firstStart) {
+            if (showSettingsPage) {
                 var settingsView = new SettingsView(this);
                 await MainPage.Navigation.PushModalAsync(settingsView);
                 await settingsView.ShowDialog();
@@ -103,15 +90,14 @@ namespace ContosoMoments
            ContosoMoments.WinPhone.App.AcquirePushChannel(App.Instance.MobileService);
 #endif
 
-            if (firstStart) {
+            if (showLoginDialog) {
                 await Utils.PopulateDefaultsAsync();
-                MainPage = new NavigationPage(new AlbumsListView(this));
+                MainPage = new NavigationPage(new AlbumsListView());
 
                 await DoLoginAsync();
             }
             else {
-                currentUserId = Settings.Current.CurrentUserId;
-                MainPage = new NavigationPage(new AlbumsListView(this));
+                MainPage = new NavigationPage(new AlbumsListView());
 
                 // user has already chosen an authentication type, so re-authenticate
                 await AuthHandler.DoLoginAsync(Settings.Current.AuthenticationType);
@@ -123,7 +109,7 @@ namespace ContosoMoments
             await PurgeDataAsync();
             MobileService.Dispose();
 
-            await InitMobileService(firstStart: true);
+            await InitMobileService(showSettingsPage: false, showLoginDialog: true);
         }
 
         private async Task DoLoginAsync()
@@ -137,6 +123,8 @@ namespace ContosoMoments
 
         internal async Task LogoutAsync()
         {
+            DependencyService.Get<IPlatform>().LogEvent("Logout" + Settings.Current.AuthenticationType);
+
             await PurgeDataAsync();
             await DoLoginAsync();
         }
@@ -152,8 +140,8 @@ namespace ContosoMoments
             // delete downloaded files
             await FileHelper.DeleteLocalFileAsync(await platform.GetDataFilesPath());
 
-            currentUserId = null;
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
+            Settings.Current.CurrentUserId = Settings.Current.DefaultUserId;
         }
 
         public async Task InitLocalStoreAsync(string localDbFilename)
@@ -226,7 +214,7 @@ namespace ContosoMoments
         internal async Task<Models.Image> AddImageAsync(Models.Album album, string sourceFile)
         {
             var image = new Models.Image {
-                UserId = CurrentUserId,
+                UserId = Settings.Current.CurrentUserId,
                 AlbumId = album.AlbumId,
                 UploadFormat = "Mobile Image",
                 UpdatedAt = DateTime.Now

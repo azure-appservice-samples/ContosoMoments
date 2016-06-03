@@ -16,10 +16,6 @@ namespace ContosoMoments.Views
         public ImageDetailsView()
         {
             InitializeComponent();
-
-            var tapLikeImage = new TapGestureRecognizer();
-            tapLikeImage.Tapped += OnLike;
-            imgLike.GestureRecognizers.Add(tapLikeImage);
         }
 
         public async void OnLike(object sender, EventArgs e)
@@ -33,6 +29,8 @@ namespace ContosoMoments.Views
             catch (Exception) {
                 await DisplayAlert("Error", "'Like' functionality is not available at the moment. Please try again later", "OK");
             }
+
+            DependencyService.Get<IPlatform>().LogEvent("LikeImage");
         }
 
         public async void OnOpenImage(object sender, EventArgs args)
@@ -53,6 +51,8 @@ namespace ContosoMoments.Views
             else {
                 await DisplayAlert("Error downloading image", "Image doesn't exist", "OK");
             }
+                
+            DependencyService.Get<IPlatform>().LogEvent("OpenImageSize");
         }
 
         private async Task DownloadAndDisplayImage(MobileServiceFile file, string imageSize)

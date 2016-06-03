@@ -13,13 +13,14 @@ using System.Windows.Input;
 
 namespace ContosoMoments.ViewModels
 {
-    public class ImagesListViewModel : BaseViewModel
+    public class ImagesListViewModel : BaseViewModel, IDisposable
     {
-        private App _app;
+        private App app;
+        private IDisposable eventSubscription;
 
         public ImagesListViewModel(MobileServiceClient client, App app)
         {
-            _app = app;
+            this.app = app;
 
             DeleteCommand = new DelegateCommand(OnDeleteAlbum, AlbumsListViewModel.IsRenameAndDeleteEnabled);
         }
@@ -68,21 +69,21 @@ namespace ContosoMoments.ViewModels
             try {
                 this.Images = new ObservableCollection<Image>();
                          
-                foreach (var i in await _app.imageTableSync.Where(i => i.AlbumId == albumId).ToEnumerableAsync()) {
+                foreach (var i in await app.imageTableSync.Where(i => i.AlbumId == albumId).ToEnumerableAsync()) {
                     this.Images.Add(i);
                 }
 
                 foreach (var im in this.Images) {
-                    var result = await _app.imageTableSync.GetFilesAsync(im);
+                    var result = await app.imageTableSync.GetFilesAsync(im);
                     im.File = result.FirstOrDefault();
 
                     if (im.File != null) {
-                        string filePath = await FileHelper.GetLocalFilePathAsync(im.Id, im.File.Name, _app.DataFilesPath);
+                        string filePath = await FileHelper.GetLocalFilePathAsync(im.Id, im.File.Name, app.DataFilesPath);
                         im.ImageLoaded = await FileSystem.Current.LocalStorage.CheckExistsAsync(filePath) == ExistenceCheckResult.FileExists;
                     }
                 }
 
-                App.Instance.MobileService.EventManager.Subscribe<ImageDownloadEvent>(DownloadStatusObserver);
+                eventSubscription = app.MobileService.EventManager.Subscribe<ImageDownloadEvent>(DownloadStatusObserver);
             }
             catch (Exception ex) {
                 ErrorMessage = ex.Message;
@@ -101,13 +102,19 @@ namespace ContosoMoments.ViewModels
 
         public async Task DeleteImageAsync(Image selectedImage)
         {
-            await _app.imageTableSync.DeleteAsync(selectedImage);
+            await app.imageTableSync.DeleteAsync(selectedImage);
         }
 
         private void OnDeleteAlbum(object obj)
         {
             var selectedImage = obj as Image;
             DeleteImageViewAction?.Invoke(selectedImage);
+        }
+
+        public void Dispose()
+        {
+            DeleteImageViewAction = null;
+            eventSubscription.Dispose();
         }
     }
 }

@@ -30,5 +30,7 @@ namespace ContosoMoments
         AccountStore GetAccountStore();
 
         Task LogoutAsync();
+
+        void LogEvent(string eventName);
     }
 }

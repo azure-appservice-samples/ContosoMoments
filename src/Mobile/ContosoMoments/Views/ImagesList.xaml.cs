@@ -11,32 +11,16 @@ namespace ContosoMoments.Views
     {
         public Album Album { get; set; }
 
-        private App _app;
         private ImagesListViewModel viewModel;
 
         public ImagesList(App app)
         {
             InitializeComponent();
 
-            _app = app;
-            viewModel = new ImagesListViewModel(App.Instance.MobileService, _app);
-
+            viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            var tapUploadImage = new TapGestureRecognizer();
-            tapUploadImage.Tapped += OnAddImage;
-            imgUpload.GestureRecognizers.Add(tapUploadImage);
-
-            var tapSyncImage = new TapGestureRecognizer();
-            tapSyncImage.Tapped += OnSyncItems;
-            imgSync.GestureRecognizers.Add(tapSyncImage);
-
-            var tapSettingsImage = new TapGestureRecognizer();
-            tapSettingsImage.Tapped += OnSettings;
-            imgSettings.GestureRecognizers.Add(tapSettingsImage);
-
-            viewModel.DeleteImageViewAction = OnDelete;
+            viewModel.DeleteImageViewAction = OnDelete;           
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -60,13 +44,15 @@ namespace ContosoMoments.Views
 
         private async void OnAddImage(object sender, EventArgs e)
         {
+            DependencyService.Get<IPlatform>().LogEvent("AddImage");
+
             using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
                 try {
                     IPlatform platform = DependencyService.Get<IPlatform>();
                     string sourceImagePath = await platform.TakePhotoAsync(App.UIContext);
 
                     if (sourceImagePath != null) {
-                        var image = await _app.AddImageAsync(viewModel.Album, sourceImagePath);
+                        var image = await App.Instance.AddImageAsync(viewModel.Album, sourceImagePath);
 
                         viewModel.Images.Add(image); // add image, item will appear and image will upload asynchronously
                         await SyncItemsAsync(true, refreshView: false);
@@ -112,12 +98,7 @@ namespace ContosoMoments.Views
             // prevents background getting highlighted
             imagesList.SelectedItem = null;
         }
-
-        public async void OnSettings(object sender, EventArgs e)
-        {
-            await Navigation.PushModalAsync(new SettingsView(_app));
-        }
-
+            
         public async void OnSyncItems(object sender, EventArgs e)
         {
             await SyncItemsAsync(false, refreshView: true);
@@ -128,10 +109,10 @@ namespace ContosoMoments.Views
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-                    await _app.SyncAsync();
+                    await App.Instance.SyncAsync();
                 }
                 else {
-                    await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
+                    await DisplayAlert("Working Offline", "Couldn't sync data - device may be offline", "OK");
                 }
 
                 if (refreshView) {
@@ -145,6 +126,8 @@ namespace ContosoMoments.Views
             var result = await DisplayAlert("Delete image?", "Delete selected image?", "Yes", "No");
 
             if (result) {
+                DependencyService.Get<IPlatform>().LogEvent("DeleteImage");
+
                 try {
                     await viewModel.DeleteImageAsync(image);
                     await RefreshAsync();

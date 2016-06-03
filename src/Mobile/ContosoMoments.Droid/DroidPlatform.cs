@@ -12,12 +12,21 @@ using Android.Webkit;
 using Xamarin.Forms;
 using Xamarin.Auth;
 using ContosoMoments.Helpers;
+using Xamarin.Facebook.AppEvents;
+using Xamarin.Facebook;
+using Xamarin.Facebook.Login;
+using Android.App;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 [assembly: Xamarin.Forms.Dependency(typeof(ContosoMoments.Droid.DroidPlatform))]
 namespace ContosoMoments.Droid
 {
     public class DroidPlatform : IPlatform
     {
+        private TaskCompletionSource<MobileServiceUser> tcs; // used in LoginFacebookAsync
+        private AppEventsLogger logger = AppEventsLogger.NewLogger(MainActivity.DefaultService.Application);
+
         public async Task DownloadFileAsync<T>(IMobileServiceSyncTable<T> table, MobileServiceFile file, string fullPath)
         {
             await table.DownloadFileAsync(file, fullPath);
@@ -81,6 +90,8 @@ namespace ContosoMoments.Droid
 
         public async Task LogoutAsync()
         {
+            LoginManager.Instance.LogOut();
+
             CookieManager.Instance.RemoveAllCookie();
             AuthStore.DeleteTokenCache();
             await App.Instance.MobileService.LogoutAsync();
@@ -88,7 +99,34 @@ namespace ContosoMoments.Droid
 
         public Task<MobileServiceUser> LoginFacebookAsync()
         {
-            return LoginAsync(MobileServiceAuthenticationProvider.Facebook);
+            tcs = new TaskCompletionSource<MobileServiceUser>();
+            MainActivity.DefaultService.SetPlatformCallback(this); // set context for facebook callbacks
+            LoginManager.Instance.LogInWithReadPermissions(App.UIContext as Activity, new[] { "public_profile" } );
+
+            return tcs.Task;
+        }
+
+        internal async Task OnFacebookLoginSuccess(string tokenString)
+        {
+            Debug.WriteLine($"Logged into Facebook, access_token: {tokenString}");
+
+            var token = new JObject(); 
+            token["access_token"] = tokenString;
+
+            var user = await App.Instance.MobileService.LoginAsync(MobileServiceAuthenticationProvider.Facebook, token);
+            Debug.WriteLine($"Logged into MobileService, user: {user.UserId}");
+
+            tcs.TrySetResult(user);
+        }
+
+        internal void OnFacebookLoginError(FacebookException e)
+        {
+            tcs.TrySetException(e);
+        }
+
+        internal void OnFacebookLoginCancel()
+        {
+            tcs.TrySetException(new Exception("Facebook login cancelled"));
         }
 
         public AccountStore GetAccountStore()
@@ -104,6 +142,11 @@ namespace ContosoMoments.Droid
             }
 
             return user;
+        }
+
+        public void LogEvent(string eventName)
+        {
+            logger.LogEvent(eventName);
         }
     }
 }
