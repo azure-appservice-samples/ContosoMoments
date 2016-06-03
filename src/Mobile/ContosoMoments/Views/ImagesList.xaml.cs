@@ -15,7 +15,12 @@ namespace ContosoMoments.Views
 
         public ImagesList(App app)
         {
-            InitializeComponent();      
+            InitializeComponent();
+
+            viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
+            BindingContext = viewModel;
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            viewModel.DeleteImageViewAction = OnDelete;
 
             Disappearing += (object sender, EventArgs e) => { // clean up reasources
                 viewModel.PropertyChanged -= ViewModel_PropertyChanged;
@@ -35,11 +40,6 @@ namespace ContosoMoments.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
-            BindingContext = viewModel;
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
-            viewModel.DeleteImageViewAction = OnDelete;
 
             if (imagesList.ItemsSource == null) {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {

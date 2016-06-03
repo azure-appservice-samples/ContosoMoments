@@ -15,6 +15,14 @@ namespace ContosoMoments.Views
         public AlbumsListView()
         {
             InitializeComponent();
+
+            viewModel = new AlbumsListViewModel(App.Instance.MobileService, App.Instance);
+
+            BindingContext = viewModel;
+            viewModel.PropertyChanged += ViewModelPropertyChanged;
+            Settings.Current.PropertyChanged += AuthTypePropertyChanged;
+
+            viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
         }
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -35,22 +43,11 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
-            viewModel = new AlbumsListViewModel(App.Instance.MobileService, App.Instance);
-
-            BindingContext = viewModel;
-            viewModel.PropertyChanged += ViewModelPropertyChanged;
-            Settings.Current.PropertyChanged += AuthTypePropertyChanged;
-
-            viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
-
             AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
-            if (albumsList.ItemsSource != null) {
-                // data has already been loaded, skip sync
-                return;
+            if (albumsList.ItemsSource == null) {
+                await SyncItemsAsync(true);
             }
-
-            await SyncItemsAsync(true);
         }
 
         private async Task LoadItemsAsync()
