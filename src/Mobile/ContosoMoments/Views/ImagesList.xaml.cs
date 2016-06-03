@@ -20,14 +20,7 @@ namespace ContosoMoments.Views
             viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
-            viewModel.DeleteImageViewAction = OnDelete;
-
-            Disappearing += (object sender, EventArgs e) => { // clean up reasources
-                viewModel.PropertyChanged -= ViewModel_PropertyChanged;
-                viewModel?.Dispose();
-                viewModel = null;
-                BindingContext = null;
-            };
+            viewModel.DeleteImageViewAction = OnDelete;           
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
