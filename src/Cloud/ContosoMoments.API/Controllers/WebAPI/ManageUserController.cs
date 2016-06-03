@@ -40,9 +40,14 @@ namespace ContosoMoments.Api
         internal static async Task<bool> IsAadLogin(HttpRequestMessage request, IPrincipal user)
         {
             ClaimsPrincipal principal = user as ClaimsPrincipal;
-            string provider = principal.FindFirst("http://schemas.microsoft.com/identity/claims/identityprovider").Value;
 
-            if (string.Equals(provider, "aad", StringComparison.OrdinalIgnoreCase)) {
+            var claim = principal.FindFirst("http://schemas.microsoft.com/identity/claims/identityprovider");
+
+            if (claim == null) {
+                return false;
+            }
+
+            if (string.Equals(claim.Value, "aad", StringComparison.OrdinalIgnoreCase)) {
                 var creds = await user.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(request);
                 return creds != null;
             }
