@@ -140,8 +140,10 @@ namespace ContosoMoments.ViewModels
 
         public async Task LoadItemsAsync(string userId)
         {
-            Albums =
-                await app.albumTableSync.ToListAsync();
+            Albums = 
+                await app.albumTableSync
+                    .OrderBy(x => x.CreatedAt)
+                    .ToListAsync();
         }
 
         #region UI Actions
