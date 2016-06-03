@@ -24,7 +24,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.contoso.ContosoMoments</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Icon-72@2x.png</string>
@@ -49,7 +49,7 @@
 		<string>Icon-Small@2x.png</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string></string>
+	<string>1.0</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>UIStatusBarHidden~ipad</key>
@@ -130,5 +130,7 @@
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<string>YES</string>
 </dict>
 </plist>
