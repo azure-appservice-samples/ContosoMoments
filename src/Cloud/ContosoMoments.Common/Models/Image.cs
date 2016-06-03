@@ -5,6 +5,11 @@ namespace ContosoMoments.Common.Models
 {
     public class Image : EntityData
     {
+        public Image()
+        {
+            IsVisible = true;
+        }
+
         public string UploadFormat { get; set; }
 
         [Column("Album_Id")]
