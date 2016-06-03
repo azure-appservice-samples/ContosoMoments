@@ -36,12 +36,6 @@ contosoMomentsApp
                 return res.data;
             });
         }
-        var notifyUpload = function (id) {
-            console.log("Notify WebJob of: " + id);
-            return $http.post('/tables/ResizeRequest', {
-                "BlobName": id
-            });
-        }
         return function upload(currentFile, options) {
             var config = options || {};
 
@@ -57,7 +51,6 @@ contosoMomentsApp
                             if (angular.isFunction(config.complete)) {
                                 config.complete(res);
                                 $rootScope.$broadcast('imageUploaded', res.id);
-                                notifyUpload(res.id);
                             }
                         })
                     },// complete callback function,
