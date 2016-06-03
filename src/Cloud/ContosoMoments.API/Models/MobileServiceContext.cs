@@ -38,7 +38,7 @@ namespace ContosoMoments.Api
 
             var defaultAlbum = new Album {
                 Id = appSettings["DefaultAlbumId"],
-                AlbumName = "Default Album",
+                AlbumName = "Public Album",
                 IsDefault = true,
                 User = new User {
                     Id = userid
