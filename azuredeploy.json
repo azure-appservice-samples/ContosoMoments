@@ -270,6 +270,7 @@
                         "DefaultServiceURL": "[concat('https://', variables('lcSiteName'), '.azurewebsites.net/')]",
                         "MS_NotificationHubName": "[variables('NotificationHubName')]",
                         "enableSoftDelete": "true",
+                        "PublicAlbumRequiresAuth": "false",
                         "Command": "deploy.cmd"
                     }
                 },
