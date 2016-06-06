@@ -100,9 +100,16 @@ namespace ContosoMoments.Droid
         public Task<MobileServiceUser> LoginFacebookAsync()
         {
             tcs = new TaskCompletionSource<MobileServiceUser>();
-            MainActivity.DefaultService.SetPlatformCallback(this); // set context for facebook callbacks
-            LoginManager.Instance.LogInWithReadPermissions(App.UIContext as Activity, new[] { "public_profile" } );
 
+            var user = GetCachedUser();
+
+            if (user != null) {
+                tcs.TrySetResult(user);
+            }
+            else {
+                MainActivity.DefaultService.SetPlatformCallback(this); // set context for facebook callbacks
+                LoginManager.Instance.LogInWithReadPermissions(App.UIContext as Activity, new[] { "public_profile" });
+            }
             return tcs.Task;
         }
 
