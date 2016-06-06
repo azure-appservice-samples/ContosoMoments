@@ -34,6 +34,14 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
+            // allow image upload to the public album with the default service only if logged in with AAD
+            bool showImageUpload =
+                !Album.IsDefault ||
+                (Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl &&
+                Settings.Current.AuthenticationType == Settings.AuthOption.ActiveDirectory);
+
+            imgUpload.IsVisible = showImageUpload;
+
             if (imagesList.ItemsSource == null) {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
                     viewModel.Album = Album;
