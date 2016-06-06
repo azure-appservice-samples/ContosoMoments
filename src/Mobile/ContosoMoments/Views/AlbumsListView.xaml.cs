@@ -46,6 +46,7 @@ namespace ContosoMoments.Views
             AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
             if (albumsList.ItemsSource == null) {
+                await LoadItemsAsync(); // load items from the offline cache
                 await SyncItemsAsync(true);
             }
         }
