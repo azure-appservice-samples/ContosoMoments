@@ -28,6 +28,7 @@ namespace ContosoMoments
 
             if (response.StatusCode == HttpStatusCode.Unauthorized) {
                 try {
+                    AuthStore.DeleteTokenCache(); // cached token was invalid, so should clear it
                     await DoLoginAsync(Settings.Current.AuthenticationType);
 
                     clonedRequest = await CloneRequestAsync(request);
