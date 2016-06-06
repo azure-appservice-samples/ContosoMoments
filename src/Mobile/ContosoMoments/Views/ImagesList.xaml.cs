@@ -9,13 +9,23 @@ namespace ContosoMoments.Views
 {
     public partial class ImagesList : ContentPage
     {
-        public Album Album { get; set; }
+        private Album album;
 
         private ImagesListViewModel viewModel;
 
-        public ImagesList(App app)
+        public ImagesList(App app, Album album)
         {
             InitializeComponent();
+
+            this.album = album;
+
+            // allow image upload to the public album with the default service only if logged in with AAD
+            bool showImageUpload =
+                !album.IsDefault ||
+                (Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl &&
+                    Settings.Current.AuthenticationType == Settings.AuthOption.ActiveDirectory);
+
+            imgUpload.IsVisible = showImageUpload;
 
             viewModel = new ImagesListViewModel(App.Instance.MobileService, App.Instance);
             BindingContext = viewModel;
@@ -34,17 +44,9 @@ namespace ContosoMoments.Views
         {
             base.OnAppearing();
 
-            // allow image upload to the public album with the default service only if logged in with AAD
-            bool showImageUpload =
-                !Album.IsDefault ||
-                (Settings.Current.MobileAppUrl == Settings.DefaultMobileAppUrl &&
-                Settings.Current.AuthenticationType == Settings.AuthOption.ActiveDirectory);
-
-            imgUpload.IsVisible = showImageUpload;
-
             if (imagesList.ItemsSource == null) {
                 using (var scope = new ActivityIndicatorScope(syncIndicator, true)) {
-                    viewModel.Album = Album;
+                    viewModel.Album = album;
                     await LoadItemsAsync();
                 }
             }

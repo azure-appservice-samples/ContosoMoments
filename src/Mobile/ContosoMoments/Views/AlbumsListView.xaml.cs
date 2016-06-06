@@ -73,8 +73,7 @@ namespace ContosoMoments.Views
             var selectedAlbum = e.SelectedItem as Album;
 
             if (selectedAlbum != null) {
-                var imagesListView = new ImagesList(App.Instance);
-                imagesListView.Album = selectedAlbum;
+                var imagesListView = new ImagesList(App.Instance, selectedAlbum);
 
                 await Navigation.PushAsync(imagesListView);
             }
