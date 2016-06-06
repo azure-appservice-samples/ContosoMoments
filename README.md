@@ -65,9 +65,11 @@ To learn more, see:
 
 ### Other customizations
 
-By default, the service restricts uploads to the public album to users who are logged in with Azure Active Directory, by setting `Image.IsVisible = false` for other users. To change this behavior, change the app setting `PublicAlbumRequiresAuth` in **web.config** or in the App Settings section of the Azure Portal.
+Our hosted version of the service restricts uploads to the public album to users who are logged in with Azure Active Directory, by setting `Image.IsVisible = false` for other users. On the web client, anyone can upload images to the public album, but the image will be marked as not visible and cannot be viewed unless it is changed in the database. On the mobile client, if you're using the default service url (https://contosomoments.azurewebsites.net), the image upload icon is hidden for the public album unless you're logged in with AAD. 
 
-## How To: Run the Mobile Client App
+The provided ARM template opts out of this behavior by using `false` for the app setting `PublicAlbumRequiresAuth`.
+
+## How To: Run the Mobile Client Apps
 
 In Visual Studio or Xamarin Studio, open the project [src/ContosoMoments-Mobile.sln](src/ContosoMoments-Mobile.sln). 
 
