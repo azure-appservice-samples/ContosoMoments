@@ -36,7 +36,7 @@ namespace ContosoMoments.iOS
 
         public Task<string> GetDataFilesPath()
         {
-            string filesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ContosoImages");
+            string filesPath = Path.Combine(GetRootDataPath(), "ContosoImages");
 
             if (!Directory.Exists(filesPath)) {
                 Directory.CreateDirectory(filesPath);
@@ -47,7 +47,9 @@ namespace ContosoMoments.iOS
 
         public string GetRootDataPath()
         {
-            return Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            // return a reference to <Application_Home>/Library/Caches, so that the images are not marked for iCloud backup
+            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            return Path.Combine(documents, "..", "Library", "Caches"); 
         }
 
         public async Task<string> TakePhotoAsync(object context)
