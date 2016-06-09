@@ -41,8 +41,6 @@ Download and install the following tools to build and/or develop this applicatio
 
 1. When the deployment steps complete, it will provide a link to the Web App
 
-#### NOTE: If Deploy to Azure shows all the steps succeeded but shows an error at the end because it can't find the site in your resource group, that's because the ARM template is dynamically generating the site name. If you go to your resource group in the Azure Portal, you'll see that you have a site with a unique string appended to it.  
-
 ## How: Customize the service
 
 ### Authentication 
