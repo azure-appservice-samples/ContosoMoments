@@ -46,6 +46,7 @@ namespace ContosoMoments.Views
             AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
             if (albumsList.ItemsSource == null) {
+                await LoadItemsAsync(); // load items from the offline cache
                 await SyncItemsAsync(true);
             }
         }
@@ -72,8 +73,7 @@ namespace ContosoMoments.Views
             var selectedAlbum = e.SelectedItem as Album;
 
             if (selectedAlbum != null) {
-                var imagesListView = new ImagesList(App.Instance);
-                imagesListView.Album = selectedAlbum;
+                var imagesListView = new ImagesList(App.Instance, selectedAlbum);
 
                 await Navigation.PushAsync(imagesListView);
             }
