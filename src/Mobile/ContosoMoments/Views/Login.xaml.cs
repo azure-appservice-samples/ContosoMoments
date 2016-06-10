@@ -1,61 +1,63 @@
 ﻿using ContosoMoments.Models;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
     public partial class Login : ContentPage
-	{
-		public Login ()
-		{
-			InitializeComponent ();
-		}
+    {
+        private TaskCompletionSource<Settings.AuthOption> tcs;
 
-        async void OnFBLoginClicked(object sender, EventArgs e)
+        public Login()
         {
-            await DoLoginAsync(MobileServiceAuthenticationProvider.Facebook);
+            InitializeComponent();
         }
 
-        async void OnAADLoginClicked(object sender, EventArgs e)
+        public Task<Settings.AuthOption> GetResultAsync()
         {
-            await DoLoginAsync(MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory);
+            tcs = new TaskCompletionSource<Settings.AuthOption>();
+            return tcs.Task;
         }
 
-        private async Task DoLoginAsync(MobileServiceAuthenticationProvider provider)
+        private async void OnFBLoginClicked(object sender, EventArgs e)
         {
-            MobileServiceUser user;
+            await DoLoginAsync(Settings.AuthOption.Facebook);
+        }
 
+        private async void OnAADLoginClicked(object sender, EventArgs e)
+        {
+            await DoLoginAsync(Settings.AuthOption.ActiveDirectory);
+        }
+
+        private async void OnGuestClicked(object sender, EventArgs e)
+        {
+            Settings.Current.CurrentUserId = Settings.Current.DefaultUserId; // use default user ID
+            await LoginComplete(Settings.AuthOption.GuestAccess);
+        }
+
+        private async Task LoginComplete(Settings.AuthOption option)
+        {
+            DependencyService.Get<IPlatform>().LogEvent("Login" + option);
+
+            await Navigation.PopToRootAsync();
+
+            tcs.TrySetResult(option);
+        }
+
+        private async Task DoLoginAsync(Settings.AuthOption authOption)
+        {
             try
             {
-                user = await DependencyService.Get<IMobileClient>().LoginAsync(provider);
-                App.AuthenticatedUser = user;
-                System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
-
-#if __DROID__
-                Droid.GcmService.RegisterWithMobilePushNotifications();
-#elif __IOS__
-                iOS.AppDelegate.IsAfterLogin = true;
-                await iOS.AppDelegate.RegisterWithMobilePushNotifications();
-#elif __WP__
-                ContosoMoments.WinPhone.App.AcquirePushChannel(App.MobileService);
-#endif
-
-                //Navigation.InsertPageBefore(new ImagesList(), this);
-                Navigation.InsertPageBefore(new AlbumsListView(), this);
-                await Navigation.PopAsync();
+                await AuthHandler.DoLoginAsync(authOption);
+                await LoginComplete(authOption);
             }
-            catch (InvalidOperationException ex)
-            {
-                if (ex.Message.Contains("Authentication was cancelled"))
-                {
-                    messageLabel.Text = "Authentication cancelled by the user";
-                }
-            }
-            catch (Exception ex)
-            {
-                messageLabel.Text = "Authentication failed";
+            catch (Exception)
+            { 
+                // if user cancels, then set to Guest access
+                await LoginComplete(Settings.AuthOption.GuestAccess);
             }
         }
     }

@@ -1,154 +1,87 @@
-﻿using ContosoMoments.MobileServer.Models;
-using Microsoft.Azure.Mobile.Server.Authentication;
+﻿using Microsoft.Azure.Mobile.Server.Authentication;
 using Microsoft.Azure.Mobile.Server.Config;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Security.Claims;
+using ContosoMoments.Common.Models;
 
-namespace ContosoMoments.MobileServer.Controllers.WebAPI
+namespace ContosoMoments.Api
 {
+    [Authorize]
     [MobileAppController]
     public class ManageUserController : ApiController
     {
-        protected readonly string _defaultUserId;
-        protected const string FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.5/me?fields=email%2Cfirst_name%2Clast_name&access_token=";
-
-        public ManageUserController()
+        internal static async Task<string> GetUserId(HttpRequestMessage request, IPrincipal user)
         {
-            Web.Models.ConfigModel config = new Web.Models.ConfigModel();
-            _defaultUserId = config.DefaultUserId;
+            ClaimsPrincipal principal = user as ClaimsPrincipal;
+            string provider = principal.FindFirst("http://schemas.microsoft.com/identity/claims/identityprovider").Value;
+
+            ProviderCredentials creds = null;
+            if (string.Equals(provider, "facebook", StringComparison.OrdinalIgnoreCase)) {
+                creds = await user.GetAppServiceIdentityAsync<FacebookCredentials>(request);
+            }
+            else if (string.Equals(provider, "aad", StringComparison.OrdinalIgnoreCase)) {
+                creds = await user.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(request);
+            }
+
+            return creds != null ?
+                string.Format("{0}:{1}", creds.Provider, creds.Claims[ClaimTypes.NameIdentifier]) :
+                null;
+        }
+
+        // return true if user is logged in with AAD
+        internal static async Task<bool> IsAadLogin(HttpRequestMessage request, IPrincipal user)
+        {
+            ClaimsPrincipal principal = user as ClaimsPrincipal;
+
+            var claim = principal.FindFirst("http://schemas.microsoft.com/identity/claims/identityprovider");
+
+            if (claim == null) {
+                return false;
+            }
+
+            if (string.Equals(claim.Value, "aad", StringComparison.OrdinalIgnoreCase)) {
+                var creds = await user.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(request);
+                return creds != null;
+            }
+
+            return false;
         }
 
         // GET api/ManageUser
         public async Task<string> Get()
         {
-            string retVal = default(string);
+            string username = await GetUserId(Request, this.User);
 
-            // Get the credentials for the logged-in user.
-            var fbCredentials = await User.GetAppServiceIdentityAsync<FacebookCredentials>(Request);
-            if (null != fbCredentials && fbCredentials.Claims.Count > 0)
-            {
-                retVal = CheckAddEmailToDB(await GetEmailFromFacebookGraph(fbCredentials.AccessToken));
-            }
+            Debug.WriteLine($"Username is: {username}");
 
-            var aadCredentials = await User.GetAppServiceIdentityAsync<AzureActiveDirectoryCredentials>(Request);
-            if (null != aadCredentials && aadCredentials.Claims.Count > 0)
-            {
-                retVal = CheckAddEmailToDB(aadCredentials.UserId);
-            }
+            using (var ctx = new MobileServiceContext()) {
+                var user = ctx.Users.Find(username);
 
-            return UserOrDefault(retVal);
-        }
-
-        // POST: api/Like
-        public async Task<string> Get(string data, string provider)
-        {
-            string retVal = default(string);
-
-            if (provider.Equals("facebook"))
-            {
-                retVal = CheckAddEmailToDB(await GetEmailFromFacebookGraph(data));
-            }
-
-            if (provider.Equals("aad"))
-            {
-                retVal = CheckAddEmailToDB(data);
-            }
-
-            return UserOrDefault(retVal);
-        }
-
-        private string UserOrDefault(string retVal)
-        {
-            if (string.IsNullOrWhiteSpace(retVal))
-            {
-                retVal = _defaultUserId;
-            }
-
-            return retVal;
-        }
-
-        private static async Task<string> GetEmailFromFacebookGraph(string credentials)
-        {
-            string fbInfo = default(string);
-            // Create a query string with the Facebook access token.
-            var fbRequestUrl = FACEBOOK_GRAPH_URL + credentials;
-
-            using (var client = new System.Net.Http.HttpClient())
-            {
-                // Request the current user info from Facebook.
-                var resp = await client.GetAsync(fbRequestUrl);
-                resp.EnsureSuccessStatusCode();
-
-                // Do something here with the Facebook user information.
-                fbInfo = await resp.Content.ReadAsStringAsync();
-            }
-
-            JObject fbObject = JObject.Parse(fbInfo);
-            var emailToken = fbObject.GetValue("email");
-
-            return emailToken.ToString();
-        }
-
-        private static string CheckAddEmailToDB(string email)
-        {
-            var identifier = GenerateHashFromEmail(email);
-
-            using (var ctx = new MobileServiceContext())
-            {
-                var user = ctx.Users.FirstOrDefault(x => x.Email == identifier);
-
-                // User Found, Exit
-                if (default(Common.Models.User) != user)
-                    return user.Id;
-
-                // New User, Create
-                return AddUser(identifier, ctx);
-            }
-        }
-
-        private static string AddUser(string email, MobileServiceContext ctx)
-        {
-            var u = ctx.Users.Add(
-                new Common.Models.User
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Email = email,
-                    IsEnabled = true
-                });
-
-            try
-            {
-                ctx.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-
-            return u.Id;
-        }
-
-        private static string GenerateHashFromEmail(string email)
-        {
-            StringBuilder hashString = new StringBuilder();
-
-            using (var generator = System.Security.Cryptography.SHA256.Create())
-            {
-                var emailBytes = Encoding.UTF8.GetBytes(email);
-                var hash = generator.ComputeHash(emailBytes);
-
-                foreach (var b in hash)
-                {
-                    hashString.AppendFormat("{0:x2}", b);
+                if (user == null) {
+                    AddUser(username, ctx);
                 }
-            }
 
-            return hashString.ToString();
+                return username;
+            }
+        }
+
+        private static void AddUser(string identifier, MobileServiceContext ctx)
+        {
+            var u =
+                ctx.Users.Add(
+                    new User {
+                        Id = identifier,
+                    });
+
+            ctx.SaveChanges();
         }
     }
 }

@@ -1,60 +1,46 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Configuration;
+using Microsoft.Azure.Mobile.Server.Files;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json.Linq;
 
-namespace ContosoMoments.Common.Queue
+namespace ContosoMoments.Common
 {
     public class QueueManager
     {
-        public async Task PushToResizeQueue(BlobInformation blobInformation)
+        private static string StorageConnectionString()
         {
-            try
-            {
-                CloudStorageAccount account;
-                string storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", AppSettings.StorageAccountName, AppSettings.StorageAccountKey);
-
-                if (CloudStorageAccount.TryParse(storageConnectionString, out account))
-                {
-                    CloudQueueClient queueClient = account.CreateCloudQueueClient();
-                    CloudQueue resizeRequestQueue = queueClient.GetQueueReference(AppSettings.ResizeQueueName);
-                    resizeRequestQueue.CreateIfNotExists(); 
-
-                    var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(blobInformation));
-                    await resizeRequestQueue.AddMessageAsync(queueMessage);
-                }
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError("Exception in QueueManager.PushToQueue => " + ex.Message);
-            }
-
+            return ConfigurationManager.ConnectionStrings[Constants.StorageConnectionStringName].ConnectionString;
         }
 
-        public async Task PushToDeleteQueue(BlobInformation blobInformation)
+        public static async Task PushToDeleteQueue(string blobName)
         {
-            try
-            {
+            var payload = new JObject();
+            payload["ImageId"] = blobName;
+                 
+            await PushToQueue(AppSettings.DeleteQueueName, payload.ToString());
+        }
+
+        private static async Task PushToQueue(string queueName, string data)
+        {
+            try {
                 CloudStorageAccount account;
-                string storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", AppSettings.StorageAccountName, AppSettings.StorageAccountKey);
 
-                if (CloudStorageAccount.TryParse(storageConnectionString, out account))
-                {
+                if (CloudStorageAccount.TryParse(StorageConnectionString(), out account)) {
                     CloudQueueClient queueClient = account.CreateCloudQueueClient();
-                    CloudQueue deleteRequestQueue = queueClient.GetQueueReference(AppSettings.DeleteQueueName);
-                    deleteRequestQueue.CreateIfNotExists();
+                    CloudQueue queue = queueClient.GetQueueReference(queueName);
+                    queue.CreateIfNotExists();
 
-                    var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(blobInformation));
-                    await deleteRequestQueue.AddMessageAsync(queueMessage);
+                    var queueMessage = new CloudQueueMessage(data);
+                    await queue.AddMessageAsync(queueMessage);
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Trace.TraceError("Exception in QueueManager.PushToQueue => " + ex.Message);
             }
-
         }
     }
 }

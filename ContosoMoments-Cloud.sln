@@ -1,0 +1,76 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.Common", "src\Cloud\ContosoMoments.Common\ContosoMoments.Common.csproj", "{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.API", "src\Cloud\ContosoMoments.API\ContosoMoments.API.csproj", "{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.WebJobWrapper", "src\Cloud\ContosoMoments.WebJobWrapper\ContosoMoments.WebJobWrapper.csproj", "{32FDB152-1D9B-4682-9869-4CEF34C3E40E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoMoments.ResizerWebJob", "src\Cloud\ContosoMoments.ResizerWebJob\ContosoMoments.ResizerWebJob.csproj", "{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ContosoMoments.Function", "src\Cloud\ContosoMoments.Function\", "{B04D53A4-555B-402E-8292-4002D4997682}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_1433"
+		Debug.AspNetCompiler.PhysicalPath = "src\Cloud\ContosoMoments.Function\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_1433\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_1433"
+		Release.AspNetCompiler.PhysicalPath = "src\Cloud\ContosoMoments.Function\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_1433\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "1433"
+		SlnRelativePath = "src\Cloud\ContosoMoments.Function\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		VSTS Build|Any CPU = VSTS Build|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{C2C4991B-5A0C-4DA4-9A80-2D2C89A95DCE}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{E9D9FABF-B7A5-4E93-B14C-3EFC897D78AC}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{32FDB152-1D9B-4682-9869-4CEF34C3E40E}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{21AB2B1C-5F21-43DB-A3D6-F5C2DED4ED2C}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+		{B04D53A4-555B-402E-8292-4002D4997682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04D53A4-555B-402E-8292-4002D4997682}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04D53A4-555B-402E-8292-4002D4997682}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04D53A4-555B-402E-8292-4002D4997682}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{B04D53A4-555B-402E-8292-4002D4997682}.VSTS Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04D53A4-555B-402E-8292-4002D4997682}.VSTS Build|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

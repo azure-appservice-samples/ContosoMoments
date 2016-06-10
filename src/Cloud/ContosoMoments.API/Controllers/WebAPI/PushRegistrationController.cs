@@ -1,5 +1,4 @@
-﻿using ContosoMoments.Common.Notification;
-using ContosoMoments.MobileServer.Models;
+﻿using ContosoMoments.Common;
 using Microsoft.Azure.Mobile.Server.Config;
 using Microsoft.Azure.NotificationHubs;
 using System;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace ContosoMoments.MobileServer.Controllers.WebAPI
+namespace ContosoMoments.Api
 {
     [MobileAppController]
     public class PushRegistrationController : ApiController
@@ -25,13 +24,14 @@ namespace ContosoMoments.MobileServer.Controllers.WebAPI
 
                 if (null != plat)
                 {
-                    ctx.DeviceRegistrations.Add(new Common.Models.DeviceRegistration()
-                    {
+                    var newRegistration = new Common.Models.DeviceRegistration() {
                         Id = Guid.NewGuid().ToString(),
-                        InstallationId = deviceInstallInfo.InstallationId,
-                        UserId = deviceInstallInfo.UserId,
+                                                                                         InstallationId = deviceInstallInfo.InstallationId,
+                                                                                         UserId = deviceInstallInfo.UserId,
                         Platform = plat.Value
-                    });
+                    };
+
+                    ctx.DeviceRegistrations.Add(newRegistration);
                     isChanged = true;
                 }
             }

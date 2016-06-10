@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ContosoMoments.Deployment", "ContosoMoments.Deployment.deployproj", "{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Android|Any CPU = Android|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		iOS|Any CPU = iOS|Any CPU
+		Release|Any CPU = Release|Any CPU
+		VSTS Build|Any CPU = VSTS Build|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|Any CPU.ActiveCfg = Android|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Android|Any CPU.Build.0 = Android|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.iOS|Any CPU.ActiveCfg = iOS|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.iOS|Any CPU.Build.0 = iOS|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.VSTS Build|Any CPU.ActiveCfg = VSTS Build|Any CPU
+		{B96FF9B9-03CB-48A9-8E02-450FB649D9ED}.VSTS Build|Any CPU.Build.0 = VSTS Build|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

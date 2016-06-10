@@ -2,38 +2,26 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ContosoMoments.Views.Login"
-             BackgroundColor="#8C0A4B">
-  <!--<ContentPage.Content>
-    <StackLayout VerticalOptions="Center" >
-      <Button Text="Login" Clicked="OnLoginClicked" />
-      <Label x:Name="messageLabel" />
-    </StackLayout>
-  </ContentPage.Content>-->
+             NavigationPage.HasNavigationBar="false">
+
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <!--Header-->
-    <Grid Grid.Row="0" Padding="10,30,10,5">
-      <!--<Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="*"/>
-      </Grid.ColumnDefinitions>-->
-      <Image VerticalOptions="End">
-        <Image.Source>
-          <OnPlatform x:TypeArguments="ImageSource" iOS="Assets/logotext.png" Android="logotext.png" WinPhone="Assets/logotext.png"/>
-        </Image.Source>
-      </Image>
+    <Grid Grid.Row="0" Padding="10,30,10,30" BackgroundColor="#8C0A4B" >
+      <Image VerticalOptions="End" Source="logotext.png"/>
     </Grid>
 
     <!--Settings-->
-    <Grid Grid.Row="1" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" Padding="10,15,10,5">
-      <StackLayout Orientation="Vertical" Padding="10,15,10,5">
-        <Button Text="Login with Facebook" Clicked="OnFBLoginClicked" />
-        <Button Text="Login with Azure Active Directory" Clicked="OnAADLoginClicked" />
-        <Label x:Name="messageLabel" TextColor="Black"/>
+    <Grid Grid.Row="1" VerticalOptions="Start" HorizontalOptions="CenterAndExpand">
+      <StackLayout Orientation="Vertical" Padding="10">
+        <Button Text="  Login with Facebook  " Clicked="OnFBLoginClicked" Margin="5"/>
+        <Button Text="  Login with Azure Active Directory  " Clicked="OnAADLoginClicked"/>
+        <ContentView Padding="0,10,0,0">
+          <Button Text="  Guest access  " Clicked="OnGuestClicked" Margin="5,0,5,0" />
+        </ContentView>
       </StackLayout>
     </Grid>
   </Grid>

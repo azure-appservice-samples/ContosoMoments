@@ -24,6 +24,7 @@
     "angular": "~1.4.7",
     "angular-route": "~1.4.7",
     "object-fit": "~0.4.2",
-    "angular-ui-router": "~0.2.15"
+    "angular-ui-router": "~0.2.15",
+    "node-uuid": "~1.4.7"
   }
 }

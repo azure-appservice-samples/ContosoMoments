@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Foundation;
-using UIKit;
-using System.IO;
+﻿using Foundation;
 using Microsoft.WindowsAzure.MobileServices;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Threading.Tasks;
+using UIKit;
 
 namespace ContosoMoments.iOS
 {
@@ -36,8 +32,7 @@ namespace ContosoMoments.iOS
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
             SQLitePCL.CurrentPlatform.Init();
 
-            if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-            {
+            if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0)) {
                 var settings = UIUserNotificationSettings.GetSettingsForTypes(UIUserNotificationType.Sound |
                                                                               UIUserNotificationType.Alert |
                                                                               UIUserNotificationType.Badge, null);
@@ -46,87 +41,65 @@ namespace ContosoMoments.iOS
                 UIApplication.SharedApplication.RegisterForRemoteNotifications();
 
             }
-            else
-            {
+            else {
                 UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(UIRemoteNotificationType.Badge |
                                                                                    UIRemoteNotificationType.Sound |
                                                                                    UIRemoteNotificationType.Alert);
             }
 
-            LoadApplication(new ContosoMoments.App());
+            var formsApp = new ContosoMoments.App();
+            LoadApplication(formsApp);
 
-            #error COMMENT WHEN DEBUGGING ON EMULATOR!
-            var imagePicker = new UIImagePickerController { SourceType = UIImagePickerControllerSourceType.Camera };
-            (Xamarin.Forms.Application.Current as App).ShouldTakePicture += () =>
-                app.KeyWindow.RootViewController.PresentViewController(imagePicker, true, null);
-
-            imagePicker.FinishedPickingMedia += (sender, e) =>
-            {
-                var filepath = Path.Combine(Environment.GetFolderPath(
-                                   Environment.SpecialFolder.MyDocuments), "tmp.png");
-                var image = (UIImage)e.Info.ObjectForKey(new NSString("UIImagePickerControllerOriginalImage"));
-                InvokeOnMainThread(() =>
-                {
-                    image.AsJPEG().Save(filepath, false);
-                    (Xamarin.Forms.Application.Current as App).ShowCapturedImage(filepath);
-                });
-                app.KeyWindow.RootViewController.DismissViewController(true, null);
-            };
-
-            imagePicker.Canceled += (sender, e) =>
-            {
-                (Xamarin.Forms.Application.Current as App).ShowCapturedImage(null);
-                app.KeyWindow.RootViewController.DismissViewController(true, null);
-            };
+            Facebook.CoreKit.ApplicationDelegate.SharedInstance.FinishedLaunching(app, options);
 
             return base.FinishedLaunching(app, options);
         }
 
+
+        public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            // We need to handle URLs by passing them to their own OpenUrl in order to make the SSO authentication works.
+            return Facebook.CoreKit.ApplicationDelegate.SharedInstance.OpenUrl(application, url, sourceApplication, annotation);
+        }
+
         public static async Task RegisterWithMobilePushNotifications()
         {
-            if (null != DeviceToken && IsAfterLogin)
-            {
-                // Register for push with Mobile Services
-                //IEnumerable<string> tag = new List<string>() { "uniqueTag" };
+            if (DeviceToken != null && IsAfterLogin) {
 
-                const string templateBodyAPNS = "{\"aps\":{\"alert\":\"$(messageParam)\"}}";
-
-                //JObject templateBody = new JObject();
-                //templateBody["body"] = notificationTemplate;
-
-                //JObject templates = new JObject();
-                //templates["ContosoMomentsApnsTemplate"] = templateBody;
-
-                JObject templates = new JObject();
-                templates["genericMessage"] = new JObject
-                {
-                    {"body", templateBodyAPNS}
+                var apnsBody = new JObject {
+                    {
+                        "aps",
+                        new JObject {
+                            { "alert", "$(messageParam)" }
+                        }
+                    }
                 };
 
-                //var expiryDate = DateTime.Now.AddDays(90).ToString
-                //    (System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
+                var template = new JObject {
+                    {
+                        "genericMessage",
+                        new JObject {
+                            {"body", apnsBody}
+                        }
+                    }
+                };
 
-                // Get Mobile Services client
-                MobileServiceClient client = App.MobileService;
-                var push = client.GetPush();
-
-                try
-                {
-                    await push.RegisterAsync(DeviceToken, templates);
+                try {
+                    var push = App.Instance.MobileService.GetPush();
+                    await push.RegisterAsync(DeviceToken, template);
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("RegisterWithMobilePushNotifications: " + ex.Message);
+                catch (Exception ex) {
+                    System.Diagnostics.Debug.WriteLine("Exception in RegisterWithMobilePushNotifications: " + ex.Message);
                 }
             }
         }
 
-        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        public override async void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
         {
             DeviceToken = deviceToken;
 
             if (IsAfterLogin)
-                RegisterWithMobilePushNotifications();
+                await RegisterWithMobilePushNotifications();
         }
 
         public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
@@ -135,11 +108,19 @@ namespace ContosoMoments.iOS
 
             bool success = userInfo.TryGetValue(new NSString("inAppMessage"), out inAppMessage);
 
-            if (success)
-            {
+            if (success) {
                 var alert = new UIAlertView("Got push notification", inAppMessage.ToString(), null, "OK", null);
                 alert.Show();
             }
+        }
+
+        public override void OnActivated(UIApplication uiApplication)
+        {
+            base.OnActivated(uiApplication);
+
+            // log app activation to Facebook app events
+            Facebook.CoreKit.AppEvents.ActivateApp();
+            Facebook.CoreKit.Settings.LimitEventAndDataUsage = true; // tell Facebook not to use app events for ad serving
         }
     }
 }

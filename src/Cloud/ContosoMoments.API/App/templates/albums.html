@@ -1,0 +1,7 @@
+﻿<div class="row albums-view">
+    <div ng-repeat="album in albumsCtrl.albums" class="col-xs-6 col-sm-4 col-md-3 col-lg-2 galleryRowAlbum">
+       <div class="album text-center rounded-border" ng-click="albumsCtrl.goToAlbum(album)" >
+           <strong>{{album.albumName}}</strong>
+       </div>
+    </div>
+</div>

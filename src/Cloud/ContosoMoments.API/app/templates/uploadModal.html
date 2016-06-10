@@ -1,0 +1,21 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">Image upload</h4>
+</div>
+<div class="modal-body">
+    <div ng-hide="uploadCtrl.showProgress()">
+        <input type="file" file-change="uploadCtrl.onFileChange(files,event)" />
+    </div>
+    <div class="row" ng-show="uploadCtrl.showProgress()">
+        <div class="col-xs-12 text-center">
+            <h4 ng-show="!hasError && progress>=0 && progress<100">Uploading</h4>
+            <h4 ng-show="!hasError && progress>=100">Upload complete</h4>
+            <h4 ng-show="hasError" class="text-danger">Upload Error</h4>
+            <uib-progressbar value="progress" type="progressType" animate="!hasError"></uib-progressbar>
+        </div>
+    </div>
+</div>
+<div class="modal-footer" ng-hide="uploadCtrl.showProgress() && !hasError">
+    <button class="btn btn-default" type="button" ng-click="uploadCtrl.cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-hide="hasError" ng-click="uploadCtrl.upload()">Upload</button>
+    <button class="btn btn-primary" type="button" ng-show="hasError" ng-click="uploadCtrl.reset()">Try again</button>
+</div>

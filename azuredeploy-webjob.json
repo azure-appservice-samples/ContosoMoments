@@ -1,0 +1,360 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "siteLocation": {
+            "type": "string",
+            "allowedValues": [
+                "East US",
+                "West US",
+                "Central US",
+                "South Central US",
+                "East US 2",
+                "North Europe",
+                "West Europe",
+                "Southeast Asia",
+                "East Asia",
+                "Japan West",
+                "Japan East"
+            ],
+            "defaultValue": "West US",
+            "metadata": {
+                "description": "Azure region where application gateway will be deployed"
+            }
+        },
+        "sqlAdministratorLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "The database admin username that you wish to create."
+            }
+        },
+        "dbAdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for database admin user that you wish to use."
+            }
+        },
+        "storageAccountType": {
+            "type": "string",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Premium_LRS"
+            ],
+            "defaultValue": "Standard_GRS",
+            "metadata": {
+                "description": "The type of the storage account app that you wish to create."
+            }
+        },
+        "hostingPlanName": {
+            "type": "string",
+            "metadata": {
+                "description": "The hosting service plan name that you wish to create."
+            }
+        },
+        "sku": {
+            "type": "string",
+            "allowedValues": [
+                "Shared",
+                "Basic",
+                "Standard"
+            ],
+            "defaultValue": "Basic",
+            "metadata": {
+                "description": "The pricing tier for the hosting plan."
+            }
+        },
+        "siteName": {
+            "type": "string",
+            "defaultValue": "contosomomentsweb",
+            "metadata": {
+                "description": "The name of the web client app that you wish to create."
+            }
+        },
+        "repoURL": {
+            "type": "string",
+            "metadata": {
+                "description": "Repo URL."
+            }
+        },
+        "branch": {
+            "type": "string",
+            "defaultValue": "dev",
+            "metadata": {
+                "description": "Repo branch"
+            }
+        },
+        "manualIntegration": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Use 'true' if you are deploying from the base repo, 'false' if you are deploying from your own fork. If you're using 'false', make sure you have admin permissions to the repo."
+            }
+        }
+    },
+    "variables": {
+        "lcSiteName": "[toLower(concat(parameters('siteName'), substring(uniqueString(resourceGroup().id), 0, 6)))]",
+        "webJobSiteName": "[concat(variables('lcSiteName'), '-webjob')]",
+        "storageAccountName": "[toLower(concat('contoso', substring(uniqueString(resourceGroup().id), 0, 6)))]",
+        "NotificationHubName": "[variables('lcSiteName')]",
+        "notificationHubNamespace": "[concat(variables('lcSiteName'), '-ns')]",
+        "notificationHubLocation": "[parameters('siteLocation')]",
+        "DefaultAlbumId": "11111111-1111-1111-1111-111111111111",
+        "DefaultUserId": "11111111-1111-1111-1111-111111111111",
+        "FacebookAuthString": "http://www.facebook.com",
+        "DeleteQueueName": "deleterequest",
+        "ResizeQueueName": "resizerequest",
+        "sqlDbName": "[variables('lcSiteName')]",
+        "sqlServerName": "[concat(variables('lcSiteName'), '-dbserver')]"
+
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[parameters('siteLocation')]",
+            "properties": {
+                "accountType": "[parameters('storageAccountType')]"
+            }
+        },
+
+        {
+            "apiVersion": "2014-04-01-preview",
+            "name": "[variables('sqlServerName')]",
+            "type": "Microsoft.Sql/servers",
+            "location": "[parameters('siteLocation')]",
+            "properties": {
+                "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+                "administratorLoginPassword": "[parameters('dbAdminPassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2014-04-01-preview",
+                    "name": "[variables('sqlDbName')]",
+                    "type": "databases",
+                    "location": "[parameters('siteLocation')]",
+                    "tags": {
+                        "displayName": "SqlServer"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers/', variables('sqlServerName'))]"
+                    ],
+                    "properties": {
+                        "edition": "Basic",
+                        "maxSizeBytes": "2147483648"
+                    }
+                },
+                {
+                    "type": "firewallrules",
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
+                    ],
+                    "location": "[parameters('siteLocation')]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        },
+
+        {
+            "apiVersion": "2014-06-01",
+            "type": "Microsoft.Web/serverfarms",
+            "name": "[parameters('hostingPlanName')]",
+            "location": "[parameters('siteLocation')]",
+            "properties": {
+                "name": "[parameters('hostingPlanName')]",
+                "sku": "[parameters('sku')]"
+            }
+        },
+
+        {
+            "apiVersion": "2014-09-01",
+            "type": "Microsoft.NotificationHubs/namespaces",
+            "name": "[variables('notificationHubNamespace')]",
+            "location": "[variables('notificationHubLocation')]",
+            "properties": {
+                "region": "[variables('notificationHubLocation')]",
+                "namespaceType": "NotificationHub"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2014-09-01",
+                    "name": "[variables('NotificationHubName')]",
+                    "type": "NotificationHubs",
+                    "location": "[variables('notificationHubLocation')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.NotificationHubs/namespaces', variables('notificationHubNamespace'))]"
+                    ],
+                    "properties": {
+                        "name": "[variables('NotificationHubName')]"
+                    }
+                }
+            ]
+        },
+
+        {
+            "apiVersion": "2014-04-01",
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('lcSiteName')]",
+            "location": "[parameters('siteLocation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
+                "[resourceId('Microsoft.Sql/servers/', variables('sqlServerName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
+            ],
+            "properties": {
+                "name": "[variables('lcSiteName')]",
+                "serverFarm": "[parameters('hostingPlanName')]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "type": "config",
+                    "name": "connectionstrings",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', variables('lcSiteName'))]",
+                        "[resourceId('Microsoft.Sql/servers/', variables('sqlServerName'))]",
+                        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+                    ],
+                    "properties": {
+                        "MS_TableConnectionString": {
+                            "value": "[concat('Server=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Database=', variables('sqlDbName'), ';User Id=', parameters('sqlAdministratorLogin'), '@', variables('sqlServerName'), ';Password=', parameters('dbAdminPassword'), ';')]",
+                            "type": "SQLAzure"
+                        },
+                        "MS_NotificationHubConnectionString": {
+                            "value": "[listkeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', variables('notificationHubNamespace'), variables('NotificationHubName'), 'DefaultFullSharedAccessSignature'), '2014-09-01').primaryConnectionString]",
+                            "type": "custom"
+                        },
+                        "MS_AzureStorageAccountConnectionString": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1)]",
+                            "type": "custom"
+                        }
+                    }
+                },
+                {
+                    "apiVersion": "2015-01-01",
+                    "type": "providers/links",
+                    "name": "Microsoft.Resources/mobile-notificationhub",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('lcSiteName'))]",
+                        "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
+                    ],
+                    "properties": {
+                        "targetId": "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
+                    }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "type": "config",
+                    "name": "appsettings",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', variables('lcSiteName'))]",
+                        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                        "[resourceId('Microsoft.NotificationHubs/namespaces/NotificationHubs', variables('notificationHubNamespace'), variables('NotificationHubName'))]"
+                    ],
+                    "properties": {
+                        "ResizeQueueName": "[variables('ResizeQueueName')]",
+                        "DeleteQueueName": "[variables('DeleteQueueName')]",
+                        "UploadContainerName": "images",
+                        "FacebookAuthString": "[variables('FacebookAuthString')]",
+                        "DefaultUserId": "[variables('DefaultUserId')]",
+                        "DefaultAlbumId": "[variables('DefaultAlbumId')]",
+                        "DefaultServiceURL": "[concat('https://', variables('lcSiteName'), '.azurewebsites.net/')]",
+                        "MS_NotificationHubName": "[variables('NotificationHubName')]",
+                        "enableSoftDelete": "true",
+                        "Command": "deploy.cmd"
+                    }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "sourcecontrols",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('lcSiteName'))]",
+                        "[resourceId('Microsoft.Web/Sites/config', variables('lcSiteName'), 'appsettings')]",
+                        "[resourceId('Microsoft.Web/Sites/config', variables('lcSiteName'), 'connectionstrings')]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "[parameters('repoUrl')]",
+                        "branch": "[parameters('branch')]",
+                        "IsManualIntegration": "parameters('manualIntegration')]"
+                    }
+                }
+            ]
+        },
+
+        {
+            "apiVersion": "2014-04-01",
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('webJobSiteName')]",
+            "location": "[parameters('siteLocation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+            ],
+            "properties": {
+                "name": "[variables('webJobSiteName')]",
+                "serverFarm": "[parameters('hostingPlanName')]",
+                "siteConfig": {
+                    "AlwaysOn": true
+                }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "type": "config",
+                    "name": "connectionstrings",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]",
+                        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+                    ],
+                    "properties": {
+                        "AzureWebJobsDashboard": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
+                            "type": "Custom"
+                        },
+                        "AzureWebJobsStorage": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1)]",
+                            "type": "Custom"
+                        }
+                    }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "type": "config",
+                    "name": "appsettings",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]"
+                    ],
+                    "properties": {
+                        "project": "src\\Cloud\\ContosoMoments.WebJobWrapper\\ContosoMoments.WebJobWrapper.csproj"
+                    }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "sourcecontrols",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites/', variables('webJobSiteName'))]",
+                        "[resourceId('Microsoft.Web/Sites/config', variables('webJobSiteName'), 'appsettings')]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "[parameters('repoUrl')]",
+                        "branch": "[parameters('branch')]",
+                        "IsManualIntegration": "parameters('manualIntegration')]"
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {
+    }
+}

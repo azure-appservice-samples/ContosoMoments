@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ContosoMoments.Views.SettingsView">
+
+  <Grid RowSpacing="0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!--Header-->
+    <Grid Grid.Row="0" Padding="10" BackgroundColor="#8C0A4B">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Image Grid.Column="0" HeightRequest="30" VerticalOptions="Center" Source="logo.png"/>
+
+      <Label Text="Settings" TextColor="White" Grid.Column="1" VerticalOptions="Center"/>
+
+      <Image Grid.Column="2" WidthRequest="30" x:Name="imgSave" HorizontalOptions="End" Source="save.png">
+        <Image.GestureRecognizers>
+          <TapGestureRecognizer Tapped="OnSave" />
+        </Image.GestureRecognizers>
+      </Image>
+    </Grid>
+
+    <!--Settings-->
+    <Grid Grid.Row="1" BackgroundColor="White" VerticalOptions="FillAndExpand" >
+      <StackLayout Orientation="Vertical" Padding="10,15,10,5">
+        <Label Text="Mobile Service URL" TextColor="Black"/>
+        <Entry x:Name="mobileServiceUrl" FontSize="Small" Placeholder="Url" TextColor="Black"/>
+      </StackLayout>
+    </Grid>
+
+    <ContentView Grid.Row="2" Padding="10,10,0,10" BackgroundColor="White">
+      <StackLayout Orientation="Vertical">
+        <Label FontSize="Small">
+          <Label.FormattedText>
+            <FormattedString>
+              <FormattedString.Spans>
+                <Span Text="Data stored in the default service may be deleted by the service owners. For full control, deploy the service to your own Azure Subscription. " ForegroundColor="Black" />
+                <Span Text="Learn more"  ForegroundColor="#8C0A4B" />
+              </FormattedString.Spans>
+            </FormattedString>
+          </Label.FormattedText>
+          <Label.GestureRecognizers>
+              <TapGestureRecognizer Tapped="OnLearnMoreButtonClicked" />
+            </Label.GestureRecognizers>
+        </Label>
+      </StackLayout>
+    </ContentView>
+
+    <ContentView Grid.Row="3" Padding="10,10,0,20" BackgroundColor="White">
+      <StackLayout Orientation="Horizontal">
+        <Label Text="Privacy Statement" TextColor="#8C0A4B" FontSize="Small">
+          <Label.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnPrivacyButtonClicked" />
+          </Label.GestureRecognizers>
+        </Label>
+        <Label Text="for the default service" TextColor="Black" FontSize="Small" />
+      </StackLayout>
+    </ContentView>
+
+
+    <!--Logout button-->
+    <Button Grid.Row="4" x:Name="LogoutButton" Clicked="OnLogout" Text="Logout" HorizontalOptions="FillAndExpand" IsEnabled="false" />
+
+  </Grid>
+</ContentPage>

@@ -1,0 +1,14 @@
+<div class="row images-view">
+    <div ng-repeat="img in albumCtrl.curAlbum.images" class="col-xs-6 col-sm-4 col-md-3 col-lg-2 galleryRow">
+        <a ng-hide="img.showPlaceholder" ng-href="#" ng-click="albumCtrl.onImageSelected(img)" >
+            <div class="img-preview img-border" data-resolvesas="{{img.id}}" data-size="lg"></div>
+        </a>
+        
+        <div ng-show="img.showPlaceholder" class="text-center img-preview img-border load-more">
+            <a  ng-href="#" ng-click="albumCtrl.showNext()">
+                    <span>Load More</span><br />
+                    <span class="icon-down-circled"></span>
+            </a>
+        </div>
+    </div>
+</div>

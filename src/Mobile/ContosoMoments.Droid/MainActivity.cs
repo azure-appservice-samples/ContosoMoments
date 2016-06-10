@@ -1,42 +1,47 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using Android.Provider;
 using Android.Views;
-using Gcm.Client;
 using Java.IO;
 using System;
+using Xamarin.Facebook;
+using Xamarin.Facebook.AppEvents;
+using Xamarin.Facebook.Login;
+using Xamarin.Forms;
+using Android.Content;
 
 namespace ContosoMoments.Droid
 {
     [Activity (Label = "Contoso Moments", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
-	{
-        static readonly File file = new File(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures), "tmp.jpg");
-        static MainActivity instance;
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
+    {
+        public static MainActivity instance;
+        private ICallbackManager callbackManager;
+        private FacebookCallback facebookCallback = new FacebookCallback();
 
         protected override void OnCreate (Bundle bundle)
-		{
+        {
             base.OnCreate (bundle);
+
+            FacebookSdk.SdkInitialize(ApplicationContext);
+            AppEventsLogger.ActivateApp(Application);
+
+            callbackManager = CallbackManagerFactory.Create();
+            LoginManager.Instance.RegisterCallback(callbackManager, facebookCallback);
 
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
 
-            global::Xamarin.Forms.Forms.Init (this, bundle);
+            global::Xamarin.Forms.Forms.Init(this, bundle);
 
             Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
 
-            LoadApplication(new ContosoMoments.App ());
-
-            App.Instance.ShouldTakePicture += () => {
-                var intent = new Intent(MediaStore.ActionImageCapture);
-                intent.PutExtra(MediaStore.ExtraOutput, Android.Net.Uri.FromFile(file));
-                StartActivityForResult(intent, 0);
-            };
+            App.UIContext = this;
+            LoadApplication(new ContosoMoments.App());
 
             instance = this;
-            try
-            {
+
+#if PUSH // need to use a Google image on an Android emulator
+            try {
                 // Check to ensure everything's setup right
                 GcmClient.CheckDevice(this);
                 GcmClient.CheckManifest(this);
@@ -45,30 +50,25 @@ namespace ContosoMoments.Droid
                 System.Diagnostics.Debug.WriteLine("Registering...");
                 GcmClient.Register(this, PushHandlerBroadcastReceiver.SENDER_IDS);
             }
-            catch (Java.Net.MalformedURLException)
-            {
+            catch (Java.Net.MalformedURLException) {
 
                 CreateAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 CreateAndShowDialog(e, "Error");
             }
-        }
-
-        public static MainActivity DefaultService
-        {
-            get { return instance; }
+#endif 
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
+            callbackManager.OnActivityResult(requestCode, (int)resultCode, data);
+        }
 
-            if (resultCode != Result.Canceled)
-                App.Instance.ShowCapturedImage(file.Path);
-            else
-                App.Instance.ShowCapturedImage(null);
+        public static MainActivity DefaultService
+        {
+            get { return instance; }
         }
 
         private void CreateAndShowDialog(Exception e, string title)
@@ -79,14 +79,38 @@ namespace ContosoMoments.Droid
             alert.SetTitle(title);
             alert.SetMessage(e.Message);
 
-            alert.SetPositiveButton("OK", (senderAlert, args) => {
-                //
-            });
+            alert.SetPositiveButton("OK", (senderAlert, args) => { });
 
             //run the alert in UI thread to display in the screen
             RunOnUiThread(() => {
                 alert.Show();
             });
+        }
+
+        internal void SetPlatformCallback(DroidPlatform platform)
+        {
+            facebookCallback.platform = platform;
+        }
+    }
+
+    class FacebookCallback : Java.Lang.Object, IFacebookCallback
+    {
+        internal DroidPlatform platform;       
+
+        public void OnCancel()
+        {
+            platform.OnFacebookLoginCancel();
+        }
+
+        public void OnError(FacebookException e)
+        {
+            platform.OnFacebookLoginError(e);
+        }
+
+        public async void OnSuccess(Java.Lang.Object obj)
+        {
+            LoginResult loginResult = (LoginResult) obj;
+            await platform.OnFacebookLoginSuccess(loginResult.AccessToken.Token);
         }
     }
 }

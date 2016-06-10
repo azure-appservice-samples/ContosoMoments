@@ -1,22 +1,25 @@
-﻿// ---------------------------------------------------------------------------- 
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// ---------------------------------------------------------------------------- 
-
-using ContosoMoments.MobileServer.Models;
+﻿using ContosoMoments.API.Helpers;
+using ContosoMoments.Common;
 using Microsoft.Azure.Mobile.Server.Config;
 using Newtonsoft.Json;
 using Owin;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
-namespace ContosoMoments.MobileServer
+namespace ContosoMoments.Api
 {
     public partial class Startup
     {
         public static void ConfigureMobileApp(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
-            config.EnableCors(new System.Web.Http.Cors.EnableCorsAttribute("*", "*", "*", "*"));
+            config.EnableCors(new EnableCorsAttribute("*", "*", "*", "*"));
             config.MapHttpAttributeRoutes();
             config.EnableSystemDiagnosticsTracing();
             config.Formatters.JsonFormatter.SerializerSettings.Re‌​ferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -27,9 +30,61 @@ namespace ContosoMoments.MobileServer
 
             Database.SetInitializer(new ContosoMomentsDBInitializer());
 
+            ConfigureStorage();
+
+            // set up auth for local development
+            //app.UseAppServiceAuthentication(new AppServiceAuthenticationOptions() {
+            //    SigningKey = ConfigurationManager.AppSettings["authSigningKey"],
+            //    ValidAudiences = new[] { ConfigurationManager.AppSettings["authAudience"] },
+            //    ValidIssuers = new[] { ConfigurationManager.AppSettings["authIssuer"] },
+            //    TokenHandler = config.GetAppServiceTokenHandler()
+            //});
+
+            // Increases the HTTP Connection Pool.
+            ServicePointManager.DefaultConnectionLimit = 100;
+
             app.UseWebApi(config);
         }
-    }
 
+        private static void ConfigureStorage()
+        {
+            string connectionString =
+                ConfigurationManager
+                .ConnectionStrings["MS_AzureStorageAccountConnectionString"]
+                .ConnectionString;
+
+            var headers = new List<string>();
+            headers.Add("*");
+
+            var origins = new List<string>();
+
+            string serviceUri = AppSettings.DefaultServiceUrl.ToLower().TrimEnd('/');
+            
+            origins.Add(TheProtocolTrap(serviceUri, Uri.UriSchemeHttp));
+            origins.Add(TheProtocolTrap(serviceUri, Uri.UriSchemeHttps));
+
+            var methods = new List<string>();
+            methods.Add(HttpMethod.Get.ToString());
+            methods.Add(HttpMethod.Head.ToString());
+            methods.Add(HttpMethod.Post.ToString());
+            methods.Add(HttpMethod.Put.ToString());
+
+            AzureStorageCorsHelper.EnableCors(
+                connectionString
+                , origins
+                , headers
+                , methods);
+        }
+
+        private static string TheProtocolTrap(string serviceUri, string Scheme)
+        {
+            var uriBuilder = new UriBuilder(serviceUri)
+            {
+                Scheme = Scheme,
+                Port = -1
+            }; // set as https always
+            return uriBuilder.ToString().TrimEnd('/');
+        }
+    }
 
 }

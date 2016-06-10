@@ -1,17 +1,16 @@
 ﻿using ContosoMoments.Common;
 using ContosoMoments.Common.Models;
-using ContosoMoments.Common.Queue;
-using ContosoMoments.MobileServer.Models;
 using Microsoft.Azure.Mobile.Server;
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.OData;
 
-namespace ContosoMoments.MobileServer.Controllers.TableControllers
+namespace ContosoMoments.Api
 {
     public class ImageController : TableController<Image>
     {
@@ -23,27 +22,52 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
             DomainManager = new EntityDomainManager<Image>(context, Request, enableSoftDelete: softDeleteEnabled);
         }
 
-        // GET tables/Images
-        public IQueryable<Image> GetAllImage()
+        // GET tables/Image
+        public async Task<IQueryable<Image>> GetAllImage()
         {
-            return Query();
+            string defaultUserId = new ConfigModel().DefaultUserId;
+            string currentUserId = defaultUserId;
+
+            try {
+                currentUserId = await ManageUserController.GetUserId(Request, User);
+            }
+            catch (Exception e) {
+                Trace.WriteLine("Invalid auth token: " + e);
+            }
+
+            // return images owned by the current user or the guest user
+            return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId).Where(i => i.IsVisible);
         }
 
-        // GET tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // GET tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public SingleResult<Image> GetImage(string id)
         {
-            return Lookup(id);
+            return 
+                SingleResult.Create<Image>(
+                    Lookup(id).Queryable.Where(i => i.IsVisible));
         }
 
-        // PATCH tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        // PATCH tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
+        [Authorize]
         public Task<Image> PatchImage(string id, Delta<Image> patch)
         {
             return UpdateAsync(id, patch);
         }
 
-        // POST tables/Images
+        // POST tables/Image
         public async Task<IHttpActionResult> PostImage(Image item)
         {
+            var config = new ConfigModel();
+
+            if (item.AlbumId == config.DefaultAlbumId) {
+                item.UserId = config.DefaultUserId; // public album images can be viewed by anyone, so set to the default user
+
+                if (AppSettings.PublicAlbumRequiresAuth) {
+                    // if not logged in with AAD, images in public album should not be visible
+                    item.IsVisible = await ManageUserController.IsAadLogin(Request, User);
+                }
+            }
+
             Image current = await InsertAsync(item);
             return CreatedAtRoute("Tables", new { id = current.Id }, current);
         }
@@ -51,20 +75,13 @@ namespace ContosoMoments.MobileServer.Controllers.TableControllers
         // DELETE tables/Images/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public async Task DeleteImage(string id)
         {
-            var image = Lookup(id).Queryable.First();
-            var filenameParts = image.FileName.Split('.');
-            var filename = filenameParts[0];
-            var fileExt = filenameParts[1];
-            var containerName = image.ContainerName;
+            await DeleteBlobAsync(id);  // delete blobs associated with the image
+            await DeleteAsync(id);      // delete the image record itself
+        }
 
-            var qm = new QueueManager();
-            var blobInfo = new BlobInformation(fileExt);
-            blobInfo.BlobUri = new Uri(containerName);
-            blobInfo.ImageId = filename;
-            await qm.PushToDeleteQueue(blobInfo);
-
-            await DeleteAsync(id);
-            return;
+        public static async Task DeleteBlobAsync(string imageId)
+        {
+            await QueueManager.PushToDeleteQueue(imageId);
         }
     }
 }

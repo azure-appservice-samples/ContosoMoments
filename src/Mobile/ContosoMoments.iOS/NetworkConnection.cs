@@ -2,9 +2,7 @@
 using ContosoMoments.Models;
 using CoreFoundation;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using SystemConfiguration;
 
 [assembly: Xamarin.Forms.Dependency(typeof(NetworkConnection))]
