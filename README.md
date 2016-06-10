@@ -8,7 +8,7 @@
 ![Android](https://img.shields.io/badge/platform-Andriod-green.svg?style=flat-square)
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
-## What is Contoso Moments
+## What is Contoso Moments?
 
 Contoso Moments is a photo sharing application that demonstrates the following features of Azure App Service:
 
