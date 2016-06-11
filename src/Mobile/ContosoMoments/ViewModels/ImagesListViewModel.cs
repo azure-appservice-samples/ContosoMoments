@@ -23,6 +23,8 @@ namespace ContosoMoments.ViewModels
             this.app = app;
 
             DeleteCommand = new DelegateCommand(OnDeleteAlbum, AlbumsListViewModel.IsRenameAndDeleteEnabled);
+
+            eventSubscription = app.MobileService.EventManager.Subscribe<ImageDownloadEvent>(DownloadStatusObserver);
         }
 
         #region Properties
@@ -82,8 +84,6 @@ namespace ContosoMoments.ViewModels
                         im.ImageLoaded = await FileSystem.Current.LocalStorage.CheckExistsAsync(filePath) == ExistenceCheckResult.FileExists;
                     }
                 }
-
-                eventSubscription = app.MobileService.EventManager.Subscribe<ImageDownloadEvent>(DownloadStatusObserver);
             }
             catch (Exception ex) {
                 ErrorMessage = ex.Message;
