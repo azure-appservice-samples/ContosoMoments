@@ -141,7 +141,7 @@ namespace ContosoMoments
             await albumTableSync.PurgeAsync(AllAlbumsQueryString, null, true, CancellationToken.None);
 
             // delete downloaded files
-            await FileHelper.DeleteLocalFileAsync(await platform.GetDataFilesPath());
+            await FileHelper.DeleteLocalPathAsync(await platform.GetDataFilesPath());
 
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
             Settings.Current.CurrentUserId = Settings.Current.DefaultUserId;
