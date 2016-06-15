@@ -8,19 +8,19 @@
             "direction": "in"
         },
         {
-            "path": "images-sm/{name}",
+            "path": "images-sm/sm-{name}",
             "type": "blob",
             "name": "blobOutputSmall",
             "direction": "out"
         },
         {
-            "path": "images-md/{name}",
+            "path": "images-md/md-{name}",
             "type": "blob",
             "name": "blobOutputMedium",
             "direction": "out"
         },
         {
-            "path": "images-xs/{name}",
+            "path": "images-xs/xs-{name}",
             "type": "blob",
             "name": "blobOutputExtraSmall",
             "direction": "out"
