@@ -465,6 +465,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\contosomomentswebi4gj6j - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\PublicContosoMomentsWeb - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
