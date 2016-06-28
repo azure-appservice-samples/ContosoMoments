@@ -8,57 +8,21 @@ using Xamarin.Forms;
 
 namespace ContosoMoments.Views
 {
-    public class CustomCell : ViewCell
-    {
-        public CustomCell()
-        {
-            var renameAction = new MenuItem { Text = "Rename" };
-            renameAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
-
-            renameAction.Clicked += OnRename;
-
-            ContextActions.Add(renameAction);
-        }
-
-        private void OnRename(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Rename action clicked: " + ParentView);
-        }
-    }
-
-    public partial class AlbumsListView : ContentPage
+    public partial class AlbumsListView : ContentPage, IDisposable
     {
         AlbumsListViewModel viewModel;
-        private App _app;
 
-        public AlbumsListView(App app)
+        public AlbumsListView()
         {
             InitializeComponent();
-            this._app = app;
 
-            viewModel = new AlbumsListViewModel(App.Instance.MobileService, app);
+            viewModel = new AlbumsListViewModel(App.Instance.MobileService, App.Instance);
 
             BindingContext = viewModel;
             viewModel.PropertyChanged += ViewModelPropertyChanged;
-
             Settings.Current.PropertyChanged += AuthTypePropertyChanged;
 
-            // new album creation is only allowed in authenticated mode
-            var tapNewAlbumImage = new TapGestureRecognizer();
-            tapNewAlbumImage.Tapped += viewModel.OnAdd;
-            imgAddAlbum.GestureRecognizers.Add(tapNewAlbumImage);
-
-            var tapSyncImage = new TapGestureRecognizer();
-            tapSyncImage.Tapped += OnSyncItems;
-            imgSync.GestureRecognizers.Add(tapSyncImage);
-
-            var tapSettingsImage = new TapGestureRecognizer();
-            tapSettingsImage.Tapped += OnSettings;
-            imgSettings.GestureRecognizers.Add(tapSettingsImage);
-
             viewModel.DeleteAlbumViewAction = OnDeleteAlbum;
-
-            App.Instance.MobileService.EventManager.Subscribe<SyncCompletedEvent>(OnSyncCompleted);
         }
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -75,27 +39,21 @@ namespace ContosoMoments.Views
             Grid.SetColumn(imgSettings, settingsColumn);
         }
 
-        private async void OnSyncCompleted(SyncCompletedEvent obj)
-        {
-            await LoadItemsAsync();
-        }
-
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
             AuthTypePropertyChanged(this, new PropertyChangedEventArgs(nameof(Settings.AuthenticationType)));
 
-            if (albumsList.ItemsSource != null) {
-                // data has already been loaded, skip sync
-                return;
+            if (albumsList.ItemsSource == null) {
+                await LoadItemsAsync(); // load items from the offline cache
+                await SyncItemsAsync(true);
             }
-
-            await SyncItemsAsync(true);
         }
 
         private async Task LoadItemsAsync()
         {
-            await viewModel.GetAlbumsAsync(_app.CurrentUserId);
+            await viewModel.LoadItemsAsync(Settings.Current.CurrentUserId);
         }
 
         public async Task RefreshAsync(bool showIndicator)
@@ -115,15 +73,16 @@ namespace ContosoMoments.Views
             var selectedAlbum = e.SelectedItem as Album;
 
             if (selectedAlbum != null) {
-                var imagesListView = new ImagesList(this._app);
-                imagesListView.Album = selectedAlbum;
+                var imagesListView = new ImagesList(App.Instance, selectedAlbum);
 
                 await Navigation.PushAsync(imagesListView);
             }
 
             // prevents background getting highlighted
             albumsList.SelectedItem = null;
-            viewModel.ShowInputControl = false;
+            if (viewModel != null) {
+                viewModel.ShowInputControl = false;
+            }
         }
 
         public async void OnSyncItems(object sender, EventArgs e)
@@ -134,7 +93,15 @@ namespace ContosoMoments.Views
         public async void OnSettings(object sender, EventArgs e)
         {
             viewModel.ShowInputControl = false;
-            await Navigation.PushModalAsync(new SettingsView(this._app));
+
+            var settingsView = new SettingsView(App.Instance);
+            await Navigation.PushModalAsync(settingsView);
+            var urlChanged = await settingsView.ShowDialog();
+
+            if (urlChanged) {
+                await App.Instance.ResetAsync();
+                this.Dispose(); 
+            }
         }
 
         private async Task SyncItemsAsync(bool showActivityIndicator)
@@ -142,11 +109,10 @@ namespace ContosoMoments.Views
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator)) {
                 viewModel.ShowInputControl = false;
                 if (Utils.IsOnline() && await Utils.SiteIsOnline()) {
-                    await _app.SyncAlbumsAsync();
+                    await App.Instance.SyncAlbumsAsync();
 
-#pragma warning disable CS4014  // should not await call to _app.SyncAsync() because it should happen in the background
-                    _app.SyncAsync();
-#pragma warning restore CS4014
+                    // should not await call to app.SyncAsync() because it should happen in the background
+                    var ignore = App.Instance.SyncAsync();
                 }
                 else {
                     await DisplayAlert("Working Offline", "Couldn't sync data - device is offline or Web API is not available. Please try again when data connection is back", "OK");
@@ -168,6 +134,11 @@ namespace ContosoMoments.Views
             }
         }
 
+        public void OnAdd(object sender, EventArgs e)
+        {
+            viewModel.AddImage();
+        }
+
         public void OnCancelClick(object sender, EventArgs e)
         {
             viewModel.ShowInputControl = false;
@@ -181,6 +152,15 @@ namespace ContosoMoments.Views
                 await viewModel.DeleteAlbumAsync(album);
                 await RefreshAsync(true);
             }
+        }
+
+        public void Dispose()
+        {
+            viewModel.PropertyChanged -= ViewModelPropertyChanged;
+            viewModel?.Dispose();
+            viewModel = null;
+            Settings.Current.PropertyChanged -= AuthTypePropertyChanged;
+            BindingContext = null;
         }
     }
 }

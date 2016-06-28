@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ContosoMoments", "Mobile\ContosoMoments\ContosoMoments.shproj", "{9ADECDE0-0A6D-41C3-B0C8-DF786035A62B}"
 EndProject
@@ -129,6 +129,7 @@ Global
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.iOS|x86.ActiveCfg = iOS|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Release|ARM.ActiveCfg = Release|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Release|ARM.Build.0 = Release|Any CPU
 		{D1107DEE-672E-4FB6-B81E-ABC8326FC48B}.Release|ARM.Deploy.0 = Release|Any CPU

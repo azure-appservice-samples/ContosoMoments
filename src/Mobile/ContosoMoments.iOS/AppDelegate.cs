@@ -113,5 +113,14 @@ namespace ContosoMoments.iOS
                 alert.Show();
             }
         }
+
+        public override void OnActivated(UIApplication uiApplication)
+        {
+            base.OnActivated(uiApplication);
+
+            // log app activation to Facebook app events
+            Facebook.CoreKit.AppEvents.ActivateApp();
+            Facebook.CoreKit.Settings.LimitEventAndDataUsage = true; // tell Facebook not to use app events for ad serving
+        }
     }
 }

@@ -28,6 +28,7 @@ namespace ContosoMoments
 
             if (response.StatusCode == HttpStatusCode.Unauthorized) {
                 try {
+                    AuthStore.DeleteTokenCache(); // cached token was invalid, so should clear it
                     await DoLoginAsync(Settings.Current.AuthenticationType);
 
                     clonedRequest = await CloneRequestAsync(request);
@@ -50,6 +51,7 @@ namespace ContosoMoments
         public static async Task DoLoginAsync(Settings.AuthOption authOption)
         {
             if (authOption == Settings.AuthOption.GuestAccess) {
+                Settings.Current.CurrentUserId = Settings.Current.DefaultUserId;
                 return; // can't authenticate
             }
 
@@ -63,13 +65,13 @@ namespace ContosoMoments
             App.Instance.AuthenticatedUser = user;
             System.Diagnostics.Debug.WriteLine("Authenticated with user: " + user.UserId);
 
-            App.Instance.CurrentUserId =
+            Settings.Current.CurrentUserId =
                 await App.Instance.MobileService.InvokeApiAsync<string>(
                 "ManageUser",
                 System.Net.Http.HttpMethod.Get,
                 null);
 
-            Debug.WriteLine($"Set current userID to: {App.Instance.CurrentUserId}");
+            Debug.WriteLine($"Set current userID to: {Settings.Current.CurrentUserId}");
 
             AuthStore.CacheAuthToken(user);
         }

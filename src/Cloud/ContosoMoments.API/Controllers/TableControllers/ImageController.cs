@@ -36,13 +36,15 @@ namespace ContosoMoments.Api
             }
 
             // return images owned by the current user or the guest user
-            return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId);
+            return Query().Where(i => i.UserId == currentUserId || i.UserId == defaultUserId).Where(i => i.IsVisible);
         }
 
         // GET tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
         public SingleResult<Image> GetImage(string id)
         {
-            return Lookup(id);
+            return 
+                SingleResult.Create<Image>(
+                    Lookup(id).Queryable.Where(i => i.IsVisible));
         }
 
         // PATCH tables/Image/48D68C86-6EA6-4C25-AA33-223FC9A27959
@@ -58,7 +60,12 @@ namespace ContosoMoments.Api
             var config = new ConfigModel();
 
             if (item.AlbumId == config.DefaultAlbumId) {
-                item.UserId = config.DefaultUserId; // default album images can be viewed by anyone, so set to the default user
+                item.UserId = config.DefaultUserId; // public album images can be viewed by anyone, so set to the default user
+
+                if (AppSettings.PublicAlbumRequiresAuth) {
+                    // if not logged in with AAD, images in public album should not be visible
+                    item.IsVisible = await ManageUserController.IsAadLogin(Request, User);
+                }
             }
 
             Image current = await InsertAsync(item);

@@ -7,20 +7,25 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace ContosoMoments.ViewModels
 {
-    public class AlbumsListViewModel : BaseViewModel
+    public class AlbumsListViewModel : BaseViewModel, IDisposable
     {
+        private IDisposable eventSubscription;
+
         public AlbumsListViewModel(MobileServiceClient client, App app)
         {
             this.app = app;
 
             RenameCommand = new DelegateCommand(OnStartAlbumRename, IsRenameAndDeleteEnabled);
             DeleteCommand = new DelegateCommand(OnDeleteAlbum, IsRenameAndDeleteEnabled);
+
+            eventSubscription = client.EventManager.Subscribe<SyncCompletedEvent>(OnSyncCompleted);
         }
 
-        #region Properties
+        #region View Model Properties
         private string _ErrorMessage = null;
         public string ErrorMessage
         {
@@ -128,10 +133,17 @@ namespace ContosoMoments.ViewModels
 #endif
         }
 
-        public async Task GetAlbumsAsync(string userId)
+        private async void OnSyncCompleted(SyncCompletedEvent obj)
         {
-            Albums =
-                await app.albumTableSync.ToListAsync();
+            await LoadItemsAsync(Settings.Current.CurrentUserId);
+        }
+
+        public async Task LoadItemsAsync(string userId)
+        {
+            Albums = 
+                await app.albumTableSync
+                    .OrderBy(x => x.CreatedAt)
+                    .ToListAsync();
         }
 
         #region UI Actions
@@ -152,6 +164,8 @@ namespace ContosoMoments.ViewModels
         public async Task DeleteAlbumAsync(Album selectedAlbum)
         {
             await app.albumTableSync.DeleteAsync(selectedAlbum);
+
+            DependencyService.Get<IPlatform>().LogEvent("DeleteAlbum");
         }
 
         private void OnDeleteAlbum(object obj)
@@ -185,13 +199,15 @@ namespace ContosoMoments.ViewModels
             {
                 AlbumName = EditedAlbumName,
                 IsDefault = false,
-                UserId = App.Instance.CurrentUserId
+                UserId = Settings.Current.CurrentUserId
             };
 
             await app.albumTableSync.InsertAsync(album);
+
+            DependencyService.Get<IPlatform>().LogEvent("CreateAlbum");
         }
 
-        public void OnAdd(object sender, EventArgs e)
+        public void AddImage()
         {
             ShowInputControl = !ShowInputControl;
             IsRename = false;
@@ -199,8 +215,6 @@ namespace ContosoMoments.ViewModels
         }
 
         #endregion
-
-        #region Helpers
 
         // return true if the rename and delete commands are available
         internal static bool IsRenameAndDeleteEnabled(object input)
@@ -210,8 +224,12 @@ namespace ContosoMoments.ViewModels
 
             return !isDefaultAlbum && Settings.Current.AuthenticationType != Settings.AuthOption.GuestAccess;
         }
+        
+        public void Dispose()
+        {
+            eventSubscription.Dispose();
+        }
 
-        #endregion
     }
 
 }

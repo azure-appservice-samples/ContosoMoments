@@ -67,7 +67,7 @@
         },
         "siteName": {
             "type": "string",
-            "defaultValue": "contosomomentsweb",
+            "defaultValue": "contosomoments",
             "metadata": {
                 "description": "The name of the web client app that you wish to create."
             }
@@ -75,12 +75,12 @@
         "repoURL": {
             "type": "string",
             "metadata": {
-                "description": "Repo URL."
+                "description": "Repo URL"
             }
         },
         "branch": {
             "type": "string",
-            "defaultValue": "dev",
+            "defaultValue": "master",
             "metadata": {
                 "description": "Repo branch"
             }
@@ -89,7 +89,7 @@
             "type": "bool",
             "defaultValue": true,
             "metadata": {
-                "description": "Use 'true' if you are deploying from the base repo, 'false' if you are deploying from your own fork. If you're using 'false', make sure you have admin permissions to the repo."
+                "description": "Use 'true' if you are deploying from the base repo, 'false' if you are deploying from your own fork. If you're using 'false', make sure you have admin permissions to the repo. If you get an error, you should add GitHub integration to another web app manually, so that you get a GitHub access token associated with your Azure Subscription."
             }
         }
     },
@@ -270,6 +270,7 @@
                         "DefaultServiceURL": "[concat('https://', variables('lcSiteName'), '.azurewebsites.net/')]",
                         "MS_NotificationHubName": "[variables('NotificationHubName')]",
                         "enableSoftDelete": "true",
+                        "PublicAlbumRequiresAuth": "false",
                         "Command": "deploy.cmd"
                     }
                 },

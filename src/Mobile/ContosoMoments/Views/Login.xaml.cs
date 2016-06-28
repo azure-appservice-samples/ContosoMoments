@@ -34,12 +34,14 @@ namespace ContosoMoments.Views
 
         private async void OnGuestClicked(object sender, EventArgs e)
         {
-            App.Instance.CurrentUserId = Settings.Current.DefaultUserId; // use default user ID
+            Settings.Current.CurrentUserId = Settings.Current.DefaultUserId; // use default user ID
             await LoginComplete(Settings.AuthOption.GuestAccess);
         }
 
         private async Task LoginComplete(Settings.AuthOption option)
         {
+            DependencyService.Get<IPlatform>().LogEvent("Login" + option);
+
             await Navigation.PopToRootAsync();
 
             tcs.TrySetResult(option);
