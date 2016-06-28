@@ -34,7 +34,7 @@ contosoMomentsApp
                 AlbumId: options.albumId,
                 UserId: options.userId
             }).done(function (insertedItem) {
-                $rootScope.$broadcast('imageInserted', res);
+                $rootScope.$broadcast('imageInserted', insertedItem);
                 defered.resolve(insertedItem);
             }, function (err) {
                 defered.reject(err);
@@ -47,7 +47,7 @@ contosoMomentsApp
 
             getSasUrl().then(function (sas) {
                 var sasurl = sas;
-                /*azureBlob.upload({
+                azureBlob.upload({
                     baseUrl: sas.ResourceUri + "/" + sas.EntityId,// baseUrl for blob file uri (i.e. http://<accountName>.blob.core.windows.net/<container>/<blobname>),
                     sasToken: sas.RawToken, // Shared access signature querystring key/value prefixed with ?,
                     file: currentFile, // File object using the HTML5 File API,
@@ -63,17 +63,7 @@ contosoMomentsApp
                         })
                     },// complete callback function,
                     error: config.error || angular.noop// error callback function,                       
-                });*/
-
-
-                commit(sasurl, config)
-                    .then(function (res) {
-                        console.log(res);
-                        if (angular.isFunction(config.complete)) {
-                            config.complete(res);
-                            $rootScope.$broadcast('imageUploaded', res.id);
-                        }
-                    })
+                });
 
             }, function (err) {
                 if (typeof (config.error) === 'function') {
