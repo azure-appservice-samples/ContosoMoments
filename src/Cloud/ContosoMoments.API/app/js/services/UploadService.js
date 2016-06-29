@@ -1,8 +1,8 @@
 ﻿'use strict';
 
 contosoMomentsApp
-    .factory('uploadService', ['azureBlob', '$http', 'appConfig', '$rootScope',
-    function (azureBlob, $http, appConfig, $rootScope) {
+    .factory('uploadService', ['azureBlob', '$http', 'appConfig', '$rootScope', 'mobileServicesClient', '$q',
+    function (azureBlob, $http, appConfig, $rootScope, mobileServicesClient, $q) {
         var getSasUrl = function () {
 
             var newImageId = uuid.v4();
@@ -26,21 +26,21 @@ contosoMomentsApp
             });
         }
         var commit = function (sasurl, options) {
-            // TODO: Change to Mobile Service Table Object.
-            return $http.post('/tables/Image', {
-                "Id": sasurl.EntityId,
-                "UploadFormat": "Web Upload",
-                "AlbumId": options.albumId,
-                "UserId": options.userId,
-            }).then(function (res) {
-                return res.data;
+            var defered = $q.defer();
+            var imageTable = mobileServicesClient.getTable('image');
+            imageTable.insert({
+                id: sasurl.EntityId,
+                UploadFormat: "Web Upload",
+                AlbumId: options.albumId,
+                UserId: options.userId
+            }).done(function (insertedItem) {
+                $rootScope.$broadcast('imageInserted', insertedItem);
+                defered.resolve(insertedItem);
+            }, function (err) {
+                defered.reject(err);
             });
-        }
-        var notifyUpload = function (id) {
-            console.log("Notify WebJob of: " + id);
-            return $http.post('/tables/ResizeRequest', {
-                "BlobName": id
-            });
+
+            return defered.promise;
         }
         return function upload(currentFile, options) {
             var config = options || {};
@@ -53,20 +53,23 @@ contosoMomentsApp
                     file: currentFile, // File object using the HTML5 File API,
                     progress: config.progress || angular.noop, // progress callback function,
                     complete: function () {
-                        commit(sasurl, config).then(function (res) {
-                            if (angular.isFunction(config.complete)) {
-                                config.complete(res);
-                                $rootScope.$broadcast('imageUploaded', res.id);
-                                notifyUpload(res.id);
-                            }
+                        commit(sasurl, config)
+                            .then(function (res) {
+                                console.log(res);
+                                if (angular.isFunction(config.complete)) {
+                                    config.complete(res);
+                                    $rootScope.$broadcast('imageUploaded', res.id);
+                                }
                         })
                     },// complete callback function,
                     error: config.error || angular.noop// error callback function,                       
                 });
+
             }, function (err) {
                 if (typeof (config.error) === 'function') {
                     config.error();
                 }
             });
+
         };
     }]);
