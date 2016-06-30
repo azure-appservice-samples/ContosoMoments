@@ -1,14 +1,12 @@
+---
+services: app-service\mobile, app-service\web, app-service
+platforms: dotnet, xamarin
+author: lindydonna, syntaxc4
+---
+
 # Contoso Moments
 
-![Microsoft Azure](https://img.shields.io/badge/platform-Azure-00abec.svg?style=flat-square)
-![Visual Studio 2015](https://img.shields.io/badge/Visual%20Studio-2015-373277.svg?style=flat-square)
-![ASP.NET 4.6](https://img.shields.io/badge/ASP.NET-4.6-blue.svg?style=flat-square)
-![Xamarin.Forms](https://img.shields.io/badge/Xamarin.Forms-2.0-1faece.svg?style=flat-square)
-![iOS](https://img.shields.io/badge/platform-iOS-lightgrey.svg?style=flat-square)
-![Android](https://img.shields.io/badge/platform-Andriod-green.svg?style=flat-square)
-![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
-
-## What is Contoso Moments
+## What is Contoso Moments?
 
 Contoso Moments is a photo sharing application that demonstrates the following features of Azure App Service:
 
@@ -33,7 +31,7 @@ Download and install the following tools to build and/or develop this applicatio
 1. Fork this repository to your GitHub account 
 1. Click on the **Deploy to Azure** Button
 
-    [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure-appservice-samples%2FContosoMoments%2Fdev%2Fazuredeploy.json)
+    [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure-appservice-samples%2FContosoMoments%2Fmaster%2Fazuredeploy.json)
 
 1. Fill out the values in the Deployment page
 
@@ -41,7 +39,11 @@ Download and install the following tools to build and/or develop this applicatio
 
 1. When the deployment steps complete, it will provide a link to the Web App
 
-#### NOTE: If Deploy to Azure shows all the steps succeeded but shows an error at the end because it can't find the site in your resource group, that's because the ARM template is dynamically generating the site name. If you go to your resource group in the Azure Portal, you'll see that you have a site with a unique string appended to it.  
+## Download the iOS client app
+
+The iOS client app is available on the Apple App Store. You can have it connect to your own service by setting the URL in the app's settings page.
+
+[![Contoso Moments Icon](appicon-small.png)](https://itunes.apple.com/us/app/contoso-moments/id1118186646?ls=1&mt=8)
 
 ## How: Customize the service
 
@@ -78,6 +80,4 @@ In Visual Studio or Xamarin Studio, open the project [src/ContosoMoments-Mobile.
 | Android   | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/2.svg?style=flat-square) |
 | iOS       | ![VSTS Build](https://img.shields.io/vso/build/cfowler/6a1734d8-b06d-4591-8240-ef2ce88d8250/3.svg?style=flat-square) |
 
-## Change Log
 
-we are working on a v1.0 release.
