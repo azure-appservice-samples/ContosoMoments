@@ -5,25 +5,25 @@
             "path": "images-lg/{name}",
             "type": "blobTrigger",
             "name": "input",
-            "direction": "in"
+            "direction": "InOut"
         },
         {
             "path": "images-sm/{name}",
             "type": "blob",
             "name": "blobOutputSmall",
-            "direction": "out"
+            "direction": "InOut"
         },
         {
             "path": "images-md/{name}",
             "type": "blob",
             "name": "blobOutputMedium",
-            "direction": "out"
+            "direction": "InOut"
         },
         {
             "path": "images-xs/{name}",
             "type": "blob",
             "name": "blobOutputExtraSmall",
-            "direction": "out"
+            "direction": "InOut"
         }
     ]
 }

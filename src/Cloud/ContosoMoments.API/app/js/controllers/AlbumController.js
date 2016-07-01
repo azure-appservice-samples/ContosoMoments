@@ -138,8 +138,8 @@ contosoMomentsApp
         }]);
 
 contosoMomentsApp
-    .controller('deleteAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum', '$state',
-        function ($scope, albumsService, $uibModalInstance, selectedAlbum, $state) {
+    .controller('deleteAlbumController', ['$scope', 'albumsService', '$uibModalInstance', 'selectedAlbum', '$state', 'appConfig',
+        function ($scope, albumsService, $uibModalInstance, selectedAlbum, $state, appConfig) {
 
             var self = this;
 
@@ -166,7 +166,7 @@ contosoMomentsApp
                 self.deletingAlbum = true;
                 albumsService.deleteAlbum(selectedAlbum.album.id).then(function (res) {
                     $uibModalInstance.close(res);
-                    $state.go($state.previous.name);
+                    $state.go('main.gallery');
 
                 }).finally(function () {
                     self.deletingAlbum = false;

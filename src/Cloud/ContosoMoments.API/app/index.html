@@ -41,12 +41,18 @@
                                 <span class="hidden-sm hidden-md hidden-lg">Delete Image</span>
                             </a>
                         </li>
+
+                        <li class="pull-right-sm">
+                            <a href="/auth">
+                                <span class="glyphicon glyphicon-lock"></span>
+                                <span class="hidden-sm hidden-md hidden-lg">Login</span>
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
                 <div ng-cloak ng-show="showMenu" class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed = true">
                     <ul class="nav navbar-nav navbar-right">
-
-
 
                         <li class="pull-right-sm" ng-show="showUpload">
                             <a href="#" ng-click="navCtrl.deleteAlbumModal()">
@@ -95,7 +101,6 @@
     <script src="/app/js/controllers/ImageController.js"></script>
     <script src="/app/js/controllers/NavController.js"></script>
     <script src="/app/js/controllers/UploadController.js"></script>
-    <script src="/app/js/services/AuthService.js"></script>
     <script src="/app/js/services/AlbumService.js"></script>
     <script src="/app/js/services/ImageService.js"></script>
     <script src="/app/js/services/MobileService.js"></script>

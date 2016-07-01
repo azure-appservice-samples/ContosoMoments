@@ -3,32 +3,32 @@
         {
             "name": "blobName",
             "type": "queueTrigger",
-            "direction": "in",
+            "direction": "InOut",
             "queueName": "deleterequest"
         },
         {
             "type": "blob",
             "name": "blobLarge",
             "path": "images-lg/{ImageId}",
-            "direction": "in"
+            "direction": "InOut"
         },
         {
             "type": "blob",
             "name": "blobExtraSmall",
             "path": "images-xs/{ImageId}",
-            "direction": "in"
+            "direction": "InOut"
         },
         {
             "type": "blob",
             "name": "blobSmall",
             "path": "images-sm/{ImageId}",
-            "direction": "in"
+            "direction": "InOut"
         },
         {
             "type": "blob",
             "name": "blobMedium",
             "path": "images-md/{ImageId}",
-            "direction": "in"
+            "direction": "InOut"
         }
     ],
     "disabled": false
