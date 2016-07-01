@@ -18,8 +18,12 @@ namespace ContosoMoments.Api
         [Route("tables/Image/{id}/StorageToken")]
         // return a storage token that can be used for blob upload or download
         public async Task<HttpResponseMessage> PostStorageTokenRequest(string id, StorageTokenRequest request)
-        {            
-            StorageToken token = await GetStorageTokenAsync(id, request, new ImageNameResolver(request.TargetFile.StoreUri));
+        {
+            // The file size is encoded in the start of the filename, lg, md, etc.
+            // If it doesn't match the pattern then the default size of lg is used
+            var requestedSize = request.TargetFile.Name.Substring(0, 2); 
+
+            StorageToken token = await GetStorageTokenAsync(id, request, new ImageNameResolver(requestedSize));
             return Request.CreateResponse(token);
         }
 
@@ -28,16 +32,11 @@ namespace ContosoMoments.Api
         [Route("tables/Image/{id}/MobileServiceFiles")]
         public async Task<HttpResponseMessage> GetFiles(string id)
         {
-            IEnumerable<MobileServiceFile> files = await GetRecordFilesAsync(id, new ImageNameResolver());
+            var files = await GetRecordFilesAsync(id, new ImageNameResolver());      
+
             return Request.CreateResponse(files);
         }
 
-        [HttpDelete]
-        [Route("tables/Image/{id}/MobileServiceFiles/{name}")]
-        [Authorize]
-        public Task Delete(string id, string name)
-        {
-            return base.DeleteFileAsync(id, name, new ImageNameResolver());
-        }
+        // there's no Delete method, because deletion is handled by deleting the image itself
     }
 }

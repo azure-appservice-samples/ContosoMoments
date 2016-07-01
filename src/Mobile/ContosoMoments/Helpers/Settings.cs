@@ -18,6 +18,11 @@ namespace ContosoMoments
             return Current.DefaultUserId == UserIdDefault;
         }
 
+        public static bool IsDefaultServiceUrl()
+        {
+            return Current.MobileAppUrl == DefaultMobileAppUrl;
+        }
+
         public enum AuthOption
         {
             GuestAccess, Facebook, ActiveDirectory

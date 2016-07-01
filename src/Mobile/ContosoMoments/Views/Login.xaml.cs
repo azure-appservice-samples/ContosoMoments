@@ -42,7 +42,7 @@ namespace ContosoMoments.Views
         {
             DependencyService.Get<IPlatform>().LogEvent("Login" + option);
 
-            await Navigation.PopToRootAsync();
+            await Navigation.PopModalAsync();
 
             tcs.TrySetResult(option);
         }

@@ -15,9 +15,9 @@ namespace ContosoMoments.ResizerWebJob
             public string ImageId { get; set; }
 
             public const string ImageNameLg = "images-lg/{ImageId}";
-            public const string ImageNameMd = "images-md/{ImageId}";
-            public const string ImageNameSm = "images-sm/{ImageId}";
-            public const string ImageNameXs = "images-xs/{ImageId}";
+            public const string ImageNameMd = "images-md/md-{ImageId}";
+            public const string ImageNameSm = "images-sm/sm-{ImageId}";
+            public const string ImageNameXs = "images-xs/xs-{ImageId}";
         }
 
         private static Dictionary<ImageSize, ResizeSettings> imageDimensionsTable = new Dictionary<ImageSize, ResizeSettings>()

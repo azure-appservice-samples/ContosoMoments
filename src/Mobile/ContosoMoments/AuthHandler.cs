@@ -59,7 +59,7 @@ namespace ContosoMoments
 
             var user =
                 authOption == Settings.AuthOption.Facebook ?
-                    await mobileClient.LoginFacebookAsync() :
+                    await LoginFacebookAsync(mobileClient) :
                     await mobileClient.LoginAsync(MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory);
 
             App.Instance.AuthenticatedUser = user;
@@ -74,6 +74,14 @@ namespace ContosoMoments
             Debug.WriteLine($"Set current userID to: {Settings.Current.CurrentUserId}");
 
             AuthStore.CacheAuthToken(user);
+        }
+
+        private static Task<MobileServiceUser> LoginFacebookAsync(IPlatform mobileClient)
+        {
+            // use server flow if the service URL has been customized
+            return Settings.IsDefaultServiceUrl() ?
+                mobileClient.LoginFacebookAsync() :
+                mobileClient.LoginAsync(MobileServiceAuthenticationProvider.Facebook);
         }
 
         private async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage request)

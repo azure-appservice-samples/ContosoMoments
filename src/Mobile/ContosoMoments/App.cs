@@ -92,15 +92,18 @@ namespace ContosoMoments
 
             if (showLoginDialog) {
                 await Utils.PopulateDefaultsAsync();
-                MainPage = new NavigationPage(new AlbumsListView());
 
                 await DoLoginAsync();
+
+                Debug.WriteLine("*** DoLoginAsync complete");
+
+                MainPage = new NavigationPage(new AlbumsListView());
             }
             else {
-                MainPage = new NavigationPage(new AlbumsListView());
-
                 // user has already chosen an authentication type, so re-authenticate
                 await AuthHandler.DoLoginAsync(Settings.Current.AuthenticationType);
+
+                MainPage = new NavigationPage(new AlbumsListView());
             }
         }
 
@@ -115,7 +118,7 @@ namespace ContosoMoments
         private async Task DoLoginAsync()
         {
             var loginPage = new Login();
-            await MainPage.Navigation.PushAsync(loginPage);
+            await MainPage.Navigation.PushModalAsync(loginPage);
             Settings.Current.AuthenticationType = await loginPage.GetResultAsync();
 
             await SyncAsync(notify: true);
@@ -138,7 +141,7 @@ namespace ContosoMoments
             await albumTableSync.PurgeAsync(AllAlbumsQueryString, null, true, CancellationToken.None);
 
             // delete downloaded files
-            await FileHelper.DeleteLocalFileAsync(await platform.GetDataFilesPath());
+            await FileHelper.DeleteLocalPathAsync(await platform.GetDataFilesPath());
 
             Settings.Current.AuthenticationType = Settings.AuthOption.GuestAccess;
             Settings.Current.CurrentUserId = Settings.Current.DefaultUserId;

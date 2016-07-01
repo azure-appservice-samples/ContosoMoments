@@ -26,7 +26,7 @@ namespace ContosoMoments.Api
             var result = await blob.ExistsAsync() ? new[] { blob } : Enumerable.Empty<CloudBlockBlob>();
 
             return result;
-        }
+        }        
 
         internal static string GetConnectionString(string connectionStringName = Constants.StorageConnectionStringName)
         {

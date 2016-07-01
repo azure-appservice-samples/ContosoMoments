@@ -71,7 +71,7 @@ namespace ContosoMoments.iOS
             var user = GetCachedUser();
 
             if (user == null) {
-                var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
+                var view = GetTopViewController();
                 user = await App.Instance.MobileService.LoginAsync(view, provider);
             }
 
@@ -84,8 +84,8 @@ namespace ContosoMoments.iOS
 
             tcs = new TaskCompletionSource<MobileServiceUser>();
             var loginManager = new LoginManager();
-            var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
-
+            var view = GetTopViewController();
+           
             var user = GetCachedUser();
 
             if (user != null) {
@@ -117,6 +117,18 @@ namespace ContosoMoments.iOS
 
             AuthStore.DeleteTokenCache();
             await App.Instance.MobileService.LogoutAsync();
+        }
+
+        private UIViewController GetTopViewController()
+        {
+            var view = UIApplication.SharedApplication.KeyWindow.RootViewController;
+
+            // Find the view controller that's currently on top. This is required if there's a modal page being displayed
+            while (view.PresentedViewController != null) {
+                view = view.PresentedViewController;
+            }
+
+            return view;
         }
 
         private async void LoginTokenHandler(LoginManagerLoginResult loginResult, NSError error)
