@@ -31,6 +31,7 @@
       <DependentUpon>AlbumsListView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\CustomImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ImageDetailsView.xaml.cs">
       <DependentUpon>ImageDetailsView.xaml</DependentUpon>
       <SubType>Code</SubType>

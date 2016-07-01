@@ -9,46 +9,40 @@ namespace ContosoMoments.Api
 {
     public class ImageNameResolver : IContainerNameResolver
     {
-        private string storeUri;
+        private string requestedImageSize = null;
 
-        public const string DefaultSizeKey = "lg";
         public const string DefaultContainerPrefix = "images";
+        public const string DefaultSizeKey = "lg";
 
-        public ImageNameResolver(string storeUri = null)
+        private static string[] imageSizes = new string[] { "lg", "md", "sm", "xs" };
+
+        public ImageNameResolver(string requestedImageSize = null)
         {
-            this.storeUri = storeUri;
+            // a value of null means that all image sizes should be retrieved
+            this.requestedImageSize = requestedImageSize;
+
+            if (requestedImageSize == null || !imageSizes.Contains(this.requestedImageSize)) {
+                this.requestedImageSize = DefaultSizeKey;
+            }
         }
 
         public Task<string> GetFileContainerNameAsync(string tableName, string recordId, string fileName)
         {
-            string result;
-
-            if (storeUri != null) {
-                // use the storeUri parameter to get the file container          
-                var split = storeUri.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                result = split[0];
-            }
-            else {
-                // use the default container
-                result = string.Format("{0}-{1}", DefaultContainerPrefix, DefaultSizeKey);
-            }
-
-            return Task.FromResult(result);
+            return Task.FromResult($"{DefaultContainerPrefix}-{requestedImageSize}");
         }
 
         public Task<IEnumerable<string>> GetRecordContainerNames(string tableName, string recordId)
         {
-            var sizes = new string[] { "lg", "md", "sm", "xs" };
-            var result = sizes.Select(x => GetContainerAndImageName(recordId: recordId, sizeKey: x));
+            // Our custom storage provider will filter to only that file within the container
+            var result = imageSizes.Select(
+                x => {
+                    // all image sizes except original are prefixed with the size key
+                    var prefix = x == DefaultSizeKey ? "" : $"{x}-"; 
+                    return $"{DefaultContainerPrefix}-{x}/{prefix}{recordId}";
+                }
+            );
 
             return Task.FromResult(result);
-        }
-
-        public static string GetContainerAndImageName(string recordId, string sizeKey)
-        {
-            // image container is in the format images-xs
-            // There is a custom storage provider that will filter to only that file within the container
-            return string.Format("{0}-{1}/{2}", DefaultContainerPrefix, sizeKey, recordId);
         }
     }
 }

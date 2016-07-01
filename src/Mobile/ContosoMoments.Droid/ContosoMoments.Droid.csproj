@@ -233,6 +233,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomImageRenderer.cs" />
     <Compile Include="DroidPlatform.cs" />
     <Compile Include="GcmService.cs" />
     <Compile Include="MainActivity.cs" />

@@ -35,11 +35,13 @@ contosoMomentsApp
         return {
             getImageURL: function (imgId, imgSize) {
                 var defered = $q.defer();
+                var prefix = imgSize == "lg" ? "" : imgSize + "-";
+
                 $http.post('/tables/Image/' + imgId + '/StorageToken', {
                     "Permissions": "Read",
                     "TargetFile": {
-                        "Id": imgId,
-                        "Name": imgId,
+                        "Id": prefix + imgId,
+                        "Name": prefix + imgId,
                         "TableName": "Image",
                         "ParentId": imgId,
                         "ContentMD5": null,
@@ -51,7 +53,7 @@ contosoMomentsApp
                     "ProviderName": null
                 })
                 .then(function (res) {
-                    defered.resolve(res.data.ResourceUri.concat("/", res.data.EntityId, res.data.RawToken));
+                    defered.resolve(res.data.ResourceUri.concat("/", prefix, res.data.EntityId, res.data.RawToken));
                 })
                 .catch(function (err) {
                     console.log(err);
