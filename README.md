@@ -53,6 +53,8 @@ The web and mobile client support Facebook and Azure Active Directory Authentica
 - [How to configure your App Service application to use Facebook login](https://azure.microsoft.com/en-us/documentation/articles/app-service-mobile-how-to-configure-facebook-authentication/)
 - [How to configure your App Service application to use Azure Active Directory login](https://azure.microsoft.com/en-us/documentation/articles/app-service-mobile-how-to-configure-active-directory-authentication/)
 
+> **Note**: Ensure that the *Action to take when request is not authenticated* is set to **Allow request (no action)**
+
 The mobile app uses [client-directed login](https://azure.microsoft.com/en-us/documentation/articles/app-service-authentication-overview/#mobile-authentication-with-a-provider-sdk) for Facebook, which provides a better user experience on a mobile device. This requires that you set your Facebook App ID in the following locations:
 
 - (iOS) The **FacebookAppID** key in [Info.plist](src/Mobile/ContosoMoments.iOS/Info.plist#L123).
