@@ -35,6 +35,11 @@ namespace ContosoMoments.Droid
                 // resize to the element dimensions
                 var width = (int)customImage.Width;
                 var height = (int)customImage.Height;
+
+                if (width < 0 || height < 0) { // the element has not fully rendered, so wait for another callback
+                    return;
+                }
+
                 options.InSampleSize = CalculateInSampleSize(options, width, height);
 
                 // Decode bitmap with inSampleSize set
