@@ -333,7 +333,7 @@
                     "properties": {
                         "RepoUrl": "[parameters('repoUrl')]",
                         "branch": "[parameters('branch')]",
-                        "IsManualIntegration": "parameters('manualIntegration')]"
+                        "IsManualIntegration": "[parameters('manualIntegration')]"
                     }
                 }
             ]
